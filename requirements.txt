@@ -3,3 +3,4 @@ pyaudio
 requests
 decorator
 flask
+flask_cors
