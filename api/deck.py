@@ -1,6 +1,6 @@
-from server import app, col, emitError, emitResult
-from flask import jsonify, request
-from pprint import pprint
+from server import app
+from api.connection import col
+from api.emit import emitError, emitResult
 
 
 @app.route('/deck/list')
