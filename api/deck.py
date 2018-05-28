@@ -1,6 +1,7 @@
 from server import app
 from api.connection import col
 from api.emit import emitError, emitResult
+from flask import request
 
 
 @app.route('/deck')
@@ -30,21 +31,41 @@ def list_deck_due():
     return emitResult(ret)
 
 
-@app.route('/deck/<deckname>/config')
-def get_deck_config(deckname):
+@app.route('/deck/<deckname>/config', methods=['GET', 'POST'])
+def deck_config(deckname):
     deck = col().decks.byName(deckname)
     if not deck:
         return emitError('No such deck')
 
-    ret = {
-        'collapsed': deck['collapsed'],
-        'browserCollapsed': deck['browserCollapsed'],
-        'deckConfigId': deck['conf'],
-        'description': deck['desc'],
-        'isDynamic': deck['dyn'],
-    }
-    return emitResult(ret)
+    if request.method == 'GET':
+        ret = {
+            'collapsed': deck['collapsed'],
+            'browserCollapsed': deck['browserCollapsed'],
+            'deckConfigId': deck['conf'],
+            'description': deck['desc'],
+            'isDynamic': deck['dyn'],
+        }
+        return emitResult(ret)
+    else:
+        req = request.get_json()
+        try:
+            reqType = req['type']
+            if reqType == 'collapse':
+                newCollapse = bool(req['collapse'])
+                if newCollapse == deck['collapsed']:
+                    return emitResult(False)
+                else:
+                    col().decks.collapse(deck['id'])
+                    return emitResult(True)
+            return emitError('Unknown request type %s' % reqType)
 
+        except (KeyError, TypeError) as e:
+            return emitError(str(e))
+
+
+
+        print(req)
+        return emitResult(1)
 
 @app.route('/deck/<deckname>/current')
 def set_current_deck(deckname):
