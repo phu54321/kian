@@ -11,6 +11,7 @@ from anki.collection import _Collection
 db_path = 'testdata/collection.anki2'
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
 def col() -> _Collection:
@@ -32,6 +33,17 @@ def close_connection(exception):
     if hasattr(top, 'col'):
         top.col.close()
 
+
+def emitResult(res):
+    return jsonify({
+        'error': None,
+        'result': res
+    })
+
+def emitError(errmsg):
+    return jsonify({
+        'error': errmsg,
+    })
 
 import api
 
