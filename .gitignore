@@ -8,3 +8,6 @@ aqt/forms
 locale
 .idea
 tools/runanki.system
+testdata/
+
+.DS_Store

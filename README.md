@@ -1,14 +1,4 @@
-Anki
+Anki-Restful
 -------------------------------------
 
-This is the development branch of Anki.
-
-For stable builds, please see https://apps.ankiweb.net.
-
-For non-developers who want to try this development code,
-the easiest way is to use a binary package - please see
-https://anki.tenderapp.com/discussions/beta-testing
-
-To run from source, please see README.development.
-
-[![Build Status](https://travis-ci.org/dae/anki.svg?branch=master)](https://travis-ci.org/dae/anki)
+This is a stripped-down REST-only server for Anki client, to be used in conjunction w/ other frontends. Original version of Anki GUI client can be found [here](https://github.com/dae/anki).
