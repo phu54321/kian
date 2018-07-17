@@ -5,5 +5,27 @@
   "main": "index.js",
   "repository": "https://github.com/phu54321/kian.git",
   "author": "phu54321 <phu54321@naver.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "poi frontend/index.js",
+    "build": "poi build frontend/index.js"
+  },
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "eslint": "^5.1.0",
+    "eslint-plugin-vue": "^4.7.0",
+    "material-design-icons-iconfont": "^3.0.3",
+    "poi": "^10.2.9",
+    "poi-preset-eslint": "^9.1.1",
+    "vue": "^2.5.16",
+    "vue-axios": "^2.1.2",
+    "vue-nprogress": "^0.1.5",
+    "vue-router": "^3.0.1",
+    "vue-router-back-button": "^1.1.1"
+  },
+  "dependencies": {
+    "pug": "^2.0.3",
+    "pug-plain-loader": "^1.0.0",
+    "vuetify": "^1.1.4"
+  }
 }
