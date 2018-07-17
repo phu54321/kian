@@ -26,7 +26,7 @@
                     v-icon cached
                 span Sync
     v-content
-      | Hello {{msg}}
+      router-view
 </template>
 
 <script>

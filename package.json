@@ -7,6 +7,8 @@
   "author": "phu54321 <phu54321@naver.com>",
   "license": "MIT",
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.1.0"
+    "@fortawesome/fontawesome-free": "^5.1.0",
+    "vue-router": "^3.0.1",
+    "vue-router-back-button": "^1.1.1"
   }
 }
