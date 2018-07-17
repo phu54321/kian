@@ -1,0 +1,9 @@
+{
+  "name": "kian",
+  "version": "1.0.0",
+  "description": "Spaced repetition learner",
+  "main": "index.js",
+  "repository": "https://github.com/phu54321/kian.git",
+  "author": "phu54321 <phu54321@naver.com>",
+  "license": "MIT"
+}
