@@ -604,6 +604,10 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
+nprogress@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
+
 object-assign@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
@@ -853,6 +857,12 @@ vue-eslint-parser@^2.0.3:
     espree "^3.5.2"
     esquery "^1.0.0"
     lodash "^4.17.4"
+
+vue-nprogress@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/vue-nprogress/-/vue-nprogress-0.1.5.tgz#574b412f1034012daaf46299d5505d5812f406e6"
+  dependencies:
+    nprogress "0.2.0"
 
 vue-router-back-button@^1.1.1:
   version "1.1.1"

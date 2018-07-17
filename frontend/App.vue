@@ -1,5 +1,6 @@
 <template lang='pug'>
   v-app
+    nprogress-container
     v-toolbar(dark)
         v-toolbar-side-icon
         v-toolbar-title Kian
@@ -30,7 +31,13 @@
 </template>
 
 <script>
+
+import NprogressContainer from 'vue-nprogress/src/NprogressContainer';
+
 export default {
+    components: {
+        NprogressContainer
+    },
     data() {
         return { msg: 'world' };
     }

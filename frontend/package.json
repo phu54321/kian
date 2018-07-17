@@ -8,10 +8,12 @@
     "build": "poi build index.js"
   },
   "devDependencies": {
+    "axios": "^0.18.0",
     "eslint": "^5.1.0",
     "material-design-icons-iconfont": "^3.0.3",
     "poi": "^10.2.9",
-    "poi-preset-eslint": "^9.1.1"
+    "poi-preset-eslint": "^9.1.1",
+    "vue-axios": "^2.1.2"
   },
   "dependencies": {
     "pug": "^2.0.3",
