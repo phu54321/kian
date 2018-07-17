@@ -5,13 +5,5 @@
   "main": "index.js",
   "repository": "https://github.com/phu54321/kian.git",
   "author": "phu54321 <phu54321@naver.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.1.0",
-    "eslint": "^5.1.0",
-    "eslint-plugin-vue": "^4.7.0",
-    "vue-nprogress": "^0.1.5",
-    "vue-router": "^3.0.1",
-    "vue-router-back-button": "^1.1.1"
-  }
+  "license": "MIT"
 }
