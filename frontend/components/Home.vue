@@ -4,11 +4,23 @@
             v-card-title(primary-title)
                 .headline Deck list
             v-card-text
-                span Test
+                v-list
+                    v-list-tile(v-for='deckName in sortedDeckNames', :key='deckName')
+                        v-list-tile-content
+                            v-list-tile-title(v-text="deckName")
+                        v-list-tile-avatar.text-xs-right
+                            span.blue--text {{decks[deckName].newCount}}
+                            | &nbsp;
+                            span.red--text {{decks[deckName].lrnCount + decks[deckName].revCount}}
 </template>
 
 <script>
 export default {
+    computed: {
+        sortedDeckNames () {
+            return Object.keys(this.decks).sort();
+        }
+    },
     data () {
         return {
             decks: {
