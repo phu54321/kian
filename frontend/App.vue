@@ -32,7 +32,7 @@
 <script>
 export default {
     data() {
-        return { msg: "world" };
+        return { msg: 'world' };
     }
 };
 </script>
