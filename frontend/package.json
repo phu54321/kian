@@ -4,12 +4,18 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "poi --dev index.js",
+    "start": "poi index.js",
     "build": "poi build index.js"
   },
   "devDependencies": {
+    "eslint": "^5.1.0",
+    "material-design-icons-iconfont": "^3.0.3",
     "poi": "^10.2.9",
+    "poi-preset-eslint": "^9.1.1"
+  },
+  "dependencies": {
     "pug": "^2.0.3",
-    "pug-plain-loader": "^1.0.0"
+    "pug-plain-loader": "^1.0.0",
+    "vuetify": "^1.1.4"
   }
 }

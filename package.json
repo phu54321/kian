@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/phu54321/kian.git",
   "author": "phu54321 <phu54321@naver.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.1.0"
+  }
 }
