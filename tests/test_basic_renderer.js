@@ -35,7 +35,7 @@ describe('basic_renderer', function () {
         assert.deepEqual(
             BasicRenderer.renderCards(card, dumbStyle),
             {
-                'Card 0': {
+                'Card 1': {
                     front: 'Test1',
                     back: 'Test2',
                 }
@@ -45,7 +45,7 @@ describe('basic_renderer', function () {
         assert.deepEqual(
             BasicRenderer.renderCards(card, betterStyle),
             {
-                'Card 0': {
+                'Card 1': {
                     front: 'Test1',
                     back: 'Test1\n----\nTest2',
                 }
@@ -73,7 +73,7 @@ describe('basic_renderer', function () {
         assert.deepEqual(
             BasicRenderer.renderCards(card, style),
             {
-                'Card 0': {
+                'Card 1': {
                     front: '**a**\nb',
                     back: 'c'
                 }
@@ -122,7 +122,7 @@ describe('basic_renderer', function () {
         assert.deepEqual(
             BasicRenderer.renderCards(card, style),
             {
-                'Card 0': {
+                'Card 1': {
                     front: '**a**\nb',
                     back: '**a**\nb\n----\nc'
                 }

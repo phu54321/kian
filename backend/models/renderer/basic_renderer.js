@@ -24,7 +24,7 @@ module.exports = {
         if (!frontRendered) return null;
 
         return {
-            'Card 0': {
+            'Card 1': {
                 front: frontRendered,
                 back: backRendered,
             }
