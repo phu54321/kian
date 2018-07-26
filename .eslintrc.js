@@ -3,7 +3,8 @@ module.exports = {
         "browser": true,
         "commonjs": true,
         "es6": true,
-        "node": true
+        "node": true,
+        "mocha": true,
     },
     "extends": [
         "es2015",
@@ -32,7 +33,7 @@ module.exports = {
         ],
         "no-unused-vars": [
             "error",
-            { "argsIgnorePattern": "next" }
+            { "argsIgnorePattern": "next|_.*" }
         ]
     }
 };
