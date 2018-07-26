@@ -27,10 +27,10 @@ describe('cloze_renderer', function () {
         );
     });
 
-    it('should render basic cloze cards (name m)', function () {
+    it('should render basic cloze w/ multiple clozes (name m)', function () {
         const card = {
             fields: {
-                m: '{{c1::test}}',
+                m: '{{c1::test1}}\n{{c2::test2}}',
             }
         };
         const style = {
@@ -43,9 +43,13 @@ describe('cloze_renderer', function () {
             ClozeRenderer.renderCards(card, style),
             {
                 'Cloze 1': {
-                    front: '__***[..]***__',
-                    back: '__**test**__'
-                }
+                    front: '__***[..]***__\ntest2',
+                    back: '__**test1**__\ntest2'
+                },
+                'Cloze 2': {
+                    front: 'test1\n__***[..]***__',
+                    back: 'test1\n__**test2**__'
+                },
             }
         );
     });

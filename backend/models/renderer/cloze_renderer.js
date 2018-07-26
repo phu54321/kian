@@ -15,16 +15,18 @@ module.exports = {
             const foundFragmentSet = new Set;
             const frontFragmentMap = {};
             const backFragmentMap = {};
-            field.replace(/{{c(\d+)::(.+?)}}/g, function (match, p1, _p2) {
-                match = parseInt(p1);
-                if(foundFragmentSet.has(match)) return;
-                foundFragmentSet.add(match);
-                clozeIndexWithFragments.add(match);
-                frontFragmentMap[match] = field.replace(new RegExp(`{{c${p1}::(.+?)}}`,'g'), function (_match, _p1) {
-                    return '__***[..]***__';
+            field.replace(/{{c(\d+)::(.+?)}}/g, function (_match, p1, _p2) {
+                const clozeId = parseInt(p1);
+                if(foundFragmentSet.has(clozeId)) return;
+                foundFragmentSet.add(clozeId);
+                clozeIndexWithFragments.add(clozeId);
+                frontFragmentMap[clozeId] = field.replace(/{{c(\d+)::(.+?)}}/g, function (_match, p1, p2) {
+                    if(parseInt(p1) === clozeId) return '__***[..]***__';
+                    else return p2;
                 });
-                backFragmentMap[match] = field.replace(new RegExp(`{{c${p1}::(.+?)}}`,'g'), function (_match, p1) {
-                    return `__**${p1}**__`;
+                backFragmentMap[clozeId] = field.replace(/{{c(\d+)::(.+?)}}/g, function (_match, p1, p2) {
+                    if(parseInt(p1) === clozeId) return `__**${p2}**__`;
+                    else return p2;
                 });
             });
             fragmentMap[fieldName] = {
