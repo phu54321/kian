@@ -10,7 +10,8 @@
     "dev": "npm-run-all --parallel frontend-dev backend-dev",
     "frontend-dev": "poi frontend/index.js",
     "backend-dev": "nodemon backend/bin/www",
-    "build-frontend": "poi build frontend/index.js"
+    "build-frontend": "poi build frontend/index.js",
+    "test": "mocha"
   },
   "devDependencies": {
     "axios": "^0.18.0",
