@@ -29,25 +29,25 @@ const betterStyle = {
 };
 
 
-describe('basic_renderer', function() {
-    it('should only create one card', function() {
-        assert.equal(BasicRenderer.cardCount(card), 1);
-    });
-
-    it('should render front side properly', function() {
+describe('basic_renderer', function () {
+    it('should render front side properly', function () {
         assert.deepEqual(
-            BasicRenderer.renderCard(card, dumbStyle, 0),
+            BasicRenderer.renderCards(card, dumbStyle),
             {
-                front: 'Test1',
-                back: 'Test2',
+                'Card 0': {
+                    front: 'Test1',
+                    back: 'Test2',
+                }
             }
         );
 
         assert.deepEqual(
-            BasicRenderer.renderCard(card, betterStyle, 0),
+            BasicRenderer.renderCards(card, betterStyle, 0),
             {
-                front: 'Test1',
-                back: 'Test1\n----\nTest2',
+                'Card 0': {
+                    front: 'Test1',
+                    back: 'Test1\n----\nTest2',
+                }
             }
         );
     });

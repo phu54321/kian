@@ -1,8 +1,5 @@
 module.exports = {
-    cardCount (_card) {
-        return 1;
-    },
-    renderCard (card, style, _cardIndex) {
+    renderCards (card, style) {
         const {Front: frontField, Back: backField} = card.fields;
         const {front: frontMarkup, back: backMarkup} = style.template[0];
         if (!frontMarkup || !backMarkup) return null;
@@ -17,8 +14,10 @@ module.exports = {
         if (!frontRendered || !backRendererd) return null;
 
         return {
-            front: frontRendered,
-            back: backRendererd
+            'Card 0': {
+                front: frontRendered,
+                back: backRendererd
+            }
         };
     }
 };
