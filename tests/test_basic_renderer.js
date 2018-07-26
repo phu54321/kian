@@ -18,6 +18,16 @@ const dumbStyle = {
     ]
 };
 
+const betterStyle = {
+    name: 'Basic 1',
+    template: [
+        {
+            front: '{{Front}}',
+            back: '{{Front}}\n----\n{{Back}}',
+        }
+    ]
+};
+
 
 describe('basic_renderer', function() {
     it('should only create one card', function() {
@@ -31,5 +41,14 @@ describe('basic_renderer', function() {
                 front: 'Test1',
                 back: 'Test2',
             }
-        );    });
+        );
+
+        assert.deepEqual(
+            BasicRenderer.renderCard(card, betterStyle, 0),
+            {
+                front: 'Test1',
+                back: 'Test1\n----\nTest2',
+            }
+        );
+    });
 });

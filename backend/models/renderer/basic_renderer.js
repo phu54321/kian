@@ -2,10 +2,19 @@ module.exports = {
     cardCount(_card) {
         return 1;
     },
-    renderCard(card, _style, _cardIndex) {
+    renderCard(card, style, _cardIndex) {
+        const {Front: frontField, Back: backField} = card.fields;
+        const {front: frontMarkup, back: backMarkup} = style.template[0];
+        const frontRendered = frontMarkup
+            .replace('{{Front}}', frontField)
+            .replace('{{Back}}', backField);
+        const backRendererd = backMarkup
+            .replace('{{Front}}', frontField)
+            .replace('{{Back}}', backField);
+
         return {
-            front: card.fields.Front,
-            back: card.fields.Back,
+            front: frontRendered,
+            back: backRendererd
         };
     }
 };
