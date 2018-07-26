@@ -11,17 +11,17 @@ describe('cloze_renderer', function () {
             }
         };
         const style = {
-            template: {
+            template: [{
                 front: '{{cloze:n}}',
                 back: '{{cloze:n}}',
-            }
+            }]
         };
         assert.deepStrictEqual(
             ClozeRenderer.renderCards(card, style),
             {
                 'Cloze 1': {
                     front: '__***[..]***__',
-                    back: '__**n**__'
+                    back: '__**test**__'
                 }
             }
         );
