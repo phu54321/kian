@@ -12,18 +12,18 @@ import router from './router';
 Vue.use(VueRouter);
 
 // Axios
-import axios from 'axios'
-import VueAxios from 'vue-axios'
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 
 Vue.use(VueAxios, axios);
 
 
 // Nprogress
-import NProgress from 'vue-nprogress'
-Vue.use(NProgress)
+import NProgress from 'vue-nprogress';
+Vue.use(NProgress);
 const nprogress = new NProgress({
     parent: '.nprogress-container'
-})
+});
 
 
 // App

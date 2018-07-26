@@ -21,11 +21,6 @@
                 v-btn(slot="activator", icon, to="/statistics")
                     v-icon equalizer
                 span Statistics
-
-            v-tooltip(bottom)
-                v-btn(slot="activator", icon)
-                    v-icon cached
-                span Sync
     v-content
       router-view
 </template>

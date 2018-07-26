@@ -15,6 +15,7 @@
   "devDependencies": {
     "axios": "^0.18.0",
     "eslint": "^5.1.0",
+    "eslint-config-es2015": "^1.1.0",
     "eslint-plugin-vue": "^4.7.0",
     "material-design-icons-iconfont": "^3.0.3",
     "nodemon": "^1.18.2",
@@ -35,6 +36,7 @@
     "morgan": "~1.9.0",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
+    "sequelize": "^4.38.0",
     "vuetify": "^1.1.4"
   },
   "nodemonConfig": {

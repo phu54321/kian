@@ -6,6 +6,7 @@ module.exports = {
         "node": true
     },
     "extends": [
+        "es2015",
         "eslint:recommended",
         'plugin:vue/essential'
     ],
