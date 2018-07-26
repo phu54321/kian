@@ -18,14 +18,14 @@ module.exports = {
         }
 
         const frontRendered = render(frontMarkup);
-        const backRendererd = render(backMarkup);
+        const backRendered = render(backMarkup);
 
         if (!frontRendered) return null;
 
         return {
             'Card 0': {
                 front: frontRendered,
-                back: backRendererd
+                back: backRendered,
             }
         };
     }
