@@ -5,11 +5,12 @@ module.exports = {
         const fields = card.fields;
         const {front: frontMarkup, back: backMarkup} = style.template[0];
 
-        function render (text) {
+        function render (text, isBackCard) {
             return text.replace(
                 /{{(.+?)}}/g,
                 (x) => {
                     const fieldName = x.substring(2, x.length - 2);
+                    if(isBackCard && fieldName === 'FrontSide') return frontRendered;
                     const fn = fields[fieldName];
                     if(!fn) throw new Error('Invalid template');
                     return fn;
@@ -17,8 +18,8 @@ module.exports = {
             );
         }
 
-        const frontRendered = render(frontMarkup);
-        const backRendered = render(backMarkup);
+        const frontRendered = render(frontMarkup, false);
+        const backRendered = render(backMarkup, true);
 
         if (!frontRendered) return null;
 

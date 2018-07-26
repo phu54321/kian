@@ -80,4 +80,53 @@ describe('basic_renderer', function () {
             }
         );
     });
+
+    it('should throw error if got unexpected field names', function () {
+        const card = {
+            fields: {
+                A: 'a',
+                C: 'c'
+            }
+        };
+        const style = {
+            name: 'Basic',
+            template: [
+                {
+                    front: '{{AB}}',
+                    back: '{{C}}'
+                }
+            ]
+        };
+        assert.throws(
+            () => BasicRenderer.renderCards(card, style)
+        );
+    });
+
+    it('should accept {{FrontSide}}', function () {
+        const card = {
+            fields: {
+                A: 'a',
+                B: 'b',
+                C: 'c'
+            }
+        };
+        const style = {
+            name: 'Basic',
+            template: [
+                {
+                    front: '**{{A}}**\n{{B}}',
+                    back: '{{FrontSide}}\n----\n{{C}}'
+                }
+            ]
+        };
+        assert.deepEqual(
+            BasicRenderer.renderCards(card, style),
+            {
+                'Card 0': {
+                    front: '**a**\nb',
+                    back: '**a**\nb\n----\nc'
+                }
+            }
+        );
+    });
 });
