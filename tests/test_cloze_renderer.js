@@ -53,4 +53,32 @@ describe('cloze_renderer', function () {
             }
         );
     });
+
+    it('should render multi cloze type properly', function () {
+        const card = {
+            fields: {
+                f1: '{{c2::test2}}',
+                f3: '{{c1::test1}}',
+            }
+        };
+        const style = {
+            template: [{
+                front: '{{cloze:f1}}\n{{cloze:f2}}\n{{cloze:f3}}\n{{cloze:f4}}\n{{cloze:f5}}\n',
+                back: '{{cloze:f1}}\n{{cloze:f2}}\n{{cloze:f3}}\n{{cloze:f4}}\n{{cloze:f5}}\n',
+            }]
+        };
+        assert.deepStrictEqual(
+            ClozeRenderer.renderCards(card, style),
+            {
+                'Cloze 1': {
+                    front: '\n\n__***[..]***__\n\n\n',
+                    back: '\n\n__**test1**__\n\n\n',
+                },
+                'Cloze 2': {
+                    front: '__***[..]***__\n\n\n\n\n',
+                    back: '__**test2**__\n\n\n\n\n',
+                },
+            }
+        );
+    });
 });
