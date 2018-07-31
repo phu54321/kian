@@ -28,14 +28,10 @@ export default {
             decks: {}
         };
     },
-    mounted() {
+    created () {
         getKian('deck/due')
             .then(response => {
-                console.log('a', response);
                 this.decks = response;
-            })
-            .catch(err => {
-                console.log(err);
             });
     },
     name: 'home',

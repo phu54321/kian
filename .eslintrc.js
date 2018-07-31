@@ -12,6 +12,7 @@ module.exports = {
         'plugin:vue/essential'
     ],
     "parserOptions": {
+        "ecmaVersion": 2017,
         "sourceType": "module"
     },
     "rules": {

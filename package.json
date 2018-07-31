@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel frontend-dev backend-dev",
     "frontend-dev": "poi frontend/index.js",
-    "backend-dev": "nodemon backend/bin/www",
+    "backend-dev": "FLASK_DEBUG=1 python3 backend/server.py",
     "build-frontend": "poi build frontend/index.js",
     "test": "mocha"
   },
