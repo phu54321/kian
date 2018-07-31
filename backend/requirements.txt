@@ -1,0 +1,6 @@
+bs4
+pyaudio
+requests
+decorator
+flask
+flask_cors
