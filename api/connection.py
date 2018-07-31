@@ -1,13 +1,15 @@
 from flask import _app_ctx_stack as stack
+import server
+import os
 from server import app
 
 from anki import Collection
 from anki.collection import _Collection
 
-db_path = 'testdata/collection.anki2'
+db_path = os.path.join(os.path.dirname(server.__file__),
+                       'testdata/collection.anki2')
 
-
-def col() -> _Collection:
+def col():
     """Returns a basic collection.
 
     Returns:

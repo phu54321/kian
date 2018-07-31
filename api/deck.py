@@ -10,7 +10,7 @@ def list_deck():
     return emitResult(col().decks.allNames())
 
 
-@app.route('/deckDue')
+@app.route('/deck/due')
 def list_deck_due():
     """ Returns dictionary mapping from deck name to deck due. """
 
