@@ -2,22 +2,23 @@ import traceback
 import functools
 from . import emit
 
-table = {}
+_apiTable = {}
 
-def apiTable(name):
+def registerApi(name):
     def _(func):
-        table[name] = func
+        _apiTable[name] = func
         return func
+    return _
 
 def apiDispatch(msg):
-    if 'type' not in msg:
+    if 'apiType' not in msg:
         return emit.emitError('Invalid argument')
-    msgType = msg['type']
-    if msgType not in table:
+    msgType = msg['apiType']
+    if msgType not in _apiTable:
         return emit.emitError('Unknown api type %s' % msgType)
     
     try:
-        return table[msgType]()
+        return _apiTable[msgType]()
     except Exception as e:
         traceback.print_exc()
         return {
