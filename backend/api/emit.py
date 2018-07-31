@@ -1,15 +1,13 @@
-from flask import jsonify
-
 def emitResult(res):
     """ Emit non-error result. """
-    return jsonify({
+    return {
         'error': None,
         'result': res
-    })
+    }
 
 
 def emitError(errmsg):
     """ Emit error message. """
-    return jsonify({
+    return {
         'error': errmsg,
-    })
+    }

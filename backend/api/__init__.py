@@ -1,4 +1,3 @@
 # This file imports every used subrouts
 
-import api.deck
-import api.autosave
+from api.dispatchTable import apiDispatch
