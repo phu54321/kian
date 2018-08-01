@@ -2,9 +2,9 @@
     v-container
         v-card
             v-card-title(primary-title)
-                .headline Deck list
+                .h2 덱 리스트
             v-card-text
-                deck-tree-view(:tree='deckDueTree', indent=0)
+                deck-tree-view(:tree='deckDueTree', :indent='0')
 </template>
 
 <script>
