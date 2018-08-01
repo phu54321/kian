@@ -1,6 +1,6 @@
 import traceback
-import functools
 from . import emit
+import logging
 
 _apiTable = {}
 
@@ -18,6 +18,8 @@ def apiDispatch(msg):
         return emit.emitError('Unknown api type %s' % msgType)
     
     try:
+        logging.info('Got request %s' % msgType)
+        logging.debug(str(msg))
         return _apiTable[msgType]()
     except Exception as e:
         traceback.print_exc()

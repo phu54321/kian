@@ -1,5 +1,7 @@
-# Copyright (C) 2016 Alex Yatskov <alex@foosoft.net>
-# Author: Alex Yatskov <alex@foosoft.net>
+#!/usr/bin/env python3
+
+# Copyright (C) 2018 Hyun Woo Park
+# Derived project from AnkiConnect, written by Alex Yatskov <alex@foosoft.net>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -262,7 +264,11 @@ def onTerminate(sig, frame):
 LOG_FILENAME = 'server.out'
 
 def main():
-    logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
+    logging.basicConfig(
+        filename=LOG_FILENAME,
+        level=logging.DEBUG,
+        format="%(asctime)s;%(levelname)s;%(message)s"
+    )
     logging.getLogger().addHandler(logging.StreamHandler())
 
     global oldHandler
