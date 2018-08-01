@@ -20,7 +20,7 @@ def apiDispatch(msg):
     try:
         logging.info('Got request %s' % msgType)
         logging.debug(str(msg))
-        return _apiTable[msgType]()
+        return _apiTable[msgType](msg)
     except Exception as e:
         traceback.print_exc()
         return {

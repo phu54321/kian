@@ -163,7 +163,9 @@ class AjaxServer:
         self.headers = [
             ['HTTP/1.1 200 OK', None],
             ['Content-Type', 'text/json'],
-            ['Access-Control-Allow-Origin', '*']
+            ['Access-Control-Allow-Origin', '*'],
+            ['Access-Control-Allow-Headers', 'Authorization, Content-Type'],
+            ['Access-Control-Allow-Methods', 'POST'],
         ]
         self.extraHeaders = {}
 
