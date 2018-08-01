@@ -5,7 +5,7 @@ div
 </template>
 
 <script>
-import { ankiCall } from '../api';
+import { ankiCall } from '../../api';
 import DeckTreeView from './DeckTreeView';
 
 export default {
@@ -23,6 +23,6 @@ export default {
                 this.deckDueTree = response;
             });
     },
-    name: 'home',
+    name: 'dashboard',
 };
 </script>
