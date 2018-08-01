@@ -28,3 +28,14 @@ def listDeckDue(msg):
     return emit.emitResult(
         traverseDueTree(dueTree)
     )
+
+@registerApi('deck_collapse')
+def collapseDeck(msg):
+    deckName = msg['deckName']
+    newCollapse = bool(msg['collapse'])
+    deck = col().decks.byName(deckName)
+    did = deck['id']
+    if deck['collapsed'] != newCollapse:
+        col().decks.collapse(did)
+
+    return emit.emitResult(None)
