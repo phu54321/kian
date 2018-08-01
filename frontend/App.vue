@@ -1,28 +1,19 @@
 <template lang='pug'>
-  v-app
+b-container
     nprogress-container
-    v-toolbar(dark)
-        v-toolbar-side-icon
-        v-toolbar-title Kian
-        v-spacer
-        v-tooltip(bottom)
-        v-toolbar-items
-            v-tooltip(bottom)
-                v-btn(slot="activator", icon, to="/decks")
-                    v-icon dashboard
-                span Home
+    b-navbar(toggleable='md', variant='primary', type='dark')
+        b-navbar-toggle(target='nav_collapse')
+        b-navbar-brand(href='#') Kian
 
-            v-tooltip(bottom)
-                v-btn(slot="activator", icon, to="/browse")
-                    v-icon search
-                span Browse
+        b-navbar-nav.ml-auto
+            b-nav-item(to='/decks', v-b-tooltip.hover, title='Home')
+                icon(name='home')
+            b-nav-item(to='/browse', v-b-tooltip.hover, title='Browse')
+                icon(name='search')
+            b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
+                icon(name='chart-bar')
 
-            v-tooltip(bottom)
-                v-btn(slot="activator", icon, to="/statistics")
-                    v-icon equalizer
-                span Statistics
-    v-content
-      router-view
+    router-view
 </template>
 
 <script>
