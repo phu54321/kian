@@ -22,6 +22,7 @@ import time
 import signal
 import sys
 import os
+import logging
 from api import apiDispatch
 from col import detachCol
 
@@ -212,6 +213,9 @@ class AjaxServer:
                 body = makeBytes(json.dumps(self.handler(params)))
             except ValueError:
                 body = makeBytes(json.dumps(None))
+            except Exception:
+                logging.exception('Exception from main handler')
+
 
         resp = bytes()
 
@@ -255,14 +259,19 @@ def onTerminate(sig, frame):
     sys.exit(0)
 
 
+LOG_FILENAME = 'server.out'
+
 def main():
+    logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
+    logging.getLogger().addHandler(logging.StreamHandler())
+
     global oldHandler
     server = AjaxServer(apiDispatch)
     oldHandler = signal.signal(signal.SIGUSR2, onTerminate)
 
     try:
         server.listen()
-        print("Running server...")
+        logging.info('Starting Anki_Headless...')
         while True:
             server.advance()
             time.sleep(.001)
