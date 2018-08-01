@@ -1,20 +1,19 @@
 <template lang="pug">
-    v-list
-        div(v-for='deck in sortedDeckTree', :key='deck.name')
-            v-list-tile
-                v-list-tile-content
-                    v-list-tile-title(v-text="deck.name")
-                v-list-tile-avatar.text-xs-right
-                    span.blue--text {{deck.newCount}}
-                    | &nbsp;
-                    span.red--text {{deck.lrnCount + deck.revCount}}
-            deck-tree-view.ml-4(:tree='deck.subDecks')
+    b-list-group
+        template(v-for='deck in sortedDeckTree')
+            b-list-group-item(:key='deck.name')
+                | {{deck.name}}
+                div.float-right
+                        span.new {{deck.newCount}}
+                        | &nbsp;
+                        span.rev {{deck.lrnCount + deck.revCount}}
+            deck-tree-view.ml-3(:tree='deck.subDecks', :indent='indent + 1')
     
 </template>
 
 <script>
 export default {
-    props: ['tree'],
+    props: ['tree', 'indent'],
     computed: {
         sortedDeckTree () {
             return this.tree.slice().sort((a, b) => {
@@ -25,3 +24,17 @@ export default {
     name: 'deck-tree-view',
 };
 </script>
+
+<style scoped>
+.new {
+    color: #33f;
+}
+
+.lrn {
+    color: orangered;
+}
+
+.rev {
+    color: #383;
+}
+</style>

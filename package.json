@@ -30,6 +30,7 @@
     "vue-router-back-button": "^1.1.1"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.0.0-rc.11",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
@@ -40,7 +41,7 @@
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "sequelize": "^4.38.0",
-    "vuetify": "^1.1.4"
+    "vue-awesome": "^3.0.5"
   },
   "nodemonConfig": {
     "watch": [

@@ -1,10 +1,16 @@
 import Vue from 'vue';
 
-// Vuetify
-import Vuetify from 'vuetify';
-Vue.use(Vuetify);
-import 'vuetify/dist/vuetify.min.css';
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
+// Bootstrap
+import BootstrapVue from 'bootstrap-vue';
+Vue.use(BootstrapVue);
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+
+import 'vue-awesome/icons';
+import Icon from 'vue-awesome/components/Icon.vue';
+Vue.component('icon', Icon);
+
 
 // Router
 import VueRouter from 'vue-router';

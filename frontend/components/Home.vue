@@ -4,7 +4,7 @@
             v-card-title(primary-title)
                 .headline Deck list
             v-card-text
-                deck-tree-view(:tree='deckDueTree')
+                deck-tree-view(:tree='deckDueTree', indent=0)
 </template>
 
 <script>
