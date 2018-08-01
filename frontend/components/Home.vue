@@ -2,7 +2,7 @@
     v-container
         v-card
             v-card-title(primary-title)
-                .h2 덱 리스트
+                .h2 Deck list
             v-card-text
                 deck-tree-view(:tree='deckDueTree', :indent='0')
 </template>
