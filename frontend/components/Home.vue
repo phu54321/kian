@@ -1,10 +1,7 @@
 <template lang="pug">
-    v-container
-        v-card
-            v-card-title(primary-title)
-                .h2 Deck list
-            v-card-text
-                deck-tree-view(:tree='deckDueTree', :indent='0')
+div
+    h2 Deck list
+    deck-tree-view(:tree='deckDueTree', :indent='0')
 </template>
 
 <script>

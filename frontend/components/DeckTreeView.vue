@@ -1,7 +1,7 @@
 <template lang="pug">
     div
-        template(v-for='deck in sortedDeckTree')
-            b-link.deck-row(:key='deck.name', :to='"/deck/" + encodeURIComponent(deck.name)', router-tag='div')
+        div(v-for='deck in sortedDeckTree', :key='deck.name')
+            b-link.deck-row(:to='"/deck/" + encodeURIComponent(deck.name)', router-tag='div')
                 span.ml-4(v-for='n in indent')
                 template(v-if='deck.subDecks.length')
                     icon.mr-2(v-if='deck.collapsed', name='regular/plus-square', scale=0.7)
@@ -12,7 +12,7 @@
                         span.new {{deck.newCount}}
                         | &nbsp;
                         span.rev {{deck.lrnCount + deck.revCount}}
-            deck-tree-view(:v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
+            deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
     
 </template>
 
