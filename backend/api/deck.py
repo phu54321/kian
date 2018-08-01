@@ -14,12 +14,14 @@ def listDeckDue(msg):
     def traverseDueTree(tree):
         result = []
         for name, deckId, rev, lrn, new, subTree in tree:
+            deck = col().decks.get(deckId)
             result.append({
                 'name': name,
                 'newCount': new,
                 'lrnCount': lrn,
                 'revCount': rev,
-                'subDecks': traverseDueTree(subTree)
+                'subDecks': traverseDueTree(subTree),
+                'collapsed': deck['collapsed']
             })
         return result
             
