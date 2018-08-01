@@ -18,7 +18,7 @@ export default {
         DeckTreeView
     },
     created () {
-        ankiCall('deck_due_tree')
+        ankiCall('dashboard_deck_tree')
             .then(response => {
                 this.deckDueTree = response;
             });
