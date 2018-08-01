@@ -8,7 +8,7 @@ def listDeck(msg):
         [d['name'] for d in col().decks.all()]
     )
 
-@registerApi('deck_due_tree')
+@registerApi('dashboard_deck_tree')
 def listDeckDue(msg):
     dueTree = col().sched.deckDueTree()
     def traverseDueTree(tree):
