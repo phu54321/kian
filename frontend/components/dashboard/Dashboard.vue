@@ -1,6 +1,7 @@
 <template lang="pug">
 div
     h2 Deck list
+    
     deck-tree-view(:tree='deckDueTree', :indent='0')
 </template>
 
