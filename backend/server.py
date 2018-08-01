@@ -19,6 +19,9 @@ import json
 import select
 import socket
 import time
+import signal
+import sys
+import os
 from api import apiDispatch
 from col import detachCol
 
@@ -243,9 +246,19 @@ class AjaxServer:
 #
 
 
+oldHandler = None
+
+def onTerminate(sig, frame):
+    signal.signal(signal.SIGUSR2, oldHandler)
+    detachCol()
+    os.kill(os.getpid(), signal.SIGUSR2)
+    sys.exit(0)
+
 
 def main():
+    global oldHandler
     server = AjaxServer(apiDispatch)
+    oldHandler = signal.signal(signal.SIGUSR2, onTerminate)
 
     try:
         server.listen()
@@ -263,4 +276,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

@@ -18,5 +18,8 @@ def col():
 
 
 def detachCol():
+    global mainCol
     if mainCol:
         mainCol.close()
+        mainCol = None
+        print('Connection detached')
