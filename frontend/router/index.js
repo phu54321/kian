@@ -12,8 +12,8 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: require('../components/Home').default,
+            name: 'dashboard',
+            component: require('../components/dashboard/Dashboard').default,
         },
         {
             path: '*',
@@ -21,7 +21,6 @@ const router = new Router({
         },
     ],
 });
-
 
 router.afterEach(writeHistory);
 

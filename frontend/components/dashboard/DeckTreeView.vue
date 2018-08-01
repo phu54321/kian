@@ -16,7 +16,11 @@
     
 </template>
 
-<script>export default {
+<script>
+
+import '../../css/learning.scss';
+
+export default {
     props: ['tree', 'indent'],
     computed: {
         sortedDeckTree () {
@@ -36,17 +40,5 @@
 
 .hidden {
     visibility: hidden;
-}
-
-.new {
-    color: #33f;
-}
-
-.lrn {
-    color: orangered;
-}
-
-.rev {
-    color: #383;
 }
 </style>
