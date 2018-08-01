@@ -33,7 +33,7 @@ export default {
     components: {
         NprogressContainer
     },
-    data() {
+    data () {
         return { msg: 'world' };
     }
 };
