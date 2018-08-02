@@ -14,14 +14,14 @@ div
             td.pl-3.revCount {{due.revCount}}
         tr
             td Mature
-            td.pl-3 {{stat.matureCount}}
+            td.pl-3 {{stat.mature}}
         tr
             td Young
-            td.pl-3 {{stat.youngCount}}
+            td.pl-3 {{stat.young}}
 
         tr
             td Total
-            td.pl-3 {{stat.totalCount}}
+            td.pl-3 {{stat.total}}
 
     b-button(size='sm' variant='outline-primary', :to='"study/" + encodeURIComponent(deckName)') Study now
 
@@ -29,7 +29,7 @@ div
 
 <script>
 
-import { ankiCall } from '../api';
+import {ankiCall} from '../api';
 
 export default {
     props: ['deckName'],

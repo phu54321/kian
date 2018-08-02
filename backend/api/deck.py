@@ -1,9 +1,12 @@
 
 
-from col import col
-from .dispatchTable import registerApi
 import time
+
+from col import col
+
 from . import emit
+from .dispatchTable import registerApi
+
 
 @registerApi('deck_list')
 def listDeck(msg):
@@ -81,8 +84,11 @@ def getDeckInfo(msg):
                     'revCount': rev,
                 },
                 'stat': {
-                    'matureCount': mature,
-                    'youngCount': young,
-                    'totalCount': total,
+                    'mature': mature,
+                    'young': young,
+                    'total': total,
+                    'unseen': unseen,
+                    'suspended': suspended,
+                    'due': due
                 }
             })
