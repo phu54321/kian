@@ -1,5 +1,8 @@
+
+
 from col import col
 from .dispatchTable import registerApi
+import time
 from . import emit
 
 @registerApi('deck_list')
@@ -11,16 +14,17 @@ def listDeck(msg):
 @registerApi('dashboard_deck_tree')
 def listDeckDue(msg):
     dueTree = col().sched.deckDueTree()
-    def traverseDueTree(tree):
+    def traverseDueTree(tree, prefix=''):
         result = []
         for name, deckId, rev, lrn, new, subTree in tree:
             deck = col().decks.get(deckId)
             result.append({
                 'name': name,
+                'fullname': prefix + name,
                 'newCount': new,
                 'lrnCount': lrn,
                 'revCount': rev,
-                'subDecks': traverseDueTree(subTree),
+                'subDecks': traverseDueTree(subTree, prefix + name + '::'),
                 'collapsed': deck['collapsed']
             })
         return result
@@ -39,3 +43,37 @@ def collapseDeck(msg):
         col().decks.collapse(did)
 
     return emit.emitResult(None)
+
+
+@registerApi('deck_info')
+def getDeckInfo(msg):
+    deckName = msg['deckName']
+    deck = col().decks.byName(deckName)
+    for dname, did, rev, lrn, new in col().sched.deckDueList():
+        if dname == deckName:
+            # SQL Code from More Overview Stats 2 addon
+            total, mature, young, unseen, suspended, due = col().db.first(
+                    '''select
+                    -- total
+                    count(id),
+                    -- mature
+                    sum(case when queue = 2 and ivl >= 21 then 1 else 0 end),
+                    -- young / learning
+                    sum(case when queue in (1, 3) or (queue = 2 and ivl < 21) then 1 else 0 end),
+                    -- unseen
+                    sum(case when queue = 0 then 1 else 0 end),
+                    -- suspended
+                    sum(case when queue < 0 then 1 else 0 end),
+                    -- due
+                    sum(case when queue = 1 and due <= ? then 1 else 0 end)
+                    from cards where did = %d
+                    ''' % did, round(time.time()))
+            return emit.emitResult({
+                'name': deckName,
+                'newCount': new,
+                'lrnCount': lrn,
+                'revCount': rev,
+                'matureCount': mature,
+                'youngCount': young,
+                'total': total,
+            })
