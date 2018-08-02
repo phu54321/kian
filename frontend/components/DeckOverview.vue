@@ -2,28 +2,28 @@
 div
     h2 Deck {{deckName}}
 
-    table
+    table.mb-3
         tr
             td New
-            td.newCount {{newCount}}
+            td.pl-3.newCount {{stats.newCount}}
         tr
             td Learning
-            td.lrnCount {{lrnCount}}
+            td.pl-3.lrnCount {{stats.lrnCount}}
         tr
             td Review
-            td.revCount {{revCount}}
+            td.pl-3.revCount {{stats.revCount}}
         tr
             td Mature
-            td {{matureCount}}
+            td.pl-3 {{stats.matureCount}}
         tr
             td Young
-            td {{youngCount}}
+            td.pl-3 {{stats.youngCount}}
 
         tr
             td Total
-            td {{totalCount}}
+            td.pl-3 {{stats.totalCount}}
 
-    b-button.float-right(size='sm' variant='outline-primary') Study now
+    b-button(size='sm' variant='outline-primary', :to='"study/" + encodeURIComponent(deckName)') Study now
 
 </template>
 
@@ -35,21 +35,15 @@ export default {
     props: ['deckName'],
     data () {
         return {
-            newCount: 0,
-            lrnCount: 0,
-            revCount: 0,
-            matureCount: 0,
-            youngCount: 0,
-            totalCount: 0,
+            stats: {}
         };
     },
     created () {
         ankiCall('deck_info', {
             deckName: this.deckName
         }).then(msg => {
-            this.newCount = msg.newCount;
-            this.lrnCount = msg.lrnCount;
-            this.revCount = msg.revCount;
+            this.stats = msg.stats;
+
         });
     },
     name: 'deck-view',

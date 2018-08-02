@@ -52,6 +52,7 @@ def getDeckInfo(msg):
     for dname, did, rev, lrn, new in col().sched.deckDueList():
         if dname == deckName:
             # SQL Code from More Overview Stats 2 addon
+            col().decks.select(did)
             total, mature, young, unseen, suspended, due = col().db.first(
                     '''select
                     -- total
@@ -66,14 +67,16 @@ def getDeckInfo(msg):
                     sum(case when queue < 0 then 1 else 0 end),
                     -- due
                     sum(case when queue = 1 and due <= ? then 1 else 0 end)
-                    from cards where did = %d
-                    ''' % did, round(time.time()))
+                    from cards where did in %s
+                    ''' % col().sched._deckLimit(), round(time.time()))
             return emit.emitResult({
                 'name': deckName,
-                'newCount': new,
-                'lrnCount': lrn,
-                'revCount': rev,
-                'matureCount': mature,
-                'youngCount': young,
-                'total': total,
+                'stats': {
+                    'newCount': new,
+                    'lrnCount': lrn,
+                    'revCount': rev,
+                    'matureCount': mature,
+                    'youngCount': young,
+                    'totalCount': total,
+                }
             })
