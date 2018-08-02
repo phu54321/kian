@@ -69,6 +69,8 @@ def getDeckInfo(msg):
                     sum(case when queue = 1 and due <= ? then 1 else 0 end)
                     from cards where did in %s
                     ''' % col().sched._deckLimit(), round(time.time()))
+            if total == 0:
+                mature = young = unseen = suspended = due = 0
             return emit.emitResult({
                 'name': deckName,
                 'stats': {
