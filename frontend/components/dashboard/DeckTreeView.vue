@@ -6,7 +6,7 @@
                 span.ml-4(v-for='n in indent')
 
                 // Deck name
-                span.pl-1.pr-1.mr-1(@click='toggleDeckCollapse(deck.fullname)')
+                span.pl-1.pr-1.mr-1(@click.stop='toggleDeckCollapse(deck)')
                     template(v-if='deck.subDecks.length')
                         icon(v-if='deck.collapsed', name='regular/plus-square', scale=0.7)
                         icon(v-else, name='regular/minus-square', scale=0.7)
@@ -38,8 +38,8 @@ export default {
         toggleDeckCollapse (deck) {
             const newCollapsed = !deck.collapsed;
             ankiCall('deck_collapse', {
-                deckName: deck.name,
-                collapse: !newCollapsed
+                deckName: deck.fullname,
+                collapse: !newCollapsed,
             }).then(() => {
                 deck.collapsed = newCollapsed;
             });
