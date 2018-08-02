@@ -1,12 +1,12 @@
 <template lang="pug">
     div
-        div(v-for='deck in sortedDeckTree', :key='deck.name')
-            b-link.deck-row(:to='"/deck/" + encodeURIComponent(deck.name)', router-tag='div')
+        div(v-for='deck in sortedDeckTree', :key='deck.fullname')
+            b-link.deck-row(:to='"/deck/" + encodeURIComponent(deck.fullname)', router-tag='div')
                 // Indent
                 span.ml-4(v-for='n in indent')
 
                 // Deck name
-                span.pl-1.pr-1.mr-1(@click='toggleDeckCollapse(deck)')
+                span.pl-1.pr-1.mr-1(@click='toggleDeckCollapse(deck.fullname)')
                     template(v-if='deck.subDecks.length')
                         icon(v-if='deck.collapsed', name='regular/plus-square', scale=0.7)
                         icon(v-else, name='regular/minus-square', scale=0.7)
@@ -15,16 +15,15 @@
 
                 // Deck due
                 div.float-right
-                        span.new {{deck.newCount}}
+                        span.newCount {{deck.newCount}}
                         | &nbsp;+&nbsp;
-                        span.rev {{deck.lrnCount + deck.revCount}}
+                        span.revCount {{deck.lrnCount + deck.revCount}}
             deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
     
 </template>
 
 <script>
 import { ankiCall } from '../../api';
-import '../../css/learning.scss';
 
 export default {
     props: ['tree', 'indent'],

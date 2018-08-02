@@ -13,7 +13,13 @@ const router = new Router({
         {
             path: '/',
             name: 'dashboard',
-            component: require('../components/dashboard/Dashboard').default,
+            component: require('../components/Dashboard').default,
+        },
+        {
+            path: '/deck/:deckName',
+            name: 'deck-overview',
+            component: require('../components/DeckOverview.vue').default,
+            props: true,
         },
         {
             path: '*',
