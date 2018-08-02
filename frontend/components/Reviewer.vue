@@ -6,16 +6,17 @@ b-card
         span.font-italic Next card (Debug)
     p.card-text
         template(v-if='!flipped')
-            div.front.mb-4(v-html="card.front")
+            div.front.mb-4(v-html="makeMediaHtml(card.front)")
             b-button(@click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
-            div.back(v-html="card.back")
+            div.back(v-html="makeMediaHtml(card.back)")
 
 </template>
 
 <script>
 
 import {ankiCall} from '../api';
+import $ from 'jquery';
 
 export default {
     props: ['deckName'],
@@ -27,6 +28,16 @@ export default {
         };
     },
     methods: {
+        makeMediaHtml (html) {
+            const $html = $('<div />', {
+                html
+            });
+            $html.find('img').each(function () {
+                const src = $(this).attr('src');
+                if(src) $(this).attr('src', 'media/' + src);
+            });
+            return $html.html();
+        },
         loadCard () {
             ankiCall('reviewer_next_card', {
                 deckName: this.deckName
