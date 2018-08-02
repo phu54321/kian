@@ -7,6 +7,7 @@
   "author": "phu54321 <phu54321@naver.com>",
   "license": "MIT",
   "scripts": {
+    "start": "npm run dev",
     "dev": "npm-run-all --parallel frontend-dev backend-dev",
     "frontend-dev": "poi frontend/index.js",
     "backend-dev": "nodemon backend/server.py",
