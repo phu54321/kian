@@ -12,13 +12,17 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            name: 'dashboard',
             component: require('../components/Dashboard').default,
         },
         {
             path: '/deck/:deckName',
-            name: 'deck-overview',
             component: require('../components/DeckOverview.vue').default,
+            props: true,
+        },
+
+        {
+            path: '/study/:deckName',
+            component: require('../components/Reviewer.vue').default,
             props: true,
         },
         {
