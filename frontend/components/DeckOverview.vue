@@ -5,23 +5,23 @@ div
     table.mb-3
         tr
             td New
-            td.pl-3.newCount {{stats.newCount}}
+            td.pl-3.newCount {{due.newCount}}
         tr
             td Learning
-            td.pl-3.lrnCount {{stats.lrnCount}}
+            td.pl-3.lrnCount {{due.lrnCount}}
         tr
             td Review
-            td.pl-3.revCount {{stats.revCount}}
+            td.pl-3.revCount {{due.revCount}}
         tr
             td Mature
-            td.pl-3 {{stats.matureCount}}
+            td.pl-3 {{stat.matureCount}}
         tr
             td Young
-            td.pl-3 {{stats.youngCount}}
+            td.pl-3 {{stat.youngCount}}
 
         tr
             td Total
-            td.pl-3 {{stats.totalCount}}
+            td.pl-3 {{stat.totalCount}}
 
     b-button(size='sm' variant='outline-primary', :to='"study/" + encodeURIComponent(deckName)') Study now
 
@@ -35,15 +35,16 @@ export default {
     props: ['deckName'],
     data () {
         return {
-            stats: {}
+            stats: {},
+            due: {},
         };
     },
     created () {
         ankiCall('deck_info', {
             deckName: this.deckName
         }).then(msg => {
-            this.stats = msg.stats;
-
+            this.due = msg.due;
+            this.stat = msg.stat;
         });
     },
     name: 'deck-view',
