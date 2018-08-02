@@ -7,7 +7,11 @@ import logging
 import json
 import signal
 import os
+from pathlib import Path
+import urllib.parse
 import sys
+import mimetypes
+from col import col
 
 NET_PORT = 28735
 
@@ -20,6 +24,28 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Methods', 'POST')
         self.end_headers()
 
+    def do_GET(self):
+        if self.path.startswith('/media/'):
+            path = urllib.parse.unquote(self.path)
+            mediaDir = col().media.dir()
+            mediaPath = path[7:]
+            mediaFullPath = os.path.join(mediaDir, mediaPath)
+
+            # This will throw error if path traversal attack has been tried
+            Path(mediaFullPath).relative_to(mediaDir)
+            print(mediaFullPath)
+
+            cType, cEncoding = mimetypes.guess_type(mediaPath)
+
+            self.send_response(200)
+            self.send_header('Content-Type', cType)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+
+            self.wfile.write(open(mediaFullPath, "rb").read())
+
+
+
     def do_POST(self):
         contentLength = int(self.headers.get('content-length'))
         content = self.rfile.read(contentLength)
@@ -29,7 +55,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             result = apiDispatch(data)
             self.wfile.write(json.dumps(result).encode('utf-8'))
-        except Exception as e:
+        except Exception:
             logging.exception('Exception from main handler')
 
 
