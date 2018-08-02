@@ -1,10 +1,13 @@
 <template lang="pug">
 
 b-card
+    span.float-right(@click="loadCard()")
+        icon.mr-2(name="sync")
+        span.font-italic Next card (Debug)
     p.card-text
         template(v-if='!flipped')
-            div.front(v-html="card.front")
-            b-button(@click="flipped = !flipped") Show Answer
+            div.front.mb-4(v-html="card.front")
+            b-button(@click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             div.back(v-html="card.back")
 
