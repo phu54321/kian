@@ -23,7 +23,7 @@ div
             td Total
             td.pl-3 {{stat.total}}
 
-    b-button(size='sm' variant='outline-primary', :to='"study/" + encodeURIComponent(deckName)') Study now
+    b-button(size='sm' variant='outline-primary', :to='"/study/" + encodeURIComponent(deckName)') Study now
 
 </template>
 
