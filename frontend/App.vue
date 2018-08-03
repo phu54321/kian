@@ -21,7 +21,7 @@ div
 <script>
 
 import NprogressContainer from 'vue-nprogress/src/NprogressContainer';
-import './css/sched.scss';
+import './css/kian.scss';
 
 export default {
     components: {
