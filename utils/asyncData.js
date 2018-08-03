@@ -1,19 +1,25 @@
-// Code from https://gist.github.com/hackwaly/b408c5a5f2422845d33ea16f120c8de0
-
 export default function asyncData (loadData) {
-    let data = null;
     return {
+        // this prevents beforeRouteEnter and created from both manipulating the data.
+        props: ['$asyncDataTrap'],
         created () {
-            if(data) Object.assign(this.$data, data);
+            if (this.$route.params.$asyncDataTrap) {
+                this.$route.params.$asyncDataTrap = false;
+                return;
+            }
+            loadData(this).then(d => {
+                Object.assign(this.$data, d);
+            });
         },
         async beforeRouteEnter (to, from, next) {
-            data = await loadData(to);
+            to.params.$asyncDataTrap = true;
+            const data = await loadData(to.params);
             next(vm => {
                 Object.assign(vm.$data, data);
             });
         },
         async beforeRouteUpdate (to, from, next) {
-            data = await loadData(to);
+            const data = await loadData(to.params);
             Object.assign(this.$data, data);
             next();
         },

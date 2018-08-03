@@ -12,7 +12,7 @@ import DeckTreeView from './dashboard/DeckTreeView';
 
 export default {
     mixins: [
-        asyncData (async _to => {
+        asyncData (async _props => {
             const response = await ankiCall('dashboard_deck_tree');
             return {
                 deckDueTree: response

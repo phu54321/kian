@@ -38,7 +38,7 @@ import {ankiCall} from '../api/ankiCall';
 import $ from 'jquery';
 import asyncData from '../../utils/asyncData';
 
-async function getNextData (deckName) {
+async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', {deckName});
     return {
         card: {
@@ -53,9 +53,9 @@ async function getNextData (deckName) {
 
 export default {
     props: ['deckName'],
-    mixins: [asyncData(async to => {
-        const deckName = to.params.deckName;
-        return getNextData(deckName);
+    mixins: [asyncData(async props => {
+        const deckName = props.deckName;
+        return getNextCard(deckName);
     })],
     data () {
         return {
@@ -93,7 +93,7 @@ export default {
                 cardId: this.card.id,
                 ease: ease
             });
-            Object.assign(this.$data, await getNextData(this.deckName));
+            Object.assign(this.$data, await getNextCard(this.deckName));
         }
     },
     name: 'deck-view',

@@ -35,8 +35,8 @@ import asyncData from '../../utils/asyncData';
 export default {
     props: ['deckName'],
     mixins: [
-        asyncData(async to => {
-            return ankiCall('deck_info', { deckName: to.params.deckName });
+        asyncData(async props => {
+            return ankiCall('deck_info', { deckName: props.deckName });
         })
     ],
     data () {
