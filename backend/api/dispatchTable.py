@@ -24,5 +24,5 @@ def apiDispatch(msg):
     except Exception as e:
         traceback.print_exc()
         return {
-            'error': str(e)
+            'error': traceback.format_exc()
         }
