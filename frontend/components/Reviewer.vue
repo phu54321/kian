@@ -1,6 +1,7 @@
 <template lang="pug">
 
 b-card
+    input(type='hidden', :value='card.id')
     div.text-right
         span(@click="loadCard()")
             icon.mr-2(name="sync")
@@ -33,7 +34,7 @@ b-card
 
 <script>
 
-import {ankiCall} from '../api';
+import {ankiCall} from '../api/ankiCall';
 import $ from 'jquery';
 import asyncData from '../../utils/asyncData';
 

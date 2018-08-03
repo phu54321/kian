@@ -6,9 +6,8 @@ div
 </template>
 
 <script>
-import { ankiCall } from '../api';
+import { ankiCall } from '../api/ankiCall';
 import asyncData from '../../utils/asyncData';
-
 import DeckTreeView from './dashboard/DeckTreeView';
 
 export default {

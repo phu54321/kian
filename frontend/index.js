@@ -23,20 +23,10 @@ import VueAxios from 'vue-axios';
 
 Vue.use(VueAxios, axios);
 
-
-// Nprogress
-import NProgress from 'vue-nprogress';
-Vue.use(NProgress);
-const nprogress = new NProgress({
-    parent: '.nprogress-container'
-});
-
-
 // App
 import App from './App';
 new Vue({
     el: '#app',
     render: h => h(App),
     router,
-    nprogress
 });
