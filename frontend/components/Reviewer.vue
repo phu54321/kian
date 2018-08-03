@@ -27,8 +27,8 @@ b-card
             template(v-else-if="ansButtonCount == 4")
                 b-button.mr-2(@click="answerCard(1)", size='sm', variant="outline-danger") Again
                 b-button.mr-2(@click="answerCard(2)", size='sm', variant="outline-secondary") Hard
-                b-button.mr-2(@click="answerCard(2)", size='sm', variant="outline-success") Good
-                b-button.mr-2(@click="answerCard(3)", size='sm', variant="outline-primary") Easy
+                b-button.mr-2(@click="answerCard(3)", size='sm', variant="outline-success") Good
+                b-button.mr-2(@click="answerCard(4)", size='sm', variant="outline-primary") Easy
 
 </template>
 
@@ -36,7 +36,7 @@ b-card
 
 import {ankiCall} from '../api/ankiCall';
 import $ from 'jquery';
-import asyncData from '../../utils/asyncData';
+import asyncData from '../utils/asyncData';
 
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', {deckName});
