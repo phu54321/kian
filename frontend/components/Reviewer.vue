@@ -4,8 +4,10 @@ b-card
     input(type='hidden', :value='card.id')
     div.text-right
         span(@click="loadCard()")
-            icon.mr-2(name="sync")
-            span.font-italic Next card (Debug)
+            icon.mr-2(v-b-tooltip.hover, title='Change card', name="sync")
+        span(@click="openEditor()")
+            icon(v-b-tooltip.hover, title='Edit current', name='edit')
+
     p.card-text
         template(v-if='!flipped')
             .mb-4
@@ -43,6 +45,7 @@ async function getNextCard (deckName) {
     return {
         card: {
             id: msg.cardId,
+            noteId: msg.noteId,
             front: msg.front,
             back: msg.back
         },
