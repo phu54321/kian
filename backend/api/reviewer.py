@@ -28,6 +28,7 @@ def getNextScheduledCard(msg):
 
     return emit.emitResult({
         'cardId': card.id,
+        'noteId': card.nid,
         'front': card.q(),
         'back': card.a(),
         'ansButtonCount': answerButtonCount,
