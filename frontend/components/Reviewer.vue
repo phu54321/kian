@@ -8,6 +8,9 @@ b-card
         span(@click="openEditor()")
             icon(v-b-tooltip.hover, title='Edit current', name='edit')
 
+    b-modal(ref='editModalRef', title='Edit note')
+        note-editor(:note='note')
+
     p.card-text
         template(v-if='!flipped')
             .mb-4
@@ -39,6 +42,9 @@ b-card
 import {ankiCall} from '../api/ankiCall';
 import $ from 'jquery';
 import asyncData from '../utils/asyncData';
+import NoteEditor from './NoteEditor';
+import ErrorDialog from './ErrorDialog.vue';
+import ErrorDialogVue from './ErrorDialog.vue';
 
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', {deckName});
@@ -65,8 +71,10 @@ export default {
             card: {},
             flipped: false,
             ansButtonCount: 0,
+            note: null
         };
     },
+    components: { NoteEditor },
     methods: {
         makeMediaHtml (html) {
             const $html = $('<div />', {
@@ -91,13 +99,30 @@ export default {
                 this.flipped = false;
             });
         },
-        async answerCard (ease) {
-            await ankiCall('reviewer_answer_card', {
+        openEditor () {
+            ankiCall('nid_from_cid', {
+                cardId: this.card.id
+            }).then(noteId => {
+                return ankiCall('note_info', {noteId});
+            }).then(note => {
+                this.note = note;
+                this.$refs.editModalRef.show();
+            }).catch(err => {
+                ErrorDialogVue.openErrorDialog('Cannot open editor window:\n', err.message);
+            });
+        },
+        answerCard (ease) {
+            ankiCall('reviewer_answer_card', {
                 cardId: this.card.id,
                 ease: ease
+            }).then(() => {
+                return getNextCard(this.deckName);
+            }).then(card => {
+                Object.assign(this.$data, card);
+            }).catch(err => {
+                ErrorDialog.openErrorDialog(err.message);
             });
-            Object.assign(this.$data, await getNextCard(this.deckName));
-        }
+        },
     },
     name: 'deck-view',
 };
