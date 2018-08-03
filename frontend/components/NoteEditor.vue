@@ -2,17 +2,30 @@
 div(v-if='note')
     span Model: {{note.model}}
     div(v-for='field in note.fields', :key='field.fieldFormat.name')
-        div {{field.fieldFormat.name}}
+        span.font-weight-bold {{field.fieldFormat.name}}
         summernote(v-model='field.value')
 </template>
 
 <script>
 
+import {ankiCall} from '../api/ankiCall';
 import Summernote from './editor/Summernote';
+import asyncData from '../utils/asyncData';
 
 export default {
-    props: ['note'],
-    components: { Summernote }
+    props: ['noteId'],
+    components: { Summernote },
+    data () {
+        return {
+            note: null
+        };
+    },
+    mixins: [asyncData(async props => {
+        const noteId = props.noteId;
+        return {
+            note: await ankiCall('note_info', {noteId})
+        };
+    })],
 };
 
 </script>

@@ -8,17 +8,14 @@ b-card
         span(@click="openEditor()")
             icon(v-b-tooltip.hover, title='Edit current', name='edit')
 
-    b-modal(ref='editModalRef', title='Edit note')
-        note-editor(:note='note')
-
     p.card-text
         template(v-if='!flipped')
             .mb-4
-                div.userContent.front.card(v-html="makeMediaHtml(card.front)")
+                div.userContent.front.card(v-html="card.front")
             b-button(@click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             .mb-4
-                div.userContent.back.card(v-html="makeMediaHtml(card.back)")
+                div.userContent.back.card(v-html="card.back")
 
             template(v-if="ansButtonCount == 2")
                 b-button.mr-2(@click="answerCard(1)", size='sm', variant="outline-danger") Again
@@ -76,16 +73,6 @@ export default {
     },
     components: { NoteEditor },
     methods: {
-        makeMediaHtml (html) {
-            const $html = $('<div />', {
-                html
-            });
-            $html.find('img').each(function () {
-                const src = $(this).attr('src');
-                if(src) $(this).attr('src', 'media/' + src);
-            });
-            return $html.html();
-        },
         loadCard () {
             return ankiCall('reviewer_next_card', {
                 deckName: this.deckName
@@ -103,10 +90,13 @@ export default {
             ankiCall('nid_from_cid', {
                 cardId: this.card.id
             }).then(noteId => {
-                return ankiCall('note_info', {noteId});
-            }).then(note => {
-                this.note = note;
-                this.$refs.editModalRef.show();
+                console.log(noteId);
+                this.$router.push({
+                    name: 'edit',
+                    params: {
+                        noteId
+                    }
+                });
             }).catch(err => {
                 ErrorDialogVue.openErrorDialog('Cannot open editor window:\n', err.message);
             });
