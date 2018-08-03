@@ -25,6 +25,14 @@ const router = new Router({
             component: require('../components/Reviewer.vue').default,
             props: true,
         },
+
+        {
+            path: '/edit/:noteId',
+            component: require('../components/NoteEditor.vue').default,
+            props: true,
+            name: 'edit',
+        },
+
         {
             path: '*',
             redirect: '/',

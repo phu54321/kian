@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const express = require('express');
 
 module.exports = {
     html: {
@@ -9,21 +10,14 @@ module.exports = {
         require('poi-preset-eslint')( /* options */ )
     ],
     configureWebpack (config, _context) {
-        // Do something like adding a plugin
-        config.plugins.push(new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            summernote: 'summernote',
-        }));
         config.externals = {
             jquery: 'jQuery',
             $: 'jQuery'
         };
-        // optionally return config
     },
     devServer: {
-        proxy: {
-            '/media': 'http://localhost:28735'
+        after (app) {
+            app.use(express.static('backend/testdata/collection.media'));
         }
     }
 };
