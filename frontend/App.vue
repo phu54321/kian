@@ -1,5 +1,6 @@
 <template lang='pug'>
 div
+    error-dialog
     b-navbar(toggleable='sm', variant='primary', type='dark')
         b-container
             b-navbar-brand(href='#') Kian
@@ -19,8 +20,12 @@ div
 <script>
 
 import './css/kian.scss';
+import ErrorDialog from './components/ErrorDialog';
 
 export default {
+    components: {
+        ErrorDialog,
+    },
     data () {
         return { msg: 'world' };
     }
