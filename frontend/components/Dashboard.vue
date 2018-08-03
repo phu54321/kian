@@ -7,9 +7,19 @@ div
 
 <script>
 import { ankiCall } from '../api';
+import asyncData from '../../utils/asyncData';
+
 import DeckTreeView from './dashboard/DeckTreeView';
 
 export default {
+    mixins: [
+        asyncData (async _to => {
+            const response = await ankiCall('dashboard_deck_tree');
+            return {
+                deckDueTree: response
+            };
+        })
+    ],
     data () {
         return {
             deckDueTree: []
@@ -17,12 +27,6 @@ export default {
     },
     components: {
         DeckTreeView
-    },
-    created () {
-        ankiCall('dashboard_deck_tree')
-            .then(response => {
-                this.deckDueTree = response;
-            });
     },
     name: 'dashboard',
 };
