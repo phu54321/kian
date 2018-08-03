@@ -1,8 +1,13 @@
 
 from col import col
+import logging
 
 from . import emit
 from .dispatchTable import registerApi
+
+
+cardDict = {}
+
 
 @registerApi('reviewer_next_card')
 def getNextScheduledCard(msg):
@@ -19,8 +24,10 @@ def getNextScheduledCard(msg):
 
     answerButtonCount = col().sched.answerButtons(card)
 
+    cardDict[card.id] = card
+
     return emit.emitResult({
-        'id': card.id,
+        'cardId': card.id,
         'front': card.q(),
         'back': card.a(),
         'ansButtonCount': answerButtonCount,
@@ -30,8 +37,9 @@ def getNextScheduledCard(msg):
 def answerCard(msg):
     cardId, ease = int(msg['cardId']), int(msg['ease'])
     cardId = msg['cardId']
-    card = col().getCard(cardId)
+    card = cardDict[cardId]
     ease = int(msg['ease'])
 
     col().sched.answerCard(card, ease)
-    emit.emitResult(None)
+    logging.info("Cid[%d] Reviewed with ease %d" % (cardId, ease))
+    return emit.emitResult(None)
