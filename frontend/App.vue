@@ -1,9 +1,7 @@
 <template lang='pug'>
 div
-    nprogress-container
-    b-navbar(toggleable='md', variant='primary', type='dark')
+    b-navbar(toggleable='sm', variant='primary', type='dark')
         b-container
-            b-navbar-toggle(target='nav_collapse')
             b-navbar-brand(href='#') Kian
 
             b-navbar-nav.ml-auto
@@ -20,13 +18,9 @@ div
 
 <script>
 
-import NprogressContainer from 'vue-nprogress/src/NprogressContainer';
 import './css/kian.scss';
 
 export default {
-    components: {
-        NprogressContainer
-    },
     data () {
         return { msg: 'world' };
     }
