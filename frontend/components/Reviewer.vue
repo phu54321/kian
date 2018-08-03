@@ -1,6 +1,6 @@
 <template lang="pug">
 
-b-card
+div
     input(type='hidden', :value='card.id')
     div.text-right
         span(@click="loadCard()")
@@ -8,7 +8,7 @@ b-card
         span(@click="openEditor()")
             icon(v-b-tooltip.hover, title='Edit current', name='edit')
 
-    p.card-text
+    p.text-center
         template(v-if='!flipped')
             .mb-4
                 div.userContent.front.card(v-html="card.front")
@@ -37,7 +37,6 @@ b-card
 <script>
 
 import {ankiCall} from '../api/ankiCall';
-import $ from 'jquery';
 import asyncData from '../utils/asyncData';
 import NoteEditor from './NoteEditor';
 import ErrorDialog from './ErrorDialog.vue';
@@ -90,7 +89,6 @@ export default {
             ankiCall('nid_from_cid', {
                 cardId: this.card.id
             }).then(noteId => {
-                console.log(noteId);
                 this.$router.push({
                     name: 'edit',
                     params: {

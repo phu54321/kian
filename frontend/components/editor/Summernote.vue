@@ -17,6 +17,15 @@ export default {
     },
     mounted () {
         $(this.$el).summernote({
+            // toolbar: [],
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ],
             callbacks: {
                 onInit: () => {
                     $(this.$el).summernote('code', this.value);
@@ -26,6 +35,9 @@ export default {
                 },
             }
         });
+    },
+    beforeDestroy () {
+        $(this.$el).summernote('destroy');
     }
 };
 
