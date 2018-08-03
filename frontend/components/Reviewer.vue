@@ -35,9 +35,27 @@ b-card
 
 import {ankiCall} from '../api';
 import $ from 'jquery';
+import asyncData from '../../utils/asyncData';
+
+async function getNextData (deckName) {
+    const msg = await ankiCall('reviewer_next_card', {deckName});
+    return {
+        card: {
+            id: msg.cardId,
+            front: msg.front,
+            back: msg.back
+        },
+        ansButtonCount: msg.ansButtonCount,
+        flipped: false
+    };
+}
 
 export default {
     props: ['deckName'],
+    mixins: [asyncData(async to => {
+        const deckName = to.params.deckName;
+        return getNextData(deckName);
+    })],
     data () {
         return {
             card: {},
@@ -69,17 +87,13 @@ export default {
                 this.flipped = false;
             });
         },
-        answerCard (ease) {
-            ankiCall('reviewer_answer_card', {
+        async answerCard (ease) {
+            await ankiCall('reviewer_answer_card', {
                 cardId: this.card.id,
                 ease: ease
-            }).then(() => {
-                return this.loadCard();
             });
+            Object.assign(this.$data, await getNextData(this.deckName));
         }
-    },
-    created () {
-        this.loadCard();
     },
     name: 'deck-view',
 };

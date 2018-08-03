@@ -30,22 +30,20 @@ div
 <script>
 
 import {ankiCall} from '../api';
+import asyncData from '../../utils/asyncData';
 
 export default {
     props: ['deckName'],
+    mixins: [
+        asyncData(async to => {
+            return ankiCall('deck_info', { deckName: to.params.deckName });
+        })
+    ],
     data () {
         return {
-            stats: {},
+            stat: {},
             due: {},
         };
-    },
-    created () {
-        ankiCall('deck_info', {
-            deckName: this.deckName
-        }).then(msg => {
-            this.due = msg.due;
-            this.stat = msg.stat;
-        });
     },
     name: 'deck-view',
 };
