@@ -3,7 +3,7 @@ div
     error-dialog
     b-navbar(toggleable='sm', variant='primary', type='dark')
         b-container
-            b-navbar-brand(href='#') Kian
+            b-navbar-brand(href='#', to='/') Kian
 
             b-navbar-nav.ml-auto
                 b-nav-item(to='/decks', v-b-tooltip.hover, title='Home')
@@ -13,7 +13,7 @@ div
                 b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                     icon(name='chart-bar')
 
-    b-container.mt-3
+    b-container.mt-3(fluid)
         router-view
 </template>
 
