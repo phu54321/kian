@@ -2,4 +2,5 @@
 
 import api.deck
 import api.reviewer
+import api.note
 from api.dispatchTable import apiDispatch
