@@ -13,7 +13,7 @@ div
                 b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                     icon(name='chart-bar')
 
-    b-container.mt-3(fluid)
+    b-container.mt-3
         router-view
 </template>
 

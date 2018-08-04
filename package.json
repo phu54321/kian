@@ -43,7 +43,6 @@
     "vue": "^2.5.16",
     "vue-awesome": "^3.0.5",
     "vue-axios": "^2.1.2",
-    "vue-full-loading": "^1.2.1",
     "vue-router": "^3.0.1",
     "vue-router-back-button": "^1.1.1"
   },
