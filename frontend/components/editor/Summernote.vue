@@ -6,6 +6,7 @@
 import $ from 'jquery';
 
 function wrap (context, front, back) {
+    context.invoke('beforeCommand');
     const range = context.invoke('createRange');
     const frag = range.nativeRange().cloneContents();
     const span = document.createElement('span');
@@ -14,6 +15,7 @@ function wrap (context, front, back) {
     const match = oldHtml.match(/^(\s*)([^]*?)(\s*)$/);
     const newHtml = match[1] + front + match[2] + back + match[3];
     context.invoke('pasteHTML', newHtml);
+    context.invoke('afterCommand');
 }
 
 
@@ -29,6 +31,7 @@ export default {
     },
     mounted () {
         $(this.$el).summernote({
+            prettifyHtml: true,
             toolbar: [
                 ['style', ['style']],
                 ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
@@ -36,13 +39,16 @@ export default {
                 ['para', ['ul', 'ol', 'paragraph', 'table', 'link', 'picture']],
                 ['misc', ['fullscreen', 'codeview', 'help', 'cloze']]
             ],
+            codemirror: { // codemirror options
+                theme: 'monokai'
+            },
             buttons: {
                 cloze (context) {
                     const ui = $.summernote.ui;
                     // create button
                     const button = ui.button({
-                        contents: '<i class="fa fa-child"/> Hello',
-                        tooltip: 'hello',
+                        contents: '[..]',
+                        tooltip: 'Cloze',
                         click: function () {
                             // invoke insertText method with 'hello' on editor module.
                             wrap(context, '{{', '}}');
