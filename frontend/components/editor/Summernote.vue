@@ -1,12 +1,12 @@
-<template>
-    <textarea class="form-control"></textarea>
+<template lang="pug">
+    div(v-html="value")
 </template>
 <script>
 
 import $ from 'jquery';
 
+
 function wrap (context, front, back) {
-    context.invoke('beforeCommand');
     const range = context.invoke('createRange');
     const frag = range.nativeRange().cloneContents();
     const span = document.createElement('span');
@@ -15,8 +15,8 @@ function wrap (context, front, back) {
     const match = oldHtml.match(/^(\s*)([^]*?)(\s*)$/);
     const newHtml = match[1] + front + match[2] + back + match[3];
     context.invoke('pasteHTML', newHtml);
-    context.invoke('afterCommand');
 }
+
 
 
 export default {
@@ -40,7 +40,10 @@ export default {
                 ['misc', ['fullscreen', 'codeview', 'help', 'cloze']]
             ],
             codemirror: { // codemirror options
-                theme: 'monokai'
+                theme: 'monokai',
+                mode: 'text/html',
+                htmlMode: true,
+                lineNumbers: true
             },
             buttons: {
                 cloze (context) {
@@ -51,8 +54,13 @@ export default {
                         tooltip: 'Cloze',
                         click: function () {
                             // invoke insertText method with 'hello' on editor module.
-                            wrap(context, '{{', '}}');
-                            // context.invoke('editor.insertText', 'hello');
+                            const code = context.invoke('code');
+                            let maxClozeId = 0;
+                            code.replace(/\{\{c(\d+)::/g, (match, g1) => {
+                                const clozeId = parseInt(g1);
+                                if (maxClozeId < clozeId) maxClozeId = clozeId;
+                            });
+                            wrap(context, `{{c${maxClozeId + 1}::`, '}}');
                         }
                     });
 
@@ -60,9 +68,6 @@ export default {
                 }
             },
             callbacks: {
-                onInit: () => {
-                    $(this.$el).summernote('code', this.value);
-                },
                 onChange: () => {
                     this.$emit('input', $(this.$el).summernote('code'));
                 },
