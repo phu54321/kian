@@ -11,21 +11,14 @@ import 'vue-awesome/icons';
 import Icon from 'vue-awesome/components/Icon.vue';
 Vue.component('icon', Icon);
 
-// Trumbowyg
-import VueTrumbowyg from 'vue-trumbowyg';
-import 'trumbowyg/dist/ui/trumbowyg.css';
-import 'trumbowyg/dist/plugins/history/trumbowyg.history.min.js';
-import 'trumbowyg/dist/plugins/pasteimage/trumbowyg.pasteimage.min.js';
-import 'trumbowyg/dist/plugins/table/trumbowyg.table.min.js';
-import 'trumbowyg/dist/plugins/table/ui/trumbowyg.table.min.css';
-
-Vue.use(VueTrumbowyg);
-
-
 // Router
 import VueRouter from 'vue-router';
 import router from './router';
 Vue.use(VueRouter);
+
+// Hotkey
+import VueShortkey from 'vue-shortkey';
+Vue.use(VueShortkey);
 
 // Axios
 import axios from 'axios';

@@ -7,13 +7,13 @@
 export default {
     props:['value'],
     mounted (){
-        this.$el.innerText = this.value;
+        this.$el.innerHTML = this.value;
     },
     methods:{
         update (event){
-            this.$emit('input', event.target.innerText);
-        }
-    }
+            this.$emit('input', event.target.innerHTML);
+        },
+    },
 };
 
 </script>
