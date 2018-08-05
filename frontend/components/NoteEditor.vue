@@ -3,36 +3,24 @@ div(v-if='note')
     span Model: {{model}}
     div(v-for='field in note.fields', :key='field.fieldFormat.name')
         span.font-weight-bold {{field.fieldFormat.name}}
-        trumbowyg(v-model='field.value', :config='config')
+        content-editable-div(v-model='field.value')
 </template>
 
 <script>
 
 import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
+import ContentEditableDiv from './editor/ContentEditableDiv';
 
 export default {
     props: ['noteId'],
+    components: {
+        ContentEditableDiv,
+    },
     data () {
         return {
             model: null,
             note: null,
-            config: {
-                autogrow: true,
-                btns: [
-                    ['table'],
-                    ['undo', 'redo'],
-                    ['formatting'],
-                    ['strong', 'em', 'del'],
-                    ['superscript', 'subscript'],
-                    ['link'],
-                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-                    ['unorderedList', 'orderedList'],
-                    ['horizontalRule'],
-                    ['removeformat'],
-                    ['preformatted'],
-                ]
-            }
         };
     },
     mixins: [asyncData(async props => {
@@ -43,6 +31,7 @@ export default {
             model: note.model
         };
     })],
+    name: 'note-editor',
 };
 
 </script>
