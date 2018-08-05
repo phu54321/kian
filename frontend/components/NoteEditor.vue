@@ -20,7 +20,7 @@ export default {
             config: {
                 autogrow: true,
                 btns: [
-                    ['viewHTML'],
+                    ['table'],
                     ['undo', 'redo'],
                     ['formatting'],
                     ['strong', 'em', 'del'],

@@ -14,12 +14,12 @@ Vue.component('icon', Icon);
 // Trumbowyg
 import VueTrumbowyg from 'vue-trumbowyg';
 import 'trumbowyg/dist/ui/trumbowyg.css';
+import 'trumbowyg/dist/plugins/history/trumbowyg.history.min.js';
 import 'trumbowyg/dist/plugins/pasteimage/trumbowyg.pasteimage.min.js';
-import 'trumbowyg/dist/plugins/preformatted/trumbowyg.preformatted.min.js';
+import 'trumbowyg/dist/plugins/table/trumbowyg.table.min.js';
+import 'trumbowyg/dist/plugins/table/ui/trumbowyg.table.min.css';
 
 Vue.use(VueTrumbowyg);
-// <script src="trumbowyg/plugins/pasteimage/trumbowyg.pasteimage.min.js"></script>
-// <script src="trumbowyg/plugins/preformatted/trumbowyg.preformatted.min.js"></script>
 
 
 // Router
