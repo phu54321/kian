@@ -24,6 +24,7 @@
     "eslint-config-es2015": "^1.1.0",
     "eslint-plugin-vue": "^4.7.0",
     "express": "~4.16.0",
+    "hotkeys-js": "^3.3.5",
     "http-errors": "~1.6.2",
     "jquery": "^3.3.1",
     "material-design-icons-iconfont": "^3.0.3",
@@ -40,11 +41,13 @@
     "sass-loader": "^7.1.0",
     "sequelize": "^4.38.0",
     "summernote": "^0.8.10",
+    "v-hotkey": "^0.2.3",
     "vue": "^2.5.16",
     "vue-awesome": "^3.0.5",
     "vue-axios": "^2.1.2",
     "vue-router": "^3.0.1",
     "vue-router-back-button": "^1.1.1",
+    "vue-shortkey": "^3.1.6",
     "vue-trumbowyg": "^3.3.0"
   },
   "nodemonConfig": {
