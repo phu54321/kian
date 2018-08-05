@@ -11,6 +11,16 @@ import 'vue-awesome/icons';
 import Icon from 'vue-awesome/components/Icon.vue';
 Vue.component('icon', Icon);
 
+// Trumbowyg
+import VueTrumbowyg from 'vue-trumbowyg';
+import 'trumbowyg/dist/ui/trumbowyg.css';
+import 'trumbowyg/dist/plugins/pasteimage/trumbowyg.pasteimage.min.js';
+import 'trumbowyg/dist/plugins/preformatted/trumbowyg.preformatted.min.js';
+
+Vue.use(VueTrumbowyg);
+// <script src="trumbowyg/plugins/pasteimage/trumbowyg.pasteimage.min.js"></script>
+// <script src="trumbowyg/plugins/preformatted/trumbowyg.preformatted.min.js"></script>
+
 
 // Router
 import VueRouter from 'vue-router';

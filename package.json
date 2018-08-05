@@ -44,7 +44,8 @@
     "vue-awesome": "^3.0.5",
     "vue-axios": "^2.1.2",
     "vue-router": "^3.0.1",
-    "vue-router-back-button": "^1.1.1"
+    "vue-router-back-button": "^1.1.1",
+    "vue-trumbowyg": "^3.3.0"
   },
   "nodemonConfig": {
     "watch": [
