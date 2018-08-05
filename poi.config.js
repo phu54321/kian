@@ -17,6 +17,7 @@ module.exports = {
     devServer: {
         after (app) {
             app.use(express.static('backend/testdata/collection.media'));
+            app.use(express.static('frontend/public'));
         }
     }
 };
