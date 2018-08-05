@@ -7,18 +7,6 @@ import $ from 'jquery';
 
 import * as clozeBtns from './cloze.js';
 
-
-function fragFromHtml (html) {
-    const tmpDiv = document.createElement('div');
-    tmpDiv.innerHTML = html;
-    const frag = document.createDocumentFragment();
-    let node;
-    while((node = tmpDiv.firstChild)) {
-        frag.appendChild(node);
-    }
-    return frag;
-}
-
 export default {
     props : {
         value: {
