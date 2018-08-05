@@ -5,9 +5,6 @@ module.exports = {
         title: 'Kian',
         description: 'Spaced learning app'
     },
-    presets: [
-        require('poi-preset-eslint')( /* options */ )
-    ],
     configureWebpack (config, _context) {
         config.externals = {
             jquery: 'jQuery',
