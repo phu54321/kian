@@ -10,42 +10,33 @@ function getLastClozeId (code) {
     return maxClozeId;
 }
 
-export function newClozeBtn (context) {
-    const ui = $.summernote.ui;
-    // create button
-    const button = ui.button({
-        contents: '[..]',
-        tooltip: 'Cloze',
-        click: function () {
-            // invoke insertText method with 'hello' on editor module.
-            const code = context.invoke('code');
-            const lastClozeId = getLastClozeId(code);
-            const thisClozeId = lastClozeId + 1;
-            context.invoke('beforeCommand');
-            wrap(`{{c${thisClozeId}::`, '}}');
-            context.invoke('afterCommand');
-        }
-    });
+$.extend(true, $.summernote.options.keyMap, {
+    pc: {
+        'CTRL+SHIFT+C': 'newCloze',
+        'CTRL+SHIFT+F': 'sameCloze',
+    },
+    mac: {
+        'CMD+SHIFT+C': 'newCloze',
+        'CMD+SHIFT+F': 'sameCloze',
+    }
+});
 
-    return button.render();
-}
+const Editor = $.summernote.options.modules.editor;
 
-export function sameClozeBtn (context) {
-    const ui = $.summernote.ui;
-    // create button
-    const button = ui.button({
-        contents: '[==]',
-        tooltip: 'Cloze (same)',
-        click: function () {
-            // invoke insertText method with 'hello' on editor module.
-            const code = context.invoke('code');
-            const lastClozeId = getLastClozeId(code);
-            const thisClozeId = lastClozeId || 1;
-            context.invoke('beforeCommand');
-            wrap(`{{c${thisClozeId}::`, '}}');
-            context.invoke('afterCommand');
-        }
-    });
+Editor.prototype.newCloze = function () {
+    const code = this.context.invoke('code');
+    const lastClozeId = getLastClozeId(code);
+    const thisClozeId = lastClozeId + 1;
+    this.beforeCommand();
+    wrap(`{{c${thisClozeId}::`, '}}');
+    this.afterCommand();
+};
 
-    return button.render();
-}
+Editor.prototype.sameCloze = function () {
+    const code = this.context.invoke('code');
+    const lastClozeId = getLastClozeId(code);
+    const thisClozeId = lastClozeId || 1;
+    this.beforeCommand();
+    wrap(`{{c${thisClozeId}::`, '}}');
+    this.afterCommand();
+};

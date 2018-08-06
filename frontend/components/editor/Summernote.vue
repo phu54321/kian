@@ -4,7 +4,6 @@
 <script>
 
 import $ from 'jquery';
-
 import * as clozeBtns from './cloze.js';
 
 export default {
@@ -18,15 +17,9 @@ export default {
         }
     },
     mounted () {
-        $(this.$el).summernote({
+        window.xyz = $(this.$el).summernote({
             prettifyHtml: true,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph', 'table', 'link', 'picture']],
-                ['misc', ['fullscreen', 'codeview', 'help', 'newClozeBtn', 'sameClozeBtn']]
-            ],
+            toolbar: [],
             codemirror: { // codemirror options
                 theme: 'monokai',
                 mode: 'text/html',
