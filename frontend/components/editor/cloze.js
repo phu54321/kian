@@ -13,7 +13,6 @@ function getLastClozeId (code) {
 addHotkey({
     'CTRL+SHIFT+C': 'newCloze',
     'CTRL+SHIFT+F': 'sameCloze',
-    'CTRL+SHIFT+T': 'table',
 });
 
 addFunctions({

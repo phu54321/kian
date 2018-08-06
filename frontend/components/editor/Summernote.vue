@@ -5,6 +5,7 @@
 
 import $ from 'jquery';
 import './cloze';
+import './table';
 
 export default {
     props : {
@@ -19,7 +20,7 @@ export default {
     mounted () {
         $(this.$el).summernote({
             prettifyHtml: true,
-            toolbar: [],
+            autogrow: true,
             codemirror: { // codemirror options
                 theme: 'monokai',
                 mode: 'text/html',
