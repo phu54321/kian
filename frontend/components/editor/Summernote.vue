@@ -19,6 +19,7 @@ export default {
     mounted () {
         $(this.$el).summernote({
             prettifyHtml: true,
+            toolbar: [],
             codemirror: { // codemirror options
                 theme: 'monokai',
                 mode: 'text/html',
