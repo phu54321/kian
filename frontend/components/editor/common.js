@@ -1,4 +1,4 @@
-export function fragFromHtml (html) {
+function fragFromHtml (html) {
     const tmpDiv = document.createElement('div');
     tmpDiv.innerHTML = html;
     const frag = document.createDocumentFragment();
@@ -9,27 +9,44 @@ export function fragFromHtml (html) {
     return frag;
 }
 
-export function wrap (front, back) {
-    var s = window.getSelection();
-    var r = s.getRangeAt(0);
-    var content = r.extractContents();
+export function copyHtml () {
+    const s = window.getSelection();
+    const r = s.getRangeAt(0);
+    const content = r.cloneContents();
 
-    var span = document.createElement('span');
+    const span = document.createElement('span');
     span.appendChild(content);
     const oldHtml = span.innerHTML;
+    
+    return oldHtml;
+}
+
+export function pasteHtml (newHtml) {
+    const s = window.getSelection();
+    const r = s.getRangeAt(0);
+    const frag = fragFromHtml(newHtml);
+    r.deleteContents();
+    r.insertNode(frag);
+    r.collapse();
+    return true;
+}
+
+export function wrap (front, back) {
+    const oldHtml = copyHtml();
 
     if (oldHtml) {
-        var match = oldHtml.match(/^(\s*)([^]*?)(\s*)$/);
-        var newHtml = match[1] + front + match[2] + back + match[3];
-        var frag = fragFromHtml(newHtml);
-
-        r.deleteContents();
-        r.insertNode(frag);
-        r.collapse();
+        const match = oldHtml.match(/^(\s*)([^]*?)(\s*)$/);
+        const newHtml = match[1] + front + match[2] + back + match[3];
+        pasteHtml(newHtml);
     } else {
+        const s = window.getSelection();
+        const r = s.getRangeAt(0);
+
         r.insertNode(fragFromHtml(front));
         r.collapse();
         r.insertNode(fragFromHtml(back));
         r.collapse(true);
     }
+
+    return true;
 }

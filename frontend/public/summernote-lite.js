@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-08-06T07:30Z
+ * Date: 2018-08-06T20:39Z
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -3230,6 +3230,8 @@ var History = /** @class */ (function () {
             this.$editable.html(snapshot.contents);
         }
         if (snapshot.bookmark !== null) {
+            if (snapshot.contents && snapshot.contents !== this.$editable.html())
+                return;
             range.createFromBookmark(this.editable, snapshot.bookmark).select();
         }
     };
