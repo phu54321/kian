@@ -4,7 +4,7 @@
 <script>
 
 import $ from 'jquery';
-import * as clozeBtns from './cloze.js';
+import './cloze';
 
 export default {
     props : {
@@ -17,17 +17,13 @@ export default {
         }
     },
     mounted () {
-        window.xyz = $(this.$el).summernote({
+        $(this.$el).summernote({
             prettifyHtml: true,
-            toolbar: [],
             codemirror: { // codemirror options
                 theme: 'monokai',
                 mode: 'text/html',
                 htmlMode: true,
                 lineNumbers: true
-            },
-            buttons: {
-                ...clozeBtns,
             },
             callbacks: {
                 onChange: () => {

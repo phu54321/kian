@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import { wrap } from './common';
+import { addHotkey, addFunctions } from './summernoteExtend';
 
 function getLastClozeId (code) {
     let maxClozeId = 0;
@@ -10,33 +10,27 @@ function getLastClozeId (code) {
     return maxClozeId;
 }
 
-$.extend(true, $.summernote.options.keyMap, {
-    pc: {
-        'CTRL+SHIFT+C': 'newCloze',
-        'CTRL+SHIFT+F': 'sameCloze',
-    },
-    mac: {
-        'CMD+SHIFT+C': 'newCloze',
-        'CMD+SHIFT+F': 'sameCloze',
-    }
+addHotkey({
+    'CTRL+SHIFT+C': 'newCloze',
+    'CTRL+SHIFT+F': 'sameCloze',
+    'CTRL+SHIFT+T': 'table',
 });
 
-const Editor = $.summernote.options.modules.editor;
-
-Editor.prototype.newCloze = function () {
-    const code = this.context.invoke('code');
-    const lastClozeId = getLastClozeId(code);
-    const thisClozeId = lastClozeId + 1;
-    this.beforeCommand();
-    wrap(`{{c${thisClozeId}::`, '}}');
-    this.afterCommand();
-};
-
-Editor.prototype.sameCloze = function () {
-    const code = this.context.invoke('code');
-    const lastClozeId = getLastClozeId(code);
-    const thisClozeId = lastClozeId || 1;
-    this.beforeCommand();
-    wrap(`{{c${thisClozeId}::`, '}}');
-    this.afterCommand();
-};
+addFunctions({
+    newCloze () {
+        const code = this.context.invoke('code');
+        const lastClozeId = getLastClozeId(code);
+        const thisClozeId = lastClozeId + 1;
+        this.beforeCommand();
+        wrap(`{{c${thisClozeId}::`, '}}');
+        this.afterCommand();
+    },
+    sameCloze () {
+        const code = this.context.invoke('code');
+        const lastClozeId = getLastClozeId(code);
+        const thisClozeId = lastClozeId || 1;
+        this.beforeCommand();
+        wrap(`{{c${thisClozeId}::`, '}}');
+        this.afterCommand();
+    }
+});
