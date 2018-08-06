@@ -1,18 +1,20 @@
 const express = require('express');
+const webpack = require('webpack');
 
 module.exports = {
     html: {
         title: 'Kian',
         description: 'Spaced learning app'
     },
-    presets: [
-        require('poi-preset-eslint')( /* options */ )
-    ],
     configureWebpack (config, _context) {
         config.externals = {
             jquery: 'jQuery',
             $: 'jQuery'
         };
+        config.plugins.push(new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery'
+        }));
     },
     devServer: {
         after (app) {
