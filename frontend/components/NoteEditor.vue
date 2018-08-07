@@ -18,14 +18,11 @@ div(v-if='note')
             th Model
             td {{model}}
 
-        // Tags area
         tr
             th Tags
             td
                 tag-editor(v-model='note.tags')
 
-
-        // Editing area
         tr(v-for='field in note.fields', :key='field.fieldFormat.name')
             th {{field.fieldFormat.name}}
             td

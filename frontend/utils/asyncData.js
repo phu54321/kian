@@ -4,7 +4,7 @@ export default function asyncData (loadData) {
     return {
         // this prevents beforeRouteEnter and created from both manipulating the data.
         props: ['$asyncDataTrap'],
-        created () {
+        mounted () {
             if (this.$route.params.$asyncDataTrap) {
                 this.$route.params.$asyncDataTrap = false;
                 return;
