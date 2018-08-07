@@ -41,13 +41,27 @@ export default {
 
 <style lang='scss'>
 
-.note-editable img {
-    max-width: 100%;
+.note-editor {
+    .note-editable {
+        padding: 0 !important;
+        img {
+            max-width: 100%;
+        }
+    }
+
+    // No resize bar
+    .note-statusbar {
+        display: none;
+    }
+
+    p {
+        margin: 0 !important;
+    }
 }
 
-// No resize bar
-.note-statusbar {
-    display: none;
+.note-frame {
+    border: none !important;
 }
+
 
 </style>
