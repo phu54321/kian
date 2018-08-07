@@ -2,11 +2,12 @@
 
 div
     input(type='hidden', :value='card.id')
+    span.text-secondary Deck: {{deckName}}
     div.text-right
         span(v-hotkey.up="['c']", @click="loadCard()")
-            icon.mr-2(v-b-tooltip.hover, title='Change card', name="sync")
+            icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
         span(v-hotkey.up="['e']", @click="openEditor()")
-            icon(v-b-tooltip.hover, title='Edit current', name='edit')
+            icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
     p.text-center
         template(v-if='!flipped')
