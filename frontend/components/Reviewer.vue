@@ -3,7 +3,7 @@
 div
     input(type='hidden', :value='card.id')
     span.text-secondary Deck: {{deckName}}
-    div.text-right
+    div.float-right
         span(v-hotkey.up="['c']", @click="loadCard()")
             icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
         span(v-hotkey.up="['e']", @click="openEditor()")

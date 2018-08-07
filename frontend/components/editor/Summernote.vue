@@ -6,16 +6,13 @@
 import $ from 'jquery';
 import './cloze';
 import './table';
+import './disableTab';
 
 export default {
     props : {
         value: {
             required: true
         },
-        height: {
-            type: String,
-            default: '150'
-        }
     },
     mounted () {
         $(this.$el).summernote({
