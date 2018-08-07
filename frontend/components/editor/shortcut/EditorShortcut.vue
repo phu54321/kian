@@ -36,7 +36,6 @@ export default {
                 ['Ctrl + Shift + D', 'Create table from selection'],
                 ['CTRL+SHIFT+7', 'Insert unordered list'],
                 ['CTRL+SHIFT+8', 'Insert ordered list'],
-                ['CTRL+ENTER', 'Insert horizontal rules'],
                 ['CTRL+SHIFT+L', 'Justify to left'],
                 ['CTRL+SHIFT+E', 'Justify to center'],
                 ['CTRL+SHIFT+R', 'Justify to right'],

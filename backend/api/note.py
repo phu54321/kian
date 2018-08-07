@@ -4,8 +4,8 @@ from . import emit
 from .dispatchTable import registerApi
 
 
-@registerApi('note_info')
-def getNoteInfo(msg):
+@registerApi('note_get')
+def getNote(msg):
     noteId = msg['noteId']
     note = col().getNote(noteId)
     fieldTemplateList = note.model()['flds']
@@ -18,6 +18,17 @@ def getNoteInfo(msg):
         } for fFormat, v in zip(fieldTemplateList, note.fields)],
         'tags': note.tags,
     })
+
+@registerApi('note_set')
+def setNote(msg):
+    noteId = msg['noteId']
+    note = col().getNote(noteId)
+    fields = msg['fields']
+    assert len(fields) == len(note.fields)
+    note.fields[:] = fields
+    note.flush()
+    return emit.emitResult(None)
+
 
 
 @registerApi('nid_from_cid')

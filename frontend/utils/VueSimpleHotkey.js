@@ -33,11 +33,13 @@ function registerHotkey (el, binding) {
                 eventType.forEach(evt => {
                     el.dispatchEvent(new Event(evt));
                 });
+                e.stopPropagation();
+                e.preventDefault();
             }
         };
         el._keyUpHandler = function () {};
     }
-    document.addEventListener('keydown', el._keyDownHandler);
+    document.addEventListener('keydown', el._keyDownHandler, true);
     document.addEventListener('keyup', el._keyUpHandler);
 
 }
