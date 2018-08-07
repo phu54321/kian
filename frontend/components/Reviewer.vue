@@ -12,25 +12,25 @@ div
         template(v-if='!flipped')
             .mb-4
                 div.userContent.front.card(v-html="card.front")
-            b-button(@click="flipped = !flipped", variant="outline-primary") Show Answer
+            b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             .mb-4
                 div.userContent.back.card(v-html="card.back")
 
             template(v-if="ansButtonCount == 2")
-                b-button.mr-2(@click="answerCard(1)", size='sm', variant="outline-danger") Again
-                b-button.mr-2(@click="answerCard(2)", size='sm', variant="outline-success") Good
+                b-button.mr-2(v-hotkey="['1']", @click="answerCard(1)", size='sm', variant="outline-danger") Again
+                b-button.mr-2(v-hotkey="['2']", @click="answerCard(2)", size='sm', variant="outline-success") Good
 
             template(v-else-if="ansButtonCount == 3")
-                b-button.mr-2(@click="answerCard(1)", size='sm', variant="outline-danger") Again
-                b-button.mr-2(@click="answerCard(2)", size='sm', variant="outline-success") Good
-                b-button.mr-2(@click="answerCard(3)", size='sm', variant="outline-primary") Easy
+                b-button.mr-2(v-hotkey="['1']", @click="answerCard(1)", size='sm', variant="outline-danger") Again
+                b-button.mr-2(v-hotkey="['2']", @click="answerCard(2)", size='sm', variant="outline-success") Good
+                b-button.mr-2(v-hotkey="['3']", @click="answerCard(3)", size='sm', variant="outline-primary") Easy
 
             template(v-else-if="ansButtonCount == 4")
-                b-button.mr-2(@click="answerCard(1)", size='sm', variant="outline-danger") Again
-                b-button.mr-2(@click="answerCard(2)", size='sm', variant="outline-secondary") Hard
-                b-button.mr-2(@click="answerCard(3)", size='sm', variant="outline-success") Good
-                b-button.mr-2(@click="answerCard(4)", size='sm', variant="outline-primary") Easy
+                b-button.mr-2(v-hotkey="['1']", @click="answerCard(1)", size='sm', variant="outline-danger") Again
+                b-button.mr-2(v-hotkey="['2']", @click="answerCard(2)", size='sm', variant="outline-secondary") Hard
+                b-button.mr-2(v-hotkey="['3']", @click="answerCard(3)", size='sm', variant="outline-success") Good
+                b-button.mr-2(v-hotkey="['4']", @click="answerCard(4)", size='sm', variant="outline-primary") Easy
 
 </template>
 
