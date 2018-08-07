@@ -4,24 +4,24 @@ div
 
     table.mb-3
         tr
-            td New
-            td.pl-3.newCount {{due.newCount}}
+            th New
+            td.newCount {{due.newCount}}
         tr
-            td Learning
-            td.pl-3.lrnCount {{due.lrnCount}}
+            th Learning
+            td.lrnCount {{due.lrnCount}}
         tr
-            td Review
-            td.pl-3.revCount {{due.revCount}}
+            th Review
+            td.revCount {{due.revCount}}
         tr
-            td Mature
-            td.pl-3 {{stat.mature}}
+            th Mature
+            td.text-secondary {{stat.mature}}
         tr
-            td Young
-            td.pl-3 {{stat.young}}
+            th Young
+            td.text-secondary {{stat.young}}
 
         tr
-            td Total
-            td.pl-3 {{stat.total}}
+            th Total
+            td.text-secondary {{stat.total}}
 
     b-button(size='sm' variant='outline-primary', :to='"/study/" + encodeURIComponent(deckName)') Study now
 
@@ -48,3 +48,12 @@ export default {
     name: 'deck-view',
 };
 </script>
+
+<style lang="scss" scoped>
+
+table {
+    th {
+        padding-right: 1em;
+    }
+}
+</style>
