@@ -1,12 +1,12 @@
 <template lang='pug'>
     table.table.table-sm
-        tr
-            th Keystroke
-            th Action
         tr(v-for='item in items')
-            td
-                key-image(:keys='item.keystroke')
-            td(v-html='item.action')
+            template(v-if='item.length == 1')
+                th(colspan='2') {{item[0]}}
+            template(v-else)
+                td
+                    key-image(:keys='item[0]')
+                td {{item[1]}}
 </template>
 
 <script>
@@ -20,10 +20,33 @@ export default {
     data () {
         return {
             items: [
-                { keystroke: 'Ctrl + Shift + C', action: 'Cloze w/ new number' },
-                { keystroke: 'Ctrl + Shift + F', action: 'Cloze w/ same number' },
-                { keystroke: 'Ctrl + Shift + D', action: 'Create table from selection<br><i>(a | b &lt;newline&gt; c | d format)</i>' },
+                ['Anki-related keys'],
+                ['Ctrl + Shift + C', 'Cloze w/ new number'],
+                ['Ctrl + Shift + F', 'Cloze w/ same number'],
+                
+                ['Text editing'],
+                ['CTRL+B', 'Bold'],
+                ['CTRL+I', 'Italic'],
+                ['CTRL+U', 'Underline'],
+                ['CTRL+SHIFT+S', 'Strikethrough'],
+                ['CTRL+K', 'Create link'],
+                ['CTRL+BACKSLASH', 'Remove formatting'],
 
+                ['Paragraph-level editing'],
+                ['Ctrl + Shift + D', 'Create table from selection'],
+                ['CTRL+SHIFT+7', 'Insert unordered list'],
+                ['CTRL+SHIFT+8', 'Insert ordered list'],
+                ['CTRL+ENTER', 'Insert horizontal rules'],
+                ['CTRL+SHIFT+L', 'Justify to left'],
+                ['CTRL+SHIFT+E', 'Justify to center'],
+                ['CTRL+SHIFT+R', 'Justify to right'],
+                ['CTRL+SHIFT+J', 'Justify to both sides (default)'],
+
+                ['Pan-paragraph level editing'],
+                ['CTRL+0', 'Convert to normal paragraph'],
+                ['CTRL+1~6', 'Convert to headings (h1~h6)'],
+                ['CTRL+]', 'Indent text'],
+                ['CTRL+[', 'Outdent text'],
             ]
         };
     }
