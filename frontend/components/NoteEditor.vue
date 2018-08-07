@@ -13,7 +13,7 @@ div(v-if='note')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
 
-    table.note-zone.table.table-borderless
+    table.note-zone.table
         tr
             th Model
             td {{model}}
