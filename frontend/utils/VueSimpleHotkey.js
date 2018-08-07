@@ -12,6 +12,8 @@ function eventToKeySequence (e) {
 function registerHotkey (el, binding) {
     if (el._keyDownHandler) unregisterHotkey(el);
     const appliableKey = binding.value.map(x => x.toUpperCase());
+    const eventType = ['hotkey', 'click'];
+
     if (binding.modifiers.up) {
         let lastPressedKeySequence = null;
         el._keyDownHandler = function (e) {
@@ -19,14 +21,18 @@ function registerHotkey (el, binding) {
         };
         el._keyUpHandler = function () {
             if (appliableKey.indexOf(lastPressedKeySequence) != -1) {
-                el.dispatchEvent(new Event('click'));
+                eventType.forEach(evt => {
+                    el.dispatchEvent(new Event(evt));
+                });
             }
             lastPressedKeySequence = null;
         };
     } else {
         el._keyDownHandler = function (e) {
             if (appliableKey.indexOf(eventToKeySequence(e)) != -1) {
-                el.dispatchEvent(new Event('click'));
+                eventType.forEach(evt => {
+                    el.dispatchEvent(new Event(evt));
+                });
             }
         };
         el._keyUpHandler = function () {};
@@ -48,11 +54,11 @@ function unregisterHotkey (el) {
 export default {
     install (Vue) {
         Vue.directive('hotkey', {
-            bind (el, binding) {
-                registerHotkey(el, binding);
+            bind (el, binding, vnode) {
+                registerHotkey(el, binding, vnode);
             },
-            update (el, binding) {
-                registerHotkey(el, binding);
+            update (el, binding, vnode) {
+                registerHotkey(el, binding, vnode);
             },
             unbind (el) {
                 unregisterHotkey(el);
