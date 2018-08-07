@@ -19,13 +19,17 @@ def getNote(msg):
         'tags': note.tags,
     })
 
-@registerApi('note_set')
+
+@registerApi('note_update')
 def setNote(msg):
     noteId = msg['noteId']
-    note = col().getNote(noteId)
     fields = msg['fields']
+    tags = msg['tags']
+
+    note = col().getNote(noteId)
     assert len(fields) == len(note.fields)
     note.fields[:] = fields
+    note.tags = tags
     note.flush()
     return emit.emitResult(None)
 

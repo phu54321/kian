@@ -13,15 +13,24 @@ div(v-if='note')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
 
-    span Model: {{model}}
+    table.note-zone.table.table-borderless
+        tr
+            th Model
+            td {{model}}
 
-    // Editing area
-    div(v-for='field in note.fields', :key='field.fieldFormat.name')
-        span.font-weight-bold {{field.fieldFormat.name}}
-        summernote(v-model='field.value')
+        // Tags area
+        tr
+            th Tags
+            td
+                tag-editor(v-model='note.tags')
 
-    // Tags area
-    tag-editor(v-model='note.tags')
+
+        // Editing area
+        tr(v-for='field in note.fields', :key='field.fieldFormat.name')
+            th {{field.fieldFormat.name}}
+            td
+                summernote(v-model='field.value')
+
 
 </template>
 
@@ -49,9 +58,10 @@ export default {
     },
     methods: {
         save () {
-            ankiCall('note_set', {
+            ankiCall('note_update', {
                 noteId: this.noteId,
-                fields: this.note.fields.map(x => x.value)
+                fields: this.note.fields.map(x => x.value),
+                tags: this.note.tags,
             }).then(() => {
                 window.location.reload();
             }).catch(err => {
@@ -71,3 +81,14 @@ export default {
 };
 
 </script>
+
+<style lang="scss" scoped>
+
+table.note-zone {
+    th {
+        padding-right: 1em;
+    }
+}
+
+</style>
+

@@ -1,6 +1,5 @@
 <template lang="pug">
     div.tag-box
-        span.mr-3.font-weight-bold Tags
         span.mr-2.tag-existing(v-for='tag in tags', :key='tag')
             b-badge(variant='secondary')
                 | {{tag}}
@@ -42,7 +41,6 @@ export default {
             const newTag = this.buildingTag.trim();
             if(newTag && tags.indexOf(newTag) == -1) tags.push(newTag);
             this.$emit('input', tags);
-            console.log(tags);
         }
     },
     computed: {
