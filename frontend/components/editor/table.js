@@ -48,7 +48,7 @@ addFunctions({
                 }
                 outHtml.push('</tr>');
             }
-            outHtml.push('</table>');
+            outHtml.push('</table><br>');
             pasteHtml(outHtml.join(''));
         }
 
