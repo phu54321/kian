@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-08-06T20:39Z
+ * Date: 2018-08-07T13:05Z
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -1402,7 +1402,6 @@ var lists = {
 
 var KEY_MAP = {
     'BACKSPACE': 8,
-    'TAB': 9,
     'ENTER': 13,
     'SPACE': 32,
     'DELETE': 46,
@@ -1471,7 +1470,6 @@ var key = {
     isEdit: function (keyCode) {
         return lists.contains([
             KEY_MAP.BACKSPACE,
-            KEY_MAP.TAB,
             KEY_MAP.ENTER,
             KEY_MAP.SPACE,
             KEY_MAP.DELETE
@@ -7761,8 +7759,6 @@ $$1.summernote = $$1.extend($$1.summernote, {
                 'ENTER': 'insertParagraph',
                 'CTRL+Z': 'undo',
                 'CTRL+Y': 'redo',
-                'TAB': 'tab',
-                'SHIFT+TAB': 'untab',
                 'CTRL+B': 'bold',
                 'CTRL+I': 'italic',
                 'CTRL+U': 'underline',
@@ -7790,8 +7786,6 @@ $$1.summernote = $$1.extend($$1.summernote, {
                 'ENTER': 'insertParagraph',
                 'CMD+Z': 'undo',
                 'CMD+SHIFT+Z': 'redo',
-                'TAB': 'tab',
-                'SHIFT+TAB': 'untab',
                 'CMD+B': 'bold',
                 'CMD+I': 'italic',
                 'CMD+U': 'underline',
