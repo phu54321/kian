@@ -38,3 +38,16 @@ export default {
 };
 
 </script>
+
+<style lang='scss'>
+
+.note-editable img {
+    max-width: 100%;
+}
+
+// No resize bar
+.note-statusbar {
+    display: none;
+}
+
+</style>
