@@ -1,5 +1,5 @@
 <template lang="pug">
-    kbd {{rendered}}
+    span {{rendered}}
 </template>
 
 <script>
@@ -19,6 +19,7 @@ export default {
                     ALT: '⌥',
                     SHIFT: '⇧',
                     ENTER: '↵',
+                    BACKSLASH: '⌫',
                 };
                 splitKey = splitKey.map((x) => {
                     if(macConvertTable[x]) return macConvertTable[x];

@@ -18,6 +18,7 @@ export default {
         $(this.$el).summernote({
             prettifyHtml: true,
             autogrow: true,
+            toolbar: [],
             codemirror: { // codemirror options
                 theme: 'monokai',
                 mode: 'text/html',

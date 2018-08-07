@@ -8,7 +8,6 @@ div(v-if='note')
             v-b-tooltip.hover,
             title='Show shortcuts')
     b-modal(id='helpShortcut', title='Keyboard shortcuts')
-        p Useful shortcuts for keyboard
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
 
