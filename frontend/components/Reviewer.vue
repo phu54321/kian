@@ -3,16 +3,16 @@
 div
     input(type='hidden', :value='card.id')
     div.text-right
-        span(@click="loadCard()")
+        span(v-hotkey.up="['c']", @click="loadCard()")
             icon.mr-2(v-b-tooltip.hover, title='Change card', name="sync")
-        span(@click="openEditor()")
+        span(v-hotkey.up="['e']", @click="openEditor()")
             icon(v-b-tooltip.hover, title='Edit current', name='edit')
 
     p.text-center
         template(v-if='!flipped')
             .mb-4
                 div.userContent.front.card(v-html="card.front")
-            b-button(v-hotkey.up="['Q']", @click="flipped = !flipped", variant="outline-primary") Show Answer
+            b-button(v-hotkey.up.click="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             .mb-4
                 div.userContent.back.card(v-html="card.back")

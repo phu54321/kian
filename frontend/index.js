@@ -16,8 +16,8 @@ import VueRouter from 'vue-router';
 import router from './router';
 Vue.use(VueRouter);
 
-import VueHotkey from './utils/VueHotkey';
-Vue.use(VueHotkey);
+import VueSimpleHotkey from './utils/VueSimpleHotkey';
+Vue.use(VueSimpleHotkey);
 
 // Axios
 import axios from 'axios';
