@@ -9,7 +9,7 @@ div(v-if='note')
         span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
             icon(name='regular/save')
 
-    b-modal(id='helpShortcut', title='Keyboard shortcuts')
+    b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
 
