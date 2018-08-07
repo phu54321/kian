@@ -1,7 +1,7 @@
 <template lang="pug">
     div.tag-box
         span.mr-2.tag-existing(v-for='tag in tags', :key='tag')
-            b-badge(variant='secondary')
+            b-badge(:variant='tagColor(tag)')
                 | {{tag}}
                 span(@click='removeTagByName(tag)')
                     icon.ml-1(name='times-circle', scale='.75')
@@ -30,6 +30,14 @@ export default {
             }
             this.emitTag();
         },
+        tagColor (name) {
+            switch(name) {
+            case 'marked':
+                return 'danger';
+            default:
+                return 'secondary';
+            }
+        },
         removeTagByName (name) {
             const index = this.tags.indexOf(name);
             if(index == -1) return;
@@ -37,6 +45,11 @@ export default {
             this.emitTag();
         },
         emitTag () {
+            if(this.buildingTag.endsWith(' ')) {
+                const newTag = this.buildingTag.trim();
+                if(newTag && this.tags.indexOf(newTag) == -1) this.tags.push(newTag);
+                this.buildingTag = '';
+            }
             const tags = this.tags.slice();
             const newTag = this.buildingTag.trim();
             if(newTag && tags.indexOf(newTag) == -1) tags.push(newTag);
