@@ -1,7 +1,5 @@
 <template lang="pug">
 div(v-if='note')
-    span Model: {{model}}
-
     span.float-right
         icon.mr-3(name='regular/keyboard',
             v-b-modal.helpShortcut,
@@ -14,6 +12,8 @@ div(v-if='note')
     b-modal(id='helpShortcut', title='Keyboard shortcuts')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
+
+    span Model: {{model}}
 
     // Editing area
     div(v-for='field in note.fields', :key='field.fieldFormat.name')
