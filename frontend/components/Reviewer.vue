@@ -17,20 +17,13 @@ div
             .mb-4
                 div.userContent.back.card(v-html="card.back")
 
-            template(v-if="ansButtonCount == 2")
-                b-button.mr-2(v-hotkey.up="['1']", @click="answerCard(1)", size='sm', variant="outline-danger") Again
-                b-button.mr-2(v-hotkey.up="['2']", @click="answerCard(2)", size='sm', variant="outline-success") Good
-
-            template(v-else-if="ansButtonCount == 3")
-                b-button.mr-2(v-hotkey.up="['1']", @click="answerCard(1)", size='sm', variant="outline-danger") Again
-                b-button.mr-2(v-hotkey.up="['2']", @click="answerCard(2)", size='sm', variant="outline-success") Good
-                b-button.mr-2(v-hotkey.up="['3']", @click="answerCard(3)", size='sm', variant="outline-primary") Easy
-
-            template(v-else-if="ansButtonCount == 4")
-                b-button.mr-2(v-hotkey.up="['1']", @click="answerCard(1)", size='sm', variant="outline-danger") Again
-                b-button.mr-2(v-hotkey.up="['2']", @click="answerCard(2)", size='sm', variant="outline-secondary") Hard
-                b-button.mr-2(v-hotkey.up="['3']", @click="answerCard(3)", size='sm', variant="outline-success") Good
-                b-button.mr-2(v-hotkey.up="['4']", @click="answerCard(4)", size='sm', variant="outline-primary") Easy
+            b-button.mr-2(
+                v-for='(button, index) in answerButtons',
+                :key='button'
+                v-hotkey.up='(button == "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
+                @click='answerCard(index + 1)',
+                size='sm',
+                :variant='`outline-${answerButtonColor(button)}`') {{button}}
 
 </template>
 
@@ -110,6 +103,23 @@ export default {
             }).catch(err => {
                 ErrorDialog.openErrorDialog(err.message);
             });
+        },
+        answerButtonColor (type) {
+            return {
+                Again: 'danger',
+                Hard: 'secondary',
+                Good: 'success',
+                Easy: 'primary',
+            }[type];
+        },
+    },
+    computed: {
+        answerButtons () {
+            return {
+                2: ['Again', 'Good'],
+                3: ['Again', 'Good', 'Easy'],
+                4: ['Again', 'Hard', 'Good', 'Easy']
+            }[this.ansButtonCount];
         },
     },
     name: 'deck-view',
