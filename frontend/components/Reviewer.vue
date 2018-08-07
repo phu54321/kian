@@ -12,11 +12,11 @@ div
     p.text-center
         template(v-if='!flipped')
             .mb-4
-                div.userContent.front.card(v-html="card.front")
+                shadow-dom.userContent.front.card(:html="card.front")
             b-button(v-hotkey.up.click="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             .mb-4
-                div.userContent.back.card(v-html="card.back")
+                shadow-dom.userContent.back.card(:html="card.back")
 
             b-button.mr-2(
                 v-for='(button, index) in answerButtons',
@@ -35,6 +35,7 @@ import asyncData from '../utils/asyncData';
 import NoteEditor from './NoteEditor';
 import ErrorDialog from './ErrorDialog.vue';
 import ErrorDialogVue from './ErrorDialog.vue';
+import ShadowDom from '../utils/ShadowDom';
 
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', {deckName});
@@ -64,7 +65,7 @@ export default {
             note: null
         };
     },
-    components: { NoteEditor },
+    components: { NoteEditor, ShadowDom },
     methods: {
         loadCard () {
             return ankiCall('reviewer_next_card', {
