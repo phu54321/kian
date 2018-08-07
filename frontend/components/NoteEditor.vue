@@ -3,10 +3,14 @@ div(v-if='note')
     span Model: {{model}}
 
     span.float-right
-        icon(name='regular/keyboard',
+        icon.mr-3(name='regular/keyboard',
             v-b-modal.helpShortcut,
             v-b-tooltip.hover,
+            scale='1.3',
             title='Show shortcuts')
+        span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
+            icon(name='regular/save')
+
     b-modal(id='helpShortcut', title='Keyboard shortcuts')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
@@ -16,7 +20,9 @@ div(v-if='note')
         span.font-weight-bold {{field.fieldFormat.name}}
         summernote(v-model='field.value')
 
-    b-btn(v-hotkey=['CTRL+ENTER'], @click.stop='save') Save
+    // Tags area
+    tag-editor(v-model='note.tags')
+
 </template>
 
 <script>
@@ -26,12 +32,14 @@ import asyncData from '../utils/asyncData';
 import Summernote from './editor/Summernote';
 import EditorShortcut from './editor/shortcut/EditorShortcut';
 import ErrorDialog from './ErrorDialog';
+import TagEditor from './editor/TagEditor';
 
 export default {
     props: ['noteId'],
     components: {
         Summernote,
         EditorShortcut,
+        TagEditor,
     },
     data () {
         return {
