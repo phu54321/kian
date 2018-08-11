@@ -13,13 +13,13 @@ def getNote(msg):
         return emit.emitResult({
             'id': note.id,
             'model': note.model()['name'],
-            'fields': [{
-                'fieldFormat': fFormat,
-                'value': v
-            } for fFormat, v in zip(fieldTemplateList, note.fields)],
+            'fieldFormats': [{
+                'name': fFormat['name'],
+                'sticky': fFormat['sticky'],
+            } for fFormat in fieldTemplateList],
+            'fields': note.fields,
             'tags': note.tags,
         })
-
 
 @registerApi('note_update')
 def setNote(msg):
