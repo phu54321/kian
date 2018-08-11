@@ -23,10 +23,10 @@ div(v-if='note')
             td
                 tag-editor(v-model='note.tags')
 
-        tr(v-for='field in note.fields', :key='field.fieldFormat.name')
-            th {{field.fieldFormat.name}}
+        tr(v-for='(fFormat, index) in note.fieldFormats', :key='fFormat.name')
+            th {{fFormat.name}}
             td
-                summernote(v-model='field.value')
+                summernote(v-model='note.fields[index]')
 
 
 </template>
@@ -83,6 +83,7 @@ export default {
 
 table.note-zone {
     th {
+        width: 15%;
         padding-right: 1em;
     }
 }
