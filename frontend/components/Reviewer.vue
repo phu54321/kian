@@ -85,7 +85,7 @@ export default {
                 cardId: this.card.id
             }).then(noteId => {
                 this.$router.push({
-                    name: 'edit',
+                    name: 'note_edit',
                     params: {
                         noteId
                     }
