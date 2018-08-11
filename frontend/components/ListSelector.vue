@@ -1,6 +1,5 @@
 <template lang='pug'>
-    b-form-select(:value='value', @input='onInput')
-        option(v-for='option in options', :key='option', :value='option') {{option}}
+    v-select(:value='value', :options='options', @input='onInput')
 </template>
 
 <script>
@@ -25,6 +24,10 @@ export default {
         return {
             options
         };
+    }, function () {
+        if(!this.value && this.options.length !== 0) {
+            this.$emit('input', this.options[0]);
+        }
     })],
 }
 </script>
