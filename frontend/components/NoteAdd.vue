@@ -58,8 +58,8 @@ export default {
     },
     data () {
         return {
-            deck: null,
-            model: null,
+            deck: '',
+            model: '',
             fieldFormats: [],
             fields: [],
             tags: [],

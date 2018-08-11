@@ -46,4 +46,3 @@ def saveMainCollection():
     mainColLock.acquire()
     mainCol.save()
     mainColLock.release()
-    mainCol = None
