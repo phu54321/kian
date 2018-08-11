@@ -10,9 +10,10 @@ from .dispatchTable import registerApi
 
 @registerApi('deck_list')
 def listDeck(msg):
-    return emit.emitResult(
-        [d['name'] for d in col.decks.all()]
-    )
+    with Col() as col:
+        return emit.emitResult(
+            [d['name'] for d in col.decks.all()]
+        )
 
 @registerApi('dashboard_deck_tree')
 def listDeckDue(msg):
