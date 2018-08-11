@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/phu54321/kian.git",
   "author": "phu54321 <phu54321@naver.com>",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "scripts": {
     "start": "npm run dev",
     "dev": "npm-run-all --parallel frontend-dev backend-dev",

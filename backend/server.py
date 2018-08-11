@@ -2,16 +2,14 @@
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from api import apiDispatch
-from col import detachCol
 import logging
 import json
-import signal
 import os
 from pathlib import Path
 import urllib.parse
 import sys
 import mimetypes
-from col import col
+from col import Col
 
 NET_PORT = 28735
 
@@ -27,9 +25,10 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/media/'):
             path = urllib.parse.unquote(self.path)
-            mediaDir = col().media.dir()
-            mediaPath = path[7:]
-            mediaFullPath = os.path.join(mediaDir, mediaPath)
+            with Col() as col:
+                mediaDir = col.media.dir()
+                mediaPath = path[7:]
+                mediaFullPath = os.path.join(mediaDir, mediaPath)
 
             # This will throw error if path traversal attack has been tried
             Path(mediaFullPath).relative_to(mediaDir)
@@ -59,15 +58,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             logging.exception('Exception from main handler')
 
 
-oldHandler = None
-
-def onTerminate(sig, frame):
-    signal.signal(signal.SIGUSR2, oldHandler)
-    detachCol()
-    os.kill(os.getpid(), signal.SIGUSR2)
-    sys.exit(0)
-
-
 LOG_FILENAME = 'server.out'
 
 def main():
@@ -78,18 +68,9 @@ def main():
     )
     logging.getLogger().addHandler(logging.StreamHandler())
 
-    global oldHandler
-    oldHandler = signal.signal(signal.SIGUSR2, onTerminate)
-
-
-    try:
-        with HTTPServer(("127.0.0.1", NET_PORT), RequestHandler) as httpd:
-            logging.info("Starting Anki_Headlass at port %s" % NET_PORT)
-            httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        detachCol()
+    with HTTPServer(("127.0.0.1", NET_PORT), RequestHandler) as httpd:
+        logging.info("Starting Anki_Headlass at port %s" % NET_PORT)
+        httpd.serve_forever()
 
     
 

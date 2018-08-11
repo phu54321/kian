@@ -1,5 +1,5 @@
 
-from col import col
+from col import Col
 import logging
 
 from . import emit
@@ -13,26 +13,26 @@ cardDict = {}
 def getNextScheduledCard(msg):
     """Fetch next scheduled card"""
 
-    
-    deckName = msg['deckName']
-    deck = col().decks.byName(deckName)
-    col().decks.select(deck['id'])
+    with Col() as col:
+        deckName = msg['deckName']
+        deck = col.decks.byName(deckName)
+        col.decks.select(deck['id'])
 
-    card = col().sched.getCard()
-    if card is None:
-        return emit.emitResult(None)
+        card = col.sched.getCard()
+        if card is None:
+            return emit.emitResult(None)
 
-    answerButtonCount = col().sched.answerButtons(card)
+        answerButtonCount = col.sched.answerButtons(card)
 
-    cardDict[card.id] = card
+        cardDict[card.id] = card
 
-    return emit.emitResult({
-        'cardId': card.id,
-        'noteId': card.nid,
-        'front': card.q(),
-        'back': card.a(),
-        'ansButtonCount': answerButtonCount,
-    })
+        return emit.emitResult({
+            'cardId': card.id,
+            'noteId': card.nid,
+            'front': card.q(),
+            'back': card.a(),
+            'ansButtonCount': answerButtonCount,
+        })
 
 @registerApi('reviewer_answer_card')
 def answerCard(msg):
@@ -41,6 +41,6 @@ def answerCard(msg):
     card = cardDict[cardId]
     ease = int(msg['ease'])
 
-    col().sched.answerCard(card, ease)
+    col.sched.answerCard(card, ease)
     logging.info("Cid[%d] Reviewed with ease %d" % (cardId, ease))
     return emit.emitResult(None)

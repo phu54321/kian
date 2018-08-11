@@ -8,18 +8,9 @@ db_path = os.path.join(
 
 mainCol = None
 
-def col():
-    global mainCol
-
-    if mainCol is None:
-        mainCol = Collection(db_path, log=True)
-
-    return mainCol
-
-
-def detachCol():
-    global mainCol
-    if mainCol:
-        mainCol.close()
-        mainCol = None
-        print('Connection detached')
+class Col(object):
+    def __enter__(self):
+        self.col = Collection(db_path, log=True)
+        return self.col
+    def __exit__(self, type, value, trace_back):
+        self.col.close()
