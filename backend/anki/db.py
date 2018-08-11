@@ -11,7 +11,7 @@ DBError = sqlite.Error
 
 class DB:
     def __init__(self, path, timeout=0):
-        self._db = sqlite.connect(path, timeout=timeout)
+        self._db = sqlite.connect(path, timeout=timeout, check_same_thread=False)
         self._db.text_factory = self._textFactory
         self._path = path
         self.echo = os.environ.get("DBECHO")
