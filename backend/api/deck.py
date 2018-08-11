@@ -15,6 +15,7 @@ def listDeck(msg):
             [d['name'] for d in col.decks.all()]
         )
 
+
 @registerApi('dashboard_deck_tree')
 def listDeckDue(msg):
     with Col() as col:
