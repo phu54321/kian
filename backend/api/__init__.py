@@ -6,5 +6,3 @@ import api.note
 import api.model
 import api.queryCard
 import api.card
-
-from api.dispatchTable import apiDispatch

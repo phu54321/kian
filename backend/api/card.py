@@ -1,7 +1,9 @@
-from col import Col
-
-from . import emit
-from .dispatchTable import registerApi
+from utils import (
+    Col,
+    registerApi,
+    typeCheck,
+    emit,
+)
 
 
 @registerApi('card_get')
