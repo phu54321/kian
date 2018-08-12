@@ -9,13 +9,17 @@ div
         span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
             icon(name='regular/save')
 
-    h1 Edit note
+    h1 Edit card
 
     b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
 
     table.note-zone.table
+        tr
+            th Deck
+            td
+                list-selector(v-model='deck', apiType='deck_list', disabled)
         tr
             th Model
             td
@@ -44,7 +48,7 @@ import ListSelector from './editor/ListSelector';
 import TagEditor from './editor/TagEditor';
 
 export default {
-    props: ['noteId'],
+    props: ['cardId'],
     components: {
         Summernote,
         EditorShortcut,
@@ -53,6 +57,7 @@ export default {
     },
     data () {
         return {
+            deck: '',
             model: '',
             tags: [],
             fields: [],
@@ -61,8 +66,8 @@ export default {
     },
     methods: {
         save () {
-            ankiCall('note_update', {
-                noteId: this.noteId,
+            ankiCall('card_update', {
+                cardId: this.cardId,
                 fields: this.fields.map(x => x.value),
                 tags: this.tags,
             }).then(() => {
@@ -73,17 +78,17 @@ export default {
         }
     },
     mixins: [asyncData(async props => {
-        const noteId = props.noteId;
-        const note = await ankiCall('note_get', {noteId});
+        const cardId = props.cardId;
+        const card = await ankiCall('card_get', {cardId});
         return {
-            model: note.model,
-            deck: note.deck,
-            fields: note.fields,
-            fieldFormats: note.fieldFormats,
-            tags: note.tags,
+            model: card.model,
+            deck: card.deck,
+            fields: card.fields,
+            fieldFormats: card.fieldFormats,
+            tags: card.tags,
         };
     })],
-    name: 'note-editor',
+    name: 'card-editor',
 };
 
 </script>
