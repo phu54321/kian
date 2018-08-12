@@ -32,7 +32,6 @@ div
 
 import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
-import NoteEditor from './NoteEditor';
 import ErrorDialog from './ErrorDialog.vue';
 import ErrorDialogVue from './ErrorDialog.vue';
 import ShadowDom from '../utils/ShadowDom';
@@ -65,7 +64,7 @@ export default {
             note: null
         };
     },
-    components: { NoteEditor, ShadowDom },
+    components: { ShadowDom },
     methods: {
         loadCard () {
             return ankiCall('reviewer_next_card', {
