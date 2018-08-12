@@ -22,7 +22,7 @@ def getNote(msg):
         })
 
 @registerApi('note_update')
-def setNote(msg):
+def updateNote(msg):
     with Col() as col:
         noteId = msg['noteId']
         fields = msg['fields']
@@ -30,6 +30,7 @@ def setNote(msg):
 
         note = col.getNote(noteId)
         assert len(fields) == len(note.fields)
+
         note.fields[:] = fields
         note.tags = tags
         note.flush()
