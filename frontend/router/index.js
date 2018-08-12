@@ -28,7 +28,7 @@ const router = new Router({
 
         {
             path: '/note/edit/:noteId',
-            component: require('../components/NoteEditor.vue').default,
+            component: require('../components/NoteEdit.vue').default,
             props: true,
             name: 'note_edit',
         },

@@ -45,7 +45,7 @@ import asyncData from '../utils/asyncData';
 import Summernote from './editor/Summernote';
 import EditorShortcut from './editor/shortcut/EditorShortcut';
 import ErrorDialog from './ErrorDialog';
-import ListSelector from './ListSelector';
+import ListSelector from './editor/ListSelector';
 import TagEditor from './editor/TagEditor';
 
 function resize(arr, size, defval) {
