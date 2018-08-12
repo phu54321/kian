@@ -1,5 +1,5 @@
 <template lang="pug">
-div(v-if='note')
+div
     span.float-right
         icon.mr-3(name='regular/keyboard',
             v-b-modal.helpShortcut,
@@ -16,18 +16,18 @@ div(v-if='note')
     table.note-zone.table
         tr
             th Model
-            td {{model}}
+            td
+                list-selector(v-model='model', apiType='model_list', disabled)
 
         tr
             th Tags
             td
-                tag-editor(v-model='note.tags')
+                tag-editor(v-model='tags')
 
-        tr(v-for='(fFormat, index) in note.fieldFormats', :key='fFormat.name')
+        tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
             th {{fFormat.name}}
             td
-                summernote(v-model='note.fields[index]')
-
+                summernote(v-model='fields[index]')
 
 </template>
 
@@ -38,6 +38,7 @@ import asyncData from '../utils/asyncData';
 import Summernote from './editor/Summernote';
 import EditorShortcut from './editor/shortcut/EditorShortcut';
 import ErrorDialog from './ErrorDialog';
+import ListSelector from './ListSelector';
 import TagEditor from './editor/TagEditor';
 
 export default {
@@ -45,20 +46,23 @@ export default {
     components: {
         Summernote,
         EditorShortcut,
+        ListSelector,
         TagEditor,
     },
     data () {
         return {
-            model: null,
-            note: null,
+            model: '',
+            tags: [],
+            fields: [],
+            fieldFormats: [],
         };
     },
     methods: {
         save () {
             ankiCall('note_update', {
                 noteId: this.noteId,
-                fields: this.note.fields.map(x => x.value),
-                tags: this.note.tags,
+                fields: this.fields.map(x => x.value),
+                tags: this.tags,
             }).then(() => {
                 window.location.reload();
             }).catch(err => {
@@ -69,9 +73,13 @@ export default {
     mixins: [asyncData(async props => {
         const noteId = props.noteId;
         const note = await ankiCall('note_get', {noteId});
+        console.log(note);
         return {
-            note,
-            model: note.model
+            model: note.model,
+            deck: note.deck,
+            fields: note.fields,
+            fieldFormats: note.fieldFormats,
+            tags: note.tags,
         };
     })],
     name: 'note-editor',
