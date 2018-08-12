@@ -1,62 +1,19 @@
 #!/usr/bin/env python3
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from aiohttp import web
+import aiohttp_cors
 from api import apiDispatch
 import logging
-import json
-import os
-from pathlib import Path
-import urllib.parse
-import sys
-import mimetypes
-from col import Col
+import asyncio
+
+async def postHandler(request):
+    data = await request.json()
+    print(data['apiType'])
+    result = apiDispatch(data)
+    return web.json_response(result)
+
 
 NET_PORT = 28735
-
-class RequestHandler(BaseHTTPRequestHandler):
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Content-Type', 'text/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
-        self.send_header('Access-Control-Allow-Methods', 'POST')
-        self.end_headers()
-
-    def do_GET(self):
-        if self.path.startswith('/media/'):
-            path = urllib.parse.unquote(self.path)
-            with Col() as col:
-                mediaDir = col.media.dir()
-                mediaPath = path[7:]
-                mediaFullPath = os.path.join(mediaDir, mediaPath)
-
-            # This will throw error if path traversal attack has been tried
-            Path(mediaFullPath).relative_to(mediaDir)
-            print(mediaFullPath)
-
-            cType, cEncoding = mimetypes.guess_type(mediaPath)
-
-            self.send_response(200)
-            self.send_header('Content-Type', cType)
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-
-            self.wfile.write(open(mediaFullPath, "rb").read())
-
-
-
-    def do_POST(self):
-        contentLength = int(self.headers.get('content-length'))
-        content = self.rfile.read(contentLength)
-        data = json.loads(content.decode('utf-8'))
-
-        self.do_OPTIONS() # Write headers
-        try:
-            result = apiDispatch(data)
-            self.wfile.write(json.dumps(result).encode('utf-8'))
-        except Exception:
-            logging.exception('Exception from main handler')
-
 
 LOG_FILENAME = 'server.out'
 
@@ -68,11 +25,19 @@ def main():
     )
     logging.getLogger().addHandler(logging.StreamHandler())
 
-    with HTTPServer(("127.0.0.1", NET_PORT), RequestHandler) as httpd:
-        logging.info("Starting Anki_Headlass at port %s" % NET_PORT)
-        httpd.serve_forever()
+    app = web.Application()
+    cors = aiohttp_cors.setup(app, defaults={
+        "*": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers="*",
+                allow_headers="*",
+            )
+    })
 
-    
+    resource = cors.add(app.router.add_resource("/"))
+    cors.add(resource.add_route("POST", postHandler))
+    web.run_app(app, port=NET_PORT)
+
 
 if __name__ == '__main__':
     main()

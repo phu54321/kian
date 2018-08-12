@@ -2,3 +2,5 @@ bs4
 pyaudio
 requests
 decorator
+aiohttp
+aiohttp-cors
