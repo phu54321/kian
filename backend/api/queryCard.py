@@ -8,9 +8,10 @@ from utils import (
 
 @registerApi('query_card')
 def listDeck(msg):
+    typeCheck(msg, {
+        'query': str,
+    })
     query = msg['query']
-    start = msg.get('start', 0)
-    end = msg.get('end', -1)
     with Col() as col:
-        return emit.emitResult(col.findCards(query)[start:end])
+        return emit.emitResult(col.findCards(query))
 
