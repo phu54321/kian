@@ -8,7 +8,6 @@ import asyncio
 
 async def postHandler(request):
     data = await request.json()
-    print(data['apiType'])
     result = apiDispatch(data)
     return web.json_response(result)
 
@@ -36,7 +35,7 @@ def main():
 
     resource = cors.add(app.router.add_resource("/"))
     cors.add(resource.add_route("POST", postHandler))
-    web.run_app(app, port=NET_PORT)
+    web.run_app(app, host='127.0.0.1', port=NET_PORT)
 
 
 if __name__ == '__main__':
