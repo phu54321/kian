@@ -1,6 +1,5 @@
 <template lang="pug">
 div
-    h1 Add Note
     span.float-right
         icon.mr-3(name='regular/keyboard',
             v-b-modal.helpShortcut,
@@ -9,6 +8,7 @@ div
             title='Show shortcuts')
         span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
             icon(name='regular/save')
+    h1 Add Note
 
     b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
         editor-shortcut(id='helpShortcut')
@@ -48,6 +48,11 @@ import ErrorDialog from './ErrorDialog';
 import ListSelector from './ListSelector';
 import TagEditor from './editor/TagEditor';
 
+function resize(arr, size, defval) {
+    while (arr.length > size) { arr.pop(); }
+    while (arr.length < size) { arr.push(defval); }
+}
+
 export default {
     props: ['noteId'],
     components: {
@@ -68,6 +73,16 @@ export default {
     methods: {
         save () {
             console.log('Not implemented');
+        }
+    },
+    watch: {
+        async model (modelName) {
+            const model = await ankiCall('model_get', { modelName });
+            const fieldFormats = model.fieldFormats;
+            this.fieldFormats = fieldFormats;
+            const newFields = this.fields;
+            resize(newFields, fieldFormats.length, '');
+            this.fields = newFields;
         }
     },
     name: 'note-editor',
