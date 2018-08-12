@@ -24,6 +24,9 @@ Vue.use(VueAxios, axios);
 import vSelect from 'vue-select';
 Vue.component('v-select', vSelect);
 
+import VueVirtualScroller from 'vue-virtual-scroller';
+Vue.use(VueVirtualScroller);
+
 // App
 import App from './App';
 new Vue({

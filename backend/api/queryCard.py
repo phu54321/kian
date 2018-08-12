@@ -2,13 +2,12 @@ from col import Col
 
 from . import emit
 from .dispatchTable import registerApi
+from .card import encodeCard
 
-
-@registerApi('query_card')
-def listDeck(msg):
+@registerApi('query_cards')
+def queryCards(msg):
     query = msg['query']
-    start = msg.get('start', 0)
-    end = msg.get('end', -1)
+
     with Col() as col:
-        return emit.emitResult(col.findCards(query)[start:end])
+        return emit.emitResult(col.findCards(query))
 
