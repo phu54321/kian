@@ -5,12 +5,13 @@
                 | {{tag}}
                 span(@click='removeTagByName(tag)')
                     icon.ml-1(name='times-circle', scale='.75')
-        input.tag-new(v-model='buildingTag', @keydown='checkTag', @input='emitTag', placeholder='Add new tags...')
+        input.tag-new(v-model='buildingTag', @keydown='onKeyDown', @input='emitTag', placeholder='Add new tags...')
 </template>
 
 <script>
 
 import { KEY_MAP } from '../../utils/keycode';
+import $ from 'jquery';
 
 export default {
     props: ['value'],
@@ -21,12 +22,18 @@ export default {
         };
     },
     methods: {
-        checkTag (e) {
+        onKeyDown (e) {
             if(e.keyCode == KEY_MAP['SPACE'] || e.keyCode == KEY_MAP['ENTER']) {
                 const newTag = this.buildingTag.trim();
                 if(newTag && this.tags.indexOf(newTag) == -1) this.tags.push(newTag);
                 this.buildingTag = '';
                 event.preventDefault();
+            }
+            else if(e.keyCode == KEY_MAP['BACKSPACE']) {
+                const inputEl = $(this.$el).find('.tag-new')[0];
+                if(inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
+                    this.tags.pop();
+                }
             }
             this.emitTag();
         },
