@@ -68,10 +68,11 @@ export default {
         save () {
             ankiCall('card_update', {
                 cardId: this.cardId,
-                fields: this.fields.map(x => x.value),
+                deck: this.deck,
+                fields: this.fields,
                 tags: this.tags,
             }).then(() => {
-                window.location.reload();
+                this.$router.go(-1);
             }).catch(err => {
                 ErrorDialog.openErrorDialog(null, err.message);
             });
