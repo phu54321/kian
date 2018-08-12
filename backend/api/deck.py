@@ -61,10 +61,9 @@ def getDeckInfo(msg):
         'deckName': str,
     })
     with Col() as col:
-        deckName = msg['deckName']
-        deck = col.decks.byName(deckName)
-        for dname, did, rev, lrn, new in col.sched.deckDueList():
-            if dname == deckName:
+        deckNameReq = msg['deckName']
+        for deckName, did, rev, lrn, new in col.sched.deckDueList():
+            if deckName == deckNameReq:
                 # SQL Code from More Overview Stats 2 addon
                 col.decks.select(did)
                 total, mature, young, unseen, suspended, due = col.db.first(
