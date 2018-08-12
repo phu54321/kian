@@ -11,7 +11,9 @@ function eventToKeySequence (e) {
 
 function registerHotkey (el, binding) {
     if (el._keyDownHandler) unregisterHotkey(el);
-    const appliableKey = binding.value.map(x => x.toUpperCase());
+    let hotkeyList = binding.value;
+    if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
+    const appliableKey = hotkeyList.map(x => x.toUpperCase());
     const eventType = ['hotkey', 'click'];
 
     if (binding.modifiers.up) {
