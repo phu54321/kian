@@ -4,25 +4,28 @@ from . import emit
 from .dispatchTable import registerApi
 
 
+def encodeCard(col, card):
+    note = card.note()
+    model = card.model()
+    return {
+        'id': card.id,
+        'deck': col.decks.get(card.did)['name'],
+        'noteId': note.id,
+        'model': model['name'],
+        'fieldFormats': [{
+            'name': fFormat['name'],
+            'sticky': fFormat['sticky'],
+        } for fFormat in model['flds']],
+        'fields': note.fields,
+        'tags': note.tags,
+    }
+
 @registerApi('card_get')
-def getNote(msg):
+def getCard(msg):
     with Col() as col:
         cardId = msg['cardId']
         card = col.getCard(cardId)
-        note = card.note()
-        model = card.model()
-        return emit.emitResult({
-            'id': card.id,
-            'deck': col.decks.get(card.did)['name'],
-            'noteId': note.id,
-            'model': model['name'],
-            'fieldFormats': [{
-                'name': fFormat['name'],
-                'sticky': fFormat['sticky'],
-            } for fFormat in model['flds']],
-            'fields': note.fields,
-            'tags': note.tags,
-        })
+        return emit.emitResult(encodeCard(col, card))
 
 
 @registerApi('card_update')
