@@ -2,9 +2,11 @@
 
 from aiohttp import web
 import aiohttp_cors
-from api import apiDispatch
 import logging
 import asyncio
+
+import api
+from utils.dispatchTable import apiDispatch
 
 async def postHandler(request):
     data = await request.json()
