@@ -27,10 +27,10 @@ const router = new Router({
         },
 
         {
-            path: '/note/edit/:noteId',
-            component: require('../components/NoteEdit.vue').default,
+            path: '/card/edit/:cardId',
+            component: require('../components/CardEdit.vue').default,
             props: true,
-            name: 'note_edit',
+            name: 'card_edit',
         },
 
         {

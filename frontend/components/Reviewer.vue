@@ -80,17 +80,11 @@ export default {
             });
         },
         openEditor () {
-            ankiCall('nid_from_cid', {
-                cardId: this.card.id
-            }).then(noteId => {
-                this.$router.push({
-                    name: 'note_edit',
-                    params: {
-                        noteId
-                    }
-                });
-            }).catch(err => {
-                ErrorDialogVue.openErrorDialog('Cannot open editor window:\n', err.message);
+            this.$router.push({
+                name: 'card_edit',
+                params: {
+                    cardId: this.card.id
+                }
             });
         },
         answerCard (ease) {
