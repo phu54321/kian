@@ -8,6 +8,9 @@ from utils import (
 
 @registerApi('note_get')
 def getNote(msg):
+    typeCheck(msg, {
+        'noteId': int,
+    })
     with Col() as col:
         noteId = msg['noteId']
         note = col.getNote(noteId)
@@ -25,6 +28,11 @@ def getNote(msg):
 
 @registerApi('note_update')
 def updateNote(msg):
+    typeCheck(msg, {
+        'noteId': int,
+        'fields': list,
+        'tags': list
+    })
     with Col() as col:
         noteId = msg['noteId']
         fields = msg['fields']
@@ -42,6 +50,9 @@ def updateNote(msg):
 
 @registerApi('nid_from_cid')
 def getNidFromCid(msg):
+    typeCheck(msg, {
+        'cardId': int
+    })
     with Col() as col:
         cid = msg['cardId']
         return emit.emitResult(col.getCard(cid).nid)

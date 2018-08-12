@@ -7,7 +7,10 @@ from utils import (
 
 
 @registerApi('card_get')
-def getNote(msg):
+def getCard(msg):
+    typeCheck(msg, {
+        'cardId': int,
+    })
     with Col() as col:
         cardId = msg['cardId']
         card = col.getCard(cardId)
@@ -29,6 +32,12 @@ def getNote(msg):
 
 @registerApi('card_update')
 def updateCard(msg):
+    typeCheck(msg, {
+        'cardId': int,
+        'deck': str,
+        'fields': list,
+        'tags': list
+    })
     with Col() as col:
         card = col.getCard(msg['cardId'])
         note = col.getNote(card.nid)

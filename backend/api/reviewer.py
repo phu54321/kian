@@ -10,10 +10,13 @@ import logging
 
 cardDict = {}
 
-
 @registerApi('reviewer_next_card')
 def getNextScheduledCard(msg):
     """Fetch next scheduled card"""
+
+    typeCheck(msg, {
+        'deckName': str,
+    })
 
     with Col() as col:
         deckName = msg['deckName']
@@ -38,11 +41,17 @@ def getNextScheduledCard(msg):
 
 @registerApi('reviewer_answer_card')
 def answerCard(msg):
+    typeCheck(msg, {
+        'cardId': int,
+        'ease': int,
+    })
+
     cardId, ease = int(msg['cardId']), int(msg['ease'])
     cardId = msg['cardId']
     card = cardDict[cardId]
     ease = int(msg['ease'])
 
-    col.sched.answerCard(card, ease)
-    logging.info("Cid[%d] Reviewed with ease %d" % (cardId, ease))
-    return emit.emitResult(None)
+    with Col() as col:
+        col.sched.answerCard(card, ease)
+        logging.info("Cid[%d] Reviewed with ease %d" % (cardId, ease))
+        return emit.emitResult(None)

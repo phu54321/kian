@@ -1,8 +1,10 @@
-# This file imports every used subrouts
+# This file imports every apis
 
-import api.deck
-import api.reviewer
-import api.note
-import api.model
-import api.queryCard
-import api.card
+from . import (
+    deck,
+    note,
+    card,
+    model,
+    queryCard,
+    reviewer
+)

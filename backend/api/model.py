@@ -13,6 +13,9 @@ def getModelList(msg):
 
 @registerApi('model_get')
 def getModel(msg):
+    typeCheck(msg, {
+        'modelName': str,
+    })
     with Col() as col:
         modelName = msg['modelName']
         model = col.models.byName(modelName)
