@@ -1,5 +1,5 @@
 <template lang='pug'>
-    v-select(:value='value', :options='options', @input='onInput')
+    v-select(:value='value', :options='options', :disabled='disabled' @input='onInput')
 </template>
 
 <script>
@@ -7,7 +7,8 @@ import asyncData from '../utils/asyncData';
 import {ankiCall} from '../api/ankiCall';
 
 export default {
-    props: ['value', 'apiType'],
+    props: ['value', 'apiType', 'disabled'],
+    name: 'list-selector',
     data () {
         return {
             options: [this.value]

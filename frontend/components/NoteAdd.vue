@@ -83,7 +83,7 @@ export default {
             const newFields = this.fields;
             resize(newFields, fieldFormats.length, '');
             this.fields = newFields;
-        }
+        },
     },
     name: 'note-editor',
 };
