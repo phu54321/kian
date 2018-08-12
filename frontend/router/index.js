@@ -41,7 +41,7 @@ const router = new Router({
         },
 
         {
-            path: '/browser',
+            path: '/browse',
             component: require('../components/Browser.vue').default,
             props: true,
             name: 'browser',
