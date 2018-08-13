@@ -29,7 +29,7 @@ const router = new Router({
         {
             path: '/card/edit/:cardId',
             component: require('../components/CardEdit.vue').default,
-            props: true,
+            props: route => ({cardId: Number(route.params.cardId)}),
             name: 'card_edit',
         },
 
