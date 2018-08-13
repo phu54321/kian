@@ -1,7 +1,9 @@
-from col import Col
-
-from . import emit
-from .dispatchTable import registerApi
+from utils import (
+    Col,
+    registerApi,
+    typeCheck,
+    emit,
+)
 
 
 def encodeCard(col, card):
@@ -22,6 +24,9 @@ def encodeCard(col, card):
 
 @registerApi('card_get')
 def getCard(msg):
+    typeCheck(msg, {
+        'cardId': int,
+    })
     with Col() as col:
         cardId = msg['cardId']
         card = col.getCard(cardId)
@@ -30,6 +35,12 @@ def getCard(msg):
 
 @registerApi('card_update')
 def updateCard(msg):
+    typeCheck(msg, {
+        'cardId': int,
+        'deck': str,
+        'fields': list,
+        'tags': list
+    })
     with Col() as col:
         card = col.getCard(msg['cardId'])
         note = col.getNote(card.nid)

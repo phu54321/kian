@@ -4,7 +4,7 @@ from threading import Timer, Lock
 
 db_path = os.path.join(
     os.path.dirname(__file__),
-    'testdata/collection.anki2'
+    '../testdata/collection.anki2'
 )
 
 
