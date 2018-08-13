@@ -4,13 +4,23 @@ function translateParamsToProps (to) {
     const routeMatches = to.matched;
     const params = to.params;
     const lastRoute = routeMatches[routeMatches.length - 1];
-    const targetProps = lastRoute.props.default;
+    const routeProps = lastRoute.props.default;
 
-    if(targetProps === true) {
-        return params;
+    if(routeProps === true) {
+        const targetProps = lastRoute.components.default.props;
+        const props = {};
+
+        // Match types to target component's typing system, if possible.
+        Object.keys(targetProps).forEach(propName => {
+            const targetProp = targetProps[propName];
+            const targetPropType = targetProp.type;
+            if(targetPropType === null) props[propName] = params[propName];
+            else props[propName] = targetPropType(params[propName]);
+        });
+        return props;
     }
-    else if(typeof targetProps === 'function') {
-        return targetProps(to);
+    else if(typeof routeProps === 'function') {
+        return routeProps(to);
     }
 }
 
