@@ -1,18 +1,20 @@
 <template lang="pug">
 
-virtual-scroller.table(:items='cards', item-height='50', container-tag='table', content-tag='tbody')
-    thead(slot='before-content')
+table.table.table-sm
+    thead
         tr
+            th Front
             th Deck
             th Card type
-            th Front
             th Tags
-    template(slot-scope='{item, itemKey}')
-        tr(:key='itemKey')
-            td {{item.deck}}
-            td {{item.model}} \#{{item.ord}}
-            td {{textVersionjs(item.front)}}
-            td {{item.tags.join(', ')}}
+    tbody
+        template(v-for='item in cards')
+            tr(:key='item.id')
+                td
+                    .browser-col-preview {{textVersionjs(item.front)}}
+                td.browser-col-deck {{item.deck}}
+                td.browser-col-model {{item.model}} \#{{item.ord}}
+                td.browser-col-tag {{item.tags.join(', ')}}        
 
 </template>
 
@@ -52,8 +54,20 @@ export default {
 
 <style lang="scss" scoped>
 
-.scrollable {
-    height: 300px;
-}
+table {
+    td {
+        font-size: .8em;
+    }
+    .browser-col-preview {
+        @extend .browser-ellipsis;
+        width: 20em;
+    }
 
+    .browser-ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+}
 </style>
