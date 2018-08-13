@@ -3,10 +3,16 @@
 virtual-scroller.table(:items='cards', item-height='50', container-tag='table', content-tag='tbody')
     thead(slot='before-content')
         tr
-            th Card Id
+            th Deck
+            th Card type
+            th Front
+            th Tags
     template(slot-scope='{item, itemKey}')
         tr(:key='itemKey')
-            td {{item.id}}
+            td {{item.deck}}
+            td {{item.model}} \#{{item.ord}}
+            td {{textVersionjs(item.front)}}
+            td {{item.tags.join(', ')}}
 
 </template>
 
@@ -14,13 +20,23 @@ virtual-scroller.table(:items='cards', item-height='50', container-tag='table', 
 
 import { ankiCall } from '../../api/ankiCall';
 import asyncData from '../../utils/asyncData';
+import textVersionjs from 'textVersionjs';
 
 export default {
     props: ['query'],
     data () {
         return {
-            cards: []
+            cards: [],
         };
+    },
+    methods: {
+        textVersionjs (text) {
+            return textVersionjs(text, {
+                imgProcess (src, alt) {
+                    return '';
+                }
+            });
+        }
     },
     mixins: [asyncData(async props => {
         let cardIds = await ankiCall('browser_query', { query: props.query });
