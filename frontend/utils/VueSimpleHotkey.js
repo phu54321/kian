@@ -1,14 +1,5 @@
-import {INVERSE_KEY_MAP} from './keycode';
+import hotkeys from 'hotkeys-js';
 import $ from 'jquery';
-
-function eventToKeySequence (e) {
-    const s = [];
-    if (e.ctrlKey || e.metaKey) s.push('CTRL');
-    if (e.shiftKey) s.push('SHIFT');
-    if (e.altKey) s.push('ALT');
-    if (e.keyCode) s.push(INVERSE_KEY_MAP[e.keyCode]);
-    return s.join('+');
-}
 
 function clickElement (el) {
     const $el = $(el);
@@ -17,54 +8,33 @@ function clickElement (el) {
     const height = $el.height();
     const targetEl = document.elementFromPoint(left + width / 2, top + height / 2);
 
-    targetEl.dispatchEvent(new Event('mousedown'));
-    targetEl.dispatchEvent(new Event('mouseup'));
-    targetEl.click();
-
+    console.log(el, targetEl);
+    targetEl.dispatchEvent(new MouseEvent('mousedown'));
+    targetEl.dispatchEvent(new MouseEvent('mouseup'));
+    targetEl.dispatchEvent(new MouseEvent('click'));
 }
 
 function registerHotkey (el, binding) {
     if (el._keyDownHandler) unregisterHotkey(el);
+
     let hotkeyList = binding.value;
     if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
-    const appliableKey = hotkeyList.map(x => x.toUpperCase());
-
-    if (binding.modifiers.down) {
-        el._keyDownHandler = function (e) {
-            if (appliableKey.indexOf(eventToKeySequence(e)) != -1) {
-                clickElement(el);
-                e.stopPropagation();
-                e.preventDefault();
-            }
-        };
-        el._keyUpHandler = function () {};
-    } else {
-        let lastPressedKeySequence = null;
-        el._keyDownHandler = function (e) {
-            lastPressedKeySequence = eventToKeySequence(e);
-            if (appliableKey.indexOf(lastPressedKeySequence) != -1) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-        };
-        el._keyUpHandler = function () {
-            if (appliableKey.indexOf(lastPressedKeySequence) != -1) {
-                clickElement(el);
-            }
-            lastPressedKeySequence = null;
-        };
-    }
-    document.addEventListener('keydown', el._keyDownHandler, true);
-    document.addEventListener('keyup', el._keyUpHandler);
+    const hotkeyString = hotkeyList.map(x => x.toLowerCase()).join(',');
+    el._hotkeyString = hotkeyString;
+ 
+    hotkeys(hotkeyString, function (e) {
+        clickElement(el);
+        console.log('click', hotkeyString, el);
+        e.stopPropagation();
+        e.preventDefault();
+    });
 
 }
 
 function unregisterHotkey (el) {
-    if (el._keyDownHandler) {
-        document.removeEventListener('keydown', el._keyDownHandler, true);
-        document.removeEventListener('keyup', el._keyUpHandler);
-        el._keyDownHandler = undefined;
-        el._keyUpHandler = undefined;
+    if (el._hotkeyString) {
+        hotkeys.unbind(el._hotkeyString);
+        el._hotkeyString = undefined;
     }
 }
 

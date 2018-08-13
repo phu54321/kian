@@ -4,16 +4,16 @@ div
     input(type='hidden', :value='card.id')
     span.text-secondary Deck: {{deckName}}
     div.float-right
-        span(v-hotkey.up="['c']", @click="loadCard()")
+        span(v-hotkey="['c']", @click="loadCard()")
             icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
-        span(v-hotkey.up="['e']", @click="openEditor()")
+        span(v-hotkey="['e']", @click="openEditor()")
             icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
     p.text-center
         template(v-if='!flipped')
             .mb-4
                 shadow-dom.userContent.front.card(:html="card.front")
-            b-button(v-hotkey.up.click="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
+            b-button(v-hotkey.click="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             .mb-4
                 shadow-dom.userContent.back.card(:html="card.back")
@@ -21,7 +21,7 @@ div
             b-button.mr-2(
                 v-for='(button, index) in answerButtons',
                 :key='button'
-                v-hotkey.up='(button == "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
+                v-hotkey='(button == "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
                 @click='answerCard(index + 1)',
                 size='sm',
                 :variant='`outline-${answerButtonColor(button)}`') {{button}}
