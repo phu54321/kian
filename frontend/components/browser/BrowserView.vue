@@ -2,7 +2,7 @@
 
 div
     b-table(
-        small, 
+        small, hover,
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
         :items='cards', :fields='fields')
