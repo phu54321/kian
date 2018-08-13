@@ -5,16 +5,31 @@ table.table.table-sm
         tr
             th Front
             th Deck
-            th Card type
+            th Model
+            th #
+            th Created
+            th Updated
+            th Due
             th Tags
     tbody
         template(v-for='item in cards')
             tr(:key='item.id')
                 td
                     .browser-col-preview {{textVersionjs(item.front)}}
-                td.browser-col-deck {{item.deck}}
-                td.browser-col-model {{item.model}} \#{{item.ord}}
-                td.browser-col-tag {{item.tags.join(', ')}}        
+                td
+                    div {{item.deck}}
+                td
+                    .browser-col-model {{item.model}}
+                td
+                    div {{item.ord + 1}}
+                td
+                    div {{timeToText(item.createdAt)}}
+                td
+                    div {{timeToText(item.updatedAt)}}
+                td
+                    div {{timeToText(item.due)}}
+                td
+                    div {{item.tags.join(', ')}}
 
 </template>
 
@@ -23,6 +38,7 @@ table.table.table-sm
 import { ankiCall } from '../../api/ankiCall';
 import asyncData from '../../utils/asyncData';
 import textVersionjs from 'textVersionjs';
+import padLeft from 'pad-left';
 
 export default {
     props: ['query'],
@@ -38,7 +54,14 @@ export default {
                     return '';
                 }
             });
-        }
+        },
+        timeToText (timestamp) {
+            const date = new Date(timestamp * 1000);
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+            return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
+        },
     },
     mixins: [asyncData(async props => {
         let cardIds = await ankiCall('browser_query', { query: props.query });
@@ -54,20 +77,30 @@ export default {
 
 <style lang="scss" scoped>
 
+.browser-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 table {
     td {
         font-size: .8em;
+        div {
+            @extend .browser-ellipsis;
+        }
     }
+
     .browser-col-preview {
         @extend .browser-ellipsis;
-        width: 20em;
     }
 
-    .browser-ellipsis {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .browser-col-model {
+        @extend .browser-ellipsis;
     }
 
+    .browser-col-tags {
+        @extend .browser-ellipsis;
+    }
 }
 </style>

@@ -43,5 +43,8 @@ def getCardsBatch(msg):
                 'front': card.q(),
                 'back': card.a(),
                 'tags': note.tags,
+                'createdAt': card.id // 1000,
+                'updatedAt': card.mod,
+                'due': col.crt + 86400 * card.due,
             })
         return emit.emitResult(ret)
