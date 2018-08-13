@@ -6,7 +6,7 @@ from utils import (
 )
 
 
-@registerApi('query_card')
+@registerApi('query_cards')
 def listDeck(msg):
     typeCheck(msg, {
         'query': str,
