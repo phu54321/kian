@@ -48,7 +48,9 @@ import ListSelector from './editor/ListSelector';
 import TagEditor from './editor/TagEditor';
 
 export default {
-    props: ['cardId'],
+    props: {
+        cardId: Number,
+    },
     components: {
         Summernote,
         EditorShortcut,

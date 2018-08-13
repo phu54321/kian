@@ -21,8 +21,9 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
 
-import vSelect from 'vue-select';
-Vue.component('v-select', vSelect);
+import Multiselect from 'vue-multiselect';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+Vue.component('multiselect', Multiselect);
 
 import VueVirtualScroller from 'vue-virtual-scroller';
 Vue.use(VueVirtualScroller);

@@ -1,9 +1,10 @@
+from utils import (
+    Col,
+    registerApi,
+    typeCheck,
+    emit,
+)
 import time
-
-from col import Col
-
-from . import emit
-from .dispatchTable import registerApi
 
 
 @registerApi('deck_list')
@@ -39,9 +40,13 @@ def listDeckDue(msg):
 
 @registerApi('deck_collapse')
 def collapseDeck(msg):
+    typeCheck(msg, {
+        'deckName': str,
+        'collapse': bool,
+    })
     with Col() as col:
         deckName = msg['deckName']
-        newCollapse = bool(msg['collapse'])
+        newCollapse = msg['collapse']
         deck = col.decks.byName(deckName)
         did = deck['id']
         if deck['collapsed'] != newCollapse:
@@ -52,11 +57,13 @@ def collapseDeck(msg):
 
 @registerApi('deck_info')
 def getDeckInfo(msg):
+    typeCheck(msg, {
+        'deckName': str,
+    })
     with Col() as col:
-        deckName = msg['deckName']
-        deck = col.decks.byName(deckName)
-        for dname, did, rev, lrn, new in col.sched.deckDueList():
-            if dname == deckName:
+        deckNameReq = msg['deckName']
+        for deckName, did, rev, lrn, new in col.sched.deckDueList():
+            if deckName == deckNameReq:
                 # SQL Code from More Overview Stats 2 addon
                 col.decks.select(did)
                 total, mature, young, unseen, suspended, due = col.db.first(

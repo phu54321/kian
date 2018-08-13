@@ -1,13 +1,17 @@
-from col import Col
+from utils import (
+    Col,
+    registerApi,
+    typeCheck,
+    emit,
+)
 
-from . import emit
-from .dispatchTable import registerApi
-from .card import encodeCard
 
-@registerApi('query_cards')
-def queryCards(msg):
+@registerApi('query_card')
+def listDeck(msg):
+    typeCheck(msg, {
+        'query': str,
+    })
     query = msg['query']
-
     with Col() as col:
         return emit.emitResult(col.findCards(query))
 

@@ -1,10 +1,34 @@
 import ErrorDialog from '../components/ErrorDialog';
 
+function translateParamsToProps (to) {
+    const routeMatches = to.matched;
+    const params = to.params;
+    const lastRoute = routeMatches[routeMatches.length - 1];
+    const routeProps = lastRoute.props.default;
+
+    if(routeProps === true) {
+        const targetProps = lastRoute.components.default.props;
+        const props = {};
+
+        // Match types to target component's typing system, if possible.
+        Object.keys(targetProps).forEach(propName => {
+            const targetProp = targetProps[propName];
+            const targetPropType = targetProp.type;
+            if(targetPropType === null) props[propName] = params[propName];
+            else props[propName] = targetPropType(params[propName]);
+        });
+        return props;
+    }
+    else if(typeof routeProps === 'function') {
+        return routeProps(to);
+    }
+}
+
 export default function asyncData (loadData, callback) {
     return {
         // this prevents beforeRouteEnter and created from both manipulating the data.
         props: ['$asyncDataTrap'],
-        mounted () {
+        created () {
             if (this.$route.params.$asyncDataTrap) {
                 this.$route.params.$asyncDataTrap = false;
                 return;
@@ -15,7 +39,8 @@ export default function asyncData (loadData, callback) {
             });
         },
         beforeRouteEnter (to, from, next) {
-            loadData(to.params).then(data => {
+            const toProps = translateParamsToProps(to);
+            loadData(toProps).then(data => {
                 to.params.$asyncDataTrap = true;
                 next(vm => {
                     Object.assign(vm.$data, data);
@@ -27,7 +52,8 @@ export default function asyncData (loadData, callback) {
             });
         },  
         beforeRouteUpdate (to, from, next) {
-            loadData(to.params).then(data => {
+            const toProps = translateParamsToProps(to);
+            loadData(toProps).then(data => {
                 Object.assign(this.$data, data);
                 if(callback) callback.apply(this);
                 next();
