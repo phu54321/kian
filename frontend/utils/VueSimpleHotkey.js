@@ -7,6 +7,7 @@ const classRules = {
 
 const tagNameRules = {
     a: (el) => el.click(),
+    button: (el) => el.click(),
 };
 
 function triggerHotkey (el, _binding, _vnode) {
