@@ -1,12 +1,12 @@
 <template lang="pug">
 
-virtual-scroller.table(:items='cardIds', item-height='50', container-tag='table', content-tag='tbody')
+virtual-scroller.table(:items='cards', item-height='50', container-tag='table', content-tag='tbody')
     thead(slot='before-content')
         tr
             th Card Id
-    template(slot-scope='props')
-        tr(:key='props.itemKey')
-            td {{props.item}}
+    template(slot-scope='{item, itemKey}')
+        tr(:key='itemKey')
+            td {{item.id}}
 
 </template>
 
@@ -19,15 +19,15 @@ export default {
     props: ['query'],
     data () {
         return {
-            cardIds: []
+            cards: []
         };
     },
     mixins: [asyncData(async props => {
-        const cardIds = await ankiCall('query_cards', {
-            query: props.query
-        });
+        let cardIds = await ankiCall('browser_query', { query: props.query });
+        cardIds = cardIds.slice(0, 100)
+        const cards = await ankiCall('browser_get_batch', {cardIds})
         return {
-            cardIds: cardIds.slice(0, 100)
+            cards
         };
     })],
 };

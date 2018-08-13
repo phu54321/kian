@@ -5,6 +5,6 @@ from . import (
     note,
     card,
     model,
-    queryCard,
+    browser,
     reviewer
 )
