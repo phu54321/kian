@@ -1,22 +1,37 @@
 #!/usr/bin/env python3
 
 from aiohttp import web
-import aiohttp_cors
+import socketio
 import logging
-import asyncio
 
 import api
 from utils.dispatchTable import apiDispatch
 
-async def postHandler(request):
-    data = await request.json()
-    result = apiDispatch(data)
-    return web.json_response(result)
-
 
 NET_PORT = 28735
-
 LOG_FILENAME = 'server.out'
+
+#######
+
+
+sio = socketio.AsyncServer()
+
+@sio.on('connect')
+def connect(sid, environ):
+    print("socket.io connected:", sid)
+
+@sio.on('msg')
+async def message(sid, data):
+    syncKey = data['syncKey']
+    del data['syncKey']
+
+    result = apiDispatch(data)
+    result['syncKey'] = syncKey
+    await sio.emit('msg', result, room=sid)
+
+@sio.on('disconnect')
+def disconnect(sid):
+    print('socket.io disconnected:', sid)
 
 def main():
     logging.basicConfig(
@@ -27,16 +42,7 @@ def main():
     logging.getLogger().addHandler(logging.StreamHandler())
 
     app = web.Application()
-    cors = aiohttp_cors.setup(app, defaults={
-        "*": aiohttp_cors.ResourceOptions(
-                allow_credentials=True,
-                expose_headers="*",
-                allow_headers="*",
-            )
-    })
-
-    resource = cors.add(app.router.add_resource("/"))
-    cors.add(resource.add_route("POST", postHandler))
+    sio.attach(app)
     web.run_app(app, host='127.0.0.1', port=NET_PORT)
 
 
