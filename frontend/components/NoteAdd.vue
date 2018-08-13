@@ -18,12 +18,12 @@ div
         tr
             th Deck
             td
-                list-selector(v-model='deck', apiType='deck_list')
+                list-selector(v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
 
         tr
             th Model
             td
-                list-selector(v-model='model', apiType='model_list')
+                list-selector(v-hotkey="['ctrl+m']", v-model='model', apiType='model_list')
 
         tr
             th Tags
@@ -77,6 +77,7 @@ export default {
     },
     watch: {
         async model (modelName) {
+            console.log(modelName);
             const model = await ankiCall('model_get', { modelName });
             const fieldFormats = model.fieldFormats;
             this.fieldFormats = fieldFormats;
