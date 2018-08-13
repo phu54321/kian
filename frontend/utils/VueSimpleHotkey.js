@@ -1,4 +1,5 @@
 import {INVERSE_KEY_MAP} from './keycode';
+import $ from 'jquery';
 
 function eventToKeySequence (e) {
     const s = [];
@@ -9,19 +10,29 @@ function eventToKeySequence (e) {
     return s.join('+');
 }
 
+function clickElement (el) {
+    const $el = $(el);
+    const {left, top} = $el.offset();
+    const width = $el.width();
+    const height = $el.height();
+    const targetEl = document.elementFromPoint(left + width / 2, top + height / 2);
+
+    targetEl.dispatchEvent(new Event('mousedown'));
+    targetEl.dispatchEvent(new Event('mouseup'));
+    targetEl.click();
+
+}
+
 function registerHotkey (el, binding) {
     if (el._keyDownHandler) unregisterHotkey(el);
     let hotkeyList = binding.value;
     if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
     const appliableKey = hotkeyList.map(x => x.toUpperCase());
-    const eventType = ['hotkey', 'click'];
 
     if (binding.modifiers.down) {
         el._keyDownHandler = function (e) {
             if (appliableKey.indexOf(eventToKeySequence(e)) != -1) {
-                eventType.forEach(evt => {
-                    el.dispatchEvent(new Event(evt));
-                });
+                clickElement(el);
                 e.stopPropagation();
                 e.preventDefault();
             }
@@ -31,12 +42,14 @@ function registerHotkey (el, binding) {
         let lastPressedKeySequence = null;
         el._keyDownHandler = function (e) {
             lastPressedKeySequence = eventToKeySequence(e);
+            if (appliableKey.indexOf(lastPressedKeySequence) != -1) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
         };
         el._keyUpHandler = function () {
             if (appliableKey.indexOf(lastPressedKeySequence) != -1) {
-                eventType.forEach(evt => {
-                    el.dispatchEvent(new Event(evt));
-                });
+                clickElement(el);
             }
             lastPressedKeySequence = null;
         };
