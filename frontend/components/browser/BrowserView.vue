@@ -34,7 +34,7 @@ export default {
             { label: 'Created', key: 'createdAt', sortable: true, formatter: 'timeToText' },
             { label: 'Modified', key: 'updatedAt', sortable: true, formatter: 'timeToText' },
             { label: 'Due', key: 'due', sortable: true, formatter: 'timeToText' },
-            { label: 'Tag', key: 'tags', sortable: true, formatter: 'concatTags', class: 'ellipsis' },
+            { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' },
         ],
     },
     methods: {

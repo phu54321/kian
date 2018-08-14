@@ -36,6 +36,9 @@ function triggerHotkey (el, _binding, _vnode) {
         if(targetEl === el) break;
         targetEl = targetEl.parentElement;
     }
+
+    // Fallback
+    el.click();
 }
 
 function registerHotkey (el, binding, vnode) {
