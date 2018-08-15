@@ -13,7 +13,7 @@ import { ankiCall } from '../api/ankiCall';
 export default {
     data () {
         return {
-            query: ''
+            query: 'nid:1534295579717'
         };
     },
     asyncComputed: {
