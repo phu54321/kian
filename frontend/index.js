@@ -28,6 +28,9 @@ Vue.component('multiselect', Multiselect);
 import VueVirtualScroller from 'vue-virtual-scroller';
 Vue.use(VueVirtualScroller);
 
+import AsyncComputed from 'vue-async-computed';
+Vue.use(AsyncComputed);
+
 // App
 import App from './App';
 new Vue({
