@@ -1,4 +1,5 @@
 from anki import Collection
+from anki.collection import _Collection
 import os
 from threading import Timer, Lock
 
@@ -29,7 +30,7 @@ mainCol = None
 mainColLock = Lock()
 
 class Col(object):
-    def __enter__(self):
+    def __enter__(self) -> _Collection:
         global mainCol
         mainColLock.acquire()
         if not mainCol:

@@ -5,6 +5,7 @@ from utils import (
     emit,
 )
 
+from anki.notes import Note
 
 @registerApi('note_get')
 def getNote(msg):
@@ -56,3 +57,40 @@ def getNidFromCid(msg):
     with Col() as col:
         cid = msg['cardId']
         return emit.emitResult(col.getCard(cid).nid)
+
+@registerApi('cid_from_nid')
+def getCidFromNid(msg):
+    typeCheck(msg, {
+        'noteId': int
+    })
+    with Col() as col:
+        return emit.emitResult(col.findCards('nid:%d' % msg['noteId']))
+
+@registerApi('note_add')
+def addNote(msg):
+    typeCheck(msg, {
+        'deck': str,
+        'model': str,
+        'fields': list,
+        'tags': list
+    })
+    with Col() as col:
+        model = col.models.byName(msg['model'])
+        deck = col.decks.byName(msg['deck'])
+        fields = msg['fields']
+        tags = msg['tags']
+
+
+        note = Note(col, model)
+        if len(note.fields) != len(fields):
+            raise RuntimeError('Field number mismatch')
+        note.fields[:] = fields
+        note.tags[:] = tags
+
+        model['did'] = deck['id']
+        cardNum = col.addNote(note)
+
+        return emit.emitResult({
+            'noteId': note.id,
+            'cardNum': cardNum
+        })

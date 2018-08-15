@@ -77,18 +77,20 @@ export default {
     },
     methods: {
         async save () {
-            const cardId = await ankiCall('note_add', {
+            const {noteId, cardNum} = await ankiCall('note_add', {
                 deck: this.deck,
                 model: this.model,
                 fields: this.fields,
                 tags: this.tags,
             });
-            addedCardIds.push(cardId);
+            const cardIds = await ankiCall('cid_from_nid', {noteId});
+            cardIds.forEach(cardId => {
+                this.addedCardIds.push(cardId);
+            });
         }
     },
     watch: {
         async model (modelName) {
-            console.log(modelName);
             const model = await ankiCall('model_get', { modelName });
             const fieldFormats = model.fieldFormats;
             this.fieldFormats = fieldFormats;
