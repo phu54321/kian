@@ -13,7 +13,24 @@ def listDeck(msg):
     })
     query = msg['query']
     with Col() as col:
-        return emit.emitResult(col.findCards(query))
+        sortBy = msg.get('sortBy', 'createdAt')
+        sortOrder = msg.get('sortOrder', 'desc')
+
+        orderBy = {
+            'id': 'c.id',
+            'deck': 'n.did',
+            'noteId': 'n.id',
+            'model': 'n.mid',
+            'preview': 'n.sfld collate nocase, c.ord',
+            'createdAt': 'n.id, c.ord',
+            'updatedAt': 'c.mod',
+            'due': 'c.type, c.due',
+        }[sortBy]
+
+        cIds = col.findCards(query, orderBy)
+        if sortOrder == 'desc':
+            cIds.reverse()
+        return emit.emitResult(cIds)
 
 
 
@@ -34,17 +51,30 @@ def getCardsBatch(msg):
                 note = noteDict[card.nid] = card.note()
             model = card.model()
 
+            # Code from aqt/browser.py
+            if card.odid:  # Special case: filtered decks
+                due = '(filtered)'
+            elif card.queue == 1:  # Learning card
+                due = card.due
+            elif card.queue == 0 or card.type == 0:  # New cards
+                due = '(new card)'
+            elif card.queue in (2,3) or (card.type == 2 and card.queue < 0):
+                due = col.crt + 86400 * card.due
+            else:
+                due = ''
+
             ret.append({
                 'id': card.id,
                 'deck': col.decks.get(card.did)['name'],
                 'noteId': note.id,
                 'ord': card.ord,
                 'model': model['name'],
-                'front': card.q(),
-                'back': card.a(),
+                'preview': card.q(),
                 'tags': note.tags,
                 'createdAt': card.id // 1000,
                 'updatedAt': card.mod,
-                'due': col.crt + 86400 * card.due,
+                'due': due,
+                'type': card.type,
+                'queue': card.queue,
             })
         return emit.emitResult(ret)
