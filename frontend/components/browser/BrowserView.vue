@@ -15,7 +15,7 @@ import textVersionJs from 'textVersionjs';
 import padLeft from 'pad-left';
 
 export default {
-    props: ['query'],
+    props: ['cardIds'],
     data () {
         return {
             sortBy: 'createdAt',
@@ -32,8 +32,6 @@ export default {
             { label: 'Created', key: 'createdAt', sortable: true, formatter: 'timeToText' },
             { label: 'Modified', key: 'updatedAt', sortable: true, formatter: 'timeToText' },
             { label: 'Due', key: 'due', sortable: true, formatter: 'timeToText' },
-            { label: 'Type', key: 'type', sortable: true},
-            { label: 'Queue', key: 'queue', sortable: true},
             { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' },
         ],
     },
@@ -57,17 +55,14 @@ export default {
             return tags.join(', ');
         },
     },
-    mixins: [asyncData(async props => {
-        let cardIds = await ankiCall('browser_query', {
-            query: props.query,
-            sortBy: 'due',
-        });
-        cardIds = cardIds.slice(0, 100)
-        const cards = await ankiCall('browser_get_batch', { cardIds });
-        return {
-            cards
-        };
-    })],
+    asyncComputed: {
+        cards: {
+            async get () {
+                return await ankiCall('browser_get_batch', { cardIds: this.cardIds });
+            },
+            default: []
+        },
+    },
 };
 
 </script>

@@ -34,6 +34,8 @@ div
             th {{fFormat.name}}
             td
                 summernote(v-model='fields[index]')
+        
+    browser-view(:cardIds='addedCardIds')
 
 
 </template>
@@ -47,6 +49,7 @@ import EditorShortcut from './editor/shortcut/EditorShortcut';
 import ErrorDialog from './ErrorDialog';
 import ListSelector from './editor/ListSelector';
 import TagEditor from './editor/TagEditor';
+import BrowserView from './browser/BrowserView';
 
 function resize(arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
@@ -60,6 +63,7 @@ export default {
         EditorShortcut,
         TagEditor,
         ListSelector,
+        BrowserView,
     },
     data () {
         return {
@@ -68,11 +72,18 @@ export default {
             fieldFormats: [],
             fields: [],
             tags: [],
+            addedCardIds: [],
         };
     },
     methods: {
-        save () {
-            console.log('Not implemented');
+        async save () {
+            const cardId = await ankiCall('note_add', {
+                deck: this.deck,
+                model: this.model,
+                fields: this.fields,
+                tags: this.tags,
+            });
+            addedCardIds.push(cardId);
         }
     },
     watch: {
