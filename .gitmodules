@@ -1,3 +1,6 @@
 [submodule "frontend/summernote"]
 	path = frontend/summernote
 	url = https://github.com/summernote/summernote
+[submodule "frontend/public/summernote"]
+	path = frontend/public/summernote
+	url = https://github.com/phu54321/summernote
