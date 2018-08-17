@@ -1,5 +1,5 @@
 <template lang="pug">
-    div(v-html="value")
+    div(v-html.once="value")
 </template>
 <script>
 
@@ -13,6 +13,11 @@ export default {
         value: {
             required: true
         },
+    },
+    watch: {
+        value (val) {
+            $(this.$el).summernote('code', val);
+        }
     },
     mounted () {
         $(this.$el).summernote({

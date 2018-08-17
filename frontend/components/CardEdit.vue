@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+b-form(@submit='save')
     span.float-right
         icon.mr-3(name='regular/keyboard',
             v-b-modal.helpShortcut,

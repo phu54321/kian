@@ -1,39 +1,40 @@
 <template lang="pug">
 div
-    span.float-right
-        icon.mr-3(name='regular/keyboard',
-            v-b-modal.helpShortcut,
-            v-b-tooltip.hover,
-            scale='1.3',
-            title='Show shortcuts')
-        span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
-            icon(name='regular/save')
-    h1 Add Note
+    b-form(@submit='save')
+        span.float-right
+            icon.mr-3(name='regular/keyboard',
+                v-b-modal.helpShortcut,
+                v-b-tooltip.hover,
+                scale='1.3',
+                title='Show shortcuts')
+            span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
+                icon(name='regular/save')
+        h1 Add Note
 
-    b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
-        editor-shortcut(id='helpShortcut')
-        div(slot='modal-footer')
+        b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
+            editor-shortcut(id='helpShortcut')
+            div(slot='modal-footer')
 
-    table.note-zone.table
-        tr
-            th Deck
-            td
-                list-selector(v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
+        table.note-zone.table
+            tr
+                th Deck
+                td
+                    list-selector(v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
 
-        tr
-            th Model
-            td
-                list-selector(v-hotkey="['ctrl+m']", v-model='model', apiType='model_list')
+            tr
+                th Model
+                td
+                    list-selector(v-hotkey="['ctrl+m']", v-model='model', apiType='model_list')
 
-        tr
-            th Tags
-            td
-                tag-editor(v-model='tags')
+            tr
+                th Tags
+                td
+                    tag-editor(v-model='tags')
 
-        tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
-            th {{fFormat.name}}
-            td
-                summernote(v-model='fields[index]')
+            tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
+                th {{fFormat.name}}
+                td
+                    summernote(v-model='fields[index]')
         
     browser-view(:cardIds='addedCardIds')
 
@@ -83,6 +84,15 @@ export default {
                 fields: this.fields,
                 tags: this.tags,
             });
+
+            // Clean non-sticky forms
+            this.fieldFormats.forEach((fFormat, index) => {
+                if(!fFormat.sticky) {
+                    this.fields.splice(index, 1, '');
+                }
+            });
+
+            // Add to history logs
             const cardIds = await ankiCall('cid_from_nid', {noteId});
             cardIds.forEach(cardId => {
                 this.addedCardIds.push(cardId);
@@ -99,7 +109,7 @@ export default {
             this.fields = newFields;
         },
     },
-    name: 'note-editor',
+    name: 'note-add',
 };
 
 </script>
