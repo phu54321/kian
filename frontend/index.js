@@ -6,6 +6,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import BootstrapVue from 'bootstrap-vue';
 Vue.use(BootstrapVue);
 
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'vue-awesome/icons';
 import Icon from 'vue-awesome/components/Icon.vue';
 Vue.component('icon', Icon);
@@ -30,6 +31,13 @@ Vue.use(VueVirtualScroller);
 
 import AsyncComputed from 'vue-async-computed';
 Vue.use(AsyncComputed);
+
+import VueToasted from 'vue-toasted';
+Vue.use(VueToasted, {
+    iconPack : 'fontawesome',
+    position: 'bottom-left', 
+    duration : 2000
+});
 
 // App
 import App from './App';
