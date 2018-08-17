@@ -16,7 +16,10 @@ export default {
     },
     watch: {
         value (val) {
-            $(this.$el).summernote('code', val);
+            const oldVal = $(this.$el).summernote('code');
+            if(oldVal != val) {
+                $(this.$el).summernote('code', val);
+            }
         }
     },
     mounted () {
