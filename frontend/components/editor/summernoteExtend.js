@@ -18,6 +18,15 @@ export function addHotkey (keyMap) {
     });
 }
 
+export function removeHotkey (hotkeyList) {
+    const keyMap = $.summernote.options.keyMap;
+    hotkeyList.forEach(key => {
+        const macKey = (key.startsWith('CTRL+')) ? 'CMD+' + key.substr(5) : key;
+        delete keyMap.pc[key];
+        delete keyMap.mac[macKey];
+    });
+}
+
 export function addFunctions (functions) {
     $.extend(true, Editor.prototype, functions);
 }
