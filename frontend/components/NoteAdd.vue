@@ -9,13 +9,13 @@ div
                 title='Show shortcuts')
             span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
                 icon(name='regular/save')
-        h1 Add Note
+        h2 Add Note
 
         b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
             editor-shortcut(id='helpShortcut')
             div(slot='modal-footer')
 
-        table.note-zone.table
+        table.note-zone.table.table-borderless
             tr
                 th Deck
                 td
@@ -36,7 +36,7 @@ div
                 td
                     summernote(v-model='fields[index]')
         
-    browser-view(:cardIds='addedCardIds')
+    browser-view.mt-4(:cardIds='addedCardIds')
 
 
 </template>
@@ -51,6 +51,7 @@ import ErrorDialog from './ErrorDialog';
 import ListSelector from './editor/ListSelector';
 import TagEditor from './editor/TagEditor';
 import BrowserView from './browser/BrowserView';
+import './editor/editor.scss';
 
 function resize(arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
@@ -117,15 +118,4 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-
-table.note-zone {
-    th {
-        width: 15%;
-        padding-right: 1em;
-    }
-}
-
-</style>
 
