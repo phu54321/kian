@@ -97,6 +97,10 @@ export default {
             cardIds.forEach(cardId => {
                 this.addedCardIds.push(cardId);
             });
+
+            this.$toasted.show("Note added", { 
+                icon: 'plus-square',
+            });
         }
     },
     watch: {
