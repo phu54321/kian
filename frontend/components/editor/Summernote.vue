@@ -6,7 +6,7 @@
 import $ from 'jquery';
 import './cloze';
 import './table';
-import './disableTab';
+import './disableUnwantedHotkeys';
 
 export default {
     props : {
