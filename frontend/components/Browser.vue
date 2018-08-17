@@ -13,13 +13,15 @@ import { ankiCall } from '../api/ankiCall';
 export default {
     data () {
         return {
-            query: 'nid:1534295579717'
+            query: ''
         };
     },
     asyncComputed: {
         cardIds: {
             async get () {
-                return (await ankiCall('browser_query', { query: this.query })).slice(0, 100);
+                return (await ankiCall('browser_query', {
+                    query: this.query,
+                })).slice(0, 100);
             },
             default: []
         },
