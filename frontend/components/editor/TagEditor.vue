@@ -5,7 +5,12 @@
                 | {{tag}}
                 span(@click='removeTagByName(tag)')
                     icon.ml-1(name='times-circle', scale='.75')
-        input.tag-new(v-model='buildingTag', @keydown='onKeyDown', @input='emitTag', placeholder='Add new tags...')
+        input.tag-new(
+            v-model='buildingTag',
+            @keydown='onKeyDown',
+            @input='emitTag',
+            placeholder='Add new tags...',
+            @blur='emitTag(true)')
 </template>
 
 <script>
@@ -51,8 +56,8 @@ export default {
             this.tags.splice(index, 1);
             this.emitTag();
         },
-        emitTag () {
-            if(this.buildingTag.endsWith(' ')) {
+        emitTag (force=false) {
+            if(force === true || this.buildingTag.endsWith(' ')) {
                 const newTag = this.buildingTag.trim();
                 if(newTag && this.tags.indexOf(newTag) == -1) this.tags.push(newTag);
                 this.buildingTag = '';
