@@ -9,7 +9,7 @@ b-form(@submit='save')
         span(@click='save', v-hotkey.nofilter=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
             icon(name='regular/save')
 
-    h1 Edit card
+    h2 Edit card
 
     b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
         editor-shortcut(id='helpShortcut')
@@ -46,6 +46,7 @@ import EditorShortcut from './editor/shortcut/EditorShortcut';
 import ErrorDialog from './ErrorDialog';
 import ListSelector from './editor/ListSelector';
 import TagEditor from './editor/TagEditor';
+import './editor/editor.scss';
 
 export default {
     props: {
@@ -95,15 +96,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-
-table.note-zone {
-    th {
-        width: 15%;
-        padding-right: 1em;
-    }
-}
-
-</style>
-
