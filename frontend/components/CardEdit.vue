@@ -6,7 +6,7 @@ b-form(@submit='save')
             v-b-tooltip.hover,
             scale='1.3',
             title='Show shortcuts')
-        span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
+        span(@click='save', v-hotkey.nofilter=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
             icon(name='regular/save')
 
     h1 Edit card

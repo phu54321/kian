@@ -30,8 +30,8 @@ import $ from 'jquery';
         specialKeys: {
             8: 'backspace',
             9: 'tab',
-            10: 'return',
-            13: 'return',
+            10: 'enter',
+            13: 'enter',
             16: 'shift',
             17: 'ctrl',
             18: 'alt',
@@ -190,7 +190,7 @@ import $ from 'jquery';
                     possible[$.hotkeys.shiftNums[character]] = true;
                 }
             }
-  
+
             for (var i = 0, l = keys.length; i < l; i++) {
                 if (possible[keys[i]]) {
                     return origHandler.apply(this, arguments);
