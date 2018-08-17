@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import 'jquery.hotkeys';
+import './jquery.hotkeys';
 
 const classRules = {
     multiselect: (el) => el.focus(),
@@ -55,15 +55,24 @@ function registerHotkey (el, binding, vnode) {
     }
 
     el._onKeyDown = onKeyDown;
+    el._hotKeyInputWhitelist = [];
     hotkeyString.forEach(kString => {
         $(document).bind('keydown', kString, el._onKeyDown);
+        if(kString.indexOf('ctrl') !== -1 || kString.indexOf('alt') !== -1) {
+            $.hotkeyInputWhitelist[kString] = true;
+            el._hotKeyInputWhitelist.push(kString);
+        }
     });
 }
 
 function unregisterHotkey (el) {
     if (el._onKeyDown) {
         $(document).unbind('keydown', el._onKeyDown);
-        el._onKeyDown = undefined;
+        el._hotKeyInputWhitelist.forEach(kString => {
+            delete $.hotkeyInputWhitelist[kString];
+        });
+        delete el._onKeyDown;
+        delete el._hotKeyInputWhitelist;
     }
 }
 
