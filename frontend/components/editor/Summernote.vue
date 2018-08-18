@@ -4,9 +4,12 @@
 <script>
 
 import $ from 'jquery';
+import { ankiCall } from '../../api/ankiCall';
 import './cloze';
 import './table';
 import './disableUnwantedHotkeys';
+import { getFileAsBase64 } from '../../utils/fileToBase64';
+
 
 export default {
     props : {
@@ -37,6 +40,20 @@ export default {
                 onChange: () => {
                     this.$emit('input', $(this.$el).summernote('code'));
                 },
+                async onImageUpload (files) {
+                    for(let i = 0 ; i < files.length ; i++) {
+                        const file = files[i];
+                        console.log(file);
+                        const filename = file.name;
+                        const datab64 = await getFileAsBase64(file);
+                        const webFilename = await ankiCall('media_upload', {
+                            filename,
+                            datab64,
+                        });
+                        console.log(webFilename);
+                        $(this).summernote("insertImage", webFilename);
+                    }
+                }
             }
         });
     },
@@ -70,6 +87,7 @@ export default {
 .note-frame {
     border: none !important;
     border-bottom: 1px solid #ddd !important;
+    padding-bottom: .5em;
 }
 
 
