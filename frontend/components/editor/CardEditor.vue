@@ -52,6 +52,7 @@ import ListSelector from './ListSelector';
 import Summernote from './Summernote';
 import EditorShortcut from './shortcut/EditorShortcut';
 import TagEditor from './TagEditor';
+import './editor.scss';
 
 
 function resize(arr, size, defval) {
@@ -88,6 +89,12 @@ export default {
         },
     },
     watch: {
+        value: {
+            handler (value) {
+                this.card = value;
+            },
+            deep: true,
+        },
         async currentModel (modelName) {
             // Model change
             const model = await ankiCall('model_get', { modelName });
