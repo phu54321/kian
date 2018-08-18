@@ -76,10 +76,9 @@ def addNote(msg):
     })
     with Col() as col:
         model = col.models.byName(msg['model'])
-        deck = col.decks.byName(msg['deck'])
+        did = col.decks.id(msg['deck'], create=True)  # cf) Create deck if not exists
         fields = msg['fields']
         tags = msg['tags']
-
 
         note = Note(col, model)
         if len(note.fields) != len(fields):
@@ -87,7 +86,7 @@ def addNote(msg):
         note.fields[:] = fields
         note.tags[:] = tags
 
-        model['did'] = deck['id']
+        model['did'] = did
         cardNum = col.addNote(note)
 
         return emit.emitResult({
