@@ -19,7 +19,7 @@ b-form(@submit='save')
         tr
             th Deck
             td
-                list-selector(v-model='deck', apiType='deck_list', disabled)
+                list-selector(v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
         tr
             th Model
             td

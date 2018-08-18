@@ -1,5 +1,5 @@
 <template lang='pug'>
-    multiselect(:value='value', :options='options', :disabled='disabled' @input='onInput')
+    v-select(:value='value', :options='options', :disabled='disabled' @input='onInput')
 </template>
 
 <script>
