@@ -6,5 +6,6 @@ from . import (
     card,
     model,
     browser,
-    reviewer
+    reviewer,
+    media,
 )
