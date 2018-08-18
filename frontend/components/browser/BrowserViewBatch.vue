@@ -56,3 +56,13 @@ export default {
 };
 
 </script>
+
+<style lang="scss" scoped>
+
+tbody tr {
+    transition: background-color .2s;
+    &:hover {
+        background-color: #eee;
+    }
+}
+</style>

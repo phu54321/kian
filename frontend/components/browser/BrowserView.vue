@@ -24,7 +24,7 @@ div.browser-view
 import { ankiCall } from '../../api/ankiCall';
 import asyncData from '../../utils/asyncData';
 import BrowserViewBatch from './BrowserViewBatch';
-const _ = require('lodash');
+import _ from 'lodash';
 
 export default {
     props: ['cardIds', 'enableSort'],
@@ -76,13 +76,12 @@ export default {
 .browser-view {
     position: relative;
     .pagination {
-        opacity: 0.3;
+        opacity: 0.5;
         transition: opacity .2s;
         &:hover {
             opacity: 1;
         }
         position: sticky;
-        top: 50px;
         bottom: 1rem;
     }
 }

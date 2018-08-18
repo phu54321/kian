@@ -1,7 +1,6 @@
 <template lang="pug">
 div
     h2 Browser
-    
     browser-view(:cardIds='cardIds')
 </template>
 
