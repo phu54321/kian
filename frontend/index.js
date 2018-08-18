@@ -32,6 +32,9 @@ Vue.component('multiselect', Multiselect);
 import VueVirtualScroller from 'vue-virtual-scroller';
 Vue.use(VueVirtualScroller);
 
+import VirtualScrollList from 'vue-virtual-scroll-list';
+Vue.component('virtual-list', VirtualScrollList);
+
 import AsyncComputed from 'vue-async-computed';
 Vue.use(AsyncComputed);
 

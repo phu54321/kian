@@ -1,9 +1,13 @@
 <template lang="pug">
 
 div
-    b-table(
-        small, hover,
-        :items='cards', :fields='fields')
+    table.table.table-sm
+        thead(slot='before-content')
+            tr
+                th(v-for='field in fields', :key='field.key')
+                    | {{ field.label }}
+        tbody
+            browser-view-row(v-for='cardId in cardIds', :key='cardId', :cardId='cardId', :fields='fields')
 
 </template>
 
@@ -11,11 +15,13 @@ div
 
 import { ankiCall } from '../../api/ankiCall';
 import asyncData from '../../utils/asyncData';
-import textVersionJs from 'textVersionjs';
-import padLeft from 'pad-left';
+import BrowserViewRow from './BrowserViewRow';
 
 export default {
     props: ['cardIds'],
+    components: {
+        BrowserViewRow
+    },
     data () {
         return {
             sortBy: 'createdAt',
@@ -27,41 +33,13 @@ export default {
         fields: () => [
             { label: 'Preview', key: 'preview', sortable: true, formatter: 'textVersionJs', class: 'ellipsis' },
             { label: 'Deck', key: 'deck', sortable: true },
-            { label: 'Model', key: 'model', sortable: true },
+            { label: 'Model', key: 'model', sortable: true, class: 'ellipsis' },
             { label: '#', key: 'ord' },
             { label: 'Created', key: 'createdAt', sortable: true, formatter: 'timeToText' },
             { label: 'Modified', key: 'updatedAt', sortable: true, formatter: 'timeToText' },
             { label: 'Due', key: 'due', sortable: true, formatter: 'timeToText' },
             { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' },
         ],
-    },
-    methods: {
-        textVersionJs (text) {
-            return textVersionJs(text, {
-                imgProcess (src, alt) {
-                    return '';
-                }
-            });
-        },
-        timeToText (timestamp) {
-            if (typeof timestamp === 'string') return timestamp
-            const date = new Date(timestamp * 1000);
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
-        },
-        concatTags (tags) {
-            return tags.join(', ');
-        },
-    },
-    asyncComputed: {
-        cards: {
-            async get () {
-                return await ankiCall('browser_get_batch', { cardIds: this.cardIds });
-            },
-            default: []
-        },
     },
 };
 
@@ -77,6 +55,10 @@ div /deep/ td {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+.list {
+    height: 300px;
 }
 
 </style>
