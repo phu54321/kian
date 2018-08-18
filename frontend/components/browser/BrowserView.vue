@@ -4,12 +4,12 @@ div.browser-view
     table.table.table-sm
         thead(slot='before-content')
             tr
-                th(v-for='field in fields', :key='field.key')
+                th.browser-head(v-for='field in fields', :key='field.key')
                     | {{ field.label }}
 
         browser-view-batch(:cardIds='pageItems', :fields='fields')
 
-    ul.pagination.justify-content-center
+    ul.pagination.justify-content-center(v-if='pageNum > 1')
         li.page-item(:class='{ disabled: page == 1 }')
             a.page-link(v-hotkey='["ctrl+left"]', @click.prevent='loadPage(page - 1)') &lt;&lt;
         li.page-item(v-for='i in paginationRange', :class='{ active: i == page }')

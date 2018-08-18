@@ -4,7 +4,7 @@ div
 
     card-editor(v-model='card', @save='save')
     
-    h3.mt-5 Recent addition
+    h3.mt-5 Recent 50 additions
     browser-view.history(:cardIds='addedCardIds')
 
 
@@ -24,6 +24,8 @@ function resize(arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
     while (arr.length < size) { arr.push(defval); }
 }
+
+const historyNum = 50;
 
 export default {
     props: ['noteId'],
@@ -49,7 +51,7 @@ export default {
             sortBy: 'createdAt'
         });
         return {
-            addedCardIds: createdCards.slice(0, 100)
+            addedCardIds: createdCards.slice(0, historyNum)
         };
     })],
     methods: {
@@ -72,6 +74,7 @@ export default {
             // Add to history logs
             const cardIds = await ankiCall('cid_from_nid', {noteId});
             this.addedCardIds.splice(0, 0, ...cardIds);
+            this.addedCardIds = this.addedCardIds.slice(0, historyNum)
 
             this.$toasted.show("Note added", { 
                 icon: 'plus-square',
@@ -83,11 +86,3 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
-
-.history {
-    height: 30em;
-    overflow-y: scroll;
-}
-
-</style>

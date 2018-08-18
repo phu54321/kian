@@ -1,5 +1,5 @@
 <template lang='pug'>
-div.app-container
+div.app-body
     error-dialog
     b-navbar(fixed='top', toggleable='sm', variant='primary', type='dark')
         b-container
@@ -17,9 +17,7 @@ div.app-container
                 b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                     icon(name='chart-bar')
 
-    div.mt-4
-        .spacer spacer
-    b-container.mt-4
+    b-container.app-container
         router-view
 </template>
 
