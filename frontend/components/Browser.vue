@@ -19,9 +19,9 @@ export default {
     asyncComputed: {
         cardIds: {
             async get () {
-                return (await ankiCall('browser_query', {
+                return await ankiCall('browser_query', {
                     query: this.query,
-                })).slice(0, 100);
+                });
             },
             default: []
         },

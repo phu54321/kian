@@ -1,13 +1,12 @@
 <template lang="pug">
-tr
-    template(v-if='card')
-        td(
-            v-for='field in fields',
-            :key='field.key',
-            :class='field.class')
-            | {{ getFormatter(field.formatter)(card[field.key]) }}
-    template(v-else)
-        td(:colspan='fields.length') Loading...
+tbody
+    tr(v-for='card in cards')
+        template(v-if='card')
+            td(
+                v-for='field in fields',
+                :key='field.key',
+                :class='field.class')
+                | {{ getFormatter(field.formatter)(card[field.key]) }}
 </template>
 
 <script>
@@ -18,11 +17,15 @@ import textVersionJs from 'textVersionjs';
 import padLeft from 'pad-left';
 
 export default {
-    props: ['cardId', 'fields'],
+    props: ['cardIds', 'fields'],
     asyncComputed: {
-        async card () {
-            const cards = await ankiCall('browser_get_batch', { cardIds: [this.cardId] });
-            return cards[0];
+        cards: {
+            async get () {
+                return await ankiCall('browser_get_batch', {
+                    cardIds: this.cardIds
+                });
+            },
+            default: []
         },
     },
     methods: {
