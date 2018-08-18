@@ -19,9 +19,9 @@ def apiDispatch(msg):
     
     try:
         logging.info('Got request %s' % msgType)
-        logging.debug(str(msg))
         return _apiTable[msgType](msg)
     except Exception as e:
+        logging.error('error processing request: %s' % msg)
         traceback.print_exc()
         return {
             'error': traceback.format_exc()
