@@ -3,6 +3,7 @@ import './jquery.hotkeys';
 
 const classRules = {
     multiselect: (el) => el.focus(),
+    'dropdown-toggle': (el) => el.dispatchEvent(new Event('mousedown')),
 };
 
 const tagNameRules = {
