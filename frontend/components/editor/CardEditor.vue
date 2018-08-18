@@ -78,11 +78,8 @@ export default {
         TagEditor,
     },
     methods: {
-        syncCard () {
-            this.$emit('input', this.card);
-        },  
         onSave () {
-            console.log('onSave')
+            this.$emit('save');
         }
     },
     computed: {
@@ -100,12 +97,6 @@ export default {
             resize(newFields, fieldFormats.length, '');
             this.card.fields = newFields;
         },
-        card: {
-            async handler (newValue, oldValue) {
-                this.$emit('input', this.card);
-            },
-            deep: true,
-        }
     }
 };
 

@@ -2,9 +2,7 @@
 div
     h1 Add Note
 
-    card-editor(
-        v-model='card'
-    )
+    card-editor(v-model='card', @save='save')
     
     h3.mt-5 Recent addition
     browser-view.history(:cardIds='addedCardIds')
@@ -74,9 +72,7 @@ export default {
 
             // Add to history logs
             const cardIds = await ankiCall('cid_from_nid', {noteId});
-            cardIds.forEach(cardId => {
-                this.addedCardIds.push(cardId);
-            });
+            this.addedCardIds.splice(0, 0, ...cardIds);
 
             this.$toasted.show("Note added", { 
                 icon: 'plus-square',
