@@ -1,40 +1,8 @@
 <template lang="pug">
 div
-    span.float-right
-        icon.mr-3(name='regular/keyboard',
-            v-b-modal.helpShortcut,
-            v-b-tooltip.hover,
-            scale='1.3',
-            title='Show shortcuts')
-        span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
-            icon(name='regular/save')
     h1 Add Note
 
-    b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
-        editor-shortcut(id='helpShortcut')
-        div(slot='modal-footer')
-
-    b-form(@submit='save')
-        table.note-zone.table
-            tr
-                th Deck
-                td
-                    list-selector(taggable, v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
-
-            tr
-                th Model
-                td
-                    list-selector(v-hotkey="['ctrl+m']", v-model='model', apiType='model_list')
-
-            tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
-                th {{fFormat.name}}
-                td
-                    summernote(v-model='fields[index]')
-
-            tr
-                th Tags
-                td
-                    tag-editor(v-model='tags')
+    card-editor(v-model='card', @save='save')
     
     h3.mt-5 Recent addition
     browser-view.history(:cardIds='addedCardIds')
@@ -47,13 +15,10 @@ div
 
 import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
-import Summernote from './editor/Summernote';
-import EditorShortcut from './editor/shortcut/EditorShortcut';
 import ErrorDialog from './ErrorDialog';
-import ListSelector from './editor/ListSelector';
-import TagEditor from './editor/TagEditor';
 import BrowserView from './browser/BrowserView';
-import './editor/editor.scss';
+import CardEditor from './editor/CardEditor';
+
 
 function resize(arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
@@ -63,19 +28,18 @@ function resize(arr, size, defval) {
 export default {
     props: ['noteId'],
     components: {
-        Summernote,
-        EditorShortcut,
-        TagEditor,
-        ListSelector,
+        CardEditor,
         BrowserView,
     },
     data () {
         return {
-            deck: '',
-            model: '',
-            fieldFormats: [],
-            fields: [],
-            tags: [],
+            card: {
+                deck: '',
+                model: '',
+                fieldFormats: [],
+                fields: [],
+                tags: [],
+            },
             addedCardIds: [],
         };
     },
@@ -90,40 +54,29 @@ export default {
     })],
     methods: {
         async save () {
+            const card = this.card;
             const {noteId, cardNum} = await ankiCall('note_add', {
-                deck: this.deck,
-                model: this.model,
-                fields: this.fields,
-                tags: this.tags,
+                deck: card.deck,
+                model: card.model,
+                fields: card.fields,
+                tags: card.tags,
             });
 
             // Clean non-sticky forms
-            this.fieldFormats.forEach((fFormat, index) => {
+            card.fieldFormats.forEach((fFormat, index) => {
                 if(!fFormat.sticky) {
-                    this.fields.splice(index, 1, '');
+                    card.fields.splice(index, 1, '');
                 }
             });
 
             // Add to history logs
             const cardIds = await ankiCall('cid_from_nid', {noteId});
-            cardIds.forEach(cardId => {
-                this.addedCardIds.push(cardId);
-            });
+            this.addedCardIds.splice(0, 0, ...cardIds);
 
             this.$toasted.show("Note added", { 
                 icon: 'plus-square',
             });
         }
-    },
-    watch: {
-        async model (modelName) {
-            const model = await ankiCall('model_get', { modelName });
-            const fieldFormats = model.fieldFormats;
-            this.fieldFormats = fieldFormats;
-            const newFields = this.fields;
-            resize(newFields, fieldFormats.length, '');
-            this.fields = newFields;
-        },
     },
     name: 'note-add',
 };
