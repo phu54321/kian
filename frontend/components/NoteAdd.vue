@@ -1,20 +1,20 @@
 <template lang="pug">
 div
+    span.float-right
+        icon.mr-3(name='regular/keyboard',
+            v-b-modal.helpShortcut,
+            v-b-tooltip.hover,
+            scale='1.3',
+            title='Show shortcuts')
+        span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
+            icon(name='regular/save')
+    h1 Add Note
+
+    b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
+        editor-shortcut(id='helpShortcut')
+        div(slot='modal-footer')
+
     b-form(@submit='save')
-        span.float-right
-            icon.mr-3(name='regular/keyboard',
-                v-b-modal.helpShortcut,
-                v-b-tooltip.hover,
-                scale='1.3',
-                title='Show shortcuts')
-            span(@click='save', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
-                icon(name='regular/save')
-        h2 Add Note
-
-        b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
-            editor-shortcut(id='helpShortcut')
-            div(slot='modal-footer')
-
         table.note-zone.table
             tr
                 th Deck
@@ -35,8 +35,10 @@ div
                 th Tags
                 td
                     tag-editor(v-model='tags')
-        
-    browser-view.mt-4(:cardIds='addedCardIds')
+    
+    h3.mt-5 Recent addition
+    browser-view.history(:cardIds='addedCardIds')
+
 
 
 </template>
@@ -77,6 +79,15 @@ export default {
             addedCardIds: [],
         };
     },
+    mixins: [asyncData(async props => {
+        const createdCards = await ankiCall('browser_query', {
+            query: '',
+            sortBy: 'createdAt'
+        });
+        return {
+            addedCardIds: createdCards.slice(0, 100)
+        };
+    })],
     methods: {
         async save () {
             const {noteId, cardNum} = await ankiCall('note_add', {
@@ -119,3 +130,11 @@ export default {
 
 </script>
 
+<style lang="scss" scoped>
+
+.history {
+    height: 30em;
+    overflow-y: scroll;
+}
+
+</style>
