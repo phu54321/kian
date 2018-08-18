@@ -15,25 +15,26 @@ b-form(@submit='save')
         editor-shortcut(id='helpShortcut')
         div(slot='modal-footer')
 
-    table.note-zone.table
-        tr
-            th Deck
-            td
-                list-selector(taggable, v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
-        tr
-            th Model
-            td
-                list-selector(v-model='model', apiType='model_list', disabled)
+    b-form(@submit='save')
+        table.note-zone.table
+            tr
+                th Deck
+                td
+                    list-selector(taggable, v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
+            tr
+                th Model
+                td
+                    list-selector(v-model='model', apiType='model_list', disabled)
 
-        tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
-            th {{fFormat.name}}
-            td
-                summernote(v-model='fields[index]')
+            tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
+                th {{fFormat.name}}
+                td
+                    summernote(v-model='fields[index]')
 
-        tr
-            th Tags
-            td
-                tag-editor(v-model='tags')
+            tr
+                th Tags
+                td
+                    tag-editor(v-model='tags')
 
 </template>
 
