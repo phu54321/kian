@@ -17,7 +17,9 @@ div.app-container
                 b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                     icon(name='chart-bar')
 
-    b-container.mt-3
+    div.mt-4
+        .spacer spacer
+    b-container.mt-4
         router-view
 </template>
 
@@ -36,11 +38,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 .logo {
     transform: translateY(-.1em);
     height: 1em;
+}
+
+.spacer {
+    visibility: hidden;
 }
 
 </style>
