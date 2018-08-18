@@ -19,7 +19,6 @@ import ErrorDialog from './ErrorDialog';
 import BrowserView from './browser/BrowserView';
 import CardEditor from './editor/CardEditor';
 
-import './editor/editor.scss';
 
 function resize(arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
