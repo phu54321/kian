@@ -86,8 +86,6 @@ export default {
 
 .note-frame {
     border: none !important;
-    border-bottom: 1px solid #ddd !important;
-    padding-bottom: .5em;
 }
 
 

@@ -15,7 +15,7 @@ div
             editor-shortcut(id='helpShortcut')
             div(slot='modal-footer')
 
-        table.note-zone.table.table-borderless
+        table.note-zone.table
             tr
                 th Deck
                 td
@@ -26,15 +26,15 @@ div
                 td
                     list-selector(v-hotkey="['ctrl+m']", v-model='model', apiType='model_list')
 
-            tr
-                th Tags
-                td
-                    tag-editor(v-model='tags')
-
             tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
                 th {{fFormat.name}}
                 td
                     summernote(v-model='fields[index]')
+
+            tr
+                th Tags
+                td
+                    tag-editor(v-model='tags')
         
     browser-view.mt-4(:cardIds='addedCardIds')
 
