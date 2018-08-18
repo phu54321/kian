@@ -25,15 +25,15 @@ b-form(@submit='save')
             td
                 list-selector(v-model='model', apiType='model_list', disabled)
 
-        tr
-            th Tags
-            td
-                tag-editor(v-model='tags')
-
         tr(v-for='(fFormat, index) in fieldFormats', :key='fFormat.name')
             th {{fFormat.name}}
             td
                 summernote(v-model='fields[index]')
+
+        tr
+            th Tags
+            td
+                tag-editor(v-model='tags')
 
 </template>
 
