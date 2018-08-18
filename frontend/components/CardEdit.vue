@@ -19,7 +19,7 @@ b-form(@submit='save')
         tr
             th Deck
             td
-                list-selector(v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
+                list-selector(taggable, v-hotkey="['ctrl+d']", v-model='deck', apiType='deck_list')
         tr
             th Model
             td
