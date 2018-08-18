@@ -1,9 +1,11 @@
 <template lang='pug'>
-div
+div.app-container
     error-dialog
-    b-navbar(toggleable='sm', variant='primary', type='dark')
+    b-navbar(fixed='top', toggleable='sm', variant='primary', type='dark')
         b-container
-            b-navbar-brand(href='#', to='/') Kian
+            b-navbar-brand(href='#', to='/')
+                img.mr-2.logo(src='logo.svg')
+                | Kian
 
             b-navbar-nav.ml-auto
                 b-nav-item(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
@@ -33,3 +35,12 @@ export default {
     }
 };
 </script>
+
+<style>
+
+.logo {
+    transform: translateY(-.1em);
+    height: 1em;
+}
+
+</style>
