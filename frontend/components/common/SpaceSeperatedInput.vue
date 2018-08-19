@@ -64,7 +64,7 @@ export default {
     },
     methods: {
         onKeyDown (e) {
-            if(e.keyCode == KEY_MAP['SPACE'] || e.keyCode == KEY_MAP['ENTER']) {
+            if(e.keyCode == KEY_MAP['SPACE']) {
                 const newTag = this.buildingItem.trim();
                 if(newTag && this.items.indexOf(newTag) == -1) this.items.push(newTag);
                 this.buildingItem = '';
