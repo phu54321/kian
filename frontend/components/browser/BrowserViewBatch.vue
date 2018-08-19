@@ -36,6 +36,9 @@ export default {
                 }
             });
         },
+        formatOrd (ord) {
+            return `#${ord + 1}`;
+        },
         timeToText (timestamp) {
             if (typeof timestamp === 'string') return timestamp
             const date = new Date(timestamp * 1000);

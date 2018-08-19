@@ -4,8 +4,12 @@ div.browser-view
     table.table.table-sm
         thead(slot='before-content')
             tr
-                th.browser-head(v-for='field in fields', :key='field.key')
-                    | {{ field.label }}
+                th(v-for='field in fields', :key='field.key')
+                    div.browser-head(@click='issueSortBy(field.key)')
+                        | {{ field.label }}
+                        .float-right(v-if='enableSort && field.sortable')
+                            span.browser-sort(:class='{ enabled: sortBy == field.key && sortOrder == "asc" }') ↑
+                            span.browser-sort(:class='{ enabled: sortBy == field.key && sortOrder == "desc" }') ↓
 
         browser-view-batch(:cardIds='pageItems', :fields='fields')
 
@@ -27,7 +31,18 @@ import BrowserViewBatch from './BrowserViewBatch';
 import _ from 'lodash';
 
 export default {
-    props: ['cardIds', 'enableSort'],
+    props: {
+        cardIds: Array,
+        enableSort: Boolean,
+        sortBy: {
+            type: String,
+            default: 'id'
+        },
+        sortOrder: {
+            type: String,
+            default: 'desc'
+        }
+    },
     components: {
         BrowserViewBatch
     },
@@ -54,7 +69,7 @@ export default {
                 { label: 'Preview', key: 'preview', sortable: this.enableSort, formatter: 'textVersionJs', class: 'ellipsis' },
                 { label: 'Deck', key: 'deck', sortable: this.enableSort },
                 { label: 'Model', key: 'model', sortable: this.enableSort, class: 'ellipsis' },
-                { label: '#', key: 'ord' },
+                { label: '#', key: 'ord', formatter: 'formatOrd' },
                 { label: 'Created', key: 'createdAt', sortable: this.enableSort, formatter: 'timeToText' },
                 { label: 'Modified', key: 'updatedAt', sortable: this.enableSort, formatter: 'timeToText' },
                 { label: 'Due', key: 'due', sortable: this.enableSort, formatter: 'timeToText' },
@@ -65,6 +80,21 @@ export default {
     methods: {
         loadPage (newPage) {
             this.page = newPage;
+        },
+        issueSortBy (sortField) {
+            let { sortBy, sortOrder } = this;
+            if(sortBy == sortField) {
+                sortOrder = {
+                    desc: 'asc',
+                    asc: 'desc'
+                }[sortOrder];
+            }
+            else {
+                sortBy = sortField;
+                sortOrder = 'desc';
+            }
+            this.$emit('update:sortBy', sortBy);
+            this.$emit('update:sortOrder', sortOrder);
         }
     }
 };
@@ -75,6 +105,15 @@ export default {
 
 .browser-view {
     position: relative;
+    .browser-head {
+        .browser-sort {
+            font-weight: bold;
+            color: #ccc;
+            &.enabled {
+                color: #333;
+            }
+        }
+    }
     .pagination {
         opacity: 0.5;
         transition: opacity .2s;

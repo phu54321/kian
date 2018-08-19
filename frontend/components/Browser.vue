@@ -1,7 +1,7 @@
 <template lang="pug">
 div
     h2 Browser
-    browser-view(:cardIds='cardIds')
+    browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder')
 </template>
 
 <script>
@@ -12,7 +12,9 @@ import { ankiCall } from '../api/ankiCall';
 export default {
     data () {
         return {
-            query: ''
+            query: '',
+            sortBy: 'id',
+            sortOrder: 'desc',
         };
     },
     asyncComputed: {
@@ -20,6 +22,8 @@ export default {
             async get () {
                 return await ankiCall('browser_query', {
                     query: this.query,
+                    sortBy: this.sortBy,
+                    sortOrder: this.sortOrder,
                 });
             },
             default: []
