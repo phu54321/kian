@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    h2 Browser
+    h1.mb-4 Browser
     browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder')
 </template>
 

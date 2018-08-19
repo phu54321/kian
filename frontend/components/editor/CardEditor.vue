@@ -42,7 +42,10 @@ b-form(@submit='onSave')
         tr
             th Tags
             td
-                tag-editor(v-model='card.tags')
+                space-seperated-input(
+                    v-model='card.tags',
+                    placeholder='Add new tags...',
+                    :item-variant='tagColor')
 </template>
 
 <script>
@@ -51,7 +54,7 @@ import {ankiCall} from '../../api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote';
 import EditorShortcut from './shortcut/EditorShortcut';
-import TagEditor from './TagEditor';
+import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import './editor.scss';
 
 
@@ -76,11 +79,15 @@ export default {
         Summernote,
         EditorShortcut,
         ListSelector,
-        TagEditor,
+        SpaceSeperatedInput,
     },
     methods: {
         onSave () {
             this.$emit('save');
+        },
+        tagColor (tag) {
+            if(tag == 'marked') return 'danger';
+            else return 'secondary';
         }
     },
     computed: {
