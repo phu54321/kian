@@ -2,11 +2,11 @@
 
 .autocomplete-container
     slot
-    .autocomplete-box(v-if='suggestions.length > 0')
+    .autocomplete-box(v-if='hasFocus && suggestions.length > 0')
         .autocomplete-entry(
             v-for='(item, index) in suggestions',
             :key='item',
-            @click='applyAutocomplete(index)',
+            @mousedown='applyAutocomplete(index)',
             :class='{ selected: index == selected }') {{item}}
 
 </template>
@@ -25,8 +25,11 @@ export default {
                 this.selected = Math.max(0, this.selected - 1);
             } else if (e.keyCode == 40) {  // Down arrow key
                 this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
-            } else if (e.keycode == 13) {
-                if (this.selected !== -1) applyAutocomplete(this.selected);
+            } else if (e.keyCode == 13) {
+                if (this.selected !== -1) {
+                    this.applyAutocomplete(this.selected);
+                    e.stopPropagation();
+                }
             }
         });
 
@@ -37,7 +40,7 @@ export default {
         $(this.$el).on('blur', 'input', (e) => {
             this.hasFocus = false;
         });
-},
+    },
     data () {
         return {
             selected: -1,
@@ -47,6 +50,7 @@ export default {
     methods: {
         applyAutocomplete (index) {
             this.$emit('commit', this.suggestions[index]);
+            this.selected = -1;
         }
     }
 }

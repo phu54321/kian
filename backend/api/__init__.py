@@ -8,4 +8,5 @@ from . import (
     browser,
     reviewer,
     media,
+    tags,
 )

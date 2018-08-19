@@ -91,7 +91,9 @@ export default {
             else return 'secondary';
         },
         async fetchTags(tag) {
-            return ['t1', 't2',];
+            return ankiCall('tag_suggestions', {
+                query: tag
+            });
         }
     },
     computed: {
