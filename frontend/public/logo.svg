@@ -3,7 +3,13 @@
 <svg version="1.1" id="레이어_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
 	 y="0px" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:none;stroke:#ffffff;stroke-width:4;stroke-miterlimit:10;}
+	.st0{fill:#FFFFFF;}
 </style>
-<path class="st0" d="M16,5c0,0-10,53-3,54c6,0.9,14.6-53.8,27-52c9.8,1.4,18,49,14,52c-2.8,2.1-31.9-12-31-22c1-11,38-1,38-1"/>
+<g>
+	<path class="st0" d="M10.1,28.5l-6.2-6.2h4.9V3.8h2.5v18.6h4.9L10.1,28.5z M22.4,28.5l-6.2-6.2h4.9V3.8h2.5v18.6h4.9L22.4,28.5z"/>
+	<path class="st0" d="M50.8,16.1v-5H32.3V8.7h18.5v-5L57,9.9L50.8,16.1z M50.8,28.5v-5H32.3v-2.5h18.5v-5l6.2,6.2L50.8,28.5z"/>
+	<path class="st0" d="M25.5,54.6v-5H10.7L3.9,36h9.9v2.5H7.9l4.3,8.7h13.3v-5l6.2,6.2L25.5,54.6z"/>
+	<path class="st0" d="M53.9,53.3v-5l6.2,6.2l-6.2,6.2v-5h-8.6c-2.7,0-5.1-1-7-2.9c-1.9-1.9-2.9-4.3-2.9-7s1-5.1,2.9-7s4.3-2.9,7-2.9
+		h8.6v2.5h-8.6c-2,0-3.8,0.7-5.2,2.2c-1.4,1.5-2.2,3.2-2.2,5.3s0.7,3.8,2.2,5.3c1.4,1.4,3.2,2.2,5.2,2.2H53.9z"/>
+</g>
 </svg>
