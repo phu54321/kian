@@ -4,8 +4,8 @@ div.app-body
     b-navbar(fixed='top', toggleable='sm', variant='primary', type='dark')
         b-container
             b-navbar-brand(href='#', to='/')
-                img.mr-2.logo(src='logo.svg')
-                | Kian
+                | kian
+                img.ml-1.logo(src='logo.svg')
 
             b-navbar-nav.ml-auto
                 b-nav-item(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
