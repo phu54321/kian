@@ -5,6 +5,7 @@
     .autocomplete-box(v-if='suggestions.length > 0')
         .autocomplete-entry(
             v-for='(item, index) in suggestions',
+            :key='item',
             @click='applyAutocomplete(index)',
             :class='{ selected: index == selected }') {{item}}
 
@@ -15,7 +16,7 @@ export default {
     props: {
         suggestions: {
             type: Array,
-            default: [],
+            default: () => [],
         },
     },
     mounted () {
@@ -24,23 +25,28 @@ export default {
                 this.selected = Math.max(0, this.selected - 1);
             } else if (e.keyCode == 40) {  // Down arrow key
                 this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
+            } else if (e.keycode == 13) {
+                if (this.selected !== -1) applyAutocomplete(this.selected);
             }
         });
-    },
+
+        $(this.$el).on('focus', 'input', (e) => {
+            this.hasFocus = true;
+        });
+
+        $(this.$el).on('blur', 'input', (e) => {
+            this.hasFocus = false;
+        });
+},
     data () {
         return {
-            selected: -1
+            selected: -1,
+            hasFocus: false,
         };
     },
     methods: {
-        selectItem (index) {
-            this.selected = index;
-        },
-        deselectIfIndex (index) {
-            if(this.selected == index) this.selected = -1;
-        },
         applyAutocomplete (index) {
-            this.$emit('autocomplete', this.suggestions[index]);
+            this.$emit('commit', this.suggestions[index]);
         }
     }
 }
