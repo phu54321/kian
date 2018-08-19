@@ -45,6 +45,7 @@ b-form(@submit='onSave')
                 space-seperated-input(
                     v-model='card.tags',
                     placeholder='Add new tags...',
+                    :suggestions='fetchTags'
                     :item-variant='tagColor')
 </template>
 
@@ -88,6 +89,9 @@ export default {
         tagColor (tag) {
             if(tag == 'marked') return 'danger';
             else return 'secondary';
+        },
+        async fetchTags(tag) {
+            return ['t1', 't2',];
         }
     },
     computed: {

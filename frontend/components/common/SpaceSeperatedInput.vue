@@ -1,17 +1,17 @@
 <template lang="pug">
-    autocomplete-box(:suggestions='autocompleteList', :bound-input='$refs.input')
+    autocomplete-box(:suggestions='autocompleteList', @commit='applyAutocomplete')
         .item-input
             span.mr-2.item-existing(v-for='item in items', :key='item')
-                b-badge(:variant='itemVariant(item)')
+                b-badge(:variant='itemVariant(item)', @click='modifyItem(item)')
                     | {{item}}
-                    span(@click='removeItemByName(item)')
+                    span(@click.stop='removeItemByName(item)')
                         icon.ml-1(name='times-circle', scale='.75')
             input.item-new(
                 v-model='buildingItem',
                 ref='input'
                 @keydown='onKeyDown',
                 @input='emitItem',
-                :placeholder='placeholder'
+                :placeholder='placeholder',
                 @blur='emitItem(true)')
         
 
@@ -54,9 +54,13 @@ export default {
         AutocompleteBox,
     },
     asyncComputed: {
-        async autocompleteList() {
-            return this.suggestions(this.buildingItem);
-        }
+        autocompleteList: {
+            async get () {
+                if(this.buildingItem == '') return [];
+                else return this.suggestions(this.buildingItem);
+            },
+            default: []
+        },
     },
     methods: {
         onKeyDown (e) {
@@ -76,14 +80,19 @@ export default {
         },
         removeItemByName (name) {
             const index = this.items.indexOf(name);
-            if(index == -1) return;
             this.items.splice(index, 1);
-            this.emitItem();
+        },
+        modifyItem (item) {
+            this.emitItem(true);
+            const itemIdx = this.items.indexOf(item);
+            this.items.splice(itemIdx, 1);
+            this.buildingItem = item;
+            this.$refs.input.focus();
         },
         emitItem (force=false) {
             if(force === true || this.buildingItem.endsWith(' ')) {
                 const newTag = this.buildingItem.trim();
-                if(this.isToken(newTag)) {
+                if(newTag && this.isToken(newTag)) {
                     if(newTag && this.items.indexOf(newTag) == -1) this.items.push(newTag);
                     this.buildingItem = '';
                 }
@@ -93,6 +102,10 @@ export default {
             const newTag = this.buildingItem.trim();
             if(newTag && items.indexOf(newTag) == -1) items.push(newTag);
             this.$emit('input', items);
+        },
+        applyAutocomplete (item) {
+            this.buildingItem = item;
+            this.emitItem(true);
         }
     },
     computed: {
