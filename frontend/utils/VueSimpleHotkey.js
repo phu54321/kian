@@ -18,7 +18,7 @@ function triggerHotkey (el, _binding, _vnode) {
     const height = $el.height();
     let targetEl = document.elementFromPoint(left + width / 2, top + height / 2);
 
-    for(;;) {
+    while(targetEl !== null) {
         const $target = $(targetEl);
         Object.keys(classRules).forEach(cls => {
             if ($target.hasClass(cls)) {
