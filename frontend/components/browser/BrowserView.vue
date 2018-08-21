@@ -53,7 +53,7 @@ export default {
     },
     watch: {
         pageNum () {
-            if(this.page > this.pageNum) this.page = this.pageNum;
+            this.page = Math.max(1, Math.min(this.page, this.pageNum));
         }
     },
     computed: {
