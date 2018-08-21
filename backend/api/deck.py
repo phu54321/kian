@@ -10,9 +10,9 @@ import time
 @registerApi('deck_list')
 def listDeck(msg):
     with Col() as col:
-        return emit.emitResult(
-            [d['name'] for d in col.decks.all()]
-        )
+        deckNames = [d['name'] for d in col.decks.all()]
+        deckNames.sort()
+        return emit.emitResult(deckNames)
 
 
 @registerApi('dashboard_deck_tree')
@@ -33,7 +33,7 @@ def listDeckDue(msg):
                     'collapsed': deck['collapsed']
                 })
             return result
-                
+
         return emit.emitResult(
             traverseDueTree(dueTree)
         )
@@ -83,7 +83,7 @@ def getDeckInfo(msg):
                         from cards where did in %s
                         ''' % col.sched._deckLimit(), round(time.time()))
 
-                # If there are no cards in current selected deck, 
+                # If there are no cards in current selected deck,
                 if total == 0:
                     mature = young = unseen = suspended = due = 0
                 return emit.emitResult({

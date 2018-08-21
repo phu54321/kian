@@ -60,14 +60,29 @@ export default {
             if(chunk.startsWith('tag:')) {
                 return {
                     variant: 'info',
-                    title: chunk.substring(4),
+                    title: chunk,
                 };
+            }
+            else if(chunk.startsWith('deck:')) {
+                return {
+                    color: "#7995ff",
+                    title: chunk,
+                }
             }
         },
         async querySuggestion (chunk) {
             if(chunk.startsWith('tag:')) {
                 const tagList = await this.fetchTags(chunk.substring(4));
-                return tagList.map(tag => `tag:${tag}`);
+                return tagList.map(tag => `tag:${tag}`)
+                    .filter(tag => tag.startsWith(chunk));
+            }
+            else if(chunk.startsWith('deck:')) {
+                const deckList = await ankiCall('deck_list');
+                return deckList.map(deck =>
+                    deck.indexOf(' ') == -1
+                        ? `deck:${deck}`
+                        : `deck:"${deck}"`)
+                    .filter(deck => deck.startsWith(chunk));
             }
             return [];
         },
