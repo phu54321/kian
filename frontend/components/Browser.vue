@@ -1,14 +1,14 @@
 <template lang="pug">
 div
     h1.mb-4 Browser
-    
+
     b-form.queryBox(@submit.prevent='query = queryString.join(" ")')
         b-input-group
             space-seperated-input.sep-input.form-control(
                 v-model='queryString',
                 :suggestions='querySuggestion',
-                :itemVariant='queryColor')
-            
+                :renderer='queryRenderer')
+
             b-input-group-append
                 b-btn(variant='primary', type='submit')
                     icon(name='search')
@@ -53,9 +53,13 @@ export default {
         },
     },
     methods: {
-        queryColor (chunk) {
-            if(chunk.startsWith('tag:')) return 'info';
-            return 'secondary';
+        queryRenderer (chunk) {
+            if(chunk.startsWith('tag:')) {
+                return {
+                    variant: 'info',
+                    title: chunk.substring(4),
+                };
+            }
         },
         async querySuggestion (chunk) {
             if(chunk.startsWith('tag:') && chunk.length >= 5) {
@@ -82,8 +86,6 @@ export default {
 
 .queryBox {
     margin: 1em 0;
-    // border: 1px solid #eee;
-    // padding: .2em .5em;
     .sep-input {
         padding-left: .4em;
     }

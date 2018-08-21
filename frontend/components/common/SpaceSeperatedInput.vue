@@ -1,11 +1,12 @@
 <template lang="pug">
-    autocomplete-box(:suggestions='autocompleteList', @commit='applyAutocomplete')
+    autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit='applyAutocomplete')
         .item-input
-            span.mr-2.item-existing(v-for='item in items', :key='item')
-                b-badge(:variant='itemVariant(item)', @click='modifyItem(item)')
-                    | {{item}}
-                    span(@click.stop='removeItemByName(item)')
+            span.mr-2.item-existing(v-for='item in renderedItems', :key='item.origValue')
+                b-badge(:variant='item.variant', @click='modifyItem(item.origValue)')
+                    | {{item.title}}
+                    span(@click.stop='removeItemByName(item.origValue)')
                         icon.ml-1(name='times-circle', scale='.75')
+
             input.item-new(
                 v-model='buildingItem',
                 ref='input'
@@ -27,10 +28,6 @@ import $ from 'jquery';
 export default {
     props: {
         value: Array,
-        itemVariant: {
-            type: Function,
-            default: (c) => 'secondary',
-        },
         isToken: {
             type: Function,
             default: (c) => true
@@ -39,10 +36,17 @@ export default {
             type: Function,
             default: (c) => []
         },
+        renderer: {
+            type: Function,
+            default: c => undefined,
+        },
         placeholder: {
             type: String,
             default: ''
         },
+    },
+    components: {
+        AutocompleteBox,
     },
     data () {
         return {
@@ -50,19 +54,26 @@ export default {
             buildingItem: '',
         };
     },
-    components: {
-        AutocompleteBox,
-    },
     asyncComputed: {
         autocompleteList: {
             async get () {
                 if(this.buildingItem == '') return [];
-                else return this.suggestions(this.buildingItem);
+                else {
+                    return this.suggestions(this.buildingItem);
+                }
             },
             default: []
         },
     },
     methods: {
+        renderItem (item) {
+            const ret = this.renderer(item) || {
+                variant: 'secondary',
+                title: item
+            };
+            ret.origValue = item;
+            return ret;
+        },
         onKeyDown (e) {
             if(e.keyCode == KEY_MAP['SPACE']) {
                 const newTag = this.buildingItem.trim();
@@ -113,6 +124,9 @@ export default {
             const ret = this.items.slice();
             if(this.buildingItem) ret.push(this.buildingItem);
             return ret;
+        },
+        renderedItems () {
+            return this.items.map(this.renderItem);
         },
     }
 };
