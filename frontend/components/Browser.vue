@@ -55,44 +55,7 @@ export default {
         },
     },
     methods: {
-        queryValidator (chunk) {
-            // From anki/find.py
-            let inQuote = false;
-            let token = '';
-            for(let i = 0 ; i < chunk.length ; i++) {
-                const c = chunk[i];
-                if(c == '"' || c == '\'') {
-                    if (inQuote) {
-                        if (c == inQuote) inQuote = false;
-                        else token += c;
-                    }
-                    else if (token) {
-                        if(token.endsWith(':')) inQuote = c;
-                        else token += c;
-                    }
-                    else inQuote = c;
-                }
-                else if(c == ' ' || c == '\u3000') {
-                    if (inQuote) token += c;
-                    else if(token) {
-                        token = '';
-                    }
-                }
-                else if(c == '(' || c == ')') {
-                    if (inQuote) token += c;
-                    else {
-                        if(c == ')' && token) {
-                            token = '';
-                        }
-                    }
-                }
-                else if(c == '-') {
-                    if (token) token += c;
-                }
-                else token += c;
-            }
-            return !inQuote;
-        },
+        queryValidator,
         queryRenderer (chunk) {
             if(chunk.startsWith('tag:')) {
                 return {
@@ -102,7 +65,7 @@ export default {
             }
         },
         async querySuggestion (chunk) {
-            if(chunk.startsWith('tag:') && chunk.length >= 5) {
+            if(chunk.startsWith('tag:')) {
                 const tagList = await this.fetchTags(chunk.substring(4));
                 return tagList.map(tag => `tag:${tag}`);
             }
@@ -120,6 +83,46 @@ export default {
     },
     name: 'browser',
 };
+
+function queryValidator (chunk) {
+    // From anki/find.py
+    let inQuote = false;
+    let token = '';
+    for(let i = 0 ; i < chunk.length ; i++) {
+        const c = chunk[i];
+        if(c == '"' || c == '\'') {
+            if (inQuote) {
+                if (c == inQuote) inQuote = false;
+                else token += c;
+            }
+            else if (token) {
+                if(token.endsWith(':')) inQuote = c;
+                else token += c;
+            }
+            else inQuote = c;
+        }
+        else if(c == ' ' || c == '\u3000') {
+            if (inQuote) token += c;
+            else if(token) {
+                token = '';
+            }
+        }
+        else if(c == '(' || c == ')') {
+            if (inQuote) token += c;
+            else {
+                if(c == ')' && token) {
+                    token = '';
+                }
+            }
+        }
+        else if(c == '-') {
+            if (token) token += c;
+        }
+        else token += c;
+    }
+    return !inQuote;
+};
+
 </script>
 
 <style lang="scss" scoped>

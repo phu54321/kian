@@ -14,6 +14,9 @@
 </template>
 
 <script>
+
+import $ from 'jquery';
+
 export default {
     props: {
         suggestions: {
@@ -29,8 +32,10 @@ export default {
         $(this.$el).on('keydown', 'input', (e) => {
             if(e.keyCode == 38) {  // Up arrow key
                 this.selected = Math.max(0, this.selected - 1);
+                e.preventDefault();
             } else if (e.keyCode == 40) {  // Down arrow key
                 this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
+                e.preventDefault();
             } else if (e.keyCode == 13) {
                 if (this.selected !== -1) {
                     this.applyAutocomplete(this.selected);
@@ -52,6 +57,22 @@ export default {
             selected: -1,
             hasFocus: false,
         };
+    },
+    watch: {
+        suggestions () {
+            this.selected = -1;
+        },
+        selected () {
+            if(this.selected === -1 || this.suggestions.length == 0) return;
+
+            const $parentDiv = $(this.$el).find('.autocomplete-box');
+            const $innerListItem = $($(this.$el).find('.autocomplete-entry')[this.selected]);
+
+            $parentDiv.scrollTop(
+                $parentDiv.scrollTop() + $innerListItem.position().top
+                    - $parentDiv.height()/2 + $innerListItem.height()/2
+            );
+        }
     },
     computed: {
         renderedSuggestions () {
@@ -84,6 +105,8 @@ export default {
         margin-top: .5em;
         position: absolute;
         width: 100%;
+        max-height: 15em;
+        overflow-y: scroll;
         background-color: #fcfcfc;
         border: 1px solid #ddd;
         opacity: .9;
