@@ -4,18 +4,20 @@
     slot
     .autocomplete-box(v-if='hasFocus && suggestions.length > 0')
         .autocomplete-entry(
-            v-for='(item, index) in renderedSuggestions',
-            :key='item.origValue',
+            v-for='(item, index) in suggestions',
+            :key='item',
+            :class='{ selected: index == selected }',
             @mousedown='applyAutocomplete(index)',
-            :class='{ selected: index == selected }')
-            b-badge(:variant='item.variant', :style='{ "background-color": item.color }') {{item.title}}
-            span.origVal(v-if='item.title !== item.origValue') {{item.origValue}}
+        )
+            colored-badge(:renderer='renderer', :item='item')
+            span.origVal {{item}}
 
 </template>
 
 <script>
 
 import $ from 'jquery';
+import ColoredBadge from './ColoredBadge';
 
 export default {
     props: {
@@ -27,6 +29,9 @@ export default {
             type: Function,
             default: c => undefined,
         }
+    },
+    components: {
+        ColoredBadge
     },
     mounted () {
         $(this.$el).on('keydown', 'input', (e) => {
