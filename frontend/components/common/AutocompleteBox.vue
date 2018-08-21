@@ -106,7 +106,7 @@ export default {
         position: absolute;
         width: 100%;
         max-height: 15em;
-        overflow-y: scroll;
+        overflow-y: auto;
         background-color: #fcfcfc;
         border: 1px solid #ddd;
         opacity: .9;
