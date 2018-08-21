@@ -21,6 +21,7 @@ b-form(@submit='onSave')
                 list-selector(
                     taggable,
                     v-hotkey="['ctrl+d']",
+                    title='Change deck'
                     v-model='card.deck',
                     :disabled='deckFixed',
                     apiType='deck_list')
@@ -31,6 +32,7 @@ b-form(@submit='onSave')
                 list-selector(
                     :disabled='modelFixed',
                     v-hotkey="['ctrl+m']",
+                    title='Change model',
                     v-model='card.model',
                     apiType='model_list')
 

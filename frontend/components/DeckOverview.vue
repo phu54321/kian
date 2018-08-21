@@ -23,7 +23,7 @@ div
             th Total
             td.text-secondary {{stat.total}}
 
-    b-button(size='sm', v-hotkey="['space', 'enter']", variant='outline-primary', :to='"/study/" + encodeURIComponent(deckName)') Study now
+    b-button(size='sm', v-hotkey="['space', 'enter']", title='Start studying' variant='outline-primary', :to='"/study/" + encodeURIComponent(deckName)') Study now
 
 </template>
 
