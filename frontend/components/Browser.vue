@@ -60,13 +60,13 @@ export default {
             if(chunk.startsWith('tag:')) {
                 return {
                     variant: 'info',
-                    title: chunk,
+                    title: `Tag: ${chunk.substr(4)}`,
                 };
             }
             else if(chunk.startsWith('deck:')) {
                 return {
-                    color: "#7995ff",
-                    title: chunk,
+                    color: "#4caf50",
+                    title: `Deck: ${chunk.substr(5)}`,
                 }
             }
         },
