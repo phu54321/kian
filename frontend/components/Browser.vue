@@ -6,6 +6,8 @@ div
         b-input-group
             space-seperated-input.sep-input.form-control(
                 v-model='queryString',
+                placeholder='Put some query in...'
+                :validator='queryValidator',
                 :suggestions='querySuggestion',
                 :renderer='queryRenderer')
 
@@ -53,6 +55,44 @@ export default {
         },
     },
     methods: {
+        queryValidator (chunk) {
+            // From anki/find.py
+            let inQuote = false;
+            let token = '';
+            for(let i = 0 ; i < chunk.length ; i++) {
+                const c = chunk[i];
+                if(c == '"' || c == '\'') {
+                    if (inQuote) {
+                        if (c == inQuote) inQuote = false;
+                        else token += c;
+                    }
+                    else if (token) {
+                        if(token.endsWith(':')) inQuote = c;
+                        else token += c;
+                    }
+                    else inQuote = c;
+                }
+                else if(c == ' ' || c == '\u3000') {
+                    if (inQuote) token += c;
+                    else if(token) {
+                        token = '';
+                    }
+                }
+                else if(c == '(' || c == ')') {
+                    if (inQuote) token += c;
+                    else {
+                        if(c == ')' && token) {
+                            token = '';
+                        }
+                    }
+                }
+                else if(c == '-') {
+                    if (token) token += c;
+                }
+                else token += c;
+            }
+            return !inQuote;
+        },
         queryRenderer (chunk) {
             if(chunk.startsWith('tag:')) {
                 return {
