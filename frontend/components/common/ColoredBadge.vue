@@ -1,7 +1,7 @@
 <template lang='pug'>
 
 b-badge(
-    :variant='renderedItem.variant'
+    :variant='renderedItem.variant',
     :style='{ "background-color": renderedItem.color }')
     | {{renderedItem.title}}
     slot
