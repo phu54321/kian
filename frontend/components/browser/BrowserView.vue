@@ -15,11 +15,11 @@ div.browser-view
 
     ul.pagination.justify-content-center(v-if='pageNum > 1')
         li.page-item(:class='{ disabled: page == 1 }')
-            a.page-link(v-hotkey='["ctrl+left"]', @click.prevent='loadPage(page - 1)') &lt;&lt;
+            a.page-link(v-hotkey='["ctrl+left"]', title='Previous page', @click.prevent='loadPage(page - 1)') &lt;&lt;
         li.page-item(v-for='i in paginationRange', :class='{ active: i == page }')
             a.page-link(@click.prevent='loadPage(i)') {{i}}
         li.page-item(:class='{ disabled: page == pageNum }')
-            a.page-link(v-hotkey='["ctrl+right"]', @click.prevent='loadPage(page + 1)') &gt;&gt;
+            a.page-link(v-hotkey='["ctrl+right"]', title='Next page', @click.prevent='loadPage(page + 1)') &gt;&gt;
 
 </template>
 

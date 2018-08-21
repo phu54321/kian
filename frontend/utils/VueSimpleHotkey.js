@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import './jquery.hotkeys';
+import { addHotkeyMap, removeHotkeyMap } from './HotkeyMap';
 
 const classRules = {
     multiselect: (el) => el.focus(),
@@ -42,12 +43,15 @@ function triggerHotkey (el, _binding, _vnode) {
     el.click();
 }
 
+
 function registerHotkey (el, binding, vnode) {
     if (el._onKeyDown) unregisterHotkey(el);
 
     let hotkeyList = binding.value;
     if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
     const hotkeyString = hotkeyList.map(x => x.toLowerCase());
+    const attrs = vnode.data.attrs;
+    const title = (attrs.title) ? attrs.title : $(el).text();
 
     function onKeyDown (e) {
         triggerHotkey(el, binding, vnode);
@@ -57,8 +61,11 @@ function registerHotkey (el, binding, vnode) {
 
     el._onKeyDown = onKeyDown;
     el._hotKeyInputWhitelist = [];
+    el._title = title;
+    el._kStringList = hotkeyString;
     hotkeyString.forEach(kString => {
         $(document).bind('keydown', kString, el._onKeyDown);
+        addHotkeyMap(kString, title);
         if(kString.indexOf('ctrl') !== -1 || kString.indexOf('alt') !== -1) {
             $.hotkeyInputWhitelist[kString] = true;
             el._hotKeyInputWhitelist.push(kString);
@@ -71,6 +78,9 @@ function unregisterHotkey (el) {
         $(document).unbind('keydown', el._onKeyDown);
         el._hotKeyInputWhitelist.forEach(kString => {
             delete $.hotkeyInputWhitelist[kString];
+        });
+        el._kStringList.forEach(kString => {
+            removeHotkeyMap(kString, el._title);
         });
         delete el._onKeyDown;
         delete el._hotKeyInputWhitelist;
