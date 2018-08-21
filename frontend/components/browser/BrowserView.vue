@@ -1,7 +1,7 @@
 <template lang="pug">
 
 div.browser-view
-    table.table.table-sm
+    table.table.table-sm.table-bordered
         thead(slot='before-content')
             tr
                 th(v-for='field in fields', :key='field.key')
@@ -50,6 +50,11 @@ export default {
         return {
             page: 1,
         };
+    },
+    watch: {
+        pageNum () {
+            if(this.page > this.pageNum) this.page = this.pageNum;
+        }
     },
     computed: {
         pageNum () {
