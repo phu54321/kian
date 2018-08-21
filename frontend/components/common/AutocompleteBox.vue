@@ -79,20 +79,7 @@ export default {
             );
         }
     },
-    computed: {
-        renderedSuggestions () {
-            return this.suggestions.map(this.renderItem);
-        }
-    },
     methods: {
-        renderItem (item) {
-            const ret = this.renderer(item) || {
-                variant: 'secondary',
-                title: item
-            };
-            ret.origValue = item;
-            return ret;
-        },
         applyAutocomplete (index) {
             this.$emit('commit', this.suggestions[index]);
             this.selected = -1;
