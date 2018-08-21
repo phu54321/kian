@@ -4,6 +4,7 @@ from utils import (
     typeCheck,
     emit,
 )
+from anki.utils import htmlToTextLine
 
 
 @registerApi('browser_query')
@@ -69,7 +70,7 @@ def getCardsBatch(msg):
                 'noteId': note.id,
                 'ord': card.ord,
                 'model': model['name'],
-                'preview': card.q(),
+                'preview': htmlToTextLine(card.q(browser=True)),
                 'tags': note.tags,
                 'createdAt': card.id // 1000,
                 'updatedAt': card.mod,
