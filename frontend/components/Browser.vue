@@ -2,10 +2,12 @@
 div
     h1.mb-4 Browser
     
-
     b-form.queryBox(@submit.prevent='query = queryString.join(" ")')
         b-input-group
-            space-seperated-input.sep-input.form-control(v-model='queryString')
+            space-seperated-input.sep-input.form-control(
+                v-model='queryString',
+                :suggestions='querySuggestion',
+                :itemVariant='queryColor')
             
             b-input-group-append
                 b-btn(variant='primary', type='submit')
@@ -49,6 +51,24 @@ export default {
             },
             default: []
         },
+    },
+    methods: {
+        queryColor (chunk) {
+            if(chunk.startsWith('tag:')) return 'info';
+            return 'secondary';
+        },
+        async querySuggestion (chunk) {
+            if(chunk.startsWith('tag:') && chunk.length >= 5) {
+                const tagList = await this.fetchTags(chunk.substring(4));
+                return tagList.map(tag => `tag:${tag}`);
+            }
+            return [];
+        },
+        async fetchTags(tag) {
+            return ankiCall('tag_suggestions', {
+                query: tag
+            });
+        }
     },
     components: {
         BrowserView,
