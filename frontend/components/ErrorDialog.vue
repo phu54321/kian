@@ -1,5 +1,5 @@
 <template lang="pug">
-    b-modal(v-model='modalShow')
+    b-modal(v-model='modalShow', size='lg')
         span(slot='modal-title') Error occured
         span {{title}}
         template(v-if='msg')

@@ -33,7 +33,14 @@ import VueObserveVisibility from 'vue-observe-visibility';
 Vue.use(VueObserveVisibility);
 
 import AsyncComputed from 'vue-async-computed';
-Vue.use(AsyncComputed);
+import ErrorDialog from './components/ErrorDialog';
+
+Vue.use(AsyncComputed, {
+    useRawError: true,
+    errorHandler (err) {
+        ErrorDialog.openErrorDialog(err.msg, err.stack);
+    }
+});
 
 import VueToasted from 'vue-toasted';
 Vue.use(VueToasted, {
