@@ -50,7 +50,6 @@ export default {
     },
     data () {
         return {
-            items: this.value,
             buildingItem: '',
         };
     },
@@ -78,18 +77,26 @@ export default {
             if(e.keyCode == KEY_MAP['BACKSPACE']) {
                 const inputEl = $(this.$el).find('.item-new')[0];
                 if(inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
-                    this.items.pop();
+                    const items = this.value.slice();
+                    items.pop();
+                    this.$emit('input', items);
                 }
             }
         },
         removeItemByName (name) {
-            const index = this.items.indexOf(name);
-            this.items.splice(index, 1);
+            const items = this.value.slice();
+            const index = items.indexOf(name);
+            items.splice(index, 1);
+            this.$emit('input', items);
         },
         modifyItem (item) {
             this.emitItem(true);
-            const itemIdx = this.items.indexOf(item);
-            this.items.splice(itemIdx, 1);
+
+            const items = this.value.slice();
+            const itemIdx = items.indexOf(item);
+            items.splice(itemIdx, 1);
+            this.$emit('input', items);
+
             this.buildingItem = item;
             this.$refs.input.focus();
         },
@@ -97,7 +104,9 @@ export default {
             if(force === true || this.buildingItem.endsWith(' ')) {
                 const newTag = this.buildingItem.trim();
                 if(newTag && this.validator(newTag)) {
-                    if(newTag && this.items.indexOf(newTag) == -1) this.items.push(newTag);
+                    if(newTag && this.value.indexOf(newTag) == -1) {
+                        this.$emit('input', [...this.value, newTag]);
+                    }
                     this.buildingItem = '';
                 }
             }
@@ -107,22 +116,9 @@ export default {
             this.emitItem(true);
         }
     },
-    watch: {
-        value () {
-            this.items = this.value;
-        },
-        items () {
-            this.$emit('input', this.items);
-        }
-    },
     computed: {
-        combinedTag () {
-            const ret = this.items.slice();
-            if(this.buildingItem && this.validator(this.buildingItem)) ret.push(this.buildingItem);
-            return ret;
-        },
         renderedItems () {
-            return this.items.map(this.renderItem);
+            return this.value.map(this.renderItem);
         },
     }
 };
