@@ -1,10 +1,9 @@
 <template lang="pug">
     autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit='applyAutocomplete')
         .item-input
-            span.mr-2.item-existing(v-for='item in renderedItems', :key='item.origValue')
-                b-badge(:variant='item.variant', :style='{ "background-color": item.color }', @click='modifyItem(item.origValue)')
-                    | {{item.title}}
-                    span(@click.stop='removeItemByName(item.origValue)')
+            span.mr-2.item-existing(v-for='item in value', :key='item')
+                colored-badge(:renderer='renderer', :item='item')
+                    span(@click.stop='removeItemByName(item)')
                         icon.ml-1(name='times-circle', scale='.75')
 
             input.item-new(
@@ -24,6 +23,7 @@ import { KEY_MAP } from '../../utils/keycode';
 import AutocompleteBox from './AutocompleteBox';
 
 import $ from 'jquery';
+import ColoredBadge from './ColoredBadge';
 
 export default {
     props: {
@@ -47,6 +47,7 @@ export default {
     },
     components: {
         AutocompleteBox,
+        ColoredBadge,
     },
     data () {
         return {
@@ -65,14 +66,6 @@ export default {
         },
     },
     methods: {
-        renderItem (item) {
-            const ret = this.renderer(item) || {
-                variant: 'secondary',
-                title: item
-            };
-            ret.origValue = item;
-            return ret;
-        },
         onKeyDown (e) {
             if(e.keyCode == KEY_MAP['BACKSPACE']) {
                 const inputEl = $(this.$el).find('.item-new')[0];
@@ -116,11 +109,6 @@ export default {
             this.emitItem(true);
         }
     },
-    computed: {
-        renderedItems () {
-            return this.value.map(this.renderItem);
-        },
-    }
 };
 </script>
 
