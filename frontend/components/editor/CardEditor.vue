@@ -48,7 +48,7 @@ b-form(@submit='onSave')
                     v-model='card.tags',
                     placeholder='Add new tags...',
                     :suggestions='fetchTags'
-                    :item-variant='tagColor')
+                    :renderer='tagRenderer')
 </template>
 
 <script>
@@ -88,9 +88,11 @@ export default {
         onSave () {
             this.$emit('save');
         },
-        tagColor (tag) {
-            if(tag == 'marked') return 'danger';
-            else return 'secondary';
+        tagRenderer (tag) {
+            if(tag == 'marked') return {
+                variant: 'danger',
+                title: tag
+            };
         },
         async fetchTags(tag) {
             return ankiCall('tag_suggestions', {

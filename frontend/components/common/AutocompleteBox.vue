@@ -4,10 +4,12 @@
     slot
     .autocomplete-box(v-if='hasFocus && suggestions.length > 0')
         .autocomplete-entry(
-            v-for='(item, index) in suggestions',
-            :key='item',
+            v-for='(item, index) in renderedSuggestions',
+            :key='item.origValue',
             @mousedown='applyAutocomplete(index)',
-            :class='{ selected: index == selected }') {{item}}
+            :class='{ selected: index == selected }')
+            b-badge(:variant='item.variant') {{item.title}}
+            span.origVal(v-if='item.title !== item.origValue') {{item.origValue}}
 
 </template>
 
@@ -18,6 +20,10 @@ export default {
             type: Array,
             default: () => [],
         },
+        renderer: {
+            type: Function,
+            default: c => undefined,
+        }
     },
     mounted () {
         $(this.$el).on('keydown', 'input', (e) => {
@@ -47,7 +53,20 @@ export default {
             hasFocus: false,
         };
     },
+    computed: {
+        renderedSuggestions () {
+            return this.suggestions.map(this.renderItem);
+        }
+    },
     methods: {
+        renderItem (item) {
+            const ret = this.renderer(item) || {
+                variant: 'secondary',
+                title: item
+            };
+            ret.origValue = item;
+            return ret;
+        },
         applyAutocomplete (index) {
             this.$emit('commit', this.suggestions[index]);
             this.selected = -1;
@@ -78,8 +97,15 @@ export default {
             &.selected {
                 background-color: #e3ebff;
             }
+
+            .origVal {
+                float: right;
+                font-style: italic;
+                font-size: .9em;
+                color: #555;
+            }
         }
-        
+
         .invisible {
             display: none;
         }
