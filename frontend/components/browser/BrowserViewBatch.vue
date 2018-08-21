@@ -1,12 +1,18 @@
 <template lang="pug">
 tbody
-    tr(v-for='card in cards')
-        template(v-if='card')
-            td(
-                v-for='field in fields',
-                :key='field.key',
-                :class='field.class')
-                | {{ getFormatter(field.formatter)(card[field.key]) }}
+    template(v-if='cards.length > 0')
+        tr(v-for='card in cards', v-if='card')
+                td(
+                    v-for='field in fields',
+                    :key='field.key',
+                    :class='field.class')
+                    | {{ getFormatter(field.formatter)(card[field.key]) }}
+    tr(v-else)
+        td.nocard(:colspan='fields.length')
+            h4
+                i.fas.fa-globe-asia
+                | &nbsp;Oops, no cards :(
+            p Try different query instead.
 </template>
 
 <script>
@@ -67,5 +73,10 @@ tbody tr {
     &:hover {
         background-color: #eee;
     }
+}
+
+.nocard {
+    text-align: center;
+    padding: 4em;
 }
 </style>

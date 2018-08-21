@@ -9,7 +9,9 @@ div
             // space-seperated-input(v-model='queryString')
             
             b-input-group-append
-                b-btn(variant='primary', type='submit') Search
+                b-btn(variant='primary', type='submit')
+                    icon(name='search')
+
     browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder')
 </template>
 
@@ -30,12 +32,15 @@ export default {
     },
     asyncComputed: {
         cardIds: {
-            async get () {
-                return await ankiCall('browser_query', {
+            get () {
+                return ankiCall('browser_query', {
                     query: this.query,
                     sortBy: this.sortBy,
                     sortOrder: this.sortOrder,
-                });
+                }).catch(err => {
+                    console.log(err);
+                    return [];
+                })
             },
             default: []
         },
