@@ -61,6 +61,7 @@ export default {
 .autocomplete-container {
     position: relative;
     .autocomplete-box {
+        z-index: 9999;
         margin-top: .5em;
         position: absolute;
         width: 100%;
