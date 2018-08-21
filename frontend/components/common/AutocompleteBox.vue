@@ -41,6 +41,13 @@ export default {
             } else if (e.keyCode == 40) {  // Down arrow key
                 this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
                 e.preventDefault();
+            } else if (e.keyCode == 9) { // Tab
+                if(this.suggestions.length > 0) {
+                    if(this.selected === -1) this.applyAutocomplete(0);
+                    else this.applyAutocomplete(this.selected);
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
             } else if (e.keyCode == 13) {
                 if (this.selected !== -1) {
                     this.applyAutocomplete(this.selected);
