@@ -8,7 +8,7 @@
             :key='item.origValue',
             @mousedown='applyAutocomplete(index)',
             :class='{ selected: index == selected }')
-            b-badge(:variant='item.variant') {{item.title}}
+            b-badge(:variant='item.variant', :style='{ "background-color": item.color }') {{item.title}}
             span.origVal(v-if='item.title !== item.origValue') {{item.origValue}}
 
 </template>

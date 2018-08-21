@@ -2,7 +2,7 @@
     autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit='applyAutocomplete')
         .item-input
             span.mr-2.item-existing(v-for='item in renderedItems', :key='item.origValue')
-                b-badge(:variant='item.variant', @click='modifyItem(item.origValue)')
+                b-badge(:variant='item.variant', :style='{ "background-color": item.color }', @click='modifyItem(item.origValue)')
                     | {{item.title}}
                     span(@click.stop='removeItemByName(item.origValue)')
                         icon.ml-1(name='times-circle', scale='.75')
