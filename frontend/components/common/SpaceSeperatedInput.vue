@@ -14,7 +14,7 @@
                 @input='emitItem',
                 :placeholder='placeholder',
                 @blur='emitItem(true)')
-        
+
 
 </template>
 
@@ -28,7 +28,7 @@ import $ from 'jquery';
 export default {
     props: {
         value: Array,
-        isToken: {
+        validator: {
             type: Function,
             default: (c) => true
         },
@@ -75,19 +75,12 @@ export default {
             return ret;
         },
         onKeyDown (e) {
-            if(e.keyCode == KEY_MAP['SPACE']) {
-                const newTag = this.buildingItem.trim();
-                if(newTag && this.items.indexOf(newTag) == -1) this.items.push(newTag);
-                this.buildingItem = '';
-                event.preventDefault();
-            }
-            else if(e.keyCode == KEY_MAP['BACKSPACE']) {
+            if(e.keyCode == KEY_MAP['BACKSPACE']) {
                 const inputEl = $(this.$el).find('.item-new')[0];
                 if(inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
                     this.items.pop();
                 }
             }
-            this.emitItem();
         },
         removeItemByName (name) {
             const index = this.items.indexOf(name);
@@ -103,26 +96,29 @@ export default {
         emitItem (force=false) {
             if(force === true || this.buildingItem.endsWith(' ')) {
                 const newTag = this.buildingItem.trim();
-                if(newTag && this.isToken(newTag)) {
+                if(newTag && this.validator(newTag)) {
                     if(newTag && this.items.indexOf(newTag) == -1) this.items.push(newTag);
                     this.buildingItem = '';
                 }
             }
-
-            const items = this.items.slice();
-            const newTag = this.buildingItem.trim();
-            if(newTag && items.indexOf(newTag) == -1) items.push(newTag);
-            this.$emit('input', items);
         },
         applyAutocomplete (item) {
             this.buildingItem = item;
             this.emitItem(true);
         }
     },
+    watch: {
+        value () {
+            this.items = this.value;
+        },
+        items () {
+            this.$emit('input', this.items);
+        }
+    },
     computed: {
         combinedTag () {
             const ret = this.items.slice();
-            if(this.buildingItem) ret.push(this.buildingItem);
+            if(this.buildingItem && this.validator(this.buildingItem)) ret.push(this.buildingItem);
             return ret;
         },
         renderedItems () {
