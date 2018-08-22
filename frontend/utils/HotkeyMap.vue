@@ -47,11 +47,7 @@ ul {
     padding: 0;
     li {
         .kimg {
-            display: inline-block;
-            width: 5em;
             margin-right: 1em;
-            text-align: right;
-            color: #666;
         }
     }
 }
