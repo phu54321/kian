@@ -1,6 +1,17 @@
 import $ from 'jquery';
 import './jquery.hotkeys';
-import { addHotkeyMap, removeHotkeyMap } from './HotkeyMap';
+
+export const hotkeyMap = {};
+
+function addHotkeyMap (kString, title) {
+    hotkeyMap[kString] = title;
+}
+
+function removeHotkeyMap (kString, title) {
+    if (hotkeyMap[kString] === title) {
+        delete hotkeyMap[kString];
+    }
+}
 
 const classRules = {
     multiselect: (el) => el.focus(),
@@ -17,10 +28,13 @@ const vnodeNameRules = {
 };
 
 function triggerHotkey (el, _binding, vnode) {
-    const vnodeName = vnode.componentOptions.tag;
-    if(vnodeNameRules[vnodeName]) {
-        return vnodeNameRules[vnodeName](vnode.context.$children[0]);
+    if(vnode.componentOptions) {
+        const vnodeName = vnode.componentOptions.tag;
+        if(vnodeNameRules[vnodeName]) {
+            return vnodeNameRules[vnodeName](vnode.context.$children[0]);
+        }
     }
+
     const $el = $(el);
     const {left, top} = $el.offset();
     const width = $el.width();
