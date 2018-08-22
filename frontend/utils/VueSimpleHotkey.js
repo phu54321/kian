@@ -12,7 +12,15 @@ const tagNameRules = {
     button: (el) => el.click(),
 };
 
-function triggerHotkey (el, _binding, _vnode) {
+const vnodeNameRules = {
+    'b-modal': (v) => v.show()
+};
+
+function triggerHotkey (el, _binding, vnode) {
+    const vnodeName = vnode.componentOptions.tag;
+    if(vnodeNameRules[vnodeName]) {
+        return vnodeNameRules[vnodeName](vnode.context.$children[0]);
+    }
     const $el = $(el);
     const {left, top} = $el.offset();
     const width = $el.width();
