@@ -133,7 +133,6 @@ export default {
 
 
 div /deep/ td {
-    font-size: .8em;
     &.ellipsis {
         max-width: 0;
         white-space: nowrap;
