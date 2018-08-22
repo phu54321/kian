@@ -1,9 +1,11 @@
 <template lang="pug">
 div
-    b-modal(v-model='show', size='lg')
+    b-modal(v-model='show', size='lg', hide-footer)
         span(slot='modal-title') Hotkey table
-        div(v-for='kString in hotkeyList')
-            | {{kString}} : {{hotkeyMap[kString]}}
+        ul(v-for='kString in hotkeyList')
+            li
+                key-image(:keys='kString')
+                | : {{hotkeyMap[kString]}}
     span(v-hotkey='"esc"', title='Show keymap', @click='show = !show')
 </template>
 
@@ -11,13 +13,17 @@ div
 
 import Vue from 'vue';
 import { hotkeyMap } from './VueSimpleHotkey';
+import KeyImage from '../components/editor/shortcut/KeyImage';
 
 export default {
     data () {
         return {
             hotkeyMap: {},
-            show: false,
+            show: true,
         };
+    },
+    components: {
+        KeyImage,
     },
     watch: {
         show () {
