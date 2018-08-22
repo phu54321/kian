@@ -19,7 +19,7 @@ export default {
     data () {
         return {
             hotkeyMap: {},
-            show: true,
+            show: false,
         };
     },
     components: {
