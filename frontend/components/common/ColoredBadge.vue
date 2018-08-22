@@ -14,7 +14,7 @@ export default {
     props: {
         renderer: {
             type: Function,
-            default: c => undefined
+            default: () => undefined
         },
         item: String
     },
@@ -29,6 +29,6 @@ export default {
         },
     },
     name: 'colored-badge',
-}
+};
 
 </script>

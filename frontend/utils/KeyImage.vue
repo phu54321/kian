@@ -25,7 +25,7 @@ export const specialCharTable = {
     TAB: '⇥'
 };
 
-function firstLetterUpper(s) {
+function firstLetterUpper (s) {
     return s[0].toUpperCase() + s.substr(1).toLowerCase();
 }
 

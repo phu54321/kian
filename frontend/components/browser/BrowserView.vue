@@ -25,8 +25,6 @@ div.browser-view
 
 <script>
 
-import { ankiCall } from '../../api/ankiCall';
-import asyncData from '../../utils/asyncData';
 import BrowserViewBatch from './BrowserViewBatch';
 import _ from 'lodash';
 

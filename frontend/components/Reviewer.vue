@@ -33,7 +33,6 @@ div
 import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
 import ErrorDialog from './ErrorDialog.vue';
-import ErrorDialogVue from './ErrorDialog.vue';
 import ShadowDom from '../utils/ShadowDom';
 
 async function getNextCard (deckName) {

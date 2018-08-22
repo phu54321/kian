@@ -61,7 +61,7 @@ import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import './editor.scss';
 
 
-function resize(arr, size, defval) {
+function resize (arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
     while (arr.length < size) { arr.push(defval); }
 }
@@ -94,7 +94,7 @@ export default {
                 title: tag
             };
         },
-        async fetchTags(tag) {
+        async fetchTags (tag) {
             return ankiCall('tag_suggestions', {
                 query: tag
             });

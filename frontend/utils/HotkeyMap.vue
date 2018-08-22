@@ -11,7 +11,6 @@ div
 
 <script>
 
-import Vue from 'vue';
 import { hotkeyMap } from './VueSimpleHotkey';
 import KeyImage from './KeyImage';
 
