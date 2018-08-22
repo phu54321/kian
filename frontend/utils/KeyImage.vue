@@ -16,6 +16,7 @@ export const specialCharTable = {
     SHIFT: '⇧',
     ENTER: '↩',
     DELETE: '⌫',
+    BACKSLASH: '⌫',
     ESC: '⎋',
     RIGHT: '→',
     UP: '↑',
@@ -71,12 +72,18 @@ export default {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: bold;
 
+    display: inline-block;
+    width: 5em;
+    text-align: right;
+    color: #666;
+
     .modifier {
         color: #bbb;
+        letter-spacing: .2em;
     }
     .mainKey {
         display: inline-block;
-        width: 1.3em;
+        width: 1.5em;
         text-align: right;
     }
 }
