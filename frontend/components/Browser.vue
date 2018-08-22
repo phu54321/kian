@@ -14,6 +14,10 @@ div
             b-input-group-append
                 b-btn(variant='primary', type='submit')
                     icon(name='search')
+                b-btn(variant='info', v-b-modal.browserHelp)
+                    icon(name='question', v-b-tooltip, title='Help')
+        b-modal(id='browserHelp', title='Browser help')
+            | TODO: Add help here
 
     browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder')
 </template>
