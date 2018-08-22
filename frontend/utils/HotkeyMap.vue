@@ -1,12 +1,12 @@
 <template lang="pug">
 div
     b-modal(v-model='show', size='lg', hide-footer)
-        span(slot='modal-title') Hotkey table
-        ul(v-for='kString in hotkeyList')
-            li
-                key-image(:keys='kString')
-                | : {{hotkeyMap[kString]}}
-    span(v-hotkey='"esc"', title='Show keymap', @click='show = !show')
+        span(slot='modal-title') Kian Cheatsheet
+        ul
+            li(v-for='kString in hotkeyList')
+                key-image.kimg(:keys='kString')
+                | {{hotkeyMap[kString]}}
+    span(v-hotkey='"esc"', title='Show cheatsheet', @click='show = !show')
 </template>
 
 <script>
@@ -32,9 +32,28 @@ export default {
     },
     computed: {
         hotkeyList () {
-            return Object.keys(this.hotkeyMap);
+            return Object.keys(this.hotkeyMap).sort();
         }
     }
 };
 
 </script>
+
+<style lang="scss" scoped>
+
+ul {
+    list-style: none;
+    columns: 3;
+    padding: 0;
+    li {
+        .kimg {
+            display: inline-block;
+            width: 5em;
+            margin-right: 1em;
+            text-align: right;
+            color: #666;
+        }
+    }
+}
+
+</style>
