@@ -1,6 +1,6 @@
 <template lang='pug'>
 div
-    tempate(v-for='pack in items', :key='pack[0]')
+    template(v-for='pack in items')
         h5 {{pack[0]}}
         ul
             li(v-for='item in pack[1]')
