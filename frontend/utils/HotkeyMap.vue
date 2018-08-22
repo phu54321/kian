@@ -13,7 +13,7 @@ div
 
 import Vue from 'vue';
 import { hotkeyMap } from './VueSimpleHotkey';
-import KeyImage from '../components/editor/shortcut/KeyImage';
+import KeyImage from './KeyImage';
 
 export default {
     data () {

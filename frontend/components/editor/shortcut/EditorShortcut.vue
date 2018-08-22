@@ -11,7 +11,7 @@
 
 <script>
 
-import KeyImage from './KeyImage';
+import KeyImage from '../../../utils/KeyImage';
 
 export default {
     components: {
@@ -23,7 +23,7 @@ export default {
                 ['Anki-related keys'],
                 ['Ctrl + Shift + C', 'Cloze w/ new number'],
                 ['Ctrl + Shift + F', 'Cloze w/ same number'],
-                
+
                 ['Text editing'],
                 ['CTRL+B', 'Bold'],
                 ['CTRL+I', 'Italic'],
