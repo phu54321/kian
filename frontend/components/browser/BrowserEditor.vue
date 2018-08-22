@@ -29,7 +29,8 @@ export default {
     },
     methods: {
         onNoteEdit () {
-            const card = this.currentCard;
+            const card = this.card;
+            if(!card) return;
 
             ankiCall('card_update', {
                 cardId: card.id,
