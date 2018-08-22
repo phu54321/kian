@@ -1,27 +1,16 @@
 <template lang="pug">
-    b-modal(v-model='show', v-hotkey='["esc"]', title='Show keymap')
-        span(slot='modal-title') Hotkey map
+div
+    b-modal(v-model='show', size='lg')
+        span(slot='modal-title') Hotkey table
         div(v-for='kString in hotkeyList')
             | {{kString}} : {{hotkeyMap[kString]}}
-
+    span(v-hotkey='"esc"', title='Show keymap', @click='show = !show')
 </template>
 
 <script>
 
 import Vue from 'vue';
-
-const hotkeyMap = {};
-
-export function addHotkeyMap(kString, title) {
-    console.log(kString, title);
-    hotkeyMap[kString] = title;
-}
-
-export function removeHotkeyMap(kString, title) {
-    if (hotkeyMap[kString] === title) {
-        delete hotkeyMap[kString];
-    }
-}
+import { hotkeyMap } from './VueSimpleHotkey';
 
 export default {
     data () {
@@ -32,13 +21,12 @@ export default {
     },
     watch: {
         show () {
-            this.hotkeyMap = Object.keys(hotkeyMap);
+            this.hotkeyMap = hotkeyMap;
         }
     },
     computed: {
         hotkeyList () {
-            return Object.keys(this.hotkeyMap)
-                .filter(x => this.hotkeyMap[x] !== undefined);
+            return Object.keys(this.hotkeyMap);
         }
     }
 };
