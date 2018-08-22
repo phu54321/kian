@@ -2,13 +2,13 @@
 tbody
     template(v-if='cards.length > 0')
         template(v-for='(card, index) in cards')
-            tr(:class='{selected: card.selected}' @click='selectCard(index)')
+            tr.item-row(:class='{selected: card.selected}' @click='selectCard(index)')
                 td(
                     v-for='field in fields',
                     :key='field.key',
                     :class='field.class')
                     | {{ getFormatter(field.formatter)(card[field.key]) }}
-            tr.editor(v-if='selectedCard === card.id')
+            tr.editor-row(v-if='selectedCard === card.id')
                 td(:colspan='fields.length')
                     card-editor(
                         v-model='currentCard',
@@ -139,7 +139,7 @@ export default {
 
 tbody tr {
     transition: background-color .3s;
-    &:not(.editor) {
+    &.item-row {
         font-size: .8em;
         &:hover {
             background-color: #eee;
@@ -148,10 +148,16 @@ tbody tr {
             background-color: #afe2c4;
         }
     }
+    &.editor-row {
+        td {
+            height: 0;
+            padding: 1em;
+        }
+    }
+    .nocard {
+        text-align: center;
+        padding: 4em;
+    }
 }
 
-.nocard {
-    text-align: center;
-    padding: 4em;
-}
 </style>
