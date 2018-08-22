@@ -4,8 +4,6 @@ div.browser-view
     table.table.table-sm.table-bordered
         thead(slot='before-content')
             tr
-                th.browser-checkbox
-                    b-form-checkbox
                 th(v-for='field in fields', :key='field.key')
                     div.browser-head(@click='issueSortBy(field.key)')
                         | {{ field.label }}
@@ -119,12 +117,6 @@ export default {
             &.enabled {
                 color: #333;
             }
-        }
-    }
-    & /deep/ .browser-checkbox {
-        width: 1px;
-        & > div {
-            margin-right: 0;
         }
     }
 

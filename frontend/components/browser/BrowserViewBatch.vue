@@ -1,16 +1,14 @@
 <template lang="pug">
 tbody
     template(v-if='cards.length > 0')
-        tr(v-for='card in cards', v-if='card', :class='{checked: card.checked || card.selected}')
-            td.browser-checkbox
-                b-form-checkbox(v-model='card.checked')
+        tr(v-for='(card, index) in cards', v-if='card', :class='{selected: card.selected}' @click='selectCard(index)')
             td(
                 v-for='field in fields',
                 :key='field.key',
                 :class='field.class')
                 | {{ getFormatter(field.formatter)(card[field.key]) }}
     tr(v-else)
-        td.nocard(:colspan='fields.length + 1')
+        td.nocard(:colspan='fields.length')
             h4
                 i.fas.fa-globe-asia
                 | &nbsp;Oops, no cards :(
@@ -23,6 +21,7 @@ import { ankiCall } from '../../api/ankiCall';
 import asyncData from '../../utils/asyncData';
 import textVersionJs from 'textVersionjs';
 import padLeft from 'pad-left';
+import _ from 'lodash';
 
 export default {
     props: ['cardIds', 'fields'],
@@ -33,15 +32,26 @@ export default {
                     cardIds: this.cardIds
                 });
                 cards.forEach(card => {
-                    card.checked = false;
-                    card.collapsed = true;
+                    card.selected = false;
                 });
                 return cards;
             },
             default: []
         },
     },
+    computed: {
+        selectedCardCount() {
+            return _.sumBy(this.cards, c => c.selected ? 1 : 0);
+        }
+    },
     methods: {
+        selectCard (index) {
+            this.cards.forEach(card => {
+                card.selected = false;
+            });
+            this.cards[index].selected = true;
+            console.log(index);
+        },
         textVersionJs (text) {
             return textVersionJs(text, {
                 imgProcess (src, alt) {
@@ -80,7 +90,7 @@ tbody tr {
     &:hover {
         background-color: #eee;
     }
-    &.checked {
+    &.selected {
         background-color: #afe2c4;
     }
 }
