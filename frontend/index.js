@@ -35,6 +35,8 @@ Vue.use(VueObserveVisibility);
 import AsyncComputed from 'vue-async-computed';
 import ErrorDialog from './components/ErrorDialog';
 
+import 'typeface-noto-sans';
+
 Vue.use(AsyncComputed, {
     useRawError: true,
     errorHandler (err) {
@@ -45,7 +47,7 @@ Vue.use(AsyncComputed, {
 import VueToasted from 'vue-toasted';
 Vue.use(VueToasted, {
     iconPack : 'fontawesome',
-    position: 'bottom-left', 
+    position: 'bottom-left',
     duration : 2000
 });
 
