@@ -3,7 +3,7 @@ div
     h1 Add Note
 
     card-editor(v-model='card', @save='save')
-    
+
     h3.mt-5 Recent 50 additions
     browser-view.history(:cardIds='addedCardIds')
 
@@ -15,20 +15,13 @@ div
 
 import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
-import ErrorDialog from './ErrorDialog';
 import BrowserView from './browser/BrowserView';
 import CardEditor from './editor/CardEditor';
 
 
-function resize(arr, size, defval) {
-    while (arr.length > size) { arr.pop(); }
-    while (arr.length < size) { arr.push(defval); }
-}
-
 const historyNum = 50;
 
 export default {
-    props: ['noteId'],
     components: {
         CardEditor,
         BrowserView,
@@ -45,7 +38,7 @@ export default {
             addedCardIds: [],
         };
     },
-    mixins: [asyncData(async props => {
+    mixins: [asyncData(async () => {
         const createdCards = await ankiCall('browser_query', {
             query: '',
             sortBy: 'createdAt'
@@ -57,7 +50,7 @@ export default {
     methods: {
         async save () {
             const card = this.card;
-            const {noteId, cardNum} = await ankiCall('note_add', {
+            const {noteId} = await ankiCall('note_add', {
                 deck: card.deck,
                 model: card.model,
                 fields: card.fields,
@@ -74,9 +67,9 @@ export default {
             // Add to history logs
             const cardIds = await ankiCall('cid_from_nid', {noteId});
             this.addedCardIds.splice(0, 0, ...cardIds);
-            this.addedCardIds = this.addedCardIds.slice(0, historyNum)
+            this.addedCardIds = this.addedCardIds.slice(0, historyNum);
 
-            this.$toasted.show("Note added", { 
+            this.$toasted.show('Note added', {
                 icon: 'plus-square',
             });
         }

@@ -27,7 +27,7 @@ export default {
         },
         renderer: {
             type: Function,
-            default: c => undefined,
+            default: () => undefined,
         }
     },
     components: {
@@ -56,11 +56,11 @@ export default {
             }
         });
 
-        $(this.$el).on('focus', 'input', (e) => {
+        $(this.$el).on('focus', 'input', () => {
             this.hasFocus = true;
         });
 
-        $(this.$el).on('blur', 'input', (e) => {
+        $(this.$el).on('blur', 'input', () => {
             this.hasFocus = false;
         });
     },
@@ -92,7 +92,8 @@ export default {
             this.selected = -1;
         }
     }
-}
+};
+
 </script>
 
 <style lang="scss" scoped>

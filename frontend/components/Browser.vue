@@ -50,10 +50,10 @@ export default {
                     query: this.query,
                     sortBy: this.sortBy,
                     sortOrder: this.sortOrder,
-                }).catch(err => {
-                    console.log(err);
+                }).catch(_err => {
+                    // This can happen
                     return [];
-                })
+                });
             },
             default: []
         },
@@ -75,13 +75,13 @@ export default {
             }
             if(chunk.startsWith('deck:')) {
                 return {
-                    color: "#4caf50",
+                    color: '#4caf50',
                     title: `Deck: ${chunk.substr(5)}`,
                 };
             }
             if(chunk.startsWith('is:')) {
                 return {
-                    color: "#9c27b0",
+                    color: '#9c27b0',
                     title: `Is: ${chunk.substr(3)}`,
                 };
             }
@@ -116,7 +116,7 @@ export default {
             }
             return [];
         },
-        async fetchTags(tag) {
+        async fetchTags (tag) {
             return ankiCall('tag_suggestions', {
                 query: tag
             });
@@ -166,7 +166,7 @@ function queryValidator (chunk) {
         else token += c;
     }
     return !inQuote;
-};
+}
 
 </script>
 

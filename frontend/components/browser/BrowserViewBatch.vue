@@ -11,6 +11,7 @@ tbody
             tr.editor-row(v-if='selectedCard === card.id')
                 td(:colspan='fields.length')
                     card-editor(
+                        v-if='currentCard',
                         v-model='currentCard',
                         :key='card.id',
                         deck-fixed,
@@ -28,12 +29,10 @@ tbody
 <script>
 
 import { ankiCall } from '../../api/ankiCall';
-import asyncData from '../../utils/asyncData';
 import CardEditor from '../editor/CardEditor';
-import textVersionJs from 'textVersionjs';
-import padLeft from 'pad-left';
 import ErrorDialog from '../ErrorDialog';
 import _ from 'lodash';
+import fieldFormatter from './fieldFormatter';
 
 export default {
     props: ['cardIds', 'fields'],
@@ -103,30 +102,9 @@ export default {
                 ErrorDialog.openErrorDialog(null, err.message);
             });
         },
-        // formatters
-        textVersionJs (text) {
-            return textVersionJs(text, {
-                imgProcess (src, alt) {
-                    return '';
-                }
-            });
-        },
-        formatOrd (ord) {
-            return `#${ord + 1}`;
-        },
-        timeToText (timestamp) {
-            if (typeof timestamp === 'string') return timestamp
-            const date = new Date(timestamp * 1000);
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
-        },
-        concatTags (tags) {
-            return tags.join(', ');
-        },
+
         getFormatter (formatter) {
-            if(formatter) return this[formatter];
+            if(formatter) return fieldFormatter[formatter];
             else return (x) => x;
         }
 

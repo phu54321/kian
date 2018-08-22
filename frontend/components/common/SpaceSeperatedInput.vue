@@ -30,15 +30,15 @@ export default {
         value: Array,
         validator: {
             type: Function,
-            default: (c) => true
+            default: () => true
         },
         suggestions: {
             type: Function,
-            default: (c) => []
+            default: () => []
         },
         renderer: {
             type: Function,
-            default: c => undefined,
+            default: () => undefined,
         },
         placeholder: {
             type: String,
