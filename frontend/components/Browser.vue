@@ -61,20 +61,36 @@ export default {
     methods: {
         queryValidator,
         queryRenderer (chunk) {
+            if(chunk.startsWith('-')) {
+                return {
+                    variant: 'danger',
+                    title: chunk
+                };
+            }
             if(chunk.startsWith('tag:')) {
                 return {
                     variant: 'info',
                     title: `Tag: ${chunk.substr(4)}`,
                 };
             }
-            else if(chunk.startsWith('deck:')) {
+            if(chunk.startsWith('deck:')) {
                 return {
                     color: "#4caf50",
                     title: `Deck: ${chunk.substr(5)}`,
-                }
+                };
+            }
+            if(chunk.startsWith('is:')) {
+                return {
+                    color: "#9c27b0",
+                    title: `Is: ${chunk.substr(3)}`,
+                };
             }
         },
         async querySuggestion (chunk) {
+            if(chunk.startsWith('-')) {
+                return (await this.querySuggestion(chunk.slice(1))).map(x => `-${x}`);
+            }
+
             if(chunk.startsWith('tag:')) {
                 const tagList = await this.fetchTags(chunk.substring(4));
                 return tagList.map(tag => `tag:${tag}`)
@@ -87,6 +103,16 @@ export default {
                         ? `deck:${deck}`
                         : `deck:"${deck}"`)
                     .filter(deck => deck.startsWith(chunk));
+            }
+            else if(chunk.startsWith('is:')) {
+                return [
+                    'is:due',
+                    'is:new',
+                    'is:learn',
+                    'is:review',
+                    'is:suspended',
+                    'is:buried',
+                ].filter(c => c.startsWith(chunk));
             }
             return [];
         },
