@@ -8,15 +8,12 @@ tbody
                     :key='field.key',
                     :class='field.class')
                     | {{ getFormatter(field.formatter)(card[field.key]) }}
-            tr.editor-row(v-if='selectedCard === card.id')
+            tr.editor-row(v-if='selectedCardId === card.id')
                 td(:colspan='fields.length')
-                    card-editor(
-                        v-if='currentCard',
-                        v-model='currentCard',
+                    browser-editor(
+                        :cardId='selectedCardId'
                         :key='card.id',
-                        deck-fixed,
-                        model-fixed,
-                        @save='onNoteEdit'
+                        @updateView='updateView++'
                     )
     tr(v-else)
         td.nocard(:colspan='fields.length')
@@ -29,15 +26,15 @@ tbody
 <script>
 
 import { ankiCall } from '../../api/ankiCall';
-import CardEditor from '../editor/CardEditor';
 import ErrorDialog from '../ErrorDialog';
+import BrowserEditor from './BrowserEditor';
 import _ from 'lodash';
 import fieldFormatter from './fieldFormatter';
 
 export default {
     props: ['cardIds', 'fields'],
     components: {
-        CardEditor,
+        BrowserEditor,
         ErrorDialog,
     },
     asyncComputed: {
@@ -51,21 +48,22 @@ export default {
                 });
                 return cards;
             },
+            watch () {
+                this.updateView;
+            },
             default: []
         },
-        currentCard: {
-            get () {
-                if(this.selectedCardCount !== 1) return null;
-                const cardId = this.cards.filter(c => c.selected)[0].id;
-                return ankiCall('card_get', { cardId } );
-            },
-        },
+    },
+    data () {
+        return {
+            updateView: 0,
+        };
     },
     computed: {
         selectedCardCount () {
             return _.sumBy(this.cards, c => c.selected ? 1 : 0);
         },
-        selectedCard () {
+        selectedCardId () {
             if(this.selectedCardCount !== 1) return -1;
             const cardId = this.cards.filter(c => c.selected)[0].id;
             return cardId;
@@ -79,35 +77,10 @@ export default {
             });
             this.cards[index].selected = !origSelect;
         },
-        onNoteEdit () {
-            const card = this.currentCard;
-            ankiCall('card_update', {
-                cardId: card.id,
-                deck: card.deck,
-                fields: card.fields,
-                tags: card.tags,
-            }).then(() => {
-                return ankiCall('browser_get_batch', {
-                    cardIds: this.cardIds
-                });
-            }).then((newCards) => {
-                const cardIndex = this.cardIds.indexOf(card.id);
-                if(cardIndex !== -1) {
-                    newCards.forEach(card => {
-                        card.selected = false;
-                    });
-                    this.cards = newCards;
-                }
-            }).catch(err => {
-                ErrorDialog.openErrorDialog(null, err.message);
-            });
-        },
-
         getFormatter (formatter) {
             if(formatter) return fieldFormatter[formatter];
             else return (x) => x;
         }
-
     }
 };
 
