@@ -1,14 +1,16 @@
 <template lang="pug">
 tbody
     template(v-if='cards.length > 0')
-        tr(v-for='card in cards', v-if='card')
-                td(
-                    v-for='field in fields',
-                    :key='field.key',
-                    :class='field.class')
-                    | {{ getFormatter(field.formatter)(card[field.key]) }}
+        tr(v-for='card in cards', v-if='card', :class='{checked: card.checked || card.selected}')
+            td.browser-checkbox
+                b-form-checkbox(v-model='card.checked')
+            td(
+                v-for='field in fields',
+                :key='field.key',
+                :class='field.class')
+                | {{ getFormatter(field.formatter)(card[field.key]) }}
     tr(v-else)
-        td.nocard(:colspan='fields.length')
+        td.nocard(:colspan='fields.length + 1')
             h4
                 i.fas.fa-globe-asia
                 | &nbsp;Oops, no cards :(
@@ -27,9 +29,14 @@ export default {
     asyncComputed: {
         cards: {
             async get () {
-                return await ankiCall('browser_get_batch', {
+                const cards = await ankiCall('browser_get_batch', {
                     cardIds: this.cardIds
                 });
+                cards.forEach(card => {
+                    card.checked = false;
+                    card.collapsed = true;
+                });
+                return cards;
             },
             default: []
         },
@@ -72,6 +79,9 @@ tbody tr {
     transition: background-color .2s;
     &:hover {
         background-color: #eee;
+    }
+    &.checked {
+        background-color: #afe2c4;
     }
 }
 
