@@ -2,6 +2,8 @@ import $ from 'jquery';
 import './jquery.hotkeys';
 
 export const hotkeyMap = {};
+export const hotkeyPack = {};
+
 
 function addHotkeyMap (kString, title) {
     hotkeyMap[kString] = title;
@@ -12,6 +14,16 @@ function removeHotkeyMap (kString, title) {
         delete hotkeyMap[kString];
     }
 }
+
+export function addHotkeyPack (id, pack) {
+    hotkeyPack[id] = pack;
+}
+
+export function removeHotkeyPack (id) {
+    delete hotkeyPack[id];
+}
+
+
 
 const classRules = {
     multiselect: (el) => el.focus(),
