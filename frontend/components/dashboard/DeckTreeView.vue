@@ -6,7 +6,7 @@
                 span.ml-4(v-for='n in indent')
 
                 // Deck name
-                span.pl-1.pr-1.mr-1(@click.stop='toggleDeckCollapse(deck)')
+                span.pl-2.pr-2.mr-2(@click.stop='toggleDeckCollapse(deck)')
                     template(v-if='deck.subDecks.length')
                         icon(v-if='deck.collapsed', name='regular/plus-square', scale=0.7)
                         icon(v-else, name='regular/minus-square', scale=0.7)
@@ -19,7 +19,7 @@
                         | &nbsp;+&nbsp;
                         span.revCount {{deck.lrnCount + deck.revCount}}
             deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
-    
+
 </template>
 
 <script>
@@ -49,9 +49,14 @@ export default {
 };
 </script>
 
-<style scoped>
-.deck-row:hover {
-    background-color: #eee;
+<style scoped lang='scss'>
+
+.deck-row {
+    border-bottom: 1px solid #ddd;
+    padding: .5em;
+    &:hover {
+        background-color: #eee;
+    }
 }
 
 .hidden {
