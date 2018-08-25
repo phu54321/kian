@@ -7,6 +7,7 @@ import $ from 'jquery';
 import { ankiCall } from '../../api/ankiCall';
 import './cloze';
 import './table';
+import './htmledit';
 import './disableUnwantedHotkeys';
 import { getFileAsBase64 } from '../../utils/fileToBase64';
 
@@ -51,7 +52,7 @@ export default {
                             datab64,
                         });
                         console.log(webFilename);
-                        $(this).summernote("insertImage", webFilename);
+                        $(this).summernote('insertImage', webFilename);
                     }
                 }
             }
