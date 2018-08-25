@@ -7,7 +7,7 @@ b-form(@submit='onSave')
             v-b-tooltip.hover,
             scale='1.3',
             title='Show shortcuts')
-        span(@click='onSave', v-hotkey=['CTRL+ENTER'], v-b-tooltip.hover, title='Save note')
+        span(@click='onSave', v-hotkey=['CTRL+ENTER', 'ctrl+s'], v-b-tooltip.hover, title='Save note')
             icon(name='regular/save')
 
     b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')

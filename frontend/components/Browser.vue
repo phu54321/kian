@@ -29,6 +29,28 @@ import { ankiCall } from '../api/ankiCall';
 import SpaceSeperatedInput from './common/SpaceSeperatedInput';
 import _ from 'lodash';
 
+function parseQueryToken (tok) {
+    const pos = tok.indexOf(':');
+    if(pos === -1) return { model: null, body: tok };
+    const model = tok.substr(0, pos);
+    let body = tok.substr(pos + 1);
+
+    if(body.startsWith('"')) {
+        body = body.substr(1);
+        if(body.endsWith('"')) body = body.substr(0, body.length - 1);
+    }
+    else if(body.startsWith('\'')) {
+        body = body.substr(1);
+        if(body.endsWith('\'')) body = body.substr(0, body.length - 1);
+    }
+    return { model, body };
+}
+
+function wrapString (tok) {
+    if(tok.indexOf(' ') === -1) return tok;
+    else return `"${tok}"`;
+}
+
 export default {
     data () {
         return {
@@ -67,22 +89,30 @@ export default {
                     title: chunk
                 };
             }
-            if(chunk.startsWith('tag:')) {
+
+            const { model, body } = parseQueryToken(chunk);
+            if(model == 'tag') {
                 return {
                     variant: 'info',
-                    title: `Tag: ${chunk.substr(4)}`,
+                    title: `Tag: ${body}`,
                 };
             }
-            if(chunk.startsWith('deck:')) {
+            if(model == 'deck') {
                 return {
                     color: '#4caf50',
-                    title: `Deck: ${chunk.substr(5)}`,
+                    title: `Deck: ${body}`,
                 };
             }
-            if(chunk.startsWith('is:')) {
+            if(model == 'note' || model == 'mid') {
+                return {
+                    color: '#f3801c',
+                    title: `Model: ${body}`,
+                };
+            }
+            if(model == 'is') {
                 return {
                     color: '#9c27b0',
-                    title: `Is: ${chunk.substr(3)}`,
+                    title: `Is: ${body}`,
                 };
             }
         },
@@ -91,20 +121,32 @@ export default {
                 return (await this.querySuggestion(chunk.slice(1))).map(x => `-${x}`);
             }
 
-            if(chunk.startsWith('tag:')) {
+            const { model, body } = parseQueryToken(chunk);
+            if(model == 'tag') {
                 const tagList = await this.fetchTags(chunk.substring(4));
-                return tagList.map(tag => `tag:${tag}`)
-                    .filter(tag => tag.startsWith(chunk));
+                return tagList.
+                    filter(tag => tag.startsWith(body)).
+                    map(tag => `tag:${tag}`);
             }
-            else if(chunk.startsWith('deck:')) {
+            else if(model == 'deck') {
                 const deckList = await ankiCall('deck_list');
-                return deckList.map(deck =>
-                    deck.indexOf(' ') == -1
-                        ? `deck:${deck}`
-                        : `deck:"${deck}"`)
-                    .filter(deck => deck.startsWith(chunk));
+                return (
+                    deckList.filter(deck => deck.startsWith(body))
+                        .sort()
+                        .map(wrapString)
+                        .map(deck => `deck:${deck}`)
+                );
             }
-            else if(chunk.startsWith('is:')) {
+            else if(model == 'model' || model == 'note') {
+                const modelList = await ankiCall('model_list');
+                return (
+                    modelList.filter(model => model.toLowerCase().startsWith(body.toLowerCase()))
+                        .sort()
+                        .map(wrapString)
+                        .map(model => `note:${model}`)
+                );
+            }
+            else if(model == 'is') {
                 return [
                     'is:due',
                     'is:new',

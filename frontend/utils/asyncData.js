@@ -11,12 +11,14 @@ function translateParamsToProps (to) {
         const props = {};
 
         // Match types to target component's typing system, if possible.
-        Object.keys(targetProps).forEach(propName => {
-            const targetProp = targetProps[propName];
-            const targetPropType = targetProp.type;
-            if(targetPropType === null) props[propName] = params[propName];
-            else props[propName] = targetPropType(params[propName]);
-        });
+        if(targetProps) {
+            Object.keys(targetProps).forEach(propName => {
+                const targetProp = targetProps[propName];
+                const targetPropType = targetProp.type;
+                if(targetPropType === null) props[propName] = params[propName];
+                else props[propName] = targetPropType(params[propName]);
+            });
+        }
         return props;
     }
     else if(typeof routeProps === 'function') {
@@ -50,7 +52,7 @@ export default function asyncData (loadData, callback) {
                 ErrorDialog.openErrorDialog(null, err.message);
                 next(false);
             });
-        },  
+        },
         beforeRouteUpdate (to, from, next) {
             const toProps = translateParamsToProps(to);
             loadData(toProps).then(data => {
