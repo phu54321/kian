@@ -28,7 +28,7 @@ function translateParamsToProps (to) {
 
 export default function asyncData (loadData, callback) {
     return {
-        // this prevents beforeRouteEnter and created from both manipulating the data.
+        // asyncDataTrap prevents beforeRouteEnter and created from both manipulating the data.
         props: ['$asyncDataTrap'],
         created () {
             if (this.$route.params.$asyncDataTrap) {
