@@ -9,6 +9,8 @@ div.app-body
                 | kian
 
             b-navbar-nav.ml-auto
+                b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet')
+                    icon.mr-3(name='regular/keyboard', scale='1.3')
                 b-nav-item(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
                     icon(name='home')
                 b-nav-item(v-hotkey='"A"', to='/note/add', v-b-tooltip.hover, title='Add card')

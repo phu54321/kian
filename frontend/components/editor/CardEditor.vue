@@ -1,19 +1,7 @@
 <template lang='pug'>
 
 b-form(@submit='onSave')
-    div.mb-1.text-right
-        icon.mr-3(name='regular/keyboard',
-            v-b-modal.helpShortcut,
-            v-b-tooltip.hover,
-            scale='1.3',
-            title='Show shortcuts')
-        span(@click='onSave', v-hotkey=['CTRL+ENTER', 'ctrl+s'], v-b-tooltip.hover, title='Save note')
-            icon(name='regular/save')
-
-    b-modal(size='lg', id='helpShortcut', title='Keyboard shortcuts')
-        editor-shortcut(id='helpShortcut')
-        div(slot='modal-footer')
-
+    span.invisible(@click='onSave', v-hotkey=['CTRL+ENTER', 'ctrl+s'], title='Save note')
     table.note-zone.table
         tr
             th Deck
@@ -56,7 +44,6 @@ b-form(@submit='onSave')
 import {ankiCall} from '../../api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote';
-import EditorShortcut from './shortcut/EditorShortcut';
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import './editor.scss';
 
@@ -80,7 +67,6 @@ export default {
     },
     components: {
         Summernote,
-        EditorShortcut,
         ListSelector,
         SpaceSeperatedInput,
     },

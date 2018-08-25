@@ -1,23 +1,23 @@
 <template lang="pug">
-div
-    b-modal(v-model='show', size='lg', hide-footer)
-        span(slot='modal-title') Kian Cheatsheet
+b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer)
+    span(slot='modal-title') Kian Cheatsheet
+    template(v-for='pack in items')
+        h5(v-if='pack[0]') {{pack[0]}}
         ul
-            li(v-for='kString in hotkeyList')
-                key-image.kimg(:keys='kString')
-                | {{hotkeyMap[kString]}}
-    span(v-hotkey='"esc"', title='Show cheatsheet', @click='show = !show')
+            li(v-for='item in pack[1]')
+                key-image.kimg(:keys='item[0]')
+                | {{item[1]}}
 </template>
 
 <script>
 
-import { hotkeyMap } from './VueSimpleHotkey';
+import { hotkeyMap, hotkeyPack } from './VueSimpleHotkey';
 import KeyImage from './KeyImage';
 
 export default {
     data () {
         return {
-            hotkeyMap: {},
+            items: [],
             show: false,
         };
     },
@@ -26,12 +26,30 @@ export default {
     },
     watch: {
         show () {
-            this.hotkeyMap = hotkeyMap;
+            const globalHotkeyList = (
+                Object.keys(hotkeyMap).sort()
+                    .map(kString => [kString, hotkeyMap[kString]])
+            );
+            const packHotkeyMap = {};
+            Object.values(hotkeyPack).forEach(packs => {
+                packs.forEach(pack => {
+                    const [packName, packData] = pack;
+                    if(!packHotkeyMap[packName]) packHotkeyMap[packName] = [];
+                    packData.forEach(hotkey => packHotkeyMap[packName].push(hotkey));
+                });
+            });
+            this.items = [
+                [null, globalHotkeyList],
+                ...Object.keys(packHotkeyMap).sort((a, b) => {
+                    return a[0] < b[0] ? -1 :
+                        a[0] == b[0] ? 0 : 1;
+                }).map(packName => [packName, packHotkeyMap[packName]])
+            ];
         }
     },
     computed: {
         hotkeyList () {
-            return Object.keys(this.hotkeyMap).sort();
+            return Object.keys(this.globalHotkeyMap).sort();
         }
     }
 };
@@ -42,7 +60,7 @@ export default {
 
 ul {
     list-style: none;
-    columns: 3;
+    columns: 2;
     padding: 0;
     li {
         .kimg {
