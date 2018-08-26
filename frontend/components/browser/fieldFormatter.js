@@ -1,9 +1,9 @@
 import padLeft from 'pad-left';
-import textVersionJs from 'textVersionjs';
+import textVersion from 'textversionjs';
 
 export default {
     textVersionJs (text) {
-        return textVersionJs (text, {
+        return textVersion (text, {
             imgProcess (src, _alt) {
                 return src;
             }
