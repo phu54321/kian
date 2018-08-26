@@ -1,18 +1,18 @@
 <template lang="pug">
-    autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit='applyAutocomplete')
-        .item-input
-            span.mr-2.item-existing(v-for='item in value', :key='item')
-                colored-badge(:renderer='renderer', :item='item')
-                    span(@click.stop='removeItemByName(item)')
-                        icon.ml-1(name='times-circle', scale='.75')
+autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit='applyAutocomplete')
+    .item-input
+        span.mr-2.item-existing(v-for='item in value', :key='item')
+            colored-badge(:renderer='renderer', :item='item')
+                span(@click.stop='removeItemByName(item)')
+                    icon.ml-1(name='times-circle', scale='.75')
 
-            input.item-new(
-                v-model='buildingItem',
-                ref='input'
-                @keydown='onKeyDown',
-                @input='emitItem',
-                :placeholder='placeholder',
-                @blur='emitItem(true)')
+        input.item-new(
+            v-model='buildingItem',
+            ref='input'
+            @keydown='onKeyDown',
+            @input='emitItem',
+            :placeholder='placeholder',
+            @blur='emitItem(true)')
 
 
 </template>
@@ -44,6 +44,7 @@ export default {
             type: String,
             default: ''
         },
+        focused: Boolean,
     },
     components: {
         AutocompleteBox,
@@ -53,6 +54,12 @@ export default {
         return {
             buildingItem: '',
         };
+    },
+    mounted () {
+        if (this.focused) {
+            const inputEl = this.$el.querySelector('.item-new');
+            setTimeout(() => inputEl.focus(), 1);
+        }
     },
     asyncComputed: {
         autocompleteList: {
