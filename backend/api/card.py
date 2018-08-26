@@ -3,6 +3,7 @@ from utils import (
     registerApi,
     typeCheck,
     emit,
+    modelChanger,
 )
 
 
@@ -57,18 +58,37 @@ def updateCard(msg):
         return emit.emitResult(None)
 
 @registerApi('card_update_deck_batch')
-def updateCard(msg):
+def updateCardsDeck(msg):
     typeCheck(msg, {
         'deck': str,
         'cardIds': list,
     })
     with Col() as col:
-        deck = col.decks.byName(msg['deck'])
+        newDeck = col.decks.byName(msg['deck'])
 
         for cardId in msg['cardIds']:
             card = col.getCard(cardId)
-            card.did = deck['id']
+            card.did = newDeck['id']
             card.flush()
 
+        col.reset()
         return emit.emitResult(None)
 
+
+@registerApi('card_update_model_batch')
+def updateCardsModel(msg):
+    typeCheck(msg, {
+        'model': str,
+        'cardIds': list,
+    })
+    with Col() as col:
+        model = col.models.byName(msg['model'])
+
+        nidSet = set()
+        for cardId in msg['cardIds']:
+            card = col.getCard(cardId)
+            nidSet.add(card.nid)
+
+        modelChanger.changeNotesModel(col, nidSet, model)
+
+        return emit.emitResult(None)

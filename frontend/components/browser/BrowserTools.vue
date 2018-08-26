@@ -3,13 +3,16 @@
 .browser-tools
     b-button-group(v-if='selected.length > 0')
         b-button(size='sm', variant='outline-info', v-b-modal.changeDeck) Change deck
-        b-button(size='sm', variant='outline-info') Change model
+        b-button(size='sm', variant='outline-info', v-b-modal.changeModel) Change model
         b-button(size='sm', variant='outline-info') Add tag(s)
         b-button(size='sm', variant='outline-info') Remove tag(s)
         b-button(size='sm', variant='outline-danger') Reset scheduling
 
     b-modal(id='changeDeck', title='Change deck', lazy, @ok='changeDeck')
         list-selector(taggable, title='Deck name', v-model='newDeckName', apiType='deck_list')
+
+    b-modal(id='changeModel', title='Change model', lazy, @ok='changeModel')
+        list-selector(title='Model name', v-model='newModelName', apiType='model_list')
 
 
 </template>
@@ -26,7 +29,8 @@ export default {
     },
     data () {
         return {
-            newDeckName: ''
+            newDeckName: '',
+            newModelName: '',
         };
     },
     methods: {
@@ -35,8 +39,17 @@ export default {
                 deck: this.newDeckName,
                 cardIds: this.selected,
             });
+            this.newDeckName = '';
             this.$emit('updateView');
-        }
+        },
+        async changeModel () {
+            await ankiCall('card_update_model_batch', {
+                model: this.newModelName,
+                cardIds: this.selected,
+            });
+            this.newModelName = '';
+            this.$emit('updateView');
+        },
     }
 };
 
