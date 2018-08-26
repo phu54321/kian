@@ -1,6 +1,26 @@
 table.note-zone {
+    width: 100%;
     th {
         width: 10em;
         padding-right: 1em;
+    }
+    th, td {
+        padding: .75rem;
+        vertical-align: top;
+        border: none;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .codeview-exit {
+        color: gray;
+        display: inline-block;
+        border: 1px solid #ccc;
+        padding: .2em;
+        margin-bottom: 1em;
+
+        &:hover {
+            color: black;
+            background-color: #eee;
+        }
     }
 }

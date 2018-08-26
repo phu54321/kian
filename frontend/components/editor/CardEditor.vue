@@ -2,7 +2,7 @@
 
 b-form(@submit='onSave')
     span.invisible(@click='onSave', v-hotkey=['CTRL+ENTER', 'ctrl+s'], title='Save note')
-    table.note-zone.table
+    table.note-zone
         tr
             th Deck
             td
@@ -27,8 +27,7 @@ b-form(@submit='onSave')
         tr(v-for='(fFormat, index) in card.fieldFormats', :key='fFormat.name')
             th {{fFormat.name}}
             td
-                // summernote(v-model='card.fields[index]')
-                ace-editor(v-model='card.fields[index]', height='20em')
+                summernote(v-model='card.fields[index]')
 
         tr
             th Tags
@@ -45,7 +44,6 @@ b-form(@submit='onSave')
 import {ankiCall} from '../../api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
-import AceEditor from './AceEditor/AceEditor';
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import './editor.scss';
 import { addHotkeyPack, removeHotkeyPack } from '../../utils/VueSimpleHotkey';
@@ -80,6 +78,7 @@ const editorHotkeys = [
         ['CTRL+1~6', 'Convert to headings (h1~h6)'],
         ['CTRL+]', 'Indent text'],
         ['CTRL+[', 'Outdent text'],
+        ['CTRL+SHIFT+X', 'HTML edit'],
     ]],
 ];
 
@@ -109,7 +108,6 @@ export default {
     },
     components: {
         Summernote,
-        AceEditor,
         ListSelector,
         SpaceSeperatedInput,
     },

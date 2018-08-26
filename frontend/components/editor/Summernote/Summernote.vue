@@ -31,12 +31,6 @@ export default {
             prettifyHtml: true,
             autogrow: true,
             toolbar: [],
-            codemirror: { // codemirror options
-                theme: 'monokai',
-                mode: 'text/html',
-                htmlMode: true,
-                lineNumbers: true
-            },
             callbacks: {
                 onChange: () => {
                     this.$emit('input', $(this.$el).summernote('code'));
@@ -44,14 +38,12 @@ export default {
                 async onImageUpload (files) {
                     for(let i = 0 ; i < files.length ; i++) {
                         const file = files[i];
-                        console.log(file);
                         const filename = file.name;
                         const datab64 = await getFileAsBase64(file);
                         const webFilename = await ankiCall('media_upload', {
                             filename,
                             datab64,
                         });
-                        console.log(webFilename);
                         $(this).summernote('insertImage', webFilename);
                     }
                 }
