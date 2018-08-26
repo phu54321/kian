@@ -55,3 +55,20 @@ def updateCard(msg):
         card.did = deck['id']
         card.flush()
         return emit.emitResult(None)
+
+@registerApi('card_update_deck_batch')
+def updateCard(msg):
+    typeCheck(msg, {
+        'deck': str,
+        'cardIds': list,
+    })
+    with Col() as col:
+        deck = col.decks.byName(msg['deck'])
+
+        for cardId in msg['cardIds']:
+            card = col.getCard(cardId)
+            card.did = deck['id']
+            card.flush()
+
+        return emit.emitResult(None)
+
