@@ -39,12 +39,30 @@ div.browser-view
                     p Try different query instead.
 
     .browser-tools
-        b-button-group(:class='{enabled: selectedCardList.length > 0}')
-            b-button(size='sm', variant='outline-info', v-b-modal.browserChangeDeck) Change deck
-            b-button(size='sm', variant='outline-info', v-b-modal.browserChangeModel) Change model
-            b-button(size='sm', variant='outline-info', v-b-modal.browserAddTags) Add tag(s)
-            b-button(size='sm', variant='outline-info', v-b-modal.browserRemoveTags) Remove tag(s)
-            b-button(size='sm', variant='outline-danger') Reset scheduling
+        .tools-container(:class='{enabled: selectedCardList.length > 0}')
+            b-button-group.mr-2
+                b-button(size='sm', variant='outline-info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
+                    icon.mr-1(name='sync')
+                    | D
+                b-button(size='sm', variant='outline-info', v-b-tooltip.hover, title='Change model', v-b-modal.browserChangeModel)
+                    icon.mr-1(name='sync')
+                    | M
+                b-button(size='sm', variant='outline-secondary', v-b-tooltip.hover, title='Add tags', v-b-modal.browserAddTags)
+                    icon.mr-1(name='plus')
+                    | Tag
+                b-button(size='sm', variant='outline-secondary', v-b-tooltip.hover, title='Remove tags', v-b-modal.browserRemoveTags)
+                    icon.mr-1(name='minus')
+                    | Tag
+
+            b-button-group.mr-2
+                b-button(size='sm', variant='outline-danger', v-b-tooltip.hover, title='Reset scheduling')
+                    icon(name='calendar-alt')
+                b-button(size='sm', variant='outline-primary', v-b-tooltip.hover, title='Reschedule cards')
+                    icon.mr-1(name='sync')
+                    icon(name='calendar-alt')
+
+            b-button(size='sm', variant='outline-danger', v-b-tooltip.hover, title='Remove card')
+                icon(name='regular/trash-alt')
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
 
@@ -269,7 +287,7 @@ export default {
         text-align: center;
         position: sticky;
         bottom: 4em;
-        .btn-group {
+        .tools-container {
             display: inline-block;
             background-color: white;
             opacity: 0;
