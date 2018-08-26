@@ -43,7 +43,7 @@ export default {
                 ['Hotkeys', globalHotkeyList],
                 ...Object.keys(packHotkeyMap).sort((a, b) => {
                     return a[0] < b[0] ? -1 :
-                        a[0] == b[0] ? 0 : 1;
+                        a[0] === b[0] ? 0 : 1;
                 }).map(packName => [packName, packHotkeyMap[packName]])
             ];
         }
