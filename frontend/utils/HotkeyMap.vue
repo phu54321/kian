@@ -1,12 +1,13 @@
 <template lang="pug">
 b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer)
     span(slot='modal-title') Kian Cheatsheet
-    template(v-for='pack in items')
+    template(v-for='(pack, index) in items')
+        hr(v-if='index > 0')
         h5(v-if='pack[0]') {{pack[0]}}
         ul
             li(v-for='item in pack[1]')
                 key-image.kimg(:keys='item[0]')
-                | {{item[1]}}
+                .key-desc {{item[1]}}
 </template>
 
 <script>
@@ -39,7 +40,7 @@ export default {
                 });
             });
             this.items = [
-                [null, globalHotkeyList],
+                ['Hotkeys', globalHotkeyList],
                 ...Object.keys(packHotkeyMap).sort((a, b) => {
                     return a[0] < b[0] ? -1 :
                         a[0] == b[0] ? 0 : 1;
@@ -60,11 +61,16 @@ export default {
 
 ul {
     list-style: none;
-    columns: 2;
+    columns: 3;
     padding: 0;
     li {
+        position: relative;
         .kimg {
+            position: absolute;
             margin-right: 1em;
+        }
+        .key-desc {
+            margin-left: 6em;
         }
     }
 }
