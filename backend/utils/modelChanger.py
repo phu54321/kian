@@ -96,11 +96,9 @@ def copyCards(col):
 
 
 def changeNotesModel(col, nids, newModel):
-    print(nids)
     for nid in nids:
         note = col.getNote(nid)
         oldModel = note.model()
-        print(note)
         newChange(col.models, oldModel, [nid], newModel,
                   getFieldMap(oldModel, newModel),
                   getCardMap(oldModel, newModel))
