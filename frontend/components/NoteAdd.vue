@@ -5,7 +5,7 @@ div
     card-editor(v-model='card', @save='save')
 
     h3.mt-5 Recent 50 additions
-    browser-view.history(:cardIds='addedCardIds')
+    browser-view.history(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
 
 
 
@@ -36,6 +36,7 @@ export default {
                 tags: [],
             },
             addedCardIds: [],
+            updateCardIds: 0,
         };
     },
     mixins: [asyncData(async () => {
@@ -47,6 +48,15 @@ export default {
             addedCardIds: createdCards.slice(0, historyNum)
         };
     })],
+    watch: {
+        async updateCardIds () {
+            const createdCards = await ankiCall('browser_query', {
+                query: '',
+                sortBy: 'createdAt'
+            });
+            this.addedCardIds = createdCards.slice(0, historyNum);
+        }
+    },
     methods: {
         async save () {
             const card = this.card;

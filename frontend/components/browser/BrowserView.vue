@@ -38,7 +38,7 @@ div.browser-view
                         | &nbsp;Oops, no cards :(
                     p Try different query instead.
 
-    browser-tools(:selected='selectedCardList', @updateView='updateView++')
+    browser-tools(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
 
     ul.pagination.justify-content-center(v-if='pageNum > 1')
         li.page-item(:class='{ disabled: page === 1 }')

@@ -48,7 +48,7 @@ export default {
                 cardIds: this.selected,
             });
             this.newModelName = '';
-            this.$emit('updateView');
+            this.$emit('updateCardIds');
         },
     }
 };
