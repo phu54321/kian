@@ -91,25 +91,25 @@ export default {
             }
 
             const { model, body } = parseQueryToken(chunk);
-            if(model == 'tag') {
+            if(model === 'tag') {
                 return {
                     variant: 'info',
                     title: `Tag: ${body}`,
                 };
             }
-            if(model == 'deck') {
+            if(model === 'deck') {
                 return {
                     color: '#4caf50',
                     title: `Deck: ${body}`,
                 };
             }
-            if(model == 'note' || model == 'mid') {
+            if(model === 'note' || model === 'mid') {
                 return {
                     color: '#f3801c',
                     title: `Model: ${body}`,
                 };
             }
-            if(model == 'is') {
+            if(model === 'is') {
                 return {
                     color: '#9c27b0',
                     title: `Is: ${body}`,
@@ -122,13 +122,13 @@ export default {
             }
 
             const { model, body } = parseQueryToken(chunk);
-            if(model == 'tag') {
+            if(model === 'tag') {
                 const tagList = await this.fetchTags(chunk.substring(4));
                 return tagList.
                     filter(tag => tag.startsWith(body)).
                     map(tag => `tag:${tag}`);
             }
-            else if(model == 'deck') {
+            else if(model === 'deck') {
                 const deckList = await ankiCall('deck_list');
                 return (
                     deckList.filter(deck => deck.startsWith(body))
@@ -137,7 +137,7 @@ export default {
                         .map(deck => `deck:${deck}`)
                 );
             }
-            else if(model == 'model' || model == 'note') {
+            else if(model === 'model' || model === 'note') {
                 const modelList = await ankiCall('model_list');
                 return (
                     modelList.filter(model => model.toLowerCase().startsWith(body.toLowerCase()))
@@ -146,7 +146,7 @@ export default {
                         .map(model => `note:${model}`)
                 );
             }
-            else if(model == 'is') {
+            else if(model === 'is') {
                 return [
                     'is:due',
                     'is:new',
@@ -177,9 +177,9 @@ function queryValidator (chunk) {
     let token = '';
     for(let i = 0 ; i < chunk.length ; i++) {
         const c = chunk[i];
-        if(c == '"' || c == '\'') {
+        if(c === '"' || c === '\'') {
             if (inQuote) {
-                if (c == inQuote) inQuote = false;
+                if (c === inQuote) inQuote = false;
                 else token += c;
             }
             else if (token) {
@@ -188,21 +188,21 @@ function queryValidator (chunk) {
             }
             else inQuote = c;
         }
-        else if(c == ' ' || c == '\u3000') {
+        else if(c === ' ' || c === '\u3000') {
             if (inQuote) token += c;
             else if(token) {
                 token = '';
             }
         }
-        else if(c == '(' || c == ')') {
+        else if(c === '(' || c === ')') {
             if (inQuote) token += c;
             else {
-                if(c == ')' && token) {
+                if(c === ')' && token) {
                     token = '';
                 }
             }
         }
-        else if(c == '-') {
+        else if(c === '-') {
             if (token) token += c;
         }
         else token += c;

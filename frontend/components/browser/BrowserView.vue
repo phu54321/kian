@@ -1,15 +1,15 @@
 <template lang="pug">
 
 div.browser-view
-    table.table.table-sm.table-bordered
+    table.table.table-sm
         thead(slot='before-content')
             tr
                 th(v-for='field in fields', :key='field.key')
                     div.browser-head(@click='issueSortBy(field.key)')
                         | {{ field.label }}
                         .float-right(v-if='enableSort && field.sortable')
-                            span.browser-sort(:class='{ enabled: sortBy == field.key && sortOrder == "asc" }') ↑
-                            span.browser-sort(:class='{ enabled: sortBy == field.key && sortOrder == "desc" }') ↓
+                            span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "asc" }') ↑
+                            span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "desc" }') ↓
 
         tbody
             template(v-if='pageCards.length > 0')
@@ -39,11 +39,11 @@ div.browser-view
                     p Try different query instead.
 
     ul.pagination.justify-content-center(v-if='pageNum > 1')
-        li.page-item(:class='{ disabled: page == 1 }')
+        li.page-item(:class='{ disabled: page === 1 }')
             a.page-link(v-hotkey='["ctrl+left"]', title='Previous page', @click.prevent='loadPage(page - 1)') &lt;&lt;
-        li.page-item(v-for='i in paginationRange', :class='{ active: i == page }')
+        li.page-item(v-for='i in paginationRange', :class='{ active: i === page }')
             a.page-link(@click.prevent='loadPage(i)') {{i}}
-        li.page-item(:class='{ disabled: page == pageNum }')
+        li.page-item(:class='{ disabled: page === pageNum }')
             a.page-link(v-hotkey='["ctrl+right"]', title='Next page', @click.prevent='loadPage(page + 1)') &gt;&gt;
 
 </template>

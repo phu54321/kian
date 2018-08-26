@@ -6,7 +6,7 @@
         .autocomplete-entry(
             v-for='(item, index) in suggestions',
             :key='item',
-            :class='{ selected: index == selected }',
+            :class='{ selected: index === selected }',
             @mousedown='applyAutocomplete(index)',
         )
             colored-badge(:renderer='renderer', :item='item')
@@ -69,20 +69,20 @@ export default {
     },
     mounted () {
         $(this.$el).on('keydown', 'input', (e) => {
-            if(e.keyCode == 38) {  // Up arrow key
+            if(e.keyCode === 38) {  // Up arrow key
                 this.selected = Math.max(0, this.selected - 1);
                 e.preventDefault();
-            } else if (e.keyCode == 40) {  // Down arrow key
+            } else if (e.keyCode === 40) {  // Down arrow key
                 this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
                 e.preventDefault();
-            } else if (e.keyCode == 9) { // Tab
+            } else if (e.keyCode === 9) { // Tab
                 if(this.suggestions.length > 0) {
                     if(this.selected === -1) this.applyAutocomplete(0);
                     else this.applyAutocomplete(this.selected);
                     e.preventDefault();
                     e.stopPropagation();
                 }
-            } else if (e.keyCode == 13) {
+            } else if (e.keyCode === 13) {
                 if (this.selected !== -1) {
                     this.applyAutocomplete(this.selected);
                     e.stopPropagation();
@@ -114,7 +114,7 @@ export default {
             this.selected = -1;
         },
         selected () {
-            if(this.selected === -1 || this.suggestions.length == 0) return;
+            if(this.selected === -1 || this.suggestions.length === 0) return;
 
             const $parentDiv = $(this.$el).find('.autocomplete-box');
             const $innerListItem = $($(this.$el).find('.autocomplete-entry')[this.selected]);

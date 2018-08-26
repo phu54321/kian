@@ -21,7 +21,7 @@ div
             b-button.mr-2(
                 v-for='(button, index) in answerButtons',
                 :key='button'
-                v-hotkey='(button == "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
+                v-hotkey='(button === "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
                 @click='answerCard(index + 1)',
                 size='sm',
                 :variant='`outline-${answerButtonColor(button)}`') {{button}}
