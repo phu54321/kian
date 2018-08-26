@@ -38,7 +38,15 @@ div.browser-view
                         | &nbsp;Oops, no cards :(
                     p Try different query instead.
 
-    browser-tools(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
+    .browser-tools
+        b-button-group(:class='{enabled: selectedCardList.length > 0}')
+            b-button(size='sm', variant='outline-info', v-b-modal.changeDeck) Change deck
+            b-button(size='sm', variant='outline-info', v-b-modal.changeModel) Change model
+            b-button(size='sm', variant='outline-info') Add tag(s)
+            b-button(size='sm', variant='outline-info') Remove tag(s)
+            b-button(size='sm', variant='outline-danger') Reset scheduling
+
+    browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
 
     ul.pagination.justify-content-center(v-if='pageNum > 1')
         li.page-item(:class='{ disabled: page === 1 }')
@@ -55,7 +63,7 @@ div.browser-view
 import _ from 'lodash';
 import { ankiCall } from '../../api/ankiCall';
 import BrowserEditor from './BrowserEditor';
-import BrowserTools from './BrowserTools';
+import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
 
 
@@ -74,7 +82,7 @@ export default {
     },
     components: {
         BrowserEditor,
-        BrowserTools,
+        BrowserToolModals,
     },
     data () {
         return {
@@ -257,6 +265,22 @@ export default {
         position: sticky;
         bottom: 1rem;
     }
+    .browser-tools {
+        text-align: center;
+        position: sticky;
+        bottom: 4em;
+        .btn-group {
+            display: inline-block;
+            background-color: white;
+            opacity: 0;
+            &.enabled {
+                opacity: 1;
+                pointer-events: initial;
+            }
+            transition: opacity .3s;
+        }
+    }
+
 }
 
 
