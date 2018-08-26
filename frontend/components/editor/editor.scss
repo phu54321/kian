@@ -9,6 +9,10 @@ table.note-zone {
         vertical-align: top;
         border: none;
         border-top: 1px solid #dee2e6;
+
+        .note-editable {
+            font-family: D2Coding, 'Courier New', Courier, monospace;
+        }
     }
 
     .codeview-exit {
