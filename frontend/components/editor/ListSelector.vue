@@ -12,10 +12,10 @@ export default {
     data () {
         return {
             options: [this.value]
-        }
+        };
     },
     methods: {
-        onInput(val) {
+        onInput (val) {
             this.$emit('input', val);
         }
     },
@@ -30,5 +30,5 @@ export default {
             this.$emit('input', this.options[0]);
         }
     })],
-}
+};
 </script>

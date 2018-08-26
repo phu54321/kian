@@ -38,13 +38,7 @@ div.browser-view
                         | &nbsp;Oops, no cards :(
                     p Try different query instead.
 
-    .browser-tools
-        b-button-group
-            b-button(size='sm', variant='outline-info') Change decks
-            b-button(size='sm', variant='outline-info') Change model
-            b-button(size='sm', variant='outline-info') Add tag(s)
-            b-button(size='sm', variant='outline-info') Remove tag(s)
-            b-button(size='sm', variant='outline-danger') Reset scheduling
+    browser-tools(:selected='selectedCardList', @updateView='updateView++')
 
     ul.pagination.justify-content-center(v-if='pageNum > 1')
         li.page-item(:class='{ disabled: page === 1 }')
@@ -61,6 +55,7 @@ div.browser-view
 import _ from 'lodash';
 import { ankiCall } from '../../api/ankiCall';
 import BrowserEditor from './BrowserEditor';
+import BrowserTools from './BrowserTools';
 import fieldFormatter from './fieldFormatter';
 
 
@@ -79,6 +74,7 @@ export default {
     },
     components: {
         BrowserEditor,
+        BrowserTools,
     },
     data () {
         return {
@@ -136,7 +132,7 @@ export default {
             return cardId;
         },
         selectedCardList () {
-            return this.pageCards.filter(c => c.selected)[0].map(x => x.id);
+            return this.pageCards.filter(c => c.selected).map(x => x.id);
         },
 
 
@@ -260,19 +256,6 @@ export default {
         }
         position: sticky;
         bottom: 1rem;
-    }
-
-    .browser-tools {
-        text-align: center;
-        position: sticky;
-        pointer-events: none;
-        bottom: 4em;
-
-        .btn-group {
-            display: inline-block;
-            background-color: white;
-            pointer-events: initial;
-        }
     }
 }
 
