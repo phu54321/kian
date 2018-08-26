@@ -27,7 +27,8 @@ b-form(@submit='onSave')
         tr(v-for='(fFormat, index) in card.fieldFormats', :key='fFormat.name')
             th {{fFormat.name}}
             td
-                summernote(v-model='card.fields[index]')
+                // summernote(v-model='card.fields[index]')
+                ace-editor(v-model='card.fields[index]', height='20em')
 
         tr
             th Tags
@@ -43,7 +44,8 @@ b-form(@submit='onSave')
 
 import {ankiCall} from '../../api/ankiCall';
 import ListSelector from './ListSelector';
-import Summernote from './Summernote';
+import Summernote from './Summernote/Summernote';
+import AceEditor from './AceEditor/AceEditor';
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import './editor.scss';
 import { addHotkeyPack, removeHotkeyPack } from '../../utils/VueSimpleHotkey';
@@ -107,6 +109,7 @@ export default {
     },
     components: {
         Summernote,
+        AceEditor,
         ListSelector,
         SpaceSeperatedInput,
     },

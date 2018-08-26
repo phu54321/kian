@@ -1,5 +1,4 @@
 const express = require('express');
-const webpack = require('webpack');
 
 module.exports = {
     html: {
@@ -9,12 +8,8 @@ module.exports = {
     configureWebpack (config, _context) {
         config.externals = {
             jquery: 'jQuery',
-            $: 'jQuery'
+            $: 'jQuery',
         };
-        config.plugins.push(new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery'
-        }));
     },
     devServer: {
         after (app) {
