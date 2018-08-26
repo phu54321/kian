@@ -75,6 +75,13 @@ def updateCardsDeck(msg):
         return emit.emitResult(None)
 
 
+def getNidSet(col, cids):
+    nidSet = set()
+    for cardId in cids:
+        card = col.getCard(cardId)
+        nidSet.add(card.nid)
+    return nidSet
+
 @registerApi('card_update_model_batch')
 def updateCardsModel(msg):
     typeCheck(msg, {
@@ -83,12 +90,41 @@ def updateCardsModel(msg):
     })
     with Col() as col:
         model = col.models.byName(msg['model'])
-
-        nidSet = set()
-        for cardId in msg['cardIds']:
-            card = col.getCard(cardId)
-            nidSet.add(card.nid)
-
+        nidSet = getNidSet(col, msg['cardIds'])
         modelChanger.changeNotesModel(col, nidSet, model)
+
+        return emit.emitResult(None)
+
+@registerApi('card_add_tag_batch')
+def addCardTags(msg):
+    typeCheck(msg, {
+        'tags': list,
+        'cardIds': list,
+    })
+    with Col() as col:
+        tags = msg['tags']
+        nidSet = getNidSet(col, msg['cardIds'])
+        for nid in nidSet:
+            note = col.getNote(nid)
+            for tag in tags:
+                note.addTag(tag)
+            note.flush()
+
+        return emit.emitResult(None)
+
+@registerApi('card_remove_tag_batch')
+def deleteCardTags(msg):
+    typeCheck(msg, {
+        'tags': list,
+        'cardIds': list,
+    })
+    with Col() as col:
+        tags = msg['tags']
+        nidSet = getNidSet(col, msg['cardIds'])
+        for nid in nidSet:
+            note = col.getNote(nid)
+            for tag in tags:
+                note.delTag(tag)
+            note.flush()
 
         return emit.emitResult(None)

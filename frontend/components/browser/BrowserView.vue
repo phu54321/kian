@@ -43,7 +43,7 @@ div.browser-view
             b-button(size='sm', variant='outline-info', v-b-modal.browserChangeDeck) Change deck
             b-button(size='sm', variant='outline-info', v-b-modal.browserChangeModel) Change model
             b-button(size='sm', variant='outline-info', v-b-modal.browserAddTags) Add tag(s)
-            b-button(size='sm', variant='outline-info') Remove tag(s)
+            b-button(size='sm', variant='outline-info', v-b-modal.browserRemoveTags) Remove tag(s)
             b-button(size='sm', variant='outline-danger') Reset scheduling
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
