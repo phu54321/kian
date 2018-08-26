@@ -14,7 +14,11 @@ div.browser-view
         tbody
             template(v-if='pageCards.length > 0')
                 template(v-for='(card, index) in pageCards')
-                    tr.item-row(:class='{selected: card.selected}' @click='selectCard(index)')
+                    tr.item-row(:class='{selected: card.selected}',
+                        @click.exact.prevent='selectOnly(index)'
+                        @click.shift.exact.prevent='selectSequential(index)'
+                        @click.ctrl.exact.prevent='selectAdd(index)'
+                    )
                         td(
                             v-for='field in fields',
                             :key='field.key',
@@ -72,11 +76,15 @@ export default {
         return {
             page: 1,
             updateView: 0,
+            lastSelectedIndex: -1,
         };
     },
     watch: {
         pageNum () {
             this.page = Math.max(1, Math.min(this.page, this.pageNum));
+        },
+        updateView () {
+            this.lastSelectedIndex = -1;
         }
     },
     asyncComputed: {
@@ -119,6 +127,10 @@ export default {
             const cardId = this.pageCards.filter(c => c.selected)[0].id;
             return cardId;
         },
+        selectedCardList () {
+            return this.pageCards.filter(c => c.selected)[0].map(x => x.id);
+        },
+
 
         // Pagination
         pageNum () {
@@ -140,7 +152,7 @@ export default {
         },
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
-            if(sortBy == sortField) {
+            if(sortBy === sortField) {
                 sortOrder = {
                     desc: 'asc',
                     asc: 'desc'
@@ -153,16 +165,41 @@ export default {
             this.$emit('update:sortBy', sortBy);
             this.$emit('update:sortOrder', sortOrder);
         },
-        selectCard (index) {
+        getFormatter (formatter) {
+            if(formatter) return fieldFormatter[formatter];
+            else return (x) => x;
+        },
+
+        // Selection
+        selectOnly (index) {
             const origSelect = this.pageCards[index].selected;
             this.pageCards.forEach(card => {
                 card.selected = false;
             });
             this.pageCards[index].selected = !origSelect;
+            this.lastSelectedIndex = index;
         },
-        getFormatter (formatter) {
-            if(formatter) return fieldFormatter[formatter];
-            else return (x) => x;
+        selectSequential (index) {
+            const {lastSelectedIndex} = this;
+            if(lastSelectedIndex === -1) return this.selectOnly(index);
+            else {
+                if(lastSelectedIndex < index) {
+                    for(let i = lastSelectedIndex + 1 ; i <= index ; i++) {
+                        this.pageCards[i].selected = true;
+                    }
+                }
+                else {
+                    for(let i = lastSelectedIndex - 1 ; i >= index ; i--) {
+                        this.pageCards[i].selected = true;
+                    }
+                }
+                this.lastSelectedIndex = index;
+            }
+        },
+        selectAdd (index) {
+            const origSelect = this.pageCards[index].selected;
+            this.pageCards[index].selected = !origSelect;
+            if(!origSelect) this.lastSelectedIndex = index;
         }
     }
 };
@@ -186,6 +223,7 @@ export default {
     tbody tr {
         transition: background-color .3s;
         &.item-row {
+            user-select: none;
             font-size: .8em;
             &:hover {
                 background-color: #eee;
