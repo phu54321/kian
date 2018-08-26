@@ -32,11 +32,7 @@ b-form(@submit='onSave')
         tr
             th Tags
             td
-                space-seperated-input(
-                    v-model='card.tags',
-                    placeholder='Add new tags...',
-                    :suggestions='fetchTags'
-                    :renderer='tagRenderer')
+                tag-editor(v-model='card.tags')
 </template>
 
 <script>
@@ -44,7 +40,7 @@ b-form(@submit='onSave')
 import {ankiCall} from '../../api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
-import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
+import TagEditor from './TagEditor';
 import './editor.scss';
 import { addHotkeyPack, removeHotkeyPack } from '../../utils/VueSimpleHotkey';
 
@@ -109,7 +105,7 @@ export default {
     components: {
         Summernote,
         ListSelector,
-        SpaceSeperatedInput,
+        TagEditor,
     },
     methods: {
         onSave () {
