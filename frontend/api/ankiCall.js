@@ -30,7 +30,9 @@ export function ankiCall (apiType, data) {
             syncKey,
             apiType,
             ...data
-        });    
+        });
     });
 }
 
+
+window.ankiCall = ankiCall;
