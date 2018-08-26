@@ -38,6 +38,14 @@ div.browser-view
                         | &nbsp;Oops, no cards :(
                     p Try different query instead.
 
+    .browser-tools
+        b-button-group
+            b-button(size='sm', variant='outline-info') Change decks
+            b-button(size='sm', variant='outline-info') Change model
+            b-button(size='sm', variant='outline-info') Add tag(s)
+            b-button(size='sm', variant='outline-info') Remove tag(s)
+            b-button(size='sm', variant='outline-danger') Reset scheduling
+
     ul.pagination.justify-content-center(v-if='pageNum > 1')
         li.page-item(:class='{ disabled: page === 1 }')
             a.page-link(v-hotkey='["ctrl+left"]', title='Previous page', @click.prevent='loadPage(page - 1)') &lt;&lt;
@@ -252,6 +260,19 @@ export default {
         }
         position: sticky;
         bottom: 1rem;
+    }
+
+    .browser-tools {
+        text-align: center;
+        position: sticky;
+        pointer-events: none;
+        bottom: 4em;
+
+        .btn-group {
+            display: inline-block;
+            background-color: white;
+            pointer-events: initial;
+        }
     }
 }
 
