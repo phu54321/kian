@@ -4,7 +4,7 @@
             span(v-if='hasCtrl', :title='isMac ? "Command" : "Ctrl"') ⌘
             span(v-if='hasAlt', :title='isMac ? "Option" : "Alt"') ⌥
             span(v-if='hasShift', :title='"Shift"') ⇧
-        .mainKey(:title='renderMainKey == this.rendered[1] ? undefined : this.rendered[1]') {{renderMainKey}}
+        .mainKey(:title='renderMainKey === this.rendered[1] ? undefined : this.rendered[1]') {{renderMainKey}}
 </template>
 
 <script>
@@ -55,7 +55,7 @@ export default {
             const hasAlt = hasSpecialKey('ALT');
             const hasShift = hasSpecialKey('SHIFT');
             if(splitKey.length >= 2) return [{}, this.keys];  // Not renderable
-            const mainKey = splitKey.length == 1 ? splitKey[0] : '';
+            const mainKey = splitKey.length === 1 ? splitKey[0] : '';
             return [
                 { hasCtrl, hasAlt, hasShift },
                 firstLetterUpper(mainKey)

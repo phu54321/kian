@@ -116,7 +116,7 @@ export default {
             this.$emit('save');
         },
         tagRenderer (tag) {
-            if(tag == 'marked') return {
+            if(tag === 'marked') return {
                 variant: 'danger',
                 title: tag
             };

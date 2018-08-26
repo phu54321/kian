@@ -57,7 +57,7 @@ export default {
     asyncComputed: {
         autocompleteList: {
             async get () {
-                if(this.buildingItem == '') return [];
+                if(this.buildingItem === '') return [];
                 else {
                     return this.suggestions(this.buildingItem);
                 }
@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         onKeyDown (e) {
-            if(e.keyCode == KEY_MAP['BACKSPACE']) {
+            if(e.keyCode === KEY_MAP['BACKSPACE']) {
                 const inputEl = $(this.$el).find('.item-new')[0];
                 if(inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
                     const items = this.value.slice();
@@ -97,7 +97,7 @@ export default {
             if(force === true || this.buildingItem.endsWith(' ')) {
                 const newTag = this.buildingItem.trim();
                 if(newTag && this.validator(newTag)) {
-                    if(newTag && this.value.indexOf(newTag) == -1) {
+                    if(newTag && this.value.indexOf(newTag) === -1) {
                         this.$emit('input', [...this.value, newTag]);
                     }
                     this.buildingItem = '';
