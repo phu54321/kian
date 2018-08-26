@@ -1,11 +1,14 @@
 <template lang="pug">
 
 div
-    b-modal(id='changeDeck', title='Change deck', lazy, @ok='changeDeck')
+    b-modal(id='browserChangeDeck', title='Change deck', lazy, @ok='changeDeck')
         list-selector(taggable, focused, title='Deck name', v-model='newDeckName', apiType='deck_list')
 
-    b-modal(id='changeModel', title='Change model', lazy, @ok='changeModel')
+    b-modal(id='browserChangeModel', title='Change model', lazy, @ok='changeModel')
         list-selector(focused, title='Model name', v-model='newModelName', apiType='model_list')
+
+    b-modal(id='browserAddTags', title='Add tags', lazy, @ok='addTags')
+        tag-editor(focused, v-model='tagList')
 
 
 </template>
@@ -13,17 +16,20 @@ div
 <script>
 
 import ListSelector from '../editor/ListSelector';
+import TagEditor from '../editor/TagEditor';
 import { ankiCall } from '../../api/ankiCall';
 
 export default {
     props: ['selected'],
     components: {
         ListSelector,
+        TagEditor,
     },
     data () {
         return {
             newDeckName: '',
             newModelName: '',
+            tagList: [],
         };
     },
     methods: {
@@ -43,6 +49,9 @@ export default {
             this.newModelName = '';
             this.$emit('updateCardIds');
         },
+        async addTags () {
+            console.log('addtags');
+        }
     }
 };
 

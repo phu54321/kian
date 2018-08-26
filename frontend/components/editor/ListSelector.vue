@@ -18,6 +18,7 @@ export default {
         if(this.focused !== undefined) {
             const toggleEl = this.$el.querySelector('.dropdown-toggle');
             toggleEl.dispatchEvent(new Event('mousedown'));
+            setTimeout(() => toggleEl.querySelector('input').focus(), 1);
         }
     },
     methods: {

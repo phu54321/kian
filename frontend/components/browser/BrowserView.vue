@@ -40,9 +40,9 @@ div.browser-view
 
     .browser-tools
         b-button-group(:class='{enabled: selectedCardList.length > 0}')
-            b-button(size='sm', variant='outline-info', v-b-modal.changeDeck) Change deck
-            b-button(size='sm', variant='outline-info', v-b-modal.changeModel) Change model
-            b-button(size='sm', variant='outline-info') Add tag(s)
+            b-button(size='sm', variant='outline-info', v-b-modal.browserChangeDeck) Change deck
+            b-button(size='sm', variant='outline-info', v-b-modal.browserChangeModel) Change model
+            b-button(size='sm', variant='outline-info', v-b-modal.browserAddTags) Add tag(s)
             b-button(size='sm', variant='outline-info') Remove tag(s)
             b-button(size='sm', variant='outline-danger') Reset scheduling
 
