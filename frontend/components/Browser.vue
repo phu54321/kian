@@ -19,7 +19,7 @@ div
         b-modal(id='browserHelp', title='Browser help')
             | TODO: Add help here
 
-    browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder')
+    browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
 </template>
 
 <script>
@@ -58,6 +58,7 @@ export default {
             query: '',
             sortBy: 'id',
             sortOrder: 'desc',
+            updateCardIds: 0
         };
     },
     watch: {
@@ -76,6 +77,9 @@ export default {
                     // This can happen
                     return [];
                 });
+            },
+            watch () {
+                this.updateCardIds;
             },
             default: []
         },
