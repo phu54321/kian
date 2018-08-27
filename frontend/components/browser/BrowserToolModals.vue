@@ -13,13 +13,16 @@ div
     b-modal(id='browserRemoveTags', title='Remove tags', lazy, @ok='removeTags')
         tag-editor(focused, v-model='tags')
 
-    b-modal(id='browserResetSched', title='Forget cards', lazy, @ok='resetSched')
+    b-modal(id='browserResetSched', title='Forget cards', lazy, ok-variant='danger', @ok='resetSched')
         | Are you sure you want to reset(forget) this card's scheduling?
 
     b-modal(v-model='changeDueShow', id='browserChangeDue', title='Reschedule card', lazy, @ok='changeDue')
         | Change cards due to
         b.ml-2 {{formatDate(due)}}
         datepicker.mt-2(inline, bootstrap-styling, v-model='due')
+
+    b-modal(id='browserRemoveCards', title='Delete cards', lazy, ok-variant='danger', @ok='deleteCards')
+        | Really delete?
 
 
 </template>
@@ -109,6 +112,12 @@ export default {
             });
             this.due = null;
             this.$emit('updateView');
+        },
+        async deleteCards () {
+            await ankiCall('card_delete_batch', {
+                cardIds: this.selected,
+            });
+            this.$emit('updateCardIds');
         },
     }
 };
