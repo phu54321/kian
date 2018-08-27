@@ -102,3 +102,22 @@ def getDeckInfo(msg):
                         'due': due
                     }
                 })
+
+
+@registerApi('card_update_deck_batch')
+def updateCardsDeck(msg):
+    typeCheck(msg, {
+        'deck': str,
+        'cardIds': list,
+    })
+    with Col() as col:
+        newDeck = col.decks.byName(msg['deck'])
+
+        for cardId in msg['cardIds']:
+            card = col.getCard(cardId)
+            card.did = newDeck['id']
+            card.flush()
+
+        col.reset()
+        return emit.emitResult(None)
+
