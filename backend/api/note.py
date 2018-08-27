@@ -45,7 +45,7 @@ def updateNote(msg):
         note.fields[:] = fields
         note.tags = tags
         note.flush()
-        return emit.emitResult(None)
+        return emit.emitResult(True)
 
 
 

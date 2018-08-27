@@ -54,4 +54,4 @@ def answerCard(msg):
     with Col() as col:
         col.sched.answerCard(card, ease)
         logging.info("Cid[%d] Reviewed with ease %d" % (cardId, ease))
-        return emit.emitResult(None)
+        return emit.emitResult(True)

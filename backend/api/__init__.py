@@ -9,4 +9,5 @@ from . import (
     reviewer,
     media,
     tags,
+    sched,
 )

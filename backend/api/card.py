@@ -62,5 +62,5 @@ def updateCard(msg):
 
         card.did = deck['id']
         card.flush()
-        return emit.emitResult(None)
+        return emit.emitResult(True)
 

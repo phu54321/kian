@@ -47,3 +47,7 @@ def saveMainCollection():
     mainColLock.acquire()
     mainCol.save()
     mainColLock.release()
+
+
+def checkpoint(col, name):
+    col.save(name)
