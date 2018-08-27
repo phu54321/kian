@@ -11,6 +11,9 @@ import 'vue-awesome/icons';
 import Icon from 'vue-awesome/components/Icon.vue';
 Vue.component('icon', Icon);
 
+import Datepicker from 'vuejs-datepicker';
+Vue.component('datepicker', Datepicker);
+
 import VueRouter from 'vue-router';
 import router from './router';
 Vue.use(VueRouter);

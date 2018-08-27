@@ -41,27 +41,27 @@ div.browser-view
     .browser-tools
         .tools-container(:class='{enabled: selectedCardList.length > 0}')
             b-button-group.mr-2
-                b-button(size='sm', variant='outline-info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
+                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
                     icon.mr-1(name='sync')
                     | D
-                b-button(size='sm', variant='outline-info', v-b-tooltip.hover, title='Change model', v-b-modal.browserChangeModel)
+                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change model', v-b-modal.browserChangeModel)
                     icon.mr-1(name='sync')
                     | M
-                b-button(size='sm', variant='outline-secondary', v-b-tooltip.hover, title='Add tags', v-b-modal.browserAddTags)
+                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Add tags', v-b-modal.browserAddTags)
                     icon.mr-1(name='plus')
                     | Tag
-                b-button(size='sm', variant='outline-secondary', v-b-tooltip.hover, title='Remove tags', v-b-modal.browserRemoveTags)
+                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', v-b-modal.browserRemoveTags)
                     icon.mr-1(name='minus')
                     | Tag
 
             b-button-group.mr-2
-                b-button(size='sm', variant='outline-danger', v-b-tooltip.hover, title='Reset scheduling')
+                b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', v-b-modal.browserResetSched)
                     icon(name='calendar-alt')
-                b-button(size='sm', variant='outline-primary', v-b-tooltip.hover, title='Reschedule cards')
+                b-button(size='sm', variant='primary', v-b-tooltip.hover, title='Change card due', v-b-modal.browserChangeDue)
                     icon.mr-1(name='sync')
                     icon(name='calendar-alt')
 
-            b-button(size='sm', variant='outline-danger', v-b-tooltip.hover, title='Remove card')
+            b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', v-b-modal.browserRemoveCards)
                 icon(name='regular/trash-alt')
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
@@ -289,7 +289,6 @@ export default {
         bottom: 4em;
         .tools-container {
             display: inline-block;
-            background-color: white;
             opacity: 0;
             &.enabled {
                 opacity: 1;

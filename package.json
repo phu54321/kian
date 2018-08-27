@@ -67,7 +67,8 @@
     "vue-trumbowyg": "^3.3.0",
     "vue-virtual-scroll-list": "^1.2.8",
     "vue-virtual-scroller": "^0.12.0",
-    "vue2-ace-editor": "0.0.11"
+    "vue2-ace-editor": "0.0.11",
+    "vuejs-datepicker": "^1.5.3"
   },
   "nodemonConfig": {
     "watch": [

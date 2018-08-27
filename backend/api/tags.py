@@ -35,7 +35,7 @@ def addCardTags(msg):
                 note.addTag(tag)
             note.flush()
 
-        return emit.emitResult(None)
+        return emit.emitResult(True)
 
 
 @registerApi('card_remove_tag_batch')
@@ -53,4 +53,4 @@ def deleteCardTags(msg):
                 note.delTag(tag)
             note.flush()
 
-        return emit.emitResult(None)
+        return emit.emitResult(True)

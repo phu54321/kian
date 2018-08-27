@@ -53,4 +53,4 @@ def updateCardsModel(msg):
         nidSet = getNidSet(col, msg['cardIds'])
         modelChanger.changeNotesModel(col, nidSet, model)
 
-        return emit.emitResult(None)
+        return emit.emitResult(True)
