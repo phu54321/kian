@@ -64,3 +64,11 @@ def updateCard(msg):
         card.flush()
         return emit.emitResult(True)
 
+@registerApi('card_delete_batch')
+def deleteCardBatch(msg):
+    typeCheck(msg, {
+        'cardIds': list,
+    })
+    with Col() as col:
+        col.remCards(msg['cardIds'])
+        return emit.emitResult(True)
