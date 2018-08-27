@@ -1,13 +1,16 @@
 <template lang="pug">
-b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer)
-    span(slot='modal-title') Kian Cheatsheet
-    template(v-for='(pack, index) in items')
-        hr(v-if='index > 0')
-        h5(v-if='pack[0]') {{pack[0]}}
-        ul
-            li(v-for='item in pack[1]')
-                key-image.kimg(:keys='item[0]')
-                .key-desc {{item[1]}}
+div
+    b-modal(id='cheatsheet', no-close-on-esc, v-model='show', size='lg', hide-footer)
+        span(slot='modal-title') Kian Cheatsheet
+        template(v-for='(pack, index) in items')
+            hr(v-if='index > 0')
+            h5(v-if='pack[0]') {{pack[0]}}
+            ul
+                li(v-for='item in pack[1]')
+                    key-image.kimg(:keys='item[0]')
+                    .key-desc {{item[1]}}
+
+    span(v-hotkey=['esc'], @click='show = !show', title='Show cheatsheet')
 </template>
 
 <script>
