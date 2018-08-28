@@ -13,7 +13,7 @@ div
         template(v-if='!flipped')
             .mb-4
                 shadow-dom.userContent.front.card(:html="card.front")
-            b-button(v-hotkey="['SPACE']", click="flipped = !flipped", variant="outline-primary") Show Answer
+            b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
         template(v-else)
             .mb-4
                 shadow-dom.userContent.back.card(:html="card.back")

@@ -3,7 +3,7 @@ pyaudio
 requests
 decorator
 aiohttp
-aiohttp-cors
+aiohttp-index
 python-socketio
 pywin32
 easygui
