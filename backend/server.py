@@ -7,6 +7,7 @@ import logging
 import api
 import sys
 import os
+import mimetypes
 
 from utils.dispatchTable import apiDispatch
 from utils.col import db_path
@@ -50,17 +51,35 @@ def main():
 
     if hasattr(sys, 'frozen'):
         async def handler(request):
-            raise web.HTTPFound(location='/kian/')
+            path = str(request.rel_url)
+            if path[0] == '/':
+                path = path[1:]
+            if path == '':
+                path = 'index.html'
+            print(path)
 
-        app.add_routes([
-            web.static('/kian/', './frontend/'),
-            web.get('/', handler),
-            web.static('/', os.path.join(os.path.dirname(db_path), 'collection.media')),
-        ])
+            resolvedPath = os.path.join('frontend/', path)
+            print('try1', resolvedPath)
+            if not os.path.exists(resolvedPath):
+                resolvedPath = os.path.join(os.path.dirname(db_path), 'collection.media/', path)
+                print('try2', resolvedPath)
+                if not os.path.exists(resolvedPath):
+                    return web.Response(status=404, text='Not found')
 
-        print("Opening localhost:%d" % NET_PORT)
-        import webbrowser
-        webbrowser.open('http://localhost:%d/' % NET_PORT)
+            try:
+                with open(resolvedPath, 'rb') as f:
+                    return web.Response(
+                        content_type=mimetypes.guess_type(resolvedPath)[0],
+                        body=f.read(),
+                    )
+            except:
+                return web.Response(status=404, text='Not found')
+
+        app.router.add_route('GET', '/{tail:.*}', handler)
+
+        # print("Opening localhost:%d" % NET_PORT)
+        # import webbrowser
+        # webbrowser.open('http://localhost:%d/' % NET_PORT)
 
     web.run_app(app, host='127.0.0.1', port=NET_PORT)
 
