@@ -8,7 +8,6 @@ module.exports = {
         description: 'Spaced learning app'
     },
     configureWebpack (config, _context) {
-        config.output.publicPath = '/kian/';
         config.externals = {
             jquery: 'jQuery',
             $: 'jQuery',
