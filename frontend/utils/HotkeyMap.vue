@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    b-modal(id='cheatsheet', no-close-on-esc, v-model='show', size='lg', hide-footer)
+    b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer)
         span(slot='modal-title') Kian Cheatsheet
         template(v-for='(pack, index) in items')
             hr(v-if='index > 0')
@@ -10,7 +10,7 @@ div
                     key-image.kimg(:keys='item[0]')
                     .key-desc {{item[1]}}
 
-    span(v-hotkey=['esc'], @click='show = !show', title='Show cheatsheet')
+    span(v-hotkey=['ctrl+esc'], @click='show = !show', title='Show cheatsheet')
 </template>
 
 <script>
