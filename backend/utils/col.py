@@ -1,12 +1,34 @@
 from anki import Collection
 from anki.collection import _Collection
-import os
+import os, sys
 from threading import Timer, Lock
+import win32ui, win32con
 
-db_path = os.path.join(
-    os.path.dirname(__file__),
-    '../testdata/collection.anki2'
-)
+
+## From https://stackoverflow.com/questions/15511363/what-is-the-most-convenient-way-to-use-dialogs-in-non-gui-app
+def getDBPath():
+    dlg = win32ui.CreateFileDialog(
+        1,
+        None,
+        None,
+        win32con.OFN_OVERWRITEPROMPT|win32con.OFN_FILEMUSTEXIST,
+        "Anki database|collection.anki2||")
+
+    if dlg.DoModal() != win32con.IDOK:
+        return None
+
+    return dlg.GetPathNames()[0]
+
+
+if hasattr(sys, 'frozen'):
+    db_path = getDBPath()
+    if not db_path:
+        raise RuntimeError('Need database file')
+else:
+    db_path = os.path.join(
+        os.path.dirname(__file__),
+        '../testdata/collection.anki2'
+    )
 
 
 def debounce(wait):

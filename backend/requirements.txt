@@ -4,3 +4,6 @@ requests
 decorator
 aiohttp
 aiohttp-cors
+python-socketio
+pywin32
+easygui
