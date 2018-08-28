@@ -77,9 +77,9 @@ def main():
 
         app.router.add_route('GET', '/{tail:.*}', handler)
 
-        # print("Opening localhost:%d" % NET_PORT)
-        # import webbrowser
-        # webbrowser.open('http://localhost:%d/' % NET_PORT)
+        print("Opening localhost:%d" % NET_PORT)
+        import webbrowser
+        webbrowser.open('http://localhost:%d/' % NET_PORT)
 
     web.run_app(app, host='127.0.0.1', port=NET_PORT)
 
