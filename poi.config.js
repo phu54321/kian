@@ -1,6 +1,7 @@
 const express = require('express');
 
 module.exports = {
+    outDir: 'dist/public',
     html: {
         title: 'Kian',
         description: 'Spaced learning app'
