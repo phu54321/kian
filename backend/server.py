@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
 from aiohttp import web
+from aiohttp_index import IndexMiddleware
 import socketio
 import logging
 import api
 import sys
+import os
 
 from utils.dispatchTable import apiDispatch
+from utils.col import db_path
 
 
 NET_PORT = 28735
@@ -42,9 +45,25 @@ def main():
     )
     logging.getLogger().addHandler(logging.StreamHandler())
 
-    app = web.Application()
+    app = web.Application(middlewares=[IndexMiddleware()])
     sio.attach(app)
+
+    if hasattr(sys, 'frozen'):
+        async def handler(request):
+            raise web.HTTPFound(location='/kian/')
+
+        app.add_routes([
+            web.static('/kian/', './frontend/'),
+            web.get('/', handler),
+            web.static('/', os.path.join(os.path.dirname(db_path), 'collection.media')),
+        ])
+
+        print("Opening localhost:%d" % NET_PORT)
+        import webbrowser
+        webbrowser.open('http://localhost:%d/' % NET_PORT)
+
     web.run_app(app, host='127.0.0.1', port=NET_PORT)
+
 
 
 if __name__ == '__main__':

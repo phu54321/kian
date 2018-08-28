@@ -11,9 +11,10 @@
     "dev": "npm-run-all --parallel dev:*",
     "dev:frontend": "poi frontend/index.js",
     "dev:backend": "nodemon backend/server.py",
-    "clean": "rimraf dist",
-    "build:frontend": "pyinstaller backend/server.py",
-    "build:backend": "poi build frontend/index.js & copyfiles frontend/public",
+    "build": "npm-run-all clean build:backend build:frontend",
+    "clean": "shx rm -rf dist",
+    "build:backend": "pyinstaller server.spec && shx mv dist/server/* dist && shx rm -r dist/server",
+    "build:frontend": "poi build frontend/index.js",
     "test": "mocha"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "rimraf": "^2.6.2",
     "sass-loader": "^7.1.0",
     "sequelize": "^4.38.0",
+    "shx": "^0.3.2",
     "socket.io-client": "^2.1.1",
     "summernote": "^0.8.10",
     "textversionjs": "^1.1.3",
