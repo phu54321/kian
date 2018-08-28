@@ -8,6 +8,8 @@ from utils import (
 )
 
 from anki.notes import Note
+from anki.utils import _, htmlToTextLine
+
 
 @registerApi('note_get')
 def getNote(msg):
@@ -92,8 +94,19 @@ def addNote(msg):
         fields = msg['fields']
         tags = msg['tags']
 
+        if not htmlToTextLine(fields[0]):
+            return emit.emitError('First field should not be empty')
+
         if isClozeNote(fields) and model['type'] == 0:
-            return emit.emitError('You need a cloze note type to make cloze notes')
+            if msg['model'] in ('Basic', _('Basic')):  # Automatic Basic → Cloze
+                model = col.models.byName('Cloze') or col.models.byName(_('Cloze'))
+            else:
+                model = None
+            if not model:
+                return emit.emitError('You need a cloze note type to make cloze notes')
+
+        if not isClozeNote(fields) and model['type'] == 1:
+            return emit.emitError('You need at least one cloze deletion.')
 
         note = Note(col, model)
         if len(note.fields) != len(fields):
