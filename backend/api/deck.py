@@ -52,7 +52,7 @@ def collapseDeck(msg):
         if deck['collapsed'] != newCollapse:
             col.decks.collapse(did)
 
-        return emit.emitResult(True)
+        return emit.emitResult(deck['collapsed'])
 
 
 @registerApi('deck_info')

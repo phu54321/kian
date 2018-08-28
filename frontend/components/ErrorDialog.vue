@@ -5,7 +5,7 @@
         template(v-if='msg')
             pre.mt-3 {{msg}}
         div(slot='modal-footer')
-            b-button(variant='outline-danger', @click='modalShow = false') Close
+            b-button(v-hotkey=['enter'], variant='outline-danger', @click='modalShow = false') Close
 </template>
 
 <script>
@@ -43,3 +43,11 @@ export default {
 };
 
 </script>
+
+<style lang="scss" scoped>
+
+pre {
+    font-family: inherit;
+}
+
+</style>

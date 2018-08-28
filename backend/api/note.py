@@ -1,3 +1,5 @@
+import re
+
 from utils import (
     Col,
     registerApi,
@@ -66,6 +68,16 @@ def getCidFromNid(msg):
     with Col() as col:
         return emit.emitResult(col.findCards('nid:%d' % msg['noteId']))
 
+
+# Automatic switch from basic to cloze
+
+def isClozeNote(fields):
+    for val in fields:
+        if re.search(r'\{\{c(\d+)::', val):
+            return True
+    return False
+
+
 @registerApi('note_add')
 def addNote(msg):
     typeCheck(msg, {
@@ -79,6 +91,9 @@ def addNote(msg):
         did = col.decks.id(msg['deck'], create=True)  # cf) Create deck if not exists
         fields = msg['fields']
         tags = msg['tags']
+
+        if isClozeNote(fields) and model['type'] == 0:
+            return emit.emitError('You need a cloze note type to make cloze notes')
 
         note = Note(col, model)
         if len(note.fields) != len(fields):

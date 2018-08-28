@@ -17,6 +17,7 @@ import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
 import BrowserView from './browser/BrowserView';
 import CardEditor from './editor/CardEditor';
+import ErrorDialogVue from './ErrorDialog.vue';
 
 
 const historyNum = 50;
@@ -59,29 +60,33 @@ export default {
     },
     methods: {
         async save () {
-            const card = this.card;
-            const {noteId} = await ankiCall('note_add', {
-                deck: card.deck,
-                model: card.model,
-                fields: card.fields,
-                tags: card.tags,
-            });
+            try {
+                const card = this.card;
+                const {noteId} = await ankiCall('note_add', {
+                    deck: card.deck,
+                    model: card.model,
+                    fields: card.fields,
+                    tags: card.tags,
+                });
 
-            // Clean non-sticky forms
-            card.fieldFormats.forEach((fFormat, index) => {
-                if(!fFormat.sticky) {
-                    card.fields.splice(index, 1, '');
-                }
-            });
+                // Clean non-sticky forms
+                card.fieldFormats.forEach((fFormat, index) => {
+                    if(!fFormat.sticky) {
+                        card.fields.splice(index, 1, '');
+                    }
+                });
 
-            // Add to history logs
-            const cardIds = await ankiCall('cid_from_nid', {noteId});
-            this.addedCardIds.splice(0, 0, ...cardIds);
-            this.addedCardIds = this.addedCardIds.slice(0, historyNum);
+                // Add to history logs
+                const cardIds = await ankiCall('cid_from_nid', {noteId});
+                this.addedCardIds.splice(0, 0, ...cardIds);
+                this.addedCardIds = this.addedCardIds.slice(0, historyNum);
 
-            this.$toasted.show('Note added', {
-                icon: 'plus-square',
-            });
+                this.$toasted.show('Note added', {
+                    icon: 'plus-square',
+                });
+            } catch(e) {
+                ErrorDialogVue.openErrorDialog('Error on adding notes', e.message);
+            }
         }
     },
     name: 'note-add',
