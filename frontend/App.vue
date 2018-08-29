@@ -1,6 +1,7 @@
 <template lang='pug'>
 div.app-body
     error-dialog
+    sync-dialog
     hotkey-map
 
     header
@@ -21,6 +22,8 @@ div.app-body
                         icon(name='search')
                     b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                         icon(name='chart-bar')
+                    b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
+                        icon(name='sync')
 
     b-container.app-container
         router-view
@@ -37,12 +40,14 @@ import './css/kian.scss';
 import ErrorDialog from './components/ErrorDialog';
 import HotkeyMap from './utils/HotkeyMap';
 import CookieLaw from 'vue-cookie-law';
+import SyncDialog from './components/SyncDialog';
 
 export default {
     components: {
         ErrorDialog,
         HotkeyMap,
         CookieLaw,
+        SyncDialog,
     },
     data () {
         return { msg: 'world' };

@@ -30,7 +30,8 @@ async def message(sid, data):
     syncKey = data['syncKey']
     del data['syncKey']
 
-    result = apiDispatch(data)
+    data['sio'] = sio
+    result = await apiDispatch(data)
     result['syncKey'] = syncKey
     await sio.emit('msg', result, room=sid)
 
