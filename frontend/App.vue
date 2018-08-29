@@ -13,8 +13,10 @@ div.app-body
 
                 b-navbar-nav.ml-auto
                     b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet')
-                        icon.mr-3(name='regular/keyboard', scale='1.3')
-                    b-nav-item(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
+                        icon(name='regular/keyboard', scale='1.3')
+                    b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
+                        icon(name='sync')
+                    b-nav-item.ml-3(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
                         icon(name='home')
                     b-nav-item(v-hotkey='"A"', to='/note/add', v-b-tooltip.hover, title='Add card')
                         icon(name='plus')
@@ -22,8 +24,6 @@ div.app-body
                         icon(name='search')
                     b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                         icon(name='chart-bar')
-                    b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
-                        icon(name='sync')
 
     b-container.app-container
         router-view
