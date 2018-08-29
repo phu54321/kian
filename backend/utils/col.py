@@ -67,9 +67,22 @@ class Col(object):
 def saveMainCollection():
     global mainCol
     mainColLock.acquire()
-    mainCol.save()
-    mainColLock.release()
+    try:
+        mainCol.save()
+    finally:
+        mainColLock.release()
 
 
 def checkpoint(col, name):
     col.save(name)
+
+
+def forceCloseCol():
+    global mainCol
+    mainColLock.acquire()
+    try:
+        if mainCol:
+            mainCol.close()
+            mainCol = None
+    finally:
+        mainColLock.release()

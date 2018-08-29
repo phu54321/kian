@@ -10,4 +10,5 @@ from . import (
     media,
     tags,
     sched,
+    sync,
 )
