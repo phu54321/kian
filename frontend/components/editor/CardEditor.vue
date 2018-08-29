@@ -27,7 +27,7 @@ b-form(@submit='onSave')
         tr(v-for='(fFormat, index) in card.fieldFormats', :key='fFormat.name')
             th {{fFormat.name}}
             td
-                summernote(v-model='card.fields[index]')
+                summernote.editor-field(v-model='card.fields[index]')
 
         tr
             th Tags
@@ -110,6 +110,7 @@ export default {
     methods: {
         onSave () {
             this.$emit('save');
+            this.$el.querySelectorAll('.editor-field')[0].focus();
         },
         tagRenderer (tag) {
             if(tag === 'marked') return {

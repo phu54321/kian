@@ -1,7 +1,5 @@
 <template lang="pug">
-    b-modal(v-model='modalShow', size='lg')
-        span(slot='modal-title') Error occured
-        span {{title}}
+    b-modal(v-model='modalShow', size='lg', :title='title', :return-focus='retFocus')
         template(v-if='msg')
             pre.mt-3 {{msg}}
         div(slot='modal-footer')
@@ -17,7 +15,8 @@ export default {
     openErrorDialog (title, msg) {
         eventHub.$emit('errormsg', {
             title,
-            msg
+            msg,
+            retFocus: document.activeElement,
         });
     },
     created () {
@@ -30,6 +29,7 @@ export default {
         openErrorMessage (data) {
             this.title = data.title;
             this.msg = data.msg;
+            this.retFocus = data.retFocus;
             this.modalShow = true;
         }
     },
@@ -37,7 +37,8 @@ export default {
         return {
             modalShow: false,
             title: 'Hello from Modal!',
-            msg: 'asdf\nasdf\nasdf'
+            msg: 'asdf\nasdf\nasdf',
+            retFocus: null,
         };
     },
 };
