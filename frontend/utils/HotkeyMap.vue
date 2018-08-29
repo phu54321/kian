@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer)
+    b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer, :return-focus='lastActiveElement')
         span(slot='modal-title') Kian Cheatsheet
         template(v-for='(pack, index) in items')
             hr(v-if='index > 0')
@@ -10,7 +10,7 @@ div
                     key-image.kimg(:keys='item[0]')
                     .key-desc {{item[1]}}
 
-    span(v-hotkey=['ctrl+esc'], @click='show = !show', title='Show cheatsheet')
+    span(v-hotkey=['esc'], @click='toggleShow', title='Show cheatsheet')
 </template>
 
 <script>
@@ -23,10 +23,19 @@ export default {
         return {
             items: [],
             show: false,
+            lastActiveElement: null,
         };
     },
     components: {
         KeyImage,
+    },
+    methods: {
+        toggleShow () {
+            // If there are any model visible, then quit.
+            if(document.querySelectorAll('.modal.show').length > 0) return;
+            this.lastActiveElement = document.activeElement;
+            this.show = true;
+        }
     },
     watch: {
         show () {

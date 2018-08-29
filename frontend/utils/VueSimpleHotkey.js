@@ -100,7 +100,7 @@ function registerHotkey (el, binding, vnode) {
     hotkeyString.forEach(kString => {
         $(document).bind('keydown', kString, el._onKeyDown);
         addHotkeyMap(kString, title);
-        if(kString.indexOf('ctrl') !== -1 || kString.indexOf('alt') !== -1) {
+        if(kString === 'esc' || kString.indexOf('ctrl') !== -1 || kString.indexOf('alt') !== -1) {
             $.hotkeyInputWhitelist[kString] = true;
             el._hotKeyInputWhitelist.push(kString);
         }
