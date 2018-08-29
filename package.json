@@ -62,6 +62,8 @@
     "vue-async-computed": "^3.4.1",
     "vue-awesome": "^3.0.5",
     "vue-axios": "^2.1.2",
+    "vue-cookie": "^1.1.4",
+    "vue-cookie-law": "^1.6.0",
     "vue-multiselect": "^2.1.0",
     "vue-observe-visibility": "^0.4.1",
     "vue-router": "^3.0.1",
