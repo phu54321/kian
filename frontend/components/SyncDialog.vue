@@ -20,6 +20,7 @@ b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow'
 <script>
 
 import {ankiCall} from '../api/ankiCall';
+import ErrorDialog from './ErrorDialog';
 
 export default {
     data () {
@@ -48,10 +49,12 @@ export default {
                 email: this.email,
                 password: this.password,
                 authKey: this.authKey,
-            }).then(msg => {
+            }).then(_msg => {
                 this.show = false;
+                this.$router.go(); // Refresh current router
             }).catch(err => {
-                console.log(err);
+                this.show = false;
+                ErrorDialog.openErrorDialog('Sync error', err);
             });
         }
     },
