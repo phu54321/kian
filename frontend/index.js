@@ -43,6 +43,8 @@ import ErrorDialog from './components/ErrorDialog';
 
 import 'typeface-noto-sans';
 
+import './hook/allHooks';
+
 Vue.use(AsyncComputed, {
     useRawError: true,
     errorHandler (err) {

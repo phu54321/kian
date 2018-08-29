@@ -18,7 +18,7 @@ import asyncData from '../utils/asyncData';
 import BrowserView from './browser/BrowserView';
 import CardEditor from './editor/CardEditor';
 import ErrorDialogVue from './ErrorDialog.vue';
-
+import { runHook } from '../hook/hookBase';
 
 const historyNum = 50;
 
@@ -62,12 +62,14 @@ export default {
         async save () {
             try {
                 const card = this.card;
-                const {noteId} = await ankiCall('note_add', {
+                const noteArgs = await runHook('edit_note', {
                     deck: card.deck,
                     model: card.model,
                     fields: card.fields,
                     tags: card.tags,
                 });
+
+                const {noteId} = await ankiCall('note_add', noteArgs);
 
                 // Clean non-sticky forms
                 card.fieldFormats.forEach((fFormat, index) => {
