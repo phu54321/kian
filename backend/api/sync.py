@@ -71,6 +71,8 @@ def onSync(msg):
 
 
 
+# SyncThread, from aqt/sync.py
+
 class SyncThread(Thread):
     def __init__(self, path, hkey, auth=None, media=True, hostNum=None):
         super().__init__()
