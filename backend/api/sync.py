@@ -4,8 +4,13 @@ from utils import (
     typeCheck,
     emit,
 )
-from utils.col import db_path, forceCloseCol
+from utils.col import (
+    db_path,
+    forceCloseCol,
+    mainColLock
+)
 
+import asyncio
 import time
 import traceback
 from threading import Thread, Lock
@@ -22,53 +27,35 @@ from anki.sync import (
 
 # Sync thread
 ######################################################################
-syncMessage = ''
-msgLock = Lock()
-def updateSyncMessage(cmd, arg):
-    global syncMessage
-    msgLock.acquire()
-    try:
-        syncMessage = cmd
-        if arg:
-            syncMessage += ' (%s)' % ', '.join(arg)
-        print('[sync message]', syncMessage)
-    finally:
-        msgLock.release()
-
-
-@registerApi('syncMessage')
-def getSyncMessage():
-    msgLock.acquire()
-    try:
-        return emit.emitResult(syncMessage)
-    finally:
-        msgLock.release()
 
 
 @registerApi('sync')
-def onSync(msg):
+async def onSync(msg):
     typeCheck(msg, {
-        'username': str,
-        'password': str
+        'email': str,
+        'password': str,
     })
 
-    username = msg['username']
+    email = msg['email']
     password = msg['password']
+    sio = msg['sio']
 
     # SyncThread should open the collection, so here we kill existing connection.
     forceCloseCol()
-    updateSyncMessage('', None)
 
-    thread = SyncThread(
-        path=db_path,
-        hkey=None,
-        auth=(username, password)
-    )
-    thread.listeners.append(updateSyncMessage)
-    thread.start()
-    thread.join()
-    return emit.emitResult(True)
+    mainColLock.acquire()
+    try:
+        thread = SyncThread(
+            path=db_path,
+            hkey=None,
+            auth=(email, password)
+        )
+        thread.start()
+        thread.join()
+        return emit.emitResult(True)
 
+    finally:
+        mainColLock.release()
 
 
 # SyncThread, from aqt/sync.py

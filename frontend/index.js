@@ -14,6 +14,9 @@ Vue.component('icon', Icon);
 import Datepicker from 'vuejs-datepicker';
 Vue.component('datepicker', Datepicker);
 
+var VueCookie = require('vue-cookie');
+Vue.use(VueCookie);
+
 import VueRouter from 'vue-router';
 import router from './router';
 Vue.use(VueRouter);
