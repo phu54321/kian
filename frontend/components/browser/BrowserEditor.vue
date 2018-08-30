@@ -13,7 +13,6 @@ card-editor(
 import { ankiCall } from '../../api/ankiCall';
 import CardEditor from '../editor/CardEditor';
 import ErrorDialog from '../ErrorDialog';
-import { runHook } from '../../hook/hookBase';
 
 export default {
     props: ['cardId'],
@@ -33,14 +32,12 @@ export default {
             const card = this.card;
             if(!card) return;
 
-            runHook('edit_note', {
+            ankiCall('card_update', {
                 cardId: this.cardId,
                 deck: card.deck,
                 model: card.model,
                 fields: card.fields,
                 tags: card.tags,
-            }).then(msg => {
-                return ankiCall('card_update', msg);
             }).then(() => {
                 this.$emit('updateView');
             }).catch(err => {

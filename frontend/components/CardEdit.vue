@@ -11,7 +11,6 @@ import {ankiCall} from '../api/ankiCall';
 import asyncData from '../utils/asyncData';
 import ErrorDialog from './ErrorDialog';
 import CardEditor from './editor/CardEditor';
-import { runHook } from '../hook/hookBase';
 
 
 export default {
@@ -34,14 +33,12 @@ export default {
     },
     methods: {
         save () {
-            runHook('edit_note', {
+            ankiCall('card_update',  {
                 cardId: this.cardId,
                 deck: this.deck,
                 model: this.model,
                 fields: this.fields,
                 tags: this.tags,
-            }).then(msg => {
-                return ankiCall('card_update', msg);
             }).then(() => {
                 this.$router.go(-1);
             }).catch(err => {
