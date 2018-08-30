@@ -30,10 +30,18 @@ div
 
 <script>
 
-import { hotkeyMap, hotkeyPack } from './VueSimpleHotkey';
+import { hotkeyMap } from './VueSimpleHotkey';
 import KeyImage from './KeyImage';
 
+const hotkeyPack = {};
+
 export default {
+    addHotkeyPack (id, pack) {
+        hotkeyPack[id] = pack;
+    },
+    removeHotkeyPack (id) {
+        delete hotkeyPack[id];
+    },
     data () {
         return {
             items: [],
