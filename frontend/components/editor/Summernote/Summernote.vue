@@ -31,6 +31,7 @@ export default {
             prettifyHtml: true,
             autogrow: true,
             toolbar: [],
+            disableLinkTarget: true,
             callbacks: {
                 onChange: () => {
                     this.$emit('input', $(this.$el).summernote('code'));

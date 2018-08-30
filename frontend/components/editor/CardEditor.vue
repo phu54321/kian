@@ -59,12 +59,11 @@ import TagEditor from './TagEditor';
 import './editor.scss';
 import { addHotkeyPack, removeHotkeyPack } from '../../utils/VueSimpleHotkey';
 import { runHook } from '../../hook/hookBase';
-import asyncData from '../../utils/asyncData';
 
 const editorHotkeys = [
     ['Anki-related keys', [
-        ['Ctrl + Shift + C', 'Cloze w/ new number'],
-        ['Ctrl + Shift + F', 'Cloze w/ same number'],
+        ['Ctrl+Shift+C', 'Cloze w/ new number'],
+        ['Ctrl+Shift+Alt+C', 'Cloze w/ same number'],
     ]],
 
     ['Text editing', [
@@ -77,7 +76,7 @@ const editorHotkeys = [
     ]],
 
     ['Paragraph-level editing', [
-        ['Ctrl + Shift + D', 'Create table from selection'],
+        ['Ctrl+Shift+D', 'Create table from selection'],
         ['CTRL+SHIFT+7', 'Insert unordered list'],
         ['CTRL+SHIFT+8', 'Insert ordered list'],
         ['CTRL+SHIFT+L', 'Justify to left'],
@@ -110,20 +109,12 @@ export default {
     ],
     data () {
         return {
-            card: {
-                deck: '',
-                model: '',
-                fields: [],
-                fieldFormats: [],
-                tags: []
-            }
+            card: this.value
         };
     },
-    mixins: [asyncData(async props => {
-        return {
-            card: await runHook('edit_card_load', props.value)
-        };
-    })],
+    async created () {
+        await runHook('edit_card_load', this.value);
+    },
     mounted () {
         addHotkeyPack('editor', editorHotkeys);
     },
@@ -160,11 +151,8 @@ export default {
         },
     },
     watch: {
-        value: {
-            async handler (value) {
-                this.card = await runHook('edit_card_load', value);
-            },
-            deep: true,
+        value (value) {
+            this.card = runHook('edit_card_load', value);
         },
         async currentModel (modelName) {
             // Model change
