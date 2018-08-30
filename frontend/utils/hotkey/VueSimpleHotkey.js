@@ -87,7 +87,7 @@ function resolveHotkey (kString) {
     };
 }
 
-function getHotkeyMap (el) {
+export function getHotkeyMap (el) {
     const hotkeyMap = {};
 
     for(; el; el = el.parentElement) {
