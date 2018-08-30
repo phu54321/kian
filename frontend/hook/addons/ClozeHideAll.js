@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { addHook } from './../hookBase';
+import { tokHtml } from './../../utils/tokHtml';
 
 const modelName = 'Cloze (Hide all)';
 
@@ -25,78 +26,13 @@ function stripClozeHelper (html) {
     );
 }
 
-const _voidElements = new Set([
-    'area', 'base', 'basefont', 'bgsound', 'br', 'col',
-    'command', 'embed', 'frame', 'hr', 'image', 'img', 'input', 'isindex',
-    'keygen', 'link', 'menuitem', 'meta', 'nextid', 'param', 'source',
-    'track', 'wbr'
-]);
 
 function wrapClozeTag (s, clozeId) {
-    const PARSE_DATA = 0;
-    const PARSE_TAG = 1;
-    let mode = PARSE_DATA;
-
     const output = [`<cloze2_w class='cz-${clozeId}'></cloze2_w>`];
-    const dataCh = [];
-    const tagCh = [];
-
     const cloze_header = `<cloze2 class='cz-${clozeId}'>`;
     const cloze_footer = '</cloze2>';
 
-    let chunks = [];
-
-    function emitData () {
-        const data = dataCh.join('');
-        dataCh.length = 0;
-
-        if(!data) return;
-        chunks.push(['data', data]);
-    }
-
-    function emitTag () {
-        const tag = tagCh.join('');
-        tagCh.length = 0;
-
-        const tagStartMatch = tag.match(/<\s*([a-zA-Z0-9]+)/);
-        const tagEndMatch = tag.match(/<\s*\/\s*([a-zA-Z0-9]+)/);
-
-        if (tagStartMatch) {
-            // Void tags are treated as data
-            if (!_voidElements.has(tagStartMatch[1].toLowerCase())) {
-                chunks.push(['data', tag]);
-            }
-            else {
-                chunks.push(['tstart', tag]);
-            }
-        }
-
-        else if(tagEndMatch) {
-            chunks.push(['tend', tag]);
-        }
-    }
-
-    for(let i = 0 ; i < s.length ; i++) {
-        const ch = s[i];
-        if(mode === PARSE_DATA) {
-            if(ch === '<') {
-                mode = PARSE_TAG;
-                emitData();
-                tagCh.push('<');
-            }
-            else dataCh.push(ch);
-        }
-        else {
-            tagCh.push(ch);
-            if(ch === '>') {
-                mode = PARSE_DATA;
-                emitTag();
-            }
-        }
-    }
-
-    if(mode === PARSE_DATA) emitData();
-    else emitTag();
+    let chunks = tokHtml(s);
 
     while(true) {
         let hasReduction = false;

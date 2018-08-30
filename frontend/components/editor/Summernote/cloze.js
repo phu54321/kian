@@ -28,6 +28,7 @@ function getLastClozeId (code) {
 addHotkey({
     'CTRL+SHIFT+C': 'newCloze',
     'CTRL+SHIFT+ALT+C': 'sameCloze',
+    'CTRL+SHIFT+F': 'lineCloze',
 });
 
 addFunctions({
@@ -46,5 +47,13 @@ addFunctions({
         this.beforeCommand();
         wrap(`{{c${thisClozeId}::`, '}}');
         this.afterCommand();
-    }
+    },
+    lineCloze () {
+        const code = this.context.invoke('code');
+        const lastClozeId = getLastClozeId(code);
+        const thisClozeId = lastClozeId || 1;
+        this.beforeCommand();
+        wrap(`{{c${thisClozeId}::`, '}}');
+        this.afterCommand();
+    },
 });

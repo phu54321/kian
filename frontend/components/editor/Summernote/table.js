@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { pasteHtml, copyHtml } from './common';
+import { pasteHtmlToSelection, copySelectedHtml } from './common';
 import {
     addHotkey,
     addFunctions
@@ -39,7 +39,7 @@ addFunctions({
     makeTable () {
         this.beforeCommand();
 
-        const oldHtml = copyHtml();
+        const oldHtml = copySelectedHtml();
         const text = textVersion(oldHtml);
         const lines = text.split('\n').filter(x => x);
         const cells = lines.map(x => x.split('|').map(x => x.trim()));
@@ -64,7 +64,7 @@ addFunctions({
                 outHtml.push('</tr>');
             }
             outHtml.push('</table><br>');
-            pasteHtml(outHtml.join(''));
+            pasteHtmlToSelection(outHtml.join(''));
         }
 
         this.afterCommand();
