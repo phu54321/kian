@@ -53,7 +53,7 @@ export default {
                 fields: card.fields,
                 tags: card.tags,
             }).then(() => {
-                this.$emit('updateView');
+                this.$emit('updateCardIds');
             }).catch(err => {
                 ErrorDialog.openErrorDialog(null, err.message);
             });
