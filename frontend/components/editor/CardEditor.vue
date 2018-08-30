@@ -113,7 +113,7 @@ export default {
         };
     },
     async created () {
-        await runHook('edit_card_load', this.value);
+        this.card = await runHook('edit_card_load', this.value);
     },
     mounted () {
         addHotkeyPack('editor', editorHotkeys);
