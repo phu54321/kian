@@ -53,7 +53,7 @@ div.app-body
 
 import './css/kian.scss';
 import ErrorDialog from './components/ErrorDialog';
-import HotkeyMap from './utils/HotkeyMap';
+import HotkeyMap from './utils/hotkey/HotkeyMap';
 import CookieLaw from 'vue-cookie-law';
 import SyncDialog from './components/SyncDialog';
 
