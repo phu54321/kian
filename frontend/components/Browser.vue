@@ -42,7 +42,12 @@ div
 import BrowserView from './browser/BrowserView';
 import { ankiCall } from '../api/ankiCall';
 import SpaceSeperatedInput from './common/SpaceSeperatedInput';
+import fuzzysearch from 'fuzzysearch';
 import _ from 'lodash';
+
+function fuzzyMatch (needle, haystack) {
+    return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
+}
 
 function parseQueryToken (tok) {
     const pos = tok.indexOf(':');
@@ -144,13 +149,13 @@ export default {
             if(model === 'tag') {
                 const tagList = await this.fetchTags(chunk.substring(4));
                 return tagList.
-                    filter(tag => tag.startsWith(body)).
+                    filter(tag => fuzzyMatch(body, tag)).
                     map(tag => `tag:${tag}`);
             }
             else if(model === 'deck') {
                 const deckList = await ankiCall('deck_list');
                 return (
-                    deckList.filter(deck => deck.startsWith(body))
+                    deckList.filter(deck => fuzzyMatch(body, deck))
                         .sort()
                         .map(wrapString)
                         .map(deck => `deck:${deck}`)
@@ -159,7 +164,7 @@ export default {
             else if(model === 'model' || model === 'note') {
                 const modelList = await ankiCall('model_list');
                 return (
-                    modelList.filter(model => model.toLowerCase().startsWith(body.toLowerCase()))
+                    modelList.filter(model => fuzzyMatch(body, model))
                         .sort()
                         .map(wrapString)
                         .map(model => `note:${model}`)
@@ -173,7 +178,7 @@ export default {
                     'is:review',
                     'is:suspended',
                     'is:buried',
-                ].filter(c => c.startsWith(chunk));
+                ].filter(c => fuzzyMatch(chunk, c));
             }
             return [];
         },

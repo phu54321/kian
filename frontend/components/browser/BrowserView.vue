@@ -100,6 +100,9 @@ import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
 
 
+const cardPerPage = 500;
+
+
 export default {
     props: {
         cardIds: Array,
@@ -180,10 +183,10 @@ export default {
         // Pagination
         pageNum () {
             if(this.cardIds.length === 0) return 0;
-            else return ((this.cardIds.length - 1) / 100 | 0) + 1;
+            else return ((this.cardIds.length - 1) / cardPerPage | 0) + 1;
         },
         pageItems () {
-            return this.cardIds.slice(this.page * 100 - 100, this.page * 100);
+            return this.cardIds.slice(this.page * cardPerPage - cardPerPage, this.page * cardPerPage);
         },
         paginationRange () {
             const minPage = Math.max(1, this.page - 5);
