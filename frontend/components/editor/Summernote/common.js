@@ -24,7 +24,7 @@ function fragFromHtml (html) {
     return frag;
 }
 
-export function copyHtml () {
+export function copySelectedHtml () {
     const s = window.getSelection();
     const r = s.getRangeAt(0);
     const content = r.cloneContents();
@@ -36,7 +36,7 @@ export function copyHtml () {
     return oldHtml;
 }
 
-export function pasteHtml (newHtml) {
+export function pasteHtmlToSelection (newHtml) {
     const s = window.getSelection();
     const r = s.getRangeAt(0);
     const frag = fragFromHtml(newHtml);
@@ -47,12 +47,12 @@ export function pasteHtml (newHtml) {
 }
 
 export function wrap (front, back) {
-    const oldHtml = copyHtml();
+    const oldHtml = copySelectedHtml();
 
     if (oldHtml) {
         const match = oldHtml.match(/^(\s*)([^]*?)(\s*)$/);
         const newHtml = match[1] + front + match[2] + back + match[3];
-        pasteHtml(newHtml);
+        pasteHtmlToSelection(newHtml);
     } else {
         const s = window.getSelection();
         const r = s.getRangeAt(0);
