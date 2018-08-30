@@ -30,7 +30,7 @@ div
 
 <script>
 
-import { hotkeyMap } from './VueSimpleHotkey';
+// import { hotkeyMap } from './VueSimpleHotkey';
 import KeyImage from './KeyImage';
 
 const hotkeyPack = {};
@@ -62,10 +62,10 @@ export default {
     },
     watch: {
         show () {
-            const globalHotkeyList = (
-                Object.keys(hotkeyMap).sort()
-                    .map(kString => [kString, hotkeyMap[kString]])
-            );
+            // const globalHotkeyList = (
+            //     Object.keys(hotkeyMap).sort()
+            //         .map(kString => [kString, hotkeyMap[kString]])
+            // );
             const packHotkeyMap = {};
             Object.values(hotkeyPack).forEach(packs => {
                 packs.forEach(pack => {
@@ -75,7 +75,7 @@ export default {
                 });
             });
             this.items = [
-                ['Hotkeys', globalHotkeyList],
+                // ['Hotkeys', globalHotkeyList],
                 ...Object.keys(packHotkeyMap).sort((a, b) => {
                     return a[0] < b[0] ? -1 :
                         a[0] === b[0] ? 0 : 1;

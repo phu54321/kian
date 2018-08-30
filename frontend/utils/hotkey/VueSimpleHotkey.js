@@ -16,60 +16,115 @@
 import $ from 'jquery';
 import './jquery.hotkeys';
 import { clickVNode } from './clickElement';
+import _ from 'lodash';
 
-export const hotkeyMap = {};
+export const elementHotkeyMap = new Map();
+export const boundKStringSet = new Set();
 
-function addHotkeyMap (kString, title) {
-    hotkeyMap[kString] = title;
-}
+function addHotkeyToMap (kString, vnode, title) {
+    if(!boundKStringSet.has(kString)) {
+        $(document).bind('keydown', kString, resolveHotkey(kString));
+    }
 
-function removeHotkeyMap (kString, title) {
-    if (hotkeyMap[kString] === title) {
-        delete hotkeyMap[kString];
+    // Remove any duplicate hotkeys that might exists
+    removeHotkeyFromMap(kString, vnode);
+
+    // Add hotkey to element and all of the ancestors
+    const handlerEntry = {
+        targetEl: vnode.elm,
+        vnode,
+        title,
+    };
+
+    for(let el = vnode.elm ; el ; el = el.parentElement) {
+        if(!elementHotkeyMap.has(el)) elementHotkeyMap.set(el, new Map());
+        const kStringHandlerMap = elementHotkeyMap.get(el);
+        if(kStringHandlerMap.has(kString)) kStringHandlerMap.get(kString).push(handlerEntry);
+        else kStringHandlerMap.set(kString, [handlerEntry]);
     }
 }
 
+function removeHotkeyFromMap (kString, vnode) {
+    const targetEl = vnode.elm;
+
+    // Add hotkey to element and all of the ancestors
+    for(let el = vnode.elm ; el; el = el.parentElement) {
+        if(!elementHotkeyMap.has(el)) break;
+
+        const kStringHandlerMap = elementHotkeyMap.get(el);
+
+        if(!kStringHandlerMap.has(kString)) break;
+        const hotkeyHandlers = kStringHandlerMap.get(kString);
+        // vnode may be different from each call, but targetEl is fixed (since it's a real element)
+        // so, we get hotkeyIdx by finding targetEl.
+        const hotkeyIdx = _.findIndex(hotkeyHandlers, entry => entry.targetEl === targetEl);
+        if(hotkeyIdx === -1) break;
+
+        hotkeyHandlers.splice(hotkeyIdx, 1);
+        if(hotkeyHandlers.length === 0) {
+            kStringHandlerMap.delete(kString);
+            if(kStringHandlerMap.length === 0) {
+                elementHotkeyMap.delete(el);
+            }
+        }
+    }
+}
+
+function resolveHotkey (kString) {
+    return (e) => {
+        let el = e.target;
+        for(; el; el = el.parentElement) {
+            if(!elementHotkeyMap.has(el)) continue;
+
+            const kStringHandlerMap = elementHotkeyMap.get(el);
+            if(!kStringHandlerMap.has(kString)) continue;
+
+            const hotkeyHandlers = kStringHandlerMap.get(kString);
+            if(hotkeyHandlers.length !== 1) return;
+
+            return clickVNode(hotkeyHandlers[0].vnode);
+        }
+    };
+}
+
+function getHotkeyMap (el) {
+    const hotkeyMap = {};
+
+    for(; el; el = el.parentElement) {
+        if(!elementHotkeyMap.has(el)) continue;
+
+        const kStringHandlerMap = elementHotkeyMap.get(el);
+        for(let kString of kStringHandlerMap.keys()) {
+            const hotkeyHandlers = kStringHandlerMap.get(kString);
+            if(hotkeyHandlers.length !== 1) continue;
+            hotkeyMap[kString] = hotkeyHandlers[0].title;
+        }
+    }
+
+    return hotkeyMap;
+}
+
+
 
 function registerHotkey (el, binding, vnode) {
-    if (el._onKeyDown) unregisterHotkey(el);
-
     let hotkeyList = binding.value;
     if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
     const hotkeyString = hotkeyList.map(x => x.toLowerCase());
     const attrs = vnode.data.attrs;
     const title = (attrs.title) ? attrs.title : $(el).text();
 
-    function onKeyDown (e) {
-        clickVNode(vnode);
-        e.stopPropagation();
-        e.preventDefault();
+    for(let kString of hotkeyString) {
+        addHotkeyToMap(kString, vnode, title);
     }
 
-    el._onKeyDown = onKeyDown;
-    el._hotKeyInputWhitelist = [];
-    el._title = title;
-    el._kStringList = hotkeyString;
-    hotkeyString.forEach(kString => {
-        $(document).bind('keydown', kString, el._onKeyDown);
-        addHotkeyMap(kString, title);
-        if(kString === 'esc' || kString.indexOf('ctrl') !== -1 || kString.indexOf('alt') !== -1) {
-            $.hotkeyInputWhitelist[kString] = true;
-            el._hotKeyInputWhitelist.push(kString);
-        }
-    });
+    el.dataset.hotkeyString = hotkeyString;
+    el.dataset.vnode = vnode;
 }
 
 function unregisterHotkey (el) {
-    if (el._onKeyDown) {
-        $(document).unbind('keydown', el._onKeyDown);
-        el._hotKeyInputWhitelist.forEach(kString => {
-            delete $.hotkeyInputWhitelist[kString];
-        });
-        el._kStringList.forEach(kString => {
-            removeHotkeyMap(kString, el._title);
-        });
-        delete el._onKeyDown;
-        delete el._hotKeyInputWhitelist;
+    const { vnode, hotkeyString } = el.dataset;
+    for(let kString of hotkeyString) {
+        removeHotkeyFromMap(kString, vnode);
     }
 }
 
