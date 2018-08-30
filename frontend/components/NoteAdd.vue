@@ -74,10 +74,8 @@ export default {
         }
     },
     methods: {
-        async save () {
+        async save (card) {
             try {
-                const card = this.card;
-
                 const {noteId} = await ankiCall('note_add', {
                     deck: card.deck,
                     model: card.model,
@@ -86,9 +84,9 @@ export default {
                 });
 
                 // Clean non-sticky forms
-                card.fieldFormats.forEach((fFormat, index) => {
+                this.card.fieldFormats.forEach((fFormat, index) => {
                     if(!fFormat.sticky) {
-                        card.fields.splice(index, 1, '');
+                        this.card.fields.splice(index, 1, '');
                     }
                 });
 

@@ -125,9 +125,8 @@ export default {
     },
     methods: {
         onSave () {
-            const newCard = runHook('edit_card_save', this.card);
-            this.$emit('input', newCard);
-            this.$emit('save');
+            const newCard = runHook('edit_card_save', Object.assign({}, this.card));
+            this.$emit('save', newCard);
             this.$el.querySelectorAll('.editor-field')[0].focus();
         },
         tagRenderer (tag) {

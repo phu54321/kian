@@ -47,13 +47,13 @@ export default {
         };
     },
     methods: {
-        save () {
+        save (card) {
             ankiCall('card_update',  {
                 cardId: this.cardId,
-                deck: this.deck,
-                model: this.model,
-                fields: this.fields,
-                tags: this.tags,
+                deck: card.deck,
+                model: card.model,
+                fields: card.fields,
+                tags: card.tags,
             }).then(() => {
                 this.$router.go(-1);
             }).catch(err => {
