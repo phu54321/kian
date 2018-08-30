@@ -18,11 +18,11 @@ import { addHook } from './../hookBase';
 const modelName = 'Cloze (Hide all)';
 
 function stripClozeHelper (html) {
-    return html.replace(new RegExp(
-        '</?(cz_hide|cloze2|cloze2_w)>|' +
-        '<(cloze2_w|cloze2) class=(\\"|\')cz-\\d+(\\"|\')>|' +
-        '<script( class=(\\"|\')cz-\\d+(\\"|\'))?>_czha\\(\\d+\\)</script>'
-    ), '');
+    return (html
+        .replace(/<\/?(cz_hide|cloze2|cloze2_w)>/g, '')
+        .replace(/<(cloze2_w|cloze2) class=("|')cz-\d+("|')>/g, '')
+        .replace(/<script( class=("|')cz-\\d+("|'))?>_czha\(\d+\)<\/script>/g, '')
+    );
 }
 
 const _voidElements = new Set([
@@ -151,12 +151,12 @@ function makeClozeCompatiable (html) {
     return html;
 }
 
+window.stripClozeHelper = stripClozeHelper;
+
 addHook('edit_card_load', card => {
     const {model, fields} = card;
     if(model === modelName) {
-        card.fields = fields.map(
-            field => stripClozeHelper(field)
-        );
+        card.fields = fields.map(stripClozeHelper);
     }
     return card;
 });
