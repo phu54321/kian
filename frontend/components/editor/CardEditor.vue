@@ -109,11 +109,8 @@ export default {
     ],
     data () {
         return {
-            card: this.value
+            card: runHook('edit_card_load', this.value)
         };
-    },
-    async created () {
-        this.card = await runHook('edit_card_load', this.value);
     },
     mounted () {
         addHotkeyPack('editor', editorHotkeys);
@@ -127,8 +124,8 @@ export default {
         TagEditor,
     },
     methods: {
-        async onSave () {
-            const newCard = await runHook('edit_card_save', this.card);
+        onSave () {
+            const newCard = runHook('edit_card_save', this.card);
             this.$emit('input', newCard);
             this.$emit('save');
             this.$el.querySelectorAll('.editor-field')[0].focus();

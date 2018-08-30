@@ -29,13 +29,13 @@ export function removeHook (hookID, handler) {
     handlerList.splice(handlerIdx, 1);
 }
 
-export async function runHook (hookID, msg) {
+export function runHook (hookID, msg) {
     const handlerList = hookMap[hookID];
     if(!handlerList) return msg;
 
     for(let i = 0 ; i < handlerList.length ; i++) {
         const handler = handlerList[i];
-        msg = await handler(msg);
+        msg = handler(msg);
         if(!msg) return null;
     }
     return msg;
