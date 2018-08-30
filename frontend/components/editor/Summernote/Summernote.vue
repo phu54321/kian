@@ -21,7 +21,7 @@ export default {
     watch: {
         value (val) {
             const oldVal = $(this.$el).summernote('code');
-            if(oldVal != val) {
+            if(oldVal !== val) {
                 $(this.$el).summernote('code', val);
             }
         }

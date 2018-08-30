@@ -15,6 +15,8 @@
 
 import { addHook } from './../hookBase';
 
+const modelName = 'Cloze (Hide all)';
+
 function stripClozeHelper (html) {
     return html.replace(new RegExp(
         '</?(cz_hide|cloze2|cloze2_w)>|' +
@@ -149,12 +151,22 @@ function makeClozeCompatiable (html) {
     return html;
 }
 
-addHook('edit_note', msg => {
-    const {model, fields} = msg;
-    if(model === 'Cloze (Hide all)') {
-        msg.fields = fields.map(
+addHook('edit_card_load', card => {
+    const {model, fields} = card;
+    if(model === modelName) {
+        card.fields = fields.map(
+            field => stripClozeHelper(field)
+        );
+    }
+    return card;
+});
+
+addHook('edit_card_save', card => {
+    const {model, fields} = card;
+    if(model === modelName) {
+        card.fields = fields.map(
             field => makeClozeCompatiable(stripClozeHelper(field))
         );
     }
-    return msg;
+    return card;
 });

@@ -58,6 +58,8 @@ import Summernote from './Summernote/Summernote';
 import TagEditor from './TagEditor';
 import './editor.scss';
 import { addHotkeyPack, removeHotkeyPack } from '../../utils/VueSimpleHotkey';
+import { runHook } from '../../hook/hookBase';
+import asyncData from '../../utils/asyncData';
 
 const editorHotkeys = [
     ['Anki-related keys', [
@@ -108,9 +110,20 @@ export default {
     ],
     data () {
         return {
-            card: this.value
+            card: {
+                deck: '',
+                model: '',
+                fields: [],
+                fieldFormats: [],
+                tags: []
+            }
         };
     },
+    mixins: [asyncData(async props => {
+        return {
+            card: await runHook('edit_card_load', props.value)
+        };
+    })],
     mounted () {
         addHotkeyPack('editor', editorHotkeys);
     },
@@ -123,7 +136,9 @@ export default {
         TagEditor,
     },
     methods: {
-        onSave () {
+        async onSave () {
+            const newCard = await runHook('edit_card_save', this.card);
+            this.$emit('input', newCard);
             this.$emit('save');
             this.$el.querySelectorAll('.editor-field')[0].focus();
         },
@@ -146,8 +161,8 @@ export default {
     },
     watch: {
         value: {
-            handler (value) {
-                this.card = value;
+            async handler (value) {
+                this.card = await runHook('edit_card_load', value);
             },
             deep: true,
         },
