@@ -18,8 +18,6 @@ import './jquery.hotkeys';
 import { clickVNode } from './clickElement';
 
 export const hotkeyMap = {};
-export const hotkeyPack = {};
-
 
 function addHotkeyMap (kString, title) {
     hotkeyMap[kString] = title;
@@ -29,14 +27,6 @@ function removeHotkeyMap (kString, title) {
     if (hotkeyMap[kString] === title) {
         delete hotkeyMap[kString];
     }
-}
-
-export function addHotkeyPack (id, pack) {
-    hotkeyPack[id] = pack;
-}
-
-export function removeHotkeyPack (id) {
-    delete hotkeyPack[id];
 }
 
 

@@ -33,7 +33,7 @@
 
 import $ from 'jquery';
 import ColoredBadge from './ColoredBadge';
-import { addHotkeyPack, removeHotkeyPack } from '../../utils/hotkey/VueSimpleHotkey';
+import HotkeyMap from '../../utils/hotkey/HotkeyMap';
 
 const editorHotkeys = [
     ['Anki-related keys', [
@@ -113,10 +113,10 @@ export default {
             this.hasFocus = false;
         });
 
-        addHotkeyPack('editor', editorHotkeys);
+        HotkeyMap.addHotkeyPack('editor', editorHotkeys);
     },
     beforeDestroy () {
-        removeHotkeyPack('editor');
+        HotkeyMap.removeHotkeyPack('editor');
     },
     data () {
         return {

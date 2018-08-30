@@ -57,7 +57,7 @@ import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
 import TagEditor from './TagEditor';
 import './editor.scss';
-import { addHotkeyPack, removeHotkeyPack } from '../../utils/hotkey/VueSimpleHotkey';
+import HotkeyMap from '../../utils/hotkey/HotkeyMap';
 import { runHook } from '../../hook/hookBase';
 
 const editorHotkeys = [
@@ -113,10 +113,10 @@ export default {
         };
     },
     mounted () {
-        addHotkeyPack('editor', editorHotkeys);
+        HotkeyMap.addHotkeyPack('editor', editorHotkeys);
     },
     beforeDestroy () {
-        removeHotkeyPack('editor');
+        HotkeyMap.removeHotkeyPack('editor');
     },
     components: {
         Summernote,
