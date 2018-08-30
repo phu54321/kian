@@ -43,8 +43,7 @@ export default {
         },
     },
     methods: {
-        onNoteEdit () {
-            const card = this.card;
+        onNoteEdit (card) {
             if(!card) return;
 
             ankiCall('card_update', {
