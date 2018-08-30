@@ -151,7 +151,6 @@ function makeClozeCompatiable (html) {
     return html;
 }
 
-window.stripClozeHelper = stripClozeHelper;
 
 addHook('edit_card_load', card => {
     const {model, fields} = card;

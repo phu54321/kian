@@ -39,7 +39,7 @@ b-form(@submit='onSave')
                     v-model='card.model',
                     apiType='model_list')
 
-        tr(v-for='(fFormat, index) in card.fieldFormats', :key='fFormat.name')
+        tr(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden', :key='fFormat.name')
             th {{fFormat.name}}
             td
                 summernote.editor-field(v-model='card.fields[index]')
@@ -154,14 +154,20 @@ export default {
         value (value) {
             this.card = runHook('edit_card_load', value);
         },
-        async currentModel (modelName) {
+        async currentModel (modelName, oldModelName) {
             // Model change
+            if(!modelName) {
+                this.card.model = oldModelName;
+                return;
+            }
+
             const model = await ankiCall('model_get', { modelName });
             const fieldFormats = model.fieldFormats;
             this.card.fieldFormats = fieldFormats;
             const newFields = this.card.fields;
             resize(newFields, fieldFormats.length, '');
             this.card.fields = newFields;
+            // this.card = runHook('edit_card_load', this.card);
         },
     }
 };
