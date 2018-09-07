@@ -26,7 +26,7 @@ import $ from 'jquery';
 
     $.hotkeys = {
         version: '0.2.0',
-  
+
         specialKeys: {
             8: 'backspace',
             9: 'tab',
@@ -93,7 +93,7 @@ import $ from 'jquery';
             221: ']',
             222: '\''
         },
-  
+
         shiftNums: {
             '`': '~',
             '1': '!',
@@ -115,37 +115,37 @@ import $ from 'jquery';
             '/': '?',
             '\\': '|'
         },
-  
+
         // excludes: button, checkbox, file, hidden, image, password, radio, reset, search, submit, url
         textAcceptingInputTypes: [
             'text', 'password', 'number', 'email', 'url', 'range', 'date', 'month', 'week', 'time', 'datetime',
             'datetime-local', 'search', 'color', 'tel'],
-  
+
         // default input types not to bind to unless bound directly
         textInputTypes: /textarea|input|select/i,
-  
+
         options: {
             filterInputAcceptingElements: true,
             filterTextInputs: true,
             filterContentEditable: true
         }
     };
-  
+
     function keyHandler (handleObj) {
         if (typeof handleObj.data === 'string') {
             handleObj.data = {
                 keys: handleObj.data
             };
         }
-  
+
         // Only care when a possible input has been specified
         if (!handleObj.data || !handleObj.data.keys || typeof handleObj.data.keys !== 'string') {
             return;
         }
-  
+
         var origHandler = handleObj.handler,
             keys = handleObj.data.keys.toLowerCase().split(' ');
-  
+
         handleObj.handler = function (event) {
             // Don't fire in text-accepting inputs that we didn't directly bind to
             if (
@@ -154,37 +154,41 @@ import $ from 'jquery';
                 ($.hotkeys.options.filterContentEditable && $(event.target).attr('contenteditable')) ||
                 ($.hotkeys.options.filterTextInputs && $.inArray(event.target.type, $.hotkeys.textAcceptingInputTypes) > -1))
             ) {
-                if(!keys.some(k => hotkeyInputWhitelist[k])) return;
+                if(!(
+                    (keys.length === 1 && keys[0] === 'esc') ||
+                    keys.indexOf('ctrl') !== -1 ||
+                    keys.indexOf('alt') !== -1
+                )) return;
             }
-  
+
             var special = event.type !== 'keypress' && $.hotkeys.specialKeys[event.which],
                 character = String.fromCharCode(event.which).toLowerCase(),
                 modif = '',
                 possible = {};
-  
+
             $.each(['alt', 'ctrl', 'shift'], function (index, specialKey) {
-  
+
                 if (event[specialKey + 'Key'] && special !== specialKey) {
                     modif += specialKey + '+';
                 }
             });
-  
+
             // metaKey is triggered off ctrlKey erronously
             if (event.metaKey && !event.ctrlKey && special !== 'meta') {
                 modif += 'meta+';
             }
-  
+
             if (event.metaKey && special !== 'meta' && modif.indexOf('alt+ctrl+shift+') > -1) {
                 modif = modif.replace('alt+ctrl+shift+', 'hyper+');
             }
-  
+
             if (special) {
                 possible[modif + special] = true;
             }
             else {
                 possible[modif + character] = true;
                 possible[modif + $.hotkeys.shiftNums[character]] = true;
-  
+
                 // "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
                 if (modif === 'shift+') {
                     possible[$.hotkeys.shiftNums[character]] = true;
@@ -198,11 +202,11 @@ import $ from 'jquery';
             }
         };
     }
-  
+
     $.each(['keydown', 'keyup', 'keypress'], function () {
         $.event.special[this] = {
             add: keyHandler
         };
     });
-  
+
 })($);
