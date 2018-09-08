@@ -33,7 +33,7 @@ div.app-body
                         icon(name='sync')
                     b-nav-item.ml-3(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
                         icon(name='home')
-                    b-nav-item(v-hotkey='"A"', to='/note/add', v-b-tooltip.hover, title='Add card')
+                    b-nav-item(v-hotkey='"A"', to='/card/add', v-b-tooltip.hover, title='Add card')
                         icon(name='plus')
                     b-nav-item(v-hotkey='"B"', to='/browse', v-b-tooltip.hover, title='Browse')
                         icon(name='search')

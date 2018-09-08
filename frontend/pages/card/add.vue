@@ -30,9 +30,9 @@ div
 
 import ankiCall from '~/api/ankiCall';
 import asyncData from '~/utils/asyncData';
-import BrowserView from './browser/BrowserView';
-import CardEditor from './editor/CardEditor';
-import ErrorDialogVue from './ErrorDialog.vue';
+import BrowserView from '~/components/browser/BrowserView';
+import CardEditor from '~/components/editor/CardEditor';
+import ErrorDialogVue from '~/components/ErrorDialog.vue';
 
 
 const historyNum = 50;

@@ -24,8 +24,8 @@ b-form(@submit='save')
 
 import ankiCall from '~/api/ankiCall';
 import asyncData from '~/utils/asyncData';
-import ErrorDialog from './ErrorDialog';
-import CardEditor from './editor/CardEditor';
+import ErrorDialog from '~/components/ErrorDialog';
+import CardEditor from '~/components/editor/CardEditor';
 
 
 export default {
