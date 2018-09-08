@@ -40,7 +40,7 @@ div
 <script>
 
 import BrowserView from './browser/BrowserView';
-import { ankiCall } from '../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import SpaceSeperatedInput from './common/SpaceSeperatedInput';
 import fuzzysearch from 'fuzzysearch';
 import _ from 'lodash';

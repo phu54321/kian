@@ -45,8 +45,8 @@ div
 
 <script>
 
-import {ankiCall} from '../api/ankiCall';
-import asyncData from '../utils/asyncData';
+import ankiCall from '~/api/ankiCall';
+import asyncData from '~/utils/asyncData';
 import ErrorDialog from './ErrorDialog.vue';
 import ShadowDom from '../utils/ShadowDom';
 

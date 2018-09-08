@@ -25,7 +25,7 @@ card-editor(
 
 <script>
 
-import { ankiCall } from '../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import CardEditor from '../editor/CardEditor';
 import ErrorDialog from '../ErrorDialog';
 

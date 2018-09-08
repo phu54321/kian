@@ -22,8 +22,8 @@ b-form(@submit='save')
 
 <script>
 
-import {ankiCall} from '../api/ankiCall';
-import asyncData from '../utils/asyncData';
+import ankiCall from '~/api/ankiCall';
+import asyncData from '~/utils/asyncData';
 import ErrorDialog from './ErrorDialog';
 import CardEditor from './editor/CardEditor';
 
