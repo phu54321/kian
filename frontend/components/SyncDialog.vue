@@ -105,7 +105,7 @@ export default {
                 ErrorDialog.openErrorDialog('Sync failed', 'Invalid AnkiWeb ID/Password');
                 this.$cookie.delete('syncKey');
             } else if(cmd === 'newKey') {
-                this.$cookie.set('syncKey', args[0]);
+                this.$cookie.set('syncKey', args);
             } else if(cmd === 'offline') {
                 this.$toasted.show('Internet offline');
             } else if(cmd === 'upbad') {

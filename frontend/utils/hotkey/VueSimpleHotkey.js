@@ -82,6 +82,8 @@ function resolveHotkey (kString) {
             const hotkeyHandlers = kStringHandlerMap.get(kString);
             if(hotkeyHandlers.length !== 1) return;
 
+            e.stopPropagation();
+            e.preventDefault();
             return clickVNode(hotkeyHandlers[0].vnode);
         }
     };
