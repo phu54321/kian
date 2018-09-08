@@ -13,6 +13,7 @@ from utils.col import (
 import asyncio
 import time
 import traceback
+from queue import Queue
 from threading import Thread, Lock
 
 from anki import Collection
@@ -29,8 +30,13 @@ from anki.sync import (
 ######################################################################
 
 
+syncThread = None
+syncMessageQueue = Queue()
+
 @registerApi('sync')
-async def onSync(msg):
+def onSync(msg):
+    global syncThread
+
     typeCheck(msg, {
         'email': str,
         'password': str,
@@ -43,19 +49,54 @@ async def onSync(msg):
     # SyncThread should open the collection, so here we kill existing connection.
     forceCloseCol()
 
-    mainColLock.acquire()
-    try:
-        thread = SyncThread(
-            path=db_path,
-            hkey=None,
-            auth=(email, password)
-        )
-        thread.start()
-        thread.join()
-        return emit.emitResult(True)
+    syncThread = SyncThread(
+        path=db_path,
+        hkey=None,
+        auth=(email, password)
+    )
+    syncThread.listeners.append(lambda cmd, arg: syncMessageQueue.put((cmd, arg)))
+    syncThread.start()
+    return emit.emitResult(True)
 
-    finally:
-        mainColLock.release()
+
+@registerApi('sync_status')
+def getSyncStatus(msg):
+    if not syncThread:
+        return emit.emitError('Not syncing')
+
+    ret = []
+    while not syncMessageQueue.empty():
+        item = syncMessageQueue.get()
+        ret.append(item)
+    return emit.emitResult({
+        'messages': ret,
+        'completed': not syncThread.is_alive()
+    })
+
+
+@registerApi('sync_fullsync')
+def issueFullSync(msg):
+    if not syncThread:
+        return emit.emitError('Not syncing')
+
+    typeCheck(msg, {
+        'mode': str
+    })
+
+    syncThread.fullSyncChoice = msg['mode']
+
+@registerApi('sync_terminate')
+def terminateSync(msg):
+    global syncThread
+
+    if not syncThread:
+        return emit.emitError('Not syncing')
+
+    syncThread.join()
+    syncThread = None
+    return emit.emitResult(True)
+
+
 
 
 # SyncThread, from aqt/sync.py
@@ -79,42 +120,47 @@ class SyncThread(Thread):
         # in the main thread
         self.syncMsg = ""
         self.uname = ""
+
+        mainColLock.acquire()
         try:
-            self.col = Collection(self.path, log=True)
-        except:
-            self.fireEvent("corrupt")
-            return
-        self.server = RemoteServer(self.hkey, hostNum=self.hostNum)
-        self.client = Syncer(self.col, self.server)
-        self.sentTotal = 0
-        self.recvTotal = 0
-        def syncEvent(type):
-            self.fireEvent("sync", type)
-        def syncMsg(msg):
-            self.fireEvent("syncMsg", msg)
-        def sendEvent(bytes):
-            if not self._abort:
-                self.sentTotal += bytes
-                self.fireEvent("send", str(self.sentTotal))
-            elif self._abort == 1:
-                self._abort = 2
-                raise Exception("sync cancelled")
-        def recvEvent(bytes):
-            if not self._abort:
-                self.recvTotal += bytes
-                self.fireEvent("recv", str(self.recvTotal))
-            elif self._abort == 1:
-                self._abort = 2
-                raise Exception("sync cancelled")
-        # run sync and catch any errors
-        try:
-            self._sync()
-        except:
-            err = traceback.format_exc()
-            self.fireEvent("error", err)
+            try:
+                self.col = Collection(self.path, log=True)
+            except:
+                self.fireEvent("corrupt")
+                return
+            self.server = RemoteServer(self.hkey, hostNum=self.hostNum)
+            self.client = Syncer(self.col, self.server)
+            self.sentTotal = 0
+            self.recvTotal = 0
+            def syncEvent(type):
+                self.fireEvent("sync", type)
+            def syncMsg(msg):
+                self.fireEvent("syncMsg", msg)
+            def sendEvent(bytes):
+                if not self._abort:
+                    self.sentTotal += bytes
+                    self.fireEvent("send", str(self.sentTotal))
+                elif self._abort == 1:
+                    self._abort = 2
+                    raise Exception("sync cancelled")
+            def recvEvent(bytes):
+                if not self._abort:
+                    self.recvTotal += bytes
+                    self.fireEvent("recv", str(self.recvTotal))
+                elif self._abort == 1:
+                    self._abort = 2
+                    raise Exception("sync cancelled")
+            # run sync and catch any errors
+            try:
+                self._sync()
+            except:
+                err = traceback.format_exc()
+                self.fireEvent("error", err)
+            finally:
+                # don't bump mod time unless we explicitly save
+                self.col.close(save=False)
         finally:
-            # don't bump mod time unless we explicitly save
-            self.col.close(save=False)
+            mainColLock.release()
 
     def _abortingSync(self):
         try:
@@ -221,5 +267,6 @@ class SyncThread(Thread):
             self.fireEvent("mediaSuccess")
 
     def fireEvent(self, cmd, arg=""):
+        print(cmd, arg)
         for l in self.listeners:
             l(cmd, arg)
