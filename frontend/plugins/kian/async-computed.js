@@ -15,24 +15,12 @@
 
 import Vue from 'vue';
 
-import './plugins/kian/async-computed';
-import './plugins/kian/axios';
-import './plugins/kian/bootstrap-vue';
-import './plugins/kian/cookie';
-import './plugins/kian/datepicker';
-import './plugins/kian/fontawesome';
-import './plugins/kian/hotkey';
-import './plugins/kian/toasted';
-import './plugins/kian/vselect';
+import AsyncComputed from 'vue-async-computed';
+import ErrorDialog from '~/components/ErrorDialog';
 
-import VueRouter from 'vue-router';
-import router from './router';
-Vue.use(VueRouter);
-
-// App
-import App from './App';
-new Vue({
-    el: '#app',
-    render: h => h(App),
-    router,
+Vue.use(AsyncComputed, {
+    useRawError: true,
+    errorHandler (err) {
+        ErrorDialog.openErrorDialog(err.msg, err.stack);
+    }
 });
