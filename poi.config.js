@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 module.exports = {
     outDir: 'dist/frontend',
@@ -11,6 +12,13 @@ module.exports = {
         config.externals = {
             jquery: 'jQuery',
             $: 'jQuery',
+        };
+        config.resolve = {
+            extensions: ['.js', '.vue', '.json'],
+            alias: {
+                '@': path.resolve(__dirname, 'frontend/'),
+                '~': path.resolve(__dirname, 'frontend/'),
+            },
         };
     },
     devServer: {
