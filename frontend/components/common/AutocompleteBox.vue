@@ -33,7 +33,7 @@
 
 import $ from 'jquery';
 import ColoredBadge from './ColoredBadge';
-import HotkeyMap from '../../utils/hotkey/HotkeyMap';
+import HotkeyMap from '../HotkeyMap';
 
 const editorHotkeys = [
     ['Anki-related keys', [

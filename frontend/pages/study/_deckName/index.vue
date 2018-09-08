@@ -48,7 +48,7 @@ div
 import ankiCall from '~/api/ankiCall';
 import asyncData from '~/utils/asyncData';
 import ErrorDialog from '~/components/ErrorDialog.vue';
-import ShadowDom from '~/utils/ShadowDom';
+import ShadowDom from '~/components/ShadowDom';
 
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', {deckName});
