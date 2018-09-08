@@ -57,7 +57,7 @@ import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
 import TagEditor from './TagEditor';
 import './editor.scss';
-import HotkeyMap from '../../utils/hotkey/HotkeyMap';
+import HotkeyMap from '../HotkeyMap';
 import { runHook } from '../../hook/hookBase';
 
 const editorHotkeys = [
