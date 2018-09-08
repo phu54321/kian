@@ -31,7 +31,7 @@ div
 <script>
 
 import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey';
-import KeyImage from './KeyImage';
+import KeyImage from './common/KeyImage';
 
 const hotkeyPack = {};
 

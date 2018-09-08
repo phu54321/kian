@@ -25,6 +25,8 @@ import './plugins/kian/hotkey';
 import './plugins/kian/toasted';
 import './plugins/kian/vselect';
 
+import './plugins/allAddons';
+
 
 import VueRouter from 'vue-router';
 import router from './router';
