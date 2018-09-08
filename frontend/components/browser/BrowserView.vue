@@ -94,7 +94,7 @@ div.browser-view
 <script>
 
 import _ from 'lodash';
-import { ankiCall } from '../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';

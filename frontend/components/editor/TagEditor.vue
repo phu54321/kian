@@ -26,7 +26,7 @@ space-seperated-input(
 
 <script>
 
-import {ankiCall} from '../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 
 export default {

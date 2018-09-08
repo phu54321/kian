@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { ankiCall } from '../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 
 export default {
     props: ['tree', 'indent'],

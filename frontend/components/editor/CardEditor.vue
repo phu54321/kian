@@ -52,7 +52,7 @@ b-form(@submit='onSave')
 
 <script>
 
-import {ankiCall} from '../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
 import TagEditor from './TagEditor';

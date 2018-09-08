@@ -19,12 +19,12 @@
 <script>
 
 import $ from 'jquery';
-import { ankiCall } from '../../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import './cloze';
 import './table';
 import './htmledit';
 import './disableUnwantedHotkeys';
-import { getFileAsBase64 } from '../../../utils/fileToBase64';
+import { getFileAsBase64 } from '~/utils/fileToBase64';
 
 
 export default {

@@ -43,7 +43,7 @@ b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow'
 
 <script>
 
-import {ankiCall} from '../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 import ErrorDialog from './ErrorDialog';
 
 export default {

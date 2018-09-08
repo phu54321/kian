@@ -37,7 +37,7 @@ socket.on('msg', response => {
     return resolve(response.result);
 });
 
-export function ankiCall (apiType, data) {
+export default function ankiCall (apiType, data) {
     return new Promise((resolve, reject) => {
         const syncKey = createSyncKey();
         msgTable[syncKey] = { resolve, reject };
@@ -48,6 +48,3 @@ export function ankiCall (apiType, data) {
         });
     });
 }
-
-
-window.ankiCall = ankiCall;

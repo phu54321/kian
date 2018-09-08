@@ -15,5 +15,5 @@
 
 import Vue from 'vue';
 
-import VueSimpleHotkey from '@/utils/hotkey/VueSimpleHotkey';
+import VueSimpleHotkey from '~/utils/hotkey/VueSimpleHotkey';
 Vue.use(VueSimpleHotkey);

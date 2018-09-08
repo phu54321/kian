@@ -47,7 +47,7 @@ div
 import ListSelector from '../editor/ListSelector';
 import TagEditor from '../editor/TagEditor';
 import padLeft from 'pad-left';
-import { ankiCall } from '../../api/ankiCall';
+import ankiCall from '~/api/ankiCall';
 
 export default {
     props: ['selected'],
