@@ -39,9 +39,10 @@ div
 
 <script>
 
-import BrowserView from './browser/BrowserView';
 import ankiCall from '~/api/ankiCall';
-import SpaceSeperatedInput from './common/SpaceSeperatedInput';
+import BrowserView from '~/components/browser/BrowserView';
+import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
+
 import fuzzysearch from 'fuzzysearch';
 import _ from 'lodash';
 

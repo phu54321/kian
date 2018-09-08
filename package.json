@@ -64,6 +64,8 @@
     "v-hotkey": "^0.2.3",
     "vue": "^2.5.16",
     "vue-async-computed": "^3.4.1",
+    "vue-async-data": "^1.0.2",
+    "vue-auto-routing": "^0.2.0",
     "vue-awesome": "^3.0.5",
     "vue-axios": "^2.1.2",
     "vue-cookie": "^1.1.4",

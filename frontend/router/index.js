@@ -19,54 +19,19 @@ import {
     routerHistory,
     writeHistory
 } from 'vue-router-back-button';
+import routes from 'vue-auto-routing';
+
+const newRoutes = routes.map(route => Object.assign({props: true}, route));
+newRoutes.push({
+    path: '*',
+    redirect: '/',
+});
 
 Vue.use(Router);
 Vue.use(routerHistory);
 
 const router = new Router({
-    routes: [
-        {
-            path: '/',
-            component: require('../components/Dashboard').default,
-        },
-        {
-            path: '/deck/:deckName',
-            component: require('../components/DeckOverview.vue').default,
-            props: true,
-        },
-
-        {
-            path: '/study/:deckName',
-            component: require('../components/Reviewer.vue').default,
-            props: true,
-        },
-
-        {
-            path: '/card/edit/:cardId',
-            component: require('../components/CardEdit.vue').default,
-            props: route => ({cardId: Number(route.params.cardId)}),
-            name: 'card_edit',
-        },
-
-        {
-            path: '/note/add',
-            component: require('../components/NoteAdd.vue').default,
-            props: true,
-            name: 'note_add',
-        },
-
-        {
-            path: '/browse',
-            component: require('../components/Browser.vue').default,
-            props: true,
-            name: 'browser',
-        },
-
-        {
-            path: '*',
-            redirect: '/',
-        },
-    ],
+    routes: newRoutes
 });
 
 router.afterEach(writeHistory);

@@ -14,13 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Vue from 'vue';
+import VueAsyncComputed from 'vue-async-computed';
 
-import AsyncComputed from 'vue-async-computed';
-import ErrorDialog from '~/components/ErrorDialog';
-
-Vue.use(AsyncComputed, {
-    useRawError: true,
-    errorHandler (err) {
-        ErrorDialog.openErrorDialog(err.msg, err.stack);
-    }
-});
+Vue.use(VueAsyncComputed);

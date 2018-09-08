@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const VueAutoRoutingPlugin = require('vue-auto-routing/lib/webpack-plugin');
 
 module.exports = {
     outDir: 'dist/frontend',
@@ -20,6 +21,13 @@ module.exports = {
                 '~': path.resolve(__dirname, 'frontend/'),
             },
         };
+        config.plugins.push(new VueAutoRoutingPlugin({
+            // Path to the directory that contains your page components.
+            pages: 'frontend/pages',
+
+            // A string that will be added to importing component path (default @/pages/).
+            importPrefix: '@/pages/'
+        }));
     },
     devServer: {
         after (app) {
