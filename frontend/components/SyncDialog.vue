@@ -27,15 +27,23 @@ b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow'
             b-btn(variant='primary', @click='startSync') Login
             b-btn(variant='outline-secondary', @click='show = false') Cancel
 
+    template(v-else-if='fullSyncAsked')
+        p Should issue full sync.
+        b-btn(variant='outline-danger', @click='fullSyncOption("upload")') Upload
+        b-btn.ml-1(variant='outline-danger', @click='fullSyncOption("download")') Download
+        b-btn.ml-1(variant='outline-secondary', @click='fullSyncOption("cancel")') Cancel
+
+
     template(v-else)
         b-progress(:value='100', :max='100', animated)
+        ul.list-group
+            li.list-group-item(v-for='message in syncMessages') {{message}}
 
 </template>
 
 <script>
 
 import {ankiCall} from '../api/ankiCall';
-import ErrorDialog from './ErrorDialog';
 
 export default {
     data () {
@@ -45,6 +53,9 @@ export default {
             authKey: null,
             isLoginForm: true,
             show: false,
+            syncTimeout: false,
+            syncMessages: [],
+            fullSyncAsked: null,
         };
     },
     methods: {
@@ -64,15 +75,46 @@ export default {
                 email: this.email,
                 password: this.password,
                 authKey: this.authKey,
-            }).then(_msg => {
-                this.show = false;
-                this.$router.go(); // Refresh current router
-            }).catch(err => {
-                this.show = false;
-                ErrorDialog.openErrorDialog('Sync error', err);
             });
-        }
+
+            this.syncTimeout = setTimeout(this.syncProcess, 1000);
+        },
+        syncProcess () {
+            ankiCall('sync_status').then(msg => {
+                for(let message of msg.messages) {
+                    this.syncMessages.push(message);
+                    this.processSyncMessage(message[0], message[1]);
+                }
+                if(msg.completed) {
+                    this.show = false;
+                    this.$router.go();
+                }
+                else {
+                    this.syncTimeout = setTimeout(this.syncProcess, 1000);
+                }
+            });
+        },
+        processSyncMessage (cmd, arg) {
+            if (cmd === 'fullSync') {
+                this.fullSyncAsked = true;
+            }
+        },
+        fullSyncOption (mode) {
+            this.fullSyncAsked = false;
+            ankiCall('sync_fullsync', {mode});
+        },
     },
 };
 
 </script>
+
+<style lang="scss" scoped>
+
+.list-group{
+    max-height: 300px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+</style>
