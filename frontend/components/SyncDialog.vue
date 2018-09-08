@@ -44,6 +44,7 @@ b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow'
 <script>
 
 import {ankiCall} from '../api/ankiCall';
+import ErrorDialog from './ErrorDialog';
 
 export default {
     data () {
@@ -60,8 +61,9 @@ export default {
     },
     methods: {
         onShow () {
-            this.authKey = this.$cookie.get('authKey');
+            this.authKey = this.$cookie.get('syncKey');
             if(this.authKey) {
+                this.email = this.password = '';
                 this.startSync();
             }
             else {
@@ -75,27 +77,74 @@ export default {
                 email: this.email,
                 password: this.password,
                 authKey: this.authKey,
+            }).then(() => {
+                this.syncTimeout = setTimeout(this.syncProcess, 1000);
+            }).catch(err => {
+                ErrorDialog.openErrorDialog('Sync failed', err.message);
+                this.show = false;
             });
-
-            this.syncTimeout = setTimeout(this.syncProcess, 1000);
         },
         syncProcess () {
             ankiCall('sync_status').then(msg => {
                 for(let message of msg.messages) {
-                    this.syncMessages.push(message);
                     this.processSyncMessage(message[0], message[1]);
                 }
+
                 if(msg.completed) {
+                    this.syncTimeout = null;
                     this.show = false;
-                    this.$router.go();
+                    // this.$router.go();
                 }
                 else {
                     this.syncTimeout = setTimeout(this.syncProcess, 1000);
                 }
             });
         },
-        processSyncMessage (cmd, arg) {
-            if (cmd === 'fullSync') {
+        processSyncMessage (cmd, args) {
+            if (cmd === 'badAuth') {
+                ErrorDialog.openErrorDialog('Sync failed', 'Invalid AnkiWeb ID/Password');
+                this.$cookie.delete('syncKey');
+            } else if(cmd === 'newKey') {
+                this.$cookie.set('syncKey', args[0]);
+            } else if(cmd === 'offline') {
+                this.$toasted.show('Internet offline');
+            } else if(cmd === 'upbad') {
+                this.syncMessages.push('Uploading failed.');
+            } else if(cmd === 'sync') {
+                const type = args[0];
+                switch(type) {
+                case 'login':
+                    this.syncMessages.push('Logon to AnkiWeb');
+                    break;
+                case 'upload':
+                    this.syncMessages.push('Performing full upload to AnkiWeb.');
+                    break;
+                case 'download':
+                    this.syncMessages.push('Performing full download from AnkiWeb.');
+                    break;
+                case 'sanity':
+                    this.syncMessages.push('Checking database.');
+                    break;
+                case 'findMedia':
+                    this.syncMessages.push('Checking media.');
+                    break;
+                case 'upgradeRequited':
+                    this.$toasted.show('Deck upgrade required. Please visit AnkiWeb.');
+                    break;
+                }
+            } else if(cmd === 'syncMsg') {
+                this.syncMessages.push(args[0]);
+            } else if(cmd === 'error') {
+                ErrorDialog.openErrorDialog('Sync failed', args[0]);
+            } else if(cmd === 'clockOff') {
+                ErrorDialog.openErrorDialog('Sync failed', 'Check again your computer\'s clock.');
+            } else if(cmd === 'checkFailed') {
+                ErrorDialog.openErrorDialog('Sync failed', 'Database check failed.');
+            } else if(cmd === 'noChanges') {
+                this.syncMessages.push('No database changes');
+            } else if(cmd === 'noMediaChanges') {
+                this.syncMessages.push('No media changes');
+            } else if (cmd === 'fullSync') {
                 this.fullSyncAsked = true;
             }
         },
@@ -112,8 +161,10 @@ export default {
 
 .list-group{
     max-height: 300px;
+    min-height: 10px;
     margin-bottom: 10px;
-    overflow:scroll;
+    overflow-x: auto;
+    overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 }
 

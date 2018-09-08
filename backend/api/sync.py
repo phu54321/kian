@@ -25,6 +25,10 @@ from anki.sync import (
     RemoteMediaServer,
 )
 
+from anki.hooks import (
+    addHook, remHook
+)
+
 
 # Sync thread
 ######################################################################
@@ -37,23 +41,21 @@ syncMessageQueue = Queue()
 def onSync(msg):
     global syncThread
 
-    typeCheck(msg, {
-        'email': str,
-        'password': str,
-    })
-
-    email = msg['email']
-    password = msg['password']
-    sio = msg['sio']
+    if not msg['authKey']:
+        typeCheck(msg, {
+            'email': str,
+            'password': str,
+        })
+        hKey = None
+        auth = (msg['email'], msg['password'])
+    else:
+        hKey = msg['authKey']
+        auth = None
 
     # SyncThread should open the collection, so here we kill existing connection.
     forceCloseCol()
+    syncThread = SyncThread(path=db_path, hkey=hKey, auth=auth)
 
-    syncThread = SyncThread(
-        path=db_path,
-        hkey=None,
-        auth=(email, password)
-    )
     syncThread.listeners.append(lambda cmd, arg: syncMessageQueue.put((cmd, arg)))
     syncThread.start()
     return emit.emitResult(True)
@@ -150,6 +152,12 @@ class SyncThread(Thread):
                 elif self._abort == 1:
                     self._abort = 2
                     raise Exception("sync cancelled")
+
+            addHook("sync", syncEvent)
+            addHook("syncMsg", syncMsg)
+            addHook("httpSend", sendEvent)
+            addHook("httpRecv", recvEvent)
+
             # run sync and catch any errors
             try:
                 self._sync()
@@ -159,6 +167,11 @@ class SyncThread(Thread):
             finally:
                 # don't bump mod time unless we explicitly save
                 self.col.close(save=False)
+                remHook("sync", syncEvent)
+                remHook("syncMsg", syncMsg)
+                remHook("httpSend", sendEvent)
+                remHook("httpRecv", recvEvent)
+
         finally:
             mainColLock.release()
 
