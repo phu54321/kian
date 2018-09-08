@@ -58,7 +58,7 @@ import Summernote from './Summernote/Summernote';
 import TagEditor from './TagEditor';
 import './editor.scss';
 import HotkeyMap from '../HotkeyMap';
-import { runHook } from '../../hook/hookBase';
+import { runHook } from '~/utils/hookBase';
 
 const editorHotkeys = [
     ['Anki-related keys', [
