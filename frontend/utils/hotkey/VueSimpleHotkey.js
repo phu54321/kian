@@ -92,6 +92,8 @@ function resolveHotkey (kString) {
 export function getHotkeyMap (el) {
     const hotkeyMap = {};
 
+    el = el || document.body;
+
     for(; el; el = el.parentElement) {
         if(!elementHotkeyMap.has(el)) continue;
 
