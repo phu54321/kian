@@ -5,5 +5,3 @@ decorator
 aiohttp
 aiohttp-index
 python-socketio
-pywin32
-easygui
