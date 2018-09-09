@@ -36,12 +36,13 @@ b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow'
 
     template(v-else)
         b-progress(:value='100', :max='100', animated)
-        ul.list-group
+        ul.list-group.mt-2
             li.list-group-item(v-for='message in syncMessages') {{message}}
 
 </template>
 
 <script>
+
 
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from './ErrorDialog';
@@ -49,18 +50,22 @@ import ErrorDialog from './ErrorDialog';
 export default {
     data () {
         return {
+            show: false,
+            authKey: null,
+
+            isLoginForm: true,
             email: '',
             password: '',
-            authKey: null,
-            isLoginForm: true,
-            show: false,
-            syncTimeout: false,
+
+            syncTimeout: null,
             syncMessages: [],
-            fullSyncAsked: null,
+
+            fullSyncAsked: false,
         };
     },
     methods: {
         onShow () {
+            this.syncMessages = [];
             this.authKey = this.$cookie.get('syncKey');
             if(this.authKey) {
                 this.email = this.password = '';
@@ -163,8 +168,8 @@ export default {
     max-height: 300px;
     min-height: 10px;
     margin-bottom: 10px;
-    overflow-x: auto;
-    overflow-y: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
