@@ -33,9 +33,13 @@ b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow'
         b-btn.ml-1(variant='outline-danger', @click='fullSyncOption("download")') Download
         b-btn.ml-1(variant='outline-secondary', @click='fullSyncOption("cancel")') Cancel
 
-
     template(v-else)
-        b-progress(:value='100', :max='100', animated)
+        template(slot='modal-header')
+            h4 Sync to AnkiWeb
+            .float-right
+                b-badge(variant='primary') Sent: {{formatBytes(sentBytes)}}
+                b-badge.ml-2(variant='success') Recv: {{formatBytes(recvBytes)}}
+        b-progress.mt-2(:value='100', :max='100', animated)
         ul.list-group
             li.list-group-item(v-for='message in syncMessages') {{message}}
 
@@ -57,9 +61,20 @@ export default {
             syncTimeout: false,
             syncMessages: [],
             fullSyncAsked: null,
+            sentBytes: 0,
+            recvBytes: 0,
         };
     },
     methods: {
+        formatBytes (bytes) {
+            if(bytes >= 1024 * 1024) {
+                return (bytes / 1024 * 1024).toFixed(1) + 'MB';
+            } else if(bytes >= 1024) {
+                return (bytes / 1024).toFixed(1) + 'KB';
+            } else {
+                return bytes + 'B';
+            }
+        },
         onShow () {
             this.authKey = this.$cookie.get('syncKey');
             if(this.authKey) {
@@ -72,13 +87,15 @@ export default {
         },
         startSync () {
             this.isLoginForm = false;
+            this.sendBytes = 0;
+            this.recvBytes = 0;
 
             ankiCall('sync', {
                 email: this.email,
                 password: this.password,
                 authKey: this.authKey,
             }).then(() => {
-                this.syncTimeout = setTimeout(this.syncProcess, 1000);
+                this.syncTimeout = setTimeout(this.syncProcess, 500);
             }).catch(err => {
                 ErrorDialog.openErrorDialog('Sync failed', err.message);
                 this.show = false;
@@ -93,25 +110,29 @@ export default {
                 if(msg.completed) {
                     this.syncTimeout = null;
                     this.show = false;
-                    // this.$router.go();
+                    this.$router.go();
                 }
                 else {
-                    this.syncTimeout = setTimeout(this.syncProcess, 1000);
+                    this.syncTimeout = setTimeout(this.syncProcess, 500);
                 }
             });
         },
-        processSyncMessage (cmd, args) {
+        processSyncMessage (cmd, arg) {
             if (cmd === 'badAuth') {
                 ErrorDialog.openErrorDialog('Sync failed', 'Invalid AnkiWeb ID/Password');
                 this.$cookie.delete('syncKey');
             } else if(cmd === 'newKey') {
-                this.$cookie.set('syncKey', args);
+                this.$cookie.set('syncKey', arg);
             } else if(cmd === 'offline') {
                 this.$toasted.show('Internet offline');
             } else if(cmd === 'upbad') {
                 this.syncMessages.push('Uploading failed.');
+            } else if(cmd === 'send') {
+                this.sendBytes = arg;
+            } else if(cmd === 'recv') {
+                this.recvBytes = arg;
             } else if(cmd === 'sync') {
-                const type = args[0];
+                const type = arg[0];
                 switch(type) {
                 case 'login':
                     this.syncMessages.push('Logon to AnkiWeb');
@@ -133,9 +154,9 @@ export default {
                     break;
                 }
             } else if(cmd === 'syncMsg') {
-                this.syncMessages.push(args[0]);
+                this.syncMessages.push(arg);
             } else if(cmd === 'error') {
-                ErrorDialog.openErrorDialog('Sync failed', args[0]);
+                ErrorDialog.openErrorDialog('Sync failed', arg);
             } else if(cmd === 'clockOff') {
                 ErrorDialog.openErrorDialog('Sync failed', 'Check again your computer\'s clock.');
             } else if(cmd === 'checkFailed') {
