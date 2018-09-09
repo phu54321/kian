@@ -16,7 +16,7 @@
 <template lang="pug">
 
 div.browser-view
-    span(v-hotkey="'ctrl+a'", title='Select all', @click='selectAll')
+    span(v-hotkey="'ctrl+a'", title='Select all cards', @click='selectAll')
 
     table.table.table-sm
         thead(slot='before-content')
@@ -252,9 +252,13 @@ export default {
             if(!origSelect) this.lastSelectedIndex = index;
         },
         selectAll () {
-            this.pageCards.forEach(card => card.selected = true);
+            if(this.pageCards.every(card => card.selected)) {
+                this.pageCards.forEach(card => card.selected = false);  // Deselect all
+            } else {
+                this.pageCards.forEach(card => card.selected = true);
+            }
             this.lastSelectedIndex = this.pageCards.length - 1;
-        }
+        },
     }
 };
 
