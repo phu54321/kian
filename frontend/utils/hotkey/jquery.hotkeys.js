@@ -157,6 +157,7 @@ import $ from 'jquery';
                 if(!(
                     (keys.length === 1 && keys[0] === 'esc') ||
                     keys.indexOf('ctrl') !== -1 ||
+                    keys.indexOf('meta') !== -1 ||
                     keys.indexOf('alt') !== -1
                 )) return;
             }
@@ -175,7 +176,7 @@ import $ from 'jquery';
 
             // metaKey is triggered off ctrlKey erronously
             if (event.metaKey && !event.ctrlKey && special !== 'meta') {
-                modif += 'meta+';
+                modif += 'ctrl+';
             }
 
             if (event.metaKey && special !== 'meta' && modif.indexOf('alt+ctrl+shift+') > -1) {
