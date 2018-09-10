@@ -2,11 +2,11 @@ from anki import Collection
 from anki.collection import _Collection
 import os, sys
 from threading import Timer, Lock
-import win32ui, win32con
 
 
 ## From https://stackoverflow.com/questions/15511363/what-is-the-most-convenient-way-to-use-dialogs-in-non-gui-app
 def getDBPath():
+    import win32ui, win32con
     dlg = win32ui.CreateFileDialog(
         1,
         None,

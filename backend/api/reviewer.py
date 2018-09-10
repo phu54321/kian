@@ -22,6 +22,7 @@ def getNextScheduledCard(msg):
         deckName = msg['deckName']
         deck = col.decks.byName(deckName)
         col.decks.select(deck['id'])
+        col.reset()
 
         card = col.sched.getCard()
         if card is None:
