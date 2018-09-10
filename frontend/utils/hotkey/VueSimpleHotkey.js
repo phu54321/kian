@@ -16,7 +16,6 @@
 import $ from 'jquery';
 import './jquery.hotkeys';
 import { clickVNode } from './clickElement';
-import _ from 'lodash';
 
 const hotkeyHandlersMap = new Map();
 
