@@ -135,23 +135,36 @@ export default {
         },
     },
     asyncComputed: {
-        visibleCards: {
+        displayCommands: {
             async get () {
-                const newCardIndexes = this.visibleIndexes.filter(idx => !this.cardCache[idx]);
-                const newCards = await ankiCall('browser_get_batch', {
-                    cardIds: newCardIndexes.map(idx => this.cardIds[idx])
+                const {cardIds, cardCache} = this;
+
+                if(cardIds.length === 0) return [{type: 'noCards'}];
+
+                const isCardVisible = (cardId, index) => {
+                    if(cardId === this.selectedCardId) return true;
+                    if(index > 1000) return false;
+                    return true;
+                };
+
+                // 'Editable cards' may be outside of this.visibleIndexes range, but those
+                // cards should be rendered regardless of whether it went out of the view or not.
+                // So here, we check ALL cardIds instead of just using this.visibleIndexes
+                const visibleIndexes = _.range(cardIds.length).filter(isCardVisible);
+                await this.ensureCardRendered(visibleIndexes);
+
+                let renderCommands = cardIds.map((cid, index) => {
+                    if(!isCardVisible(cid, index)) return null;
+                    else return {
+                        type: 'card',
+                        index,
+                        card: cardCache[index]
+                    };
                 });
-                let newCardIdx = 0;
-                this.visibleIndexes.forEach(idx => {
-                    if(!this.cardCache[idx]) this.cardCache[idx] = newCards[newCardIdx++];
-                });
-                const cards = this.visibleIndexes.map(idx => this.cardCache[idx]);
-                return cards;
+
+                return renderCommands.filter(x => x);
             },
-            watch () {
-                this.updateView;
-            },
-            default: []
+            default: [{ type: 'loading' }],
         },
     },
     computed: {
@@ -167,25 +180,6 @@ export default {
                 { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' },
             ];
         },
-
-        visibleIndexes () {
-            return _.range(
-                this.page * cardPerPage - cardPerPage,
-                Math.min(this.page * cardPerPage, this.cardIds.length)
-            );
-        },
-
-        displayCommands () {
-            if(this.visibleCards.length === 0) return [
-                {type: 'noCards'}
-            ];
-
-            return this.visibleCards.map((card, index) => ({
-                type: 'card',
-                card,
-                index
-            }));
-        }
     },
     methods: {
         issueSortBy (sortField) {
@@ -211,6 +205,18 @@ export default {
 
         resetCardCache () {
             this.cardCache = [];
+        },
+
+        async ensureCardRendered (cardIndexes) {
+            const {cardIds, cardCache} = this;
+            const renderRequests = cardIndexes.filter(idx => !cardCache[idx]);
+            const renderedRows = await ankiCall('browser_get_batch', {
+                cardIds: renderRequests.map(idx => cardIds[idx])
+            });
+
+            // cardCache is just a cache, so it doesn't need to be reactive
+            // so we just use plain assignment instead of using this.$set
+            renderRequests.forEach((idx, i) => cardCache[idx] = renderedRows[i]);
         }
     }
 };
