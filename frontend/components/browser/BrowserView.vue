@@ -126,10 +126,14 @@ export default {
             lastSelectedIndex: -1,
             cardCache: [],
             cardSelected: [],
+
             visibleMinIndex: 0,
             visibleMaxIndex: 100,
             renderRangeBegin: 0,
             renderRangeEnd: 0,
+            prerenderRangeBegin: 0,
+            prerenderRangeEnd: 0,
+
             isRendering: false,
         };
     },
@@ -154,6 +158,9 @@ export default {
                 this.renderRangeEnd = this.visibleMaxIndex;
             }
         },
+        prerenderRange (r) {
+            this.ensureCardRendered(r);
+        }
     },
     asyncComputed: {
         displayCommands: {
@@ -165,8 +172,7 @@ export default {
                 // after a rendering session completes.
                 this.isRendering = true;
 
-                const DAMP_PADDING = 400;  // Pre-render 100 items above/below the table
-                const renderIndexes = _.range(renderRangeBegin - DAMP_PADDING, renderRangeEnd + DAMP_PADDING);
+                const renderIndexes = _.range(renderRangeBegin, renderRangeEnd);
                 if(selectedCardIndex !== -1) renderIndexes.push(selectedCardIndex);
                 await this.ensureCardRendered(renderIndexes);
 
@@ -205,6 +211,14 @@ export default {
                 }
 
                 this.isRendering = false;
+
+                // Prerender some items below/over the table.
+                // These items don't need to be rendered right now, but they may be needed after scrolling.
+                // Return the currently rendered rows and pend the prerender task to watch() tags.
+                const PRERENDER_PADDING = 400;
+                this.prerenderRangeBegin = this.renderRangeBegin - PRERENDER_PADDING;
+                this.prerenderRangeEnd = this.renderRangeEnd + PRERENDER_PADDING;
+
                 return compressedRenderCommands.filter(x => x);
             },
             default: [{ type: 'loading' }],
@@ -229,6 +243,9 @@ export default {
                 this.visibleMaxIndex,
                 this.isRendering,
             ];
+        },
+        prerenderRange () {
+            return _.range(this.prerenderRangeBegin, this.prerenderRangeEnd);
         }
     },
     methods: {
