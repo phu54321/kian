@@ -50,7 +50,7 @@ div.browser-view
 
                 template(v-else-if='command.type === "noCards"')
                     tr
-                        td.nocard(:colspan='fields.length')
+                        td.no-card(:colspan='fields.length')
                             h4
                                 i.fas.fa-globe-asia
                                 | &nbsp;Oops, no cards :(
@@ -58,6 +58,7 @@ div.browser-view
 
     .browser-tools
         .tools-container(:class='{enabled: selectedCardList.length > 0}')
+
             b-button-group.mr-2
                 b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
                     icon.mr-1(name='sync')
@@ -253,7 +254,7 @@ export default {
                 }
             }
         }
-        .nocard {
+        .no-card {
             text-align: center;
             padding: 4em;
         }
