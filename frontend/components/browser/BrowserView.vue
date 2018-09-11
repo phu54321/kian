@@ -29,26 +29,24 @@ div.browser-view
                             span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "desc" }') ↓
 
         tbody
-            template(v-if='pageCards.length > 0')
-                template(v-for='(card, index) in pageCards')
+            template(v-if='visibleCards.length > 0')
+                template(v-for='(card, index) in visibleCards')
                     tr.item-row(:class='{selected: cardSelected[card.id]}',
                         @click.exact.prevent='selectOnly(index)'
                         @click.shift.exact.prevent='selectSequential(index)'
                         @click.ctrl.exact.prevent='selectAdd(index)'
                         @click.meta.exact.prevent='selectAdd(index)'
                     )
-                        td(
-                            v-for='field in fields',
-                            :key='field.key',
-                            :class='field.class')
-                            | {{ getFormatter(field.formatter)(card[field.key]) }}
+                        td(v-for='field in fields', :class='field.class')
+                            .item-row-div {{ getFormatter(field.formatter)(card[field.key]) }}
                     tr.editor-row(v-if='selectedCardId === card.id')
                         td(:colspan='fields.length')
-                            browser-editor(
-                                :cardId='selectedCardId'
-                                :key='card.id',
-                                @updateView='updateView++'
-                            )
+                            .editor-row-div
+                                browser-editor(
+                                    :cardId='selectedCardId'
+                                    :key='card.id',
+                                    @updateView='updateView++'
+                                )
             tr(v-else)
                 td.nocard(:colspan='fields.length')
                     h4
@@ -84,26 +82,17 @@ div.browser-view
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
 
-    ul.pagination.justify-content-center(v-if='pageNum > 1')
-        li.page-item(:class='{ disabled: page === 1 }')
-            a.page-link(v-hotkey='["ctrl+left"]', title='Previous page', @click.prevent='loadPage(page - 1)') &lt;&lt;
-        li.page-item(v-for='i in paginationRange', :class='{ active: i === page }')
-            a.page-link(@click.prevent='loadPage(i)') {{i}}
-        li.page-item(:class='{ disabled: page === pageNum }')
-            a.page-link(v-hotkey='["ctrl+right"]', title='Next page', @click.prevent='loadPage(page + 1)') &gt;&gt;
-
 </template>
 
 <script>
 
-import _ from 'lodash';
 import ankiCall from '~/api/ankiCall';
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
 
 
-const cardPerPage = 500;
+const cardPerPage = 10;
 
 
 export default {
@@ -133,9 +122,6 @@ export default {
         };
     },
     watch: {
-        pageNum () {
-            this.page = Math.max(1, Math.min(this.page, this.pageNum));
-        },
         updateView () {
             this.clearCardCache();
             this.lastSelectedIndex = -1;
@@ -145,17 +131,17 @@ export default {
         }
     },
     asyncComputed: {
-        pageCards: {
+        visibleCards: {
             async get () {
-                const newCardIds = this.pageItems.filter(x => !this.cardCache[x]);
+                const newCardIds = this.visibleItems.filter(x => !this.cardCache[x]);
                 const newCards = await ankiCall('browser_get_batch', {
                     cardIds: newCardIds
                 });
                 let newCardIdx = 0;
-                this.pageItems.forEach(id => {
+                this.visibleItems.forEach(id => {
                     if(!this.cardCache[id]) this.cardCache[id] = newCards[newCardIdx++];
                 });
-                const cards = this.pageItems.map(x => this.cardCache[x]);
+                const cards = this.visibleItems.map(x => this.cardCache[x]);
                 return cards;
             },
             watch () {
@@ -180,30 +166,21 @@ export default {
 
         // Card selection
         selectedCardCount () {
-            return _.sumBy(this.pageCards, c => this.cardSelected[c.id] ? 1 : 0);
+            return this.cardIds.filter(c => this.cardSelected[c]).length;
         },
         selectedCardId () {
             if(this.selectedCardCount !== 1) return -1;
-            const cardId = this.pageCards.filter(c => this.cardSelected[c.id])[0].id;
+            const cardId = this.cardIds.filter(c => this.cardSelected[c])[0].id;
             return cardId;
         },
         selectedCardList () {
-            return this.pageCards.filter(c => this.cardSelected[c.id]).map(x => x.id);
+            return this.cardIds.filter(c => this.cardSelected[c]).map(x => x.id);
         },
 
 
         // Pagination
-        pageNum () {
-            if(this.cardIds.length === 0) return 0;
-            else return ((this.cardIds.length - 1) / cardPerPage | 0) + 1;
-        },
-        pageItems () {
+        visibleItems () {
             return this.cardIds.slice(this.page * cardPerPage - cardPerPage, this.page * cardPerPage);
-        },
-        paginationRange () {
-            const minPage = Math.max(1, this.page - 5);
-            const maxPage = Math.min(this.pageNum, this.page + 5);
-            return _.range(minPage, maxPage + 1);
         },
     },
     methods: {
@@ -232,15 +209,23 @@ export default {
 
         // Selection
         selectCardId (cardId, selected) {
-            this.$set(this.cardSelected, cardId, selected);
+            if(!!this.cardSelected[cardId] !== selected) this.$set(this.cardSelected, cardId, selected);
+        },
+
+        /**
+         * selectCardId incurs vue reactivity change for each assignment. To 'not' trigger reactivity multiple times,
+         * we need a way to modify multiple card's selectivity in a 'batch' sense. 
+         */
+        selectCardIdBatch (cardIds, selected) {
+            const newObj = Object.assign({}, this.cardSelected);
+            for(const id of cardIds) newObj[id] = selected;
+            this.cardSelected = newObj;
         },
 
         selectOnly (index) {
-            const newSelectedCardId = this.pageCards[index].id;
+            const newSelectedCardId = this.visibleCards[index].id;
             const origSelect = this.cardSelected[newSelectedCardId];
-            this.pageCards.forEach(card => {
-                this.selectCardId(card.id, false);
-            });
+            this.selectCardIdBatch(this.cardIds, false);
             this.selectCardId(newSelectedCardId, !origSelect);
             this.lastSelectedIndex = index;
         },
@@ -250,29 +235,29 @@ export default {
             else {
                 if(lastSelectedIndex < index) {
                     for(let i = lastSelectedIndex + 1 ; i <= index ; i++) {
-                        this.selectCardId(this.pageCards[i].id, true);
+                        this.selectCardId(this.visibleCards[i].id, true);
                     }
                 }
                 else {
                     for(let i = lastSelectedIndex - 1 ; i >= index ; i--) {
-                        this.selectCardId(this.pageCards[i].id, true);
+                        this.selectCardId(this.visibleCards[i].id, true);
                     }
                 }
                 this.lastSelectedIndex = index;
             }
         },
         selectAdd (index) {
-            const origSelect = this.cardSelected[this.pageCards[index]];
-            this.selectCardId(this.pageCards[index].id, !origSelect);
+            const origSelect = this.cardSelected[this.visibleCards[index]];
+            this.selectCardId(this.visibleCards[index].id, !origSelect);
             if(!origSelect) this.lastSelectedIndex = index;
         },
         selectAll () {
-            if(this.pageCards.every(card => this.cardSelected[card.id])) {
-                this.pageCards.forEach(card => this.selectCardId(card.id, false));  // Deselect all
+            if(this.cardIds.every(cardId => this.cardSelected[cardId])) {
+                this.selectCardIdBatch(this.cardIds, false);
             } else {
-                this.pageCards.forEach(card => this.selectCardId(card.id, true));
+                this.selectCardIdBatch(this.cardIds, true);
             }
-            this.lastSelectedIndex = this.pageCards.length - 1;
+            this.lastSelectedIndex = this.cardIds.length - 1;
         },
 
         clearCardCache () {
@@ -309,11 +294,18 @@ export default {
             &.selected {
                 background-color: #afe2c4;
             }
+            .item-row-div {
+                height: 1.5em;
+            }
         }
         &.editor-row {
             td {
                 height: 0;
                 padding: 1em;
+                .editor-row-div {
+                    height: 40em;
+                    overflow-y: auto;
+                }
             }
         }
         .nocard {
@@ -322,15 +314,6 @@ export default {
         }
     }
 
-    .pagination {
-        opacity: 0.5;
-        transition: opacity .2s;
-        &:hover {
-            opacity: 1;
-        }
-        position: sticky;
-        bottom: 1rem;
-    }
     .browser-tools {
         text-align: center;
         position: sticky;
@@ -351,9 +334,11 @@ export default {
 div /deep/ td {
     &.ellipsis {
         max-width: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 }
 
