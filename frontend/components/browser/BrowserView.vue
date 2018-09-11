@@ -50,7 +50,7 @@ div.browser-view
                                 )
 
                 template(v-else-if='command.type === "space"')
-                    tr(:key='command.index')
+                    tr.spacer-row(:key='command.index')
                         td(:colspan='fields.length', :style='{height: 30 * command.length + "px"}')
 
                 template(v-else-if='command.type === "noCards"')
@@ -128,8 +128,8 @@ export default {
             cardSelected: [],
             visibleMinIndex: 0,
             visibleMaxIndex: 100,
-            renderRangeMin: 0,
-            renderRangeEnd: 100,
+            renderRangeBegin: 0,
+            renderRangeEnd: 0,
             isRendering: false,
         };
     },
@@ -141,12 +141,16 @@ export default {
         window.removeEventListener('scroll', this.onScroll);
     },
     watch: {
+        cardIds () {
+            this.resetCardCache();
+            this.resetSelectedCards();
+        },
         updateView () {
             this.resetCardCache();
         },
         visibleRangeWatcher () {
             if(!this.isRendering) {
-                this.renderRangeMin = this.visibleMinIndex;
+                this.renderRangeBegin = this.visibleMinIndex;
                 this.renderRangeEnd = this.visibleMaxIndex;
             }
         },
@@ -154,52 +158,54 @@ export default {
     asyncComputed: {
         displayCommands: {
             async get () {
-                this.isRendering = true;
-
-                const {cardIds, cardCache} = this;
-
+                const {cardIds, cardCache, renderRangeBegin, renderRangeEnd, selectedCardIndex} = this;
                 if(cardIds.length === 0) return [{type: 'noCards'}];
 
-                const isCardVisible = (cardId, index) => {
-                    if(cardId === this.selectedCardId) return true;
-                    if(index < this.renderRangeMin) return false;
-                    if(index > this.renderRangeEnd) return false;
-                    return true;
-                };
+                // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
+                // after a rendering session completes.
+                this.isRendering = true;
 
-                const visibleIndexes = _.range(cardIds.length).filter(isCardVisible);
-                await this.ensureCardRendered(visibleIndexes);
+                const DAMP_PADDING = 400;  // Pre-render 100 items above/below the table
+                const renderIndexes = _.range(renderRangeBegin - DAMP_PADDING, renderRangeEnd + DAMP_PADDING);
+                if(selectedCardIndex !== -1) renderIndexes.push(selectedCardIndex);
+                await this.ensureCardRendered(renderIndexes);
 
-                let renderCommands = cardIds.map((cid, index) => {
-                    if(!isCardVisible(cid, index)) return {
-                        type: 'space',
-                        length: 1
-                    };
-                    else return {
+                // Build basic render commands
+                const renderCommands = new Array(cardIds.length).fill(null);
+                const addIndexToRenderCommand = (index) => {
+                    renderCommands[index] = {
                         type: 'card',
                         index,
                         card: cardCache[index]
-                    };
-                });
+                    };                    
+                };
 
-                // merge spaces
-                renderCommands = renderCommands.reduce((list, entry) => {
+                _.range(renderRangeBegin, renderRangeEnd).forEach(i => addIndexToRenderCommand(i));
+                if(selectedCardIndex !== -1) addIndexToRenderCommand(selectedCardIndex);
+
+                // Nulls → space entry
+                const compressedRenderCommands = renderCommands.reduce((list, entry) => {
                     const lastEntry = list[list.length - 1];
-                    if(lastEntry.type === 'space' && entry.type === 'space') {
+                    if(lastEntry.type === 'space' && entry === null) {
                         lastEntry.length++;
+                    } else if(entry === null) {  // null → space element
+                        list.push({
+                            type: 'space',
+                            length: 1
+                        }); 
                     } else {
                         list.push(entry);
                     }
                     return list;
                 }, [{ type: 'space', length: 0}]);
 
-                if(
-                    renderCommands[0].type === 'space' &&
-                    renderCommands[0].length === 0
-                ) renderCommands.splice(0, 1);
+                const firstCommand = compressedRenderCommands[0];
+                if(firstCommand.type === 'space' && firstCommand.length === 0) {
+                    compressedRenderCommands.splice(0, 1);
+                }
 
                 this.isRendering = false;
-                return renderCommands.filter(x => x);
+                return compressedRenderCommands.filter(x => x);
             },
             default: [{ type: 'loading' }],
         },
@@ -207,7 +213,7 @@ export default {
     computed: {
         fields () {
             return [
-                { label: 'Preview', key: 'preview', sortable: this.enableSort, formatter: 'textVersionJs', class: 'ellipsis' },
+                { label: 'Preview', key: 'preview', sortable: this.enableSort, class: 'ellipsis' },
                 { label: 'Deck', key: 'deck', sortable: this.enableSort },
                 { label: 'Model', key: 'model', sortable: this.enableSort, class: 'ellipsis' },
                 { label: '#', key: 'ord', formatter: 'formatOrd' },
@@ -231,10 +237,11 @@ export default {
 
             const {top} = this.$refs.mainTable.getBoundingClientRect();
             const viewportHeight = document.documentElement.clientHeight;
-            const PADDING = 10;
+            const PADDING = 30;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
         },
+
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
             if(sortBy === sortField) {
@@ -262,7 +269,10 @@ export default {
 
         async ensureCardRendered (cardIndexes) {
             const {cardIds, cardCache} = this;
-            const renderRequests = cardIndexes.filter(idx => !cardCache[idx]);
+            const renderRequests = cardIndexes.filter(idx => (
+                0 <= idx && idx < cardIds.length &&
+                !cardCache[idx]
+            ));
             if(renderRequests.length === 0) return;
             const renderedRows = await ankiCall('browser_get_batch', {
                 cardIds: renderRequests.map(idx => cardIds[idx])
@@ -314,6 +324,13 @@ export default {
                 }
             }
         }
+        &.spacer-row {
+            background:
+                linear-gradient(90deg, #fff 16px, transparent 1%) center,
+                linear-gradient(#fff 16px, transparent 1%) center,
+                #eee;
+            background-size: 20px 20px;
+          }
         .no-card {
             text-align: center;
             padding: 4em;

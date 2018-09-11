@@ -19,11 +19,6 @@ export default {
             cardSelected: new Array(this.cardIds.length).fill(false),
         };
     },
-    watch: {
-        cardIds () {
-            this.resetSelectedCards();
-        }
-    },
     computed: {
         selectedCardCount () {
             return this.cardSelected.filter(x => x).length;
@@ -31,6 +26,10 @@ export default {
         selectedCardId () {
             if (this.selectedCardCount !== 1) return -1;
             return this.cardIds[this.cardSelected.indexOf(true)];
+        },
+        selectedCardIndex () {
+            if (this.selectedCardCount !== 1) return -1;
+            return this.cardSelected.indexOf(true);
         },
         selectedCardList () {
             const { cardIds } = this;
