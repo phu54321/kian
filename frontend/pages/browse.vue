@@ -68,7 +68,7 @@ function parseQueryToken (tok) {
 }
 
 function wrapString (tok) {
-    if(tok.indexOf(' ') === -1) return tok;
+    if(tok.indexOf(' ') === -1 && tok.indexOf(':') === -1) return tok;
     else return `"${tok}"`;
 }
 
