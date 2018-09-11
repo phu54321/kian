@@ -94,6 +94,7 @@ div.browser-view
 <script>
 
 import _ from 'lodash';
+import $ from 'jquery';
 import ankiCall from '~/api/ankiCall';
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
@@ -126,10 +127,16 @@ export default {
             lastSelectedIndex: -1,
             cardCache: [],
             cardSelected: [],
+            visibleMinIndex: 0,
+            visibleMaxIndex: 100,
         };
     },
     created () {
         this.resetCardCache();
+        window.addEventListener('scroll', this.onScroll);
+    },
+    destroyed () {
+        window.removeEventListener('scroll', this.onScroll);
     },
     watch: {
         updateView () {
@@ -145,13 +152,11 @@ export default {
 
                 const isCardVisible = (cardId, index) => {
                     if(cardId === this.selectedCardId) return true;
-                    if(index > 1000) return false;  // TODO: real range checking
+                    if(index < this.visibleMinIndex) return false;
+                    if(index > this.visibleMaxIndex) return false;
                     return true;
                 };
 
-                // 'Editable cards' may be outside of this.visibleIndexes range, but those
-                // cards should be rendered regardless of whether it went out of the view or not.
-                // So here, we check ALL cardIds instead of just using this.visibleIndexes
                 const visibleIndexes = _.range(cardIds.length).filter(isCardVisible);
                 await this.ensureCardRendered(visibleIndexes);
 
@@ -203,6 +208,13 @@ export default {
         },
     },
     methods: {
+        onScroll: _.throttle(function () {
+            const {top} = this.$el.getBoundingClientRect();
+            const viewportHeight = document.documentElement.clientHeight;
+            const PADDING = 30;
+            this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
+            this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
+        }, 250),
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
             if(sortBy === sortField) {
