@@ -31,10 +31,11 @@ div.browser-view
         tbody
             template(v-if='pageCards.length > 0')
                 template(v-for='(card, index) in pageCards')
-                    tr.item-row(:class='{selected: card.selected}',
+                    tr.item-row(:class='{selected: cardSelected[card.id]}',
                         @click.exact.prevent='selectOnly(index)'
                         @click.shift.exact.prevent='selectSequential(index)'
                         @click.ctrl.exact.prevent='selectAdd(index)'
+                        @click.meta.exact.prevent='selectAdd(index)'
                     )
                         td(
                             v-for='field in fields',
@@ -127,7 +128,8 @@ export default {
             page: 1,
             updateView: 0,
             lastSelectedIndex: -1,
-            cardCache: {}
+            cardCache: {},
+            cardSelected: {},
         };
     },
     watch: {
@@ -135,11 +137,11 @@ export default {
             this.page = Math.max(1, Math.min(this.page, this.pageNum));
         },
         updateView () {
-            this.cardCache = {};  // Clear cache
+            this.clearCardCache();
             this.lastSelectedIndex = -1;
         },
         cardIds () {
-            this.cardCache = {};  // Clear cache
+            this.clearCardCache();
         }
     },
     asyncComputed: {
@@ -154,9 +156,6 @@ export default {
                     if(!this.cardCache[id]) this.cardCache[id] = newCards[newCardIdx++];
                 });
                 const cards = this.pageItems.map(x => this.cardCache[x]);
-                cards.forEach(card => {
-                    card.selected = false;
-                });
                 return cards;
             },
             watch () {
@@ -181,15 +180,15 @@ export default {
 
         // Card selection
         selectedCardCount () {
-            return _.sumBy(this.pageCards, c => c.selected ? 1 : 0);
+            return _.sumBy(this.pageCards, c => this.cardSelected[c.id] ? 1 : 0);
         },
         selectedCardId () {
             if(this.selectedCardCount !== 1) return -1;
-            const cardId = this.pageCards.filter(c => c.selected)[0].id;
+            const cardId = this.pageCards.filter(c => this.cardSelected[c.id])[0].id;
             return cardId;
         },
         selectedCardList () {
-            return this.pageCards.filter(c => c.selected).map(x => x.id);
+            return this.pageCards.filter(c => this.cardSelected[c.id]).map(x => x.id);
         },
 
 
@@ -232,12 +231,17 @@ export default {
         },
 
         // Selection
+        selectCardId (cardId, selected) {
+            this.$set(this.cardSelected, cardId, selected);
+        },
+
         selectOnly (index) {
-            const origSelect = this.pageCards[index].selected;
+            const newSelectedCardId = this.pageCards[index].id;
+            const origSelect = this.cardSelected[newSelectedCardId];
             this.pageCards.forEach(card => {
-                card.selected = false;
+                this.selectCardId(card.id, false);
             });
-            this.pageCards[index].selected = !origSelect;
+            this.selectCardId(newSelectedCardId, !origSelect);
             this.lastSelectedIndex = index;
         },
         selectSequential (index) {
@@ -246,30 +250,35 @@ export default {
             else {
                 if(lastSelectedIndex < index) {
                     for(let i = lastSelectedIndex + 1 ; i <= index ; i++) {
-                        this.pageCards[i].selected = true;
+                        this.selectCardId(this.pageCards[i].id, true);
                     }
                 }
                 else {
                     for(let i = lastSelectedIndex - 1 ; i >= index ; i--) {
-                        this.pageCards[i].selected = true;
+                        this.selectCardId(this.pageCards[i].id, true);
                     }
                 }
                 this.lastSelectedIndex = index;
             }
         },
         selectAdd (index) {
-            const origSelect = this.pageCards[index].selected;
-            this.pageCards[index].selected = !origSelect;
+            const origSelect = this.cardSelected[this.pageCards[index]];
+            this.selectCardId(this.pageCards[index].id, !origSelect);
             if(!origSelect) this.lastSelectedIndex = index;
         },
         selectAll () {
-            if(this.pageCards.every(card => card.selected)) {
-                this.pageCards.forEach(card => card.selected = false);  // Deselect all
+            if(this.pageCards.every(card => this.cardSelected[card.id])) {
+                this.pageCards.forEach(card => this.selectCardId(card.id, false));  // Deselect all
             } else {
-                this.pageCards.forEach(card => card.selected = true);
+                this.pageCards.forEach(card => this.selectCardId(card.id, true));
             }
             this.lastSelectedIndex = this.pageCards.length - 1;
         },
+
+        clearCardCache () {
+            this.cardCache = {};  // Clear cache
+            this.cardSelected = {};
+        }
     }
 };
 
@@ -336,7 +345,6 @@ export default {
             transition: opacity .3s;
         }
     }
-
 }
 
 
