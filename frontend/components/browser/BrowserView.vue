@@ -18,7 +18,7 @@
 div.browser-view
     span(v-hotkey="'ctrl+a'", title='Select all cards', @click='onSelectAll')
 
-    table.table.table-sm
+    table.table.table-sm(ref='mainTable')
         thead(slot='before-content')
             tr
                 th(v-for='field in fields', :key='field.key')
@@ -32,6 +32,7 @@ div.browser-view
             template(v-for='command in displayCommands')
                 template(v-if='command.type === "card"')
                     tr.item-row(:class='{selected: cardSelected[command.index]}',
+                        :key='command.index'
                         @click.exact.prevent='selectCardIndexOnly(command.index)'
                         @click.shift.exact.prevent='onSelectSequential(command.index)'
                         @click.ctrl.exact.prevent='onSelectAdd(command.index)'
@@ -49,7 +50,7 @@ div.browser-view
                                 )
 
                 template(v-else-if='command.type === "space"')
-                    tr
+                    tr(:key='command.index')
                         td(:colspan='fields.length', :style='{height: 30 * command.length + "px"}')
 
                 template(v-else-if='command.type === "noCards"')
@@ -94,13 +95,11 @@ div.browser-view
 <script>
 
 import _ from 'lodash';
-import $ from 'jquery';
 import ankiCall from '~/api/ankiCall';
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
-
 
 export default {
     mixins: [BrowserSelection],
@@ -129,6 +128,9 @@ export default {
             cardSelected: [],
             visibleMinIndex: 0,
             visibleMaxIndex: 100,
+            renderRangeMin: 0,
+            renderRangeEnd: 100,
+            isRendering: false,
         };
     },
     created () {
@@ -142,18 +144,26 @@ export default {
         updateView () {
             this.resetCardCache();
         },
+        visibleRangeWatcher () {
+            if(!this.isRendering) {
+                this.renderRangeMin = this.visibleMinIndex;
+                this.renderRangeEnd = this.visibleMaxIndex;
+            }
+        },
     },
     asyncComputed: {
         displayCommands: {
             async get () {
+                this.isRendering = true;
+
                 const {cardIds, cardCache} = this;
 
                 if(cardIds.length === 0) return [{type: 'noCards'}];
 
                 const isCardVisible = (cardId, index) => {
                     if(cardId === this.selectedCardId) return true;
-                    if(index < this.visibleMinIndex) return false;
-                    if(index > this.visibleMaxIndex) return false;
+                    if(index < this.renderRangeMin) return false;
+                    if(index > this.renderRangeEnd) return false;
                     return true;
                 };
 
@@ -188,6 +198,7 @@ export default {
                     renderCommands[0].length === 0
                 ) renderCommands.splice(0, 1);
 
+                this.isRendering = false;
                 return renderCommands.filter(x => x);
             },
             default: [{ type: 'loading' }],
@@ -206,15 +217,24 @@ export default {
                 { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' },
             ];
         },
+        visibleRangeWatcher () {
+            return [
+                this.visibleMinIndex,
+                this.visibleMaxIndex,
+                this.isRendering,
+            ];
+        }
     },
     methods: {
-        onScroll: _.throttle(function () {
-            const {top} = this.$el.getBoundingClientRect();
+        onScroll () {
+            if(!this.$refs.mainTable) return;
+
+            const {top} = this.$refs.mainTable.getBoundingClientRect();
             const viewportHeight = document.documentElement.clientHeight;
-            const PADDING = 30;
+            const PADDING = 10;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
-        }, 250),
+        },
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
             if(sortBy === sortField) {
@@ -243,6 +263,7 @@ export default {
         async ensureCardRendered (cardIndexes) {
             const {cardIds, cardCache} = this;
             const renderRequests = cardIndexes.filter(idx => !cardCache[idx]);
+            if(renderRequests.length === 0) return;
             const renderedRows = await ankiCall('browser_get_batch', {
                 cardIds: renderRequests.map(idx => cardIds[idx])
             });
