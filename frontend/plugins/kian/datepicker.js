@@ -16,5 +16,5 @@
 
 import Vue from 'vue';
 
-import VueCookie from 'vue-cookie';
-Vue.use(VueCookie);
+import Datepicker from 'vuejs-datepicker';
+Vue.component('datepicker', Datepicker);
