@@ -16,7 +16,5 @@
 
 import Vue from 'vue';
 
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'vue-awesome/icons';
-import Icon from 'vue-awesome/components/Icon.vue';
-Vue.component('icon', Icon);
+import VueCookie from 'vue-cookie';
+Vue.use(VueCookie);
