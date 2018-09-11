@@ -91,12 +91,13 @@ import ankiCall from '~/api/ankiCall';
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
-
+import BrowserSelection from './BrowserSelection';
 
 const cardPerPage = 100;
 
 
 export default {
+    mixins: [BrowserSelection],
     props: {
         cardIds: Array,
         enableSort: Boolean,
@@ -128,11 +129,7 @@ export default {
     watch: {
         updateView () {
             this.resetCardCache();
-            this.lastSelectedIndex = -1;
         },
-        cardIds () {
-            this.resetCardCache();
-        }
     },
     asyncComputed: {
         visibleCards: {
@@ -168,22 +165,6 @@ export default {
             ];
         },
 
-        // Card selection
-        selectedCardCount () {
-            return this.cardSelected.filter(x => x).length;
-        },
-        selectedCardId () {
-            if(this.selectedCardCount !== 1) return -1;
-            return this.cardIds[this.cardSelected.indexOf(true)];
-        },
-        selectedCardList () {
-            const {cardIds} = this;
-            return this.cardSelected
-                .map((x, i) => x ? cardIds[i] : null)
-                .filter(x => x !== null);
-        },
-
-        // Pagination
         visibleIndexes () {
             return _.range(this.page * cardPerPage - cardPerPage, this.page * cardPerPage);
         },
@@ -210,58 +191,8 @@ export default {
             else return (x) => x;
         },
 
-        // Selection
-        selectCardIndex (cardIndex, selected) {
-            this.$set(this.cardSelected, cardIndex, selected);
-        },
-
-        selectCardIndexBatch (cardIndexes, selected) {
-            for(const idx of cardIndexes) this.selectCardIndex(idx, selected);
-        },
-
-        selectCardIndexOnly (index) {
-            const origSelect = this.cardSelected[index];
-            this.selectAll(false);
-            this.selectCardIndex(index, !origSelect);
-            this.lastSelectedIndex = index;
-        },
-
-        selectAll (selected) {
-            this.cardSelected = new Array(this.cardIds.length).fill(selected);
-        },
-
-        onSelectSequential (index) {
-            const {lastSelectedIndex} = this;
-            if(lastSelectedIndex === -1) return this.selectCardIndexOnly(index);
-            else {
-                if(lastSelectedIndex < index) {
-                    for(let i = lastSelectedIndex + 1 ; i <= index ; i++) {
-                        this.selectCardIndex(i, true);
-                    }
-                }
-                else {
-                    for(let i = lastSelectedIndex - 1 ; i >= index ; i--) {
-                        this.selectCardIndex(i, true);
-                    }
-                }
-                this.lastSelectedIndex = index;
-            }
-        },
-        onSelectAdd (index) {
-            const origSelect = this.cardSelected[index];
-            this.selectCardIndex(index, !origSelect);
-            if(!origSelect) this.lastSelectedIndex = index;
-        },
-
-        onSelectAll () {
-            if(this.cardSelected.every(x => x)) this.selectAll(false);
-            else this.selectAll(true);
-            this.lastSelectedIndex = this.cardIds.length - 1;
-        },
-
         resetCardCache () {
-            this.cardCache = new Array(this.cardIds.length).fill(null);  // Clear cache
-            this.cardSelected = new Array(this.cardIds.length).fill(false);
+            this.cardCache = [];
         }
     }
 };
