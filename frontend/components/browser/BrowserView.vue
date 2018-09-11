@@ -48,6 +48,10 @@ div.browser-view
                                     @updateView='updateView++'
                                 )
 
+                template(v-else-if='command.type === "space"')
+                    tr
+                        td(:colspan='fields.length', :style='{height: 30 * command.length + "px"}')
+
                 template(v-else-if='command.type === "noCards"')
                     tr
                         td.no-card(:colspan='fields.length')
@@ -96,8 +100,6 @@ import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
 
-const cardPerPage = 100;
-
 
 export default {
     mixins: [BrowserSelection],
@@ -143,7 +145,7 @@ export default {
 
                 const isCardVisible = (cardId, index) => {
                     if(cardId === this.selectedCardId) return true;
-                    if(index > 1000) return false;
+                    if(index > 1000) return false;  // TODO: real range checking
                     return true;
                 };
 
@@ -154,13 +156,32 @@ export default {
                 await this.ensureCardRendered(visibleIndexes);
 
                 let renderCommands = cardIds.map((cid, index) => {
-                    if(!isCardVisible(cid, index)) return null;
+                    if(!isCardVisible(cid, index)) return {
+                        type: 'space',
+                        length: 1
+                    };
                     else return {
                         type: 'card',
                         index,
                         card: cardCache[index]
                     };
                 });
+
+                // merge spaces
+                renderCommands = renderCommands.reduce((list, entry) => {
+                    const lastEntry = list[list.length - 1];
+                    if(lastEntry.type === 'space' && entry.type === 'space') {
+                        lastEntry.length++;
+                    } else {
+                        list.push(entry);
+                    }
+                    return list;
+                }, [{ type: 'space', length: 0}]);
+
+                if(
+                    renderCommands[0].type === 'space' &&
+                    renderCommands[0].length === 0
+                ) renderCommands.splice(0, 1);
 
                 return renderCommands.filter(x => x);
             },
