@@ -127,6 +127,7 @@ export default {
             page: 1,
             updateView: 0,
             lastSelectedIndex: -1,
+            cardCache: {}
         };
     },
     watch: {
@@ -134,15 +135,25 @@ export default {
             this.page = Math.max(1, Math.min(this.page, this.pageNum));
         },
         updateView () {
+            this.cardCache = {};  // Clear cache
             this.lastSelectedIndex = -1;
+        },
+        cardIds () {
+            this.cardCache = {};  // Clear cache
         }
     },
     asyncComputed: {
         pageCards: {
             async get () {
-                const cards = await ankiCall('browser_get_batch', {
-                    cardIds: this.pageItems
+                const newCardIds = this.pageItems.filter(x => !this.cardCache[x]);
+                const newCards = await ankiCall('browser_get_batch', {
+                    cardIds: newCardIds
                 });
+                let newCardIdx = 0;
+                this.pageItems.forEach(id => {
+                    if(!this.cardCache[id]) this.cardCache[id] = newCards[newCardIdx++];
+                });
+                const cards = this.pageItems.map(x => this.cardCache[x]);
                 cards.forEach(card => {
                     card.selected = false;
                 });
