@@ -29,30 +29,32 @@ div.browser-view
                             span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "desc" }') ↓
 
         tbody
-            template(v-if='visibleCards.length > 0')
-                template(v-for='(card, index) in visibleCards')
-                    tr.item-row(:class='{selected: cardSelected[index]}',
-                        @click.exact.prevent='selectCardIndexOnly(index)'
-                        @click.shift.exact.prevent='onSelectSequential(index)'
-                        @click.ctrl.exact.prevent='onSelectAdd(index)'
-                        @click.meta.exact.prevent='onSelectAdd(index)'
+            template(v-for='command in displayCommands')
+                template(v-if='command.type === "card"')
+                    tr.item-row(:class='{selected: cardSelected[command.index]}',
+                        @click.exact.prevent='selectCardIndexOnly(command.index)'
+                        @click.shift.exact.prevent='onSelectSequential(command.index)'
+                        @click.ctrl.exact.prevent='onSelectAdd(command.index)'
+                        @click.meta.exact.prevent='onSelectAdd(command.index)'
                     )
                         td(v-for='field in fields', :class='field.class')
-                            .item-row-div {{ getFormatter(field.formatter)(card[field.key]) }}
-                    tr.editor-row(v-if='selectedCardId === card.id')
+                            | {{ getFormatter(field.formatter)(command.card[field.key]) }}
+                    tr.editor-row(v-if='selectedCardId === command.card.id')
                         td(:colspan='fields.length')
                             .editor-row-div
                                 browser-editor(
                                     :cardId='selectedCardId'
-                                    :key='card.id',
+                                    :key='command.card.id',
                                     @updateView='updateView++'
                                 )
-            tr(v-else)
-                td.nocard(:colspan='fields.length')
-                    h4
-                        i.fas.fa-globe-asia
-                        | &nbsp;Oops, no cards :(
-                    p Try different query instead.
+
+                template(v-else-if='command.type === "noCards"')
+                    tr
+                        td.nocard(:colspan='fields.length')
+                            h4
+                                i.fas.fa-globe-asia
+                                | &nbsp;Oops, no cards :(
+                            p Try different query instead.
 
     .browser-tools
         .tools-container(:class='{enabled: selectedCardList.length > 0}')
@@ -166,8 +168,23 @@ export default {
         },
 
         visibleIndexes () {
-            return _.range(this.page * cardPerPage - cardPerPage, this.page * cardPerPage);
+            return _.range(
+                this.page * cardPerPage - cardPerPage,
+                Math.min(this.page * cardPerPage, this.cardIds.length)
+            );
         },
+
+        displayCommands () {
+            if(this.visibleCards.length === 0) return [
+                {type: 'noCards'}
+            ];
+
+            return this.visibleCards.map((card, index) => ({
+                type: 'card',
+                card,
+                index
+            }));
+        }
     },
     methods: {
         issueSortBy (sortField) {
@@ -224,16 +241,14 @@ export default {
             &.selected {
                 background-color: #afe2c4;
             }
-            .item-row-div {
-                height: 1.5em;
-            }
+            height: 30px;
         }
         &.editor-row {
             td {
-                height: 0;
+                height: 600px;
                 padding: 1em;
                 .editor-row-div {
-                    height: 40em;
+                    height: 550px;
                     overflow-y: auto;
                 }
             }
@@ -264,11 +279,9 @@ export default {
 div /deep/ td {
     &.ellipsis {
         max-width: 0;
-        div {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
