@@ -35,6 +35,8 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import 'codemirror/lib/codemirror.css';
 import 'highlight.js/styles/github.css';
 
+import './sublime-keymap';
+
 import crc32 from 'crc-32';
 
 
@@ -83,7 +85,11 @@ export default {
             previewStyle: 'tab',
             height: 'auto',
             minHeight: '0',
-            exts: ['colorSyntax', 'table'],
+            exts: [
+                'colorSyntax',
+                'table',
+                'sublime-keymap',
+            ],
         });
     },
 
