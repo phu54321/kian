@@ -150,4 +150,8 @@ export default {
     }
 }
 
+/deep/ .CodeMirror {
+    font-family: D2Coding, 'Courier New', Courier, monospace;
+}
+
 </style>
