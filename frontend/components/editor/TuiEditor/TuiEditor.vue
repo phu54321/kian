@@ -14,12 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
+
 div
-    h1.mb-4 Testbed
-
-    | testwork
-
     div(ref='mdEdit')
+
+    .preview(v-if='value')
+        .preview-header Preview
+        .preview-body(v-html='value')
 
 </template>
 
@@ -33,31 +34,6 @@ import 'codemirror/lib/codemirror.css';
 import 'tui-editor/dist/tui-editor.css';
 import 'tui-editor/dist/tui-editor-contents.css';
 import 'highlight.js/styles/github.css';
-
-const initialHtml = `<script class='tui-md' type='text/markdown' hash='538048892'>## DPLD의 일반론
-
-- Sx: {{c1::운동시 dyspnea, 마른 기침}}  
-- P/E: {{c2::Basal fine crackles _(부직포 뜯는 소리)_}}
-- 폐기능검사
-    - FVC: {{c3::≤70}}%
-    - TLC: {{c7::≤70}}%
-    - FEV1/FVc: {{c4::정상_/증가_}}
-    - DLco: {{c5::감소 _(확산능 감소)_}}
-- 폐기능장애: {{c6::제한::폐쇄/제한}}성</` + `script><div class='tui-html'><h2>DPLD의 일반론</h2>
-<ul>
-<li>Sx: {{c1::운동시 dyspnea, 마른 기침}}</li>
-<li>P/E: {{c2::Basal fine crackles <em>(부직포 뜯는 소리)</em>}}</li>
-<li>폐기능검사
-<ul>
-<li>FVC: {{c3::≤70}}%</li>
-<li>TLC: {{c7::≤70}}%</li>
-<li>FEV1/FVc: {{c4::정상_/증가_}}</li>
-<li>DLco: {{c5::감소 <em>(확산능 감소)</em>}}</li>
-</ul>
-</li>
-<li>폐기능장애: {{c6::제한::폐쇄/제한}}성</li>
-</ul>
-</div>`;
 
 
 function decodeHtml (html) {
@@ -85,10 +61,12 @@ export function isEditableHtml (html) {
 }
 
 export default {
+    props: ['value'],
+
     data () {
         return {
-            html: initialHtml,
             editor: null,
+            openPreview: false,
         };
     },
     mounted () {
@@ -99,37 +77,58 @@ export default {
             },
             initialEditType: 'markdown',
             initialValue: this.markdown,
-            previewStyle: 'vertical',
+            previewStyle: 'tab',
             height: 'auto',
             minHeight: '0',
         });
     },
     computed: {
         markdown () {
-            return decodeHtml(this.html) || '';
+            return decodeHtml(this.value) || '';
+        },
+    },
+    watcher: {
+        value (newHtml) {
+            const markdown = this.editor.getValue();
+            const newMarkdown = decodeHtml(newHtml) || '';
+            if(newMarkdown !== markdown) this.editor.setValue(newMarkdown);
         },
     },
     methods: {
         onChange () {
             const markdown = this.editor.getValue();
-            const html = sanitizeHtml(this.editor.getHtml());
+            if(markdown === '') {
+                return this.$emit('input', '');
+            }
+
+            const html = this.editor.getHtml();
             const htmlHash = crc32.str(html);
 
-            this.$emit('update', `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`);
+            this.$emit('input', `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`);
         },
     },
 };
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang='scss'>
 
 /deep/ .te-tab {
     display: none !important;
 }
 
 .preview {
-    border: 1px solid #ddd;
-    padding: 1.5em;
+    margin-top: 1em;
+    .preview-header {
+        background-color: #777;
+        color: #fff;
+        padding: .1em .5em;
+        font-weight: bold;
+    }
+    .preview-body {
+        padding: 1em;
+        background-color: #eee;
+    }
 }
+
 </style>
