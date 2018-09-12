@@ -21,7 +21,23 @@ import {
 } from 'vue-router-back-button';
 import routes from 'vue-auto-routing';
 
-const newRoutes = routes.map(route => Object.assign({props: true}, route));
+const newRoutes = routes.map(route => {
+    const propsHandler = (route) => {
+        // Type-cast route.parameter based on component's property definition.
+        const component = route.matched[route.matched.length - 1].components.default;
+        const props = component.props;
+        const typeCastedParams = Object.assign({}, route.params);
+        if(props) {
+            Object.keys(props).forEach(k => {
+                if(typeCastedParams[k] === undefined) return;
+                const propType = props[k].type || (x => x);
+                typeCastedParams[k] = propType(typeCastedParams[k]);
+            });
+        }
+        return typeCastedParams;
+    };
+    return Object.assign({props: propsHandler}, route);
+});
 newRoutes.push({
     path: '*',
     redirect: '/',
