@@ -19,11 +19,7 @@ div
 
     | testwork
 
-    b-row
-        b-col
-            div(ref='mdEdit')
-        b-col
-            div.preview(v-html='html')
+    div(ref='mdEdit')
 
     pre(v-text='html')
 
@@ -32,13 +28,15 @@ div
 <script>
 
 import TuiEditor from 'tui-editor';
+import crc32 from 'crc-32';
+import sanitizeHtml from 'sanitize-html';
 
 import 'codemirror/lib/codemirror.css';
 import 'tui-editor/dist/tui-editor.css';
 import 'tui-editor/dist/tui-editor-contents.css';
 import 'highlight.js/styles/github.css';
 
-const initialMarkdown = `## DPLD의 일반론
+const initialHtml = `<script class='tui-md' type='text/markdown' hash='538048892'>## DPLD의 일반론
 
 - Sx: {{c1::운동시 dyspnea, 마른 기침}}  
 - P/E: {{c2::Basal fine crackles _(부직포 뜯는 소리)_}}
@@ -47,14 +45,27 @@ const initialMarkdown = `## DPLD의 일반론
     - TLC: {{c7::≤70}}%
     - FEV1/FVc: {{c4::정상_/증가_}}
     - DLco: {{c5::감소 _(확산능 감소)_}}
-- 폐기능장애: {{c6::제한::폐쇄/제한}}성`;
+- 폐기능장애: {{c6::제한::폐쇄/제한}}성</` + `script><div class='tui-html'><h2>DPLD의 일반론</h2>
+<ul>
+<li>Sx: {{c1::운동시 dyspnea, 마른 기침}}</li>
+<li>P/E: {{c2::Basal fine crackles <em>(부직포 뜯는 소리)</em>}}</li>
+<li>폐기능검사
+<ul>
+<li>FVC: {{c3::≤70}}%</li>
+<li>TLC: {{c7::≤70}}%</li>
+<li>FEV1/FVc: {{c4::정상_/증가_}}</li>
+<li>DLco: {{c5::감소 <em>(확산능 감소)</em>}}</li>
+</ul>
+</li>
+<li>폐기능장애: {{c6::제한::폐쇄/제한}}성</li>
+</ul>
+</div>`;
 
 
 export default {
     data () {
         return {
-            markdown: initialMarkdown,
-            html: '',
+            html: initialHtml,
             editor: null,
         };
     },
@@ -66,14 +77,39 @@ export default {
             },
             initialEditType: 'markdown',
             initialValue: this.markdown,
-            previewStyle: 'tab',
+            previewStyle: 'vertical',
             height: 'auto',
+            minHeight: '0',
         });
+    },
+    computed: {
+        markdown () {
+            if(!initialHtml) return '';
+
+            const parser = new DOMParser();
+            const domElement = parser.parseFromString(initialHtml, 'text/html');
+            
+            const markdownElements = domElement.getElementsByClassName('tui-md');
+            if(markdownElements.length !== 1) return 'HTML not supported';
+            const markdown = markdownElements[0].innerHTML;
+            const expectedHtmlCRC = markdownElements[0].getAttribute('hash');
+
+            const htmlElement = domElement.getElementsByClassName('tui-html');
+            if(htmlElement.length !== 1) return 'HTML not supported';
+            const html = htmlElement[0].innerHTML;
+            const htmlCRC = crc32.str(html);
+            if(htmlCRC.toString() !== expectedHtmlCRC) return 'CRC mismatch';
+
+            return markdown;
+        },
     },
     methods: {
         onChange () {
-            this.markdown = this.editor.getValue();
-            this.html = this.editor.getHtml();
+            const markdown = this.editor.getValue();
+            const html = sanitizeHtml(this.editor.getHtml());
+            const htmlHash = crc32.str(html);
+
+            this.html = `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`;
         },
     },
 };
