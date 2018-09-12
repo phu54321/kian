@@ -16,16 +16,53 @@
 <template lang="pug">
     div(v-html.once="value")
 </template>
+
 <script>
 
 import $ from 'jquery';
 import ankiCall from '~/api/ankiCall';
+
+import HotkeyMap from '~/components/HotkeyMap';
+
 import './cloze';
 import './table';
 import './htmledit';
 import './disableUnwantedHotkeys';
 import { getFileAsBase64 } from '~/utils/fileToBase64';
 
+const summernoteHotkeys = [
+    ['Anki-related keys', [
+        ['Ctrl+Shift+C', 'Cloze w/ new number'],
+        ['Ctrl+Shift+Alt+C', 'Cloze w/ same number'],
+    ]],
+
+    ['Text editing', [
+        ['CTRL+B', 'Bold'],
+        ['CTRL+I', 'Italic'],
+        ['CTRL+U', 'Underline'],
+        ['CTRL+SHIFT+S', 'Strikethrough'],
+        ['CTRL+K', 'Create link'],
+        ['CTRL+BACKSLASH', 'Remove formatting'],
+    ]],
+
+    ['Paragraph-level editing', [
+        ['Ctrl+Shift+D', 'Create table from selection'],
+        ['CTRL+SHIFT+7', 'Insert unordered list'],
+        ['CTRL+SHIFT+8', 'Insert ordered list'],
+        ['CTRL+SHIFT+L', 'Justify to left'],
+        ['CTRL+SHIFT+E', 'Justify to center'],
+        ['CTRL+SHIFT+R', 'Justify to right'],
+        ['CTRL+SHIFT+J', 'Justify to both sides (default)'],
+    ]],
+
+    ['Pan-paragraph level editing', [
+        ['CTRL+0', 'Convert to normal paragraph'],
+        ['CTRL+1~6', 'Convert to headings (h1~h6)'],
+        ['CTRL+]', 'Indent text'],
+        ['CTRL+[', 'Outdent text'],
+        ['CTRL+SHIFT+X', 'HTML edit'],
+    ]],
+];
 
 export default {
     props : {
@@ -65,10 +102,12 @@ export default {
                 }
             }
         });
+        HotkeyMap.addHotkeyPack('summernote', summernoteHotkeys);
     },
     beforeDestroy () {
         $(this.$el).summernote('destroy');
-    }
+        HotkeyMap.removeHotkeyPack('summernote');
+    },
 };
 
 </script>
