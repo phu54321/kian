@@ -41,11 +41,10 @@ import './keymap';
 import './cloze';
 import './multiselect-styling';
 
-import nanoid from 'nanoid';
 import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
-import {getFileAsBase64} from '~/utils/fileToBase64';
+import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 
 function decodeHtml (html) {
@@ -69,13 +68,7 @@ function decodeHtml (html) {
 }
 
 function addImageBlobHook (blob, callback) {
-    let filename = blob.name;
-    
-    // Extract extension
-    const lastDotIndex = filename.lastIndexOf('.');
-    if(lastDotIndex !== -1) {
-        filename = nanoid() + filename.substr(lastDotIndex);
-    }
+    const filename = getRandomFilename(blob.name);
 
     getFileAsBase64(blob).then(datab64 => {
         return ankiCall('media_upload', {
