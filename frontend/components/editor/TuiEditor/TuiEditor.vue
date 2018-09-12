@@ -94,6 +94,7 @@ export default {
                 'kian-keymap',
                 'codemirror-keymap',
             ],
+            hideModeSwitch: true,
         });
     },
 
