@@ -25,7 +25,7 @@ div
                     key-image.kimg(:keys='item[0]')
                     .key-desc {{item[1]}}
 
-    span(v-hotkey=['esc'], @click='toggleShow', title='Show cheatsheet')
+    span(v-hotkey='"esc"', @click='toggleShow', title='Show cheatsheet')
 </template>
 
 <script>
@@ -94,6 +94,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+/deep/ .modal-dialog {
+    max-width: 70% !important;
+}
 
 ul {
     list-style: none;
