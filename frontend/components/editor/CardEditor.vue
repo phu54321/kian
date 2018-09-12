@@ -42,7 +42,7 @@ b-form(@submit='onSave')
         tr(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden', :key='fFormat.name')
             th {{fFormat.name}}
             td
-                summernote.editor-field(v-model='card.fields[index]')
+                tui-editor.editor-field(v-model='card.fields[index]')
 
         tr
             th Tags
@@ -55,6 +55,7 @@ b-form(@submit='onSave')
 import ankiCall from '~/api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
+import TuiEditor from './TuiEditor/TuiEditor';
 import TagEditor from './TagEditor';
 import './editor.scss';
 import HotkeyMap from '../HotkeyMap';
@@ -122,6 +123,7 @@ export default {
         Summernote,
         ListSelector,
         TagEditor,
+        TuiEditor,
     },
     methods: {
         onSave () {
