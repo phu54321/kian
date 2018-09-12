@@ -19,7 +19,8 @@
     div(ref='mdEdit')
 
     .preview
-        .preview-body(v-html='value')
+        .preview-body
+            shadow-dom(:html='value')
 
 </template>
 
@@ -44,6 +45,7 @@ import './multiselect-styling';
 import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
+import ShadowDom from '~/components/ShadowDom';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 
@@ -99,6 +101,10 @@ export default {
             editor: null,
             openPreview: false,
         };
+    },
+
+    components: {
+        ShadowDom
     },
 
     mounted () {
