@@ -41,7 +41,11 @@ import './keymap';
 import './cloze';
 import './multiselect-styling';
 
+import nanoid from 'nanoid';
 import crc32 from 'crc-32';
+import ankiCall from '~/api/ankiCall';
+import ErrorDialog from '~/components/ErrorDialog';
+import {getFileAsBase64} from '~/utils/fileToBase64';
 
 
 function decodeHtml (html) {
@@ -62,6 +66,28 @@ function decodeHtml (html) {
     if(htmlCRC.toString() !== expectedHtmlCRC) return null;
 
     return markdown;
+}
+
+function addImageBlobHook (blob, callback) {
+    let filename = blob.name;
+    
+    // Extract extension
+    const lastDotIndex = filename.lastIndexOf('.');
+    if(lastDotIndex !== -1) {
+        filename = nanoid() + filename.substr(lastDotIndex);
+    }
+
+    getFileAsBase64(blob).then(datab64 => {
+        return ankiCall('media_upload', {
+            filename,
+            datab64,
+        });
+    }).then(url => {
+        callback(url);
+    }).catch(e => {
+        ErrorDialog.openErrorDialog('Image upload failed', e.message);
+        callback('(upload error)');
+    });
 }
 
 export default {
@@ -102,9 +128,12 @@ export default {
                 'multiselect-styling',
                 'kian-keymap',
             ],
+            hooks: {
+                addImageBlobHook,
+            },
             hideModeSwitch: true,
         });
-        this.onChange();  // 
+        this.onChange();
     },
 
     computed: {
