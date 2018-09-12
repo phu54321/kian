@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-b-modal(v-model='show', id='syncModal', title='Sync to AnkiWeb', @shown='onShow',
+b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='onShow',
     hide-header-close, no-close-on-esc, no-close-on-backdrop, :hide-footer='!isLoginForm')
     template(v-if='isLoginForm')
         b-form-group(label='Email')
