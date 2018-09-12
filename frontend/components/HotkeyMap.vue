@@ -36,11 +36,13 @@ import KeyImage from './common/KeyImage';
 const hotkeyPack = {};
 
 export default {
-    addHotkeyPack (id, pack) {
-        hotkeyPack[id] = pack;
+    addHotkeyPack (id, packs) {
+        if(hotkeyPack[id]) hotkeyPack[id].ref++;
+        else hotkeyPack[id] = { packs, ref: 1};
     },
     removeHotkeyPack (id) {
-        delete hotkeyPack[id];
+        hotkeyPack[id].ref--;
+        if(hotkeyPack[id].ref === 0) delete hotkeyPack[id];
     },
     data () {
         return {
@@ -68,7 +70,7 @@ export default {
                     .map(kString => [kString, hotkeyMap[kString]])
             );
             const packHotkeyMap = {};
-            Object.values(hotkeyPack).forEach(packs => {
+            Object.values(hotkeyPack).forEach(({packs}) => {
                 packs.forEach(pack => {
                     const [packName, packData] = pack;
                     if(!packHotkeyMap[packName]) packHotkeyMap[packName] = [];
