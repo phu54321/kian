@@ -53,10 +53,10 @@ b-form(@submit='onSave')
 <script>
 
 import ankiCall from '~/api/ankiCall';
-import ListSelector from './ListSelector';
+import ListSelector from '../common/ListSelector';
 import Summernote from './Summernote/Summernote';
 import TuiSummernote from './TuiSummernote';
-import TagEditor from './TagEditor';
+import TagEditor from '../common/TagEditor';
 import './editor.scss';
 import HotkeyMap from '../HotkeyMap';
 import { runHook } from '~/utils/hookBase';

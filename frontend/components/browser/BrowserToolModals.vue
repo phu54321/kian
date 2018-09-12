@@ -44,8 +44,8 @@ div
 
 <script>
 
-import ListSelector from '../editor/ListSelector';
-import TagEditor from '../editor/TagEditor';
+import ListSelector from '../common/ListSelector';
+import TagEditor from '../common/TagEditor';
 import padLeft from 'pad-left';
 import ankiCall from '~/api/ankiCall';
 
