@@ -7,8 +7,8 @@ from utils import (
 import logging
 
 
-
 cardDict = {}
+
 
 @registerApi('reviewer_next_card')
 def getNextScheduledCard(msg):
@@ -29,6 +29,7 @@ def getNextScheduledCard(msg):
             return emit.emitResult(None)
 
         answerButtonCount = col.sched.answerButtons(card)
+        remaining = col.sched.counts()
 
         cardDict[card.id] = card
 
@@ -38,7 +39,13 @@ def getNextScheduledCard(msg):
             'front': card.q(),
             'back': card.a(),
             'ansButtonCount': answerButtonCount,
+            'remaining': {
+                'new': remaining[0],
+                'lrn': remaining[1],
+                'rev': remaining[2],
+            }
         })
+
 
 @registerApi('reviewer_answer_card')
 def answerCard(msg):
