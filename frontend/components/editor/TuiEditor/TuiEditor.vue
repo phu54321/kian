@@ -71,6 +71,10 @@ export default {
         return decodeHtml(html) !== null;
     },
 
+    encodeMardownToEditableHtml (md) {
+        return `<script class='tui-md' type='text/markdown' hash='0'>${md}</sc` + 'ript><div class=\'tui-html\'></div>';
+    },
+
     data () {
         return {
             editor: null,
@@ -100,6 +104,7 @@ export default {
             ],
             hideModeSwitch: true,
         });
+        this.onChange();  // 
     },
 
     computed: {
