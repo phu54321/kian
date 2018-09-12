@@ -35,9 +35,11 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import 'codemirror/lib/codemirror.css';
 import 'highlight.js/styles/github.css';
 
-import './cloze';
-import './keymap';
 import './codemirror-keymap';
+
+import './keymap';
+import './cloze';
+import './multiselect-styling';
 
 import crc32 from 'crc-32';
 
@@ -89,10 +91,12 @@ export default {
             minHeight: '0',
             exts: [
                 'colorSyntax',
-                'table',
-                'cloze',
-                'kian-keymap',
+
                 'codemirror-keymap',
+
+                'cloze',
+                'multiselect-styling',
+                'kian-keymap',
             ],
             hideModeSwitch: true,
         });

@@ -1,10 +1,10 @@
 import TuiEditor from 'tui-editor';
 
 const newKeymap = {
-    'CTRL+B': 'Bold',
-    'CTRL+I': 'Italic',
+    'CTRL+B': 'bold-multiselect',
+    'CTRL+I': 'italic-multiselect',
     'CTRL+.': 'Blockquote',
-    'CTRL+U': 'underline',
+    'CTRL+U': 'underline-multiselect',
     'SHIFT+CTRL+S': 'Strike',
     'SHIFT+CTRL+C': 'cloze',
     'SHIFT+CTRL+F': 'cloze-same',
