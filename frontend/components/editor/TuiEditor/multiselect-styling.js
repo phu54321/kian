@@ -32,4 +32,9 @@ TuiEditor.defineExtension('multiselect-styling', function (editor) {
         name: 'italic-multiselect',
         exec: multiselectStyler('_', '_')
     });
+
+    editor.addCommand('markdown', {
+        name: 'underline-multiselect',
+        exec: multiselectStyler('<u>', '</u>')
+    });
 });
