@@ -19,6 +19,11 @@ div
     input(type='hidden', :value='card.id')
     span.text-secondary Deck: {{deckName}}
     div.float-right
+        .remaining.mr-3
+            span.newCount.ml-2 {{remaining.new}}
+            span.lrnCount.ml-2 {{remaining.lrn}}
+            span.revCount.ml-2 {{remaining.rev}}
+
         span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
             icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
         span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
@@ -29,10 +34,10 @@ div
             .mb-4
                 shadow-dom.userContent.front.card(:html="card.front")
             b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
+
         template(v-else)
             .mb-4
                 shadow-dom.userContent.back.card(:html="card.back")
-
             b-button.mr-2(
                 v-for='(button, index) in answerButtons',
                 :key='button'
@@ -53,6 +58,7 @@ import ShadowDom from '~/components/ShadowDom';
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', {deckName});
     return {
+        remaining: msg.remaining,
         card: {
             id: msg.cardId,
             noteId: msg.noteId,
@@ -75,7 +81,12 @@ export default {
             card: {},
             flipped: false,
             ansButtonCount: 0,
-            note: null
+            note: null,
+            remaining: {
+                new: 0,
+                lrn: 0,
+                rev: 0,
+            },
         };
     },
     components: { ShadowDom },
@@ -94,12 +105,7 @@ export default {
             });
         },
         openEditor () {
-            this.$router.push({
-                name: 'card_edit',
-                params: {
-                    cardId: this.card.id
-                }
-            });
+            this.$router.push(`/card/${this.card.id}`);
         },
         answerCard (ease) {
             ankiCall('reviewer_answer_card', {
@@ -135,3 +141,14 @@ export default {
 };
 
 </script>
+
+<style scoped lang='scss'>
+
+.remaining {
+    display: inline-block;
+    font-size: 1.1em;
+    line-height: 1.1em;
+    transform: translate(0, .15em);
+}
+
+</style>
