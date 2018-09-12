@@ -123,7 +123,7 @@ export default {
             const newFields = this.card.fields;
             resize(newFields, fieldFormats.length, '');
             this.card.fields = newFields;
-            // this.card = runHook('edit_card_load', this.card);
+            this.card = runHook('edit_card_load', this.card);
         },
     }
 };
