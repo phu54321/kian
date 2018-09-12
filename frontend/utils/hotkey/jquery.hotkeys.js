@@ -154,11 +154,12 @@ import $ from 'jquery';
                 ($.hotkeys.options.filterContentEditable && $(event.target).attr('contenteditable')) ||
                 ($.hotkeys.options.filterTextInputs && $.inArray(event.target.type, $.hotkeys.textAcceptingInputTypes) > -1))
             ) {
+                const splitKeys = keys[0].split('+');
                 if(!(
-                    (keys.length === 1 && keys[0] === 'esc') ||
-                    keys.indexOf('ctrl') !== -1 ||
-                    keys.indexOf('meta') !== -1 ||
-                    keys.indexOf('alt') !== -1
+                    (splitKeys.length === 1 && splitKeys[0] === 'esc') ||
+                    splitKeys.indexOf('ctrl') !== -1 ||
+                    splitKeys.indexOf('meta') !== -1 ||
+                    splitKeys.indexOf('alt') !== -1
                 )) return;
             }
 
