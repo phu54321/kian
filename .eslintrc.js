@@ -40,6 +40,7 @@ module.exports = {
         "no-constant-condition": [
             "error",
             { "checkLoops": false }
-        ]
+        ],
+        "comma-dangle": ["error", "always"],
     }
 };

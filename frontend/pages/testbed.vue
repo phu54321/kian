@@ -19,7 +19,13 @@ div
 
     | testwork
 
-    div(ref='mdEdit')
+    b-row
+        b-col
+            div(ref='mdEdit')
+        b-col
+            div.preview(v-html='html')
+
+    pre(v-text='html')
 
 </template>
 
@@ -48,32 +54,40 @@ export default {
     data () {
         return {
             markdown: initialMarkdown,
+            html: '',
             editor: null,
         };
     },
     mounted () {
         this.editor = new TuiEditor({
             el: this.$refs.mdEdit,
+            events: {
+                change: this.onChange,
+            },
             initialEditType: 'markdown',
             initialValue: this.markdown,
-            previewStyle: 'vertical',
-            height: '800px'
+            previewStyle: 'tab',
+            height: 'auto',
         });
-    }
+    },
+    methods: {
+        onChange () {
+            this.markdown = this.editor.getValue();
+            this.html = this.editor.getHtml();
+        },
+    },
 };
 
 </script>
 
 <style lang="scss" scoped>
 
-/deep/ ul {
-    list-style-type: disc;
-    ul {
-        list-style-type: circle;
-        ul {
-            list-style-type: square;
-        }
-    }
+/deep/ .te-tab {
+    display: none !important;
 }
 
+.preview {
+    border: 1px solid #ddd;
+    padding: 1.5em;
+}
 </style>
