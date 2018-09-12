@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import nanoid from 'nanoid';
+
+
 function base64ArrayBuffer (arrayBuffer) {
     var base64    = '';
     var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -79,3 +82,9 @@ export function getFileAsBase64 (file) {
     });
 }
 
+export function getRandomFilename (filename) {
+    const lastDotIndex = filename.lastIndexOf('.');
+    if(lastDotIndex !== -1) {
+        return nanoid() + filename.substr(lastDotIndex);
+    } else return filename;
+}

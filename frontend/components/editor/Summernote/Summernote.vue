@@ -28,7 +28,7 @@ import './cloze';
 import './table';
 import './htmledit';
 import './disableUnwantedHotkeys';
-import { getFileAsBase64 } from '~/utils/fileToBase64';
+import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 const summernoteHotkeys = [
     ['Summernote - text styling', [
@@ -79,7 +79,7 @@ export default {
                 async onImageUpload (files) {
                     for(let i = 0 ; i < files.length ; i++) {
                         const file = files[i];
-                        const filename = file.name;
+                        const filename = getRandomFilename(file.name);
                         const datab64 = await getFileAsBase64(file);
                         const webFilename = await ankiCall('media_upload', {
                             filename,
