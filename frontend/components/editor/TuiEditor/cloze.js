@@ -6,22 +6,18 @@ TuiEditor.defineExtension('cloze', function (editor) {
         name: 'cloze',
         exec (mde) {
             const cm = mde.getEditor();
+            const selections = cm.getSelections();
             const lastClozeId = getLastClozeId(cm.getValue());
-            const thisClozeId = lastClozeId + 1;
-            const clozeHeader = `{{c${thisClozeId}::`, clozeFooter = '}}';
+            const replacements = selections.map((sel, index) => `{{c${lastClozeId + index + 1}::${sel}}}`);
+            cm.replaceSelections(replacements);
 
-            const rangeFrom = cm.getCursor('from');
-            const currentSelection = cm.getSelection();
-            if(!currentSelection) {
-                cm.replaceSelection(clozeHeader + clozeFooter);
-                cm.setSelection({
-                    line: rangeFrom.line,
-                    ch: rangeFrom.ch + clozeHeader.length,
-                });
-            } else {
-                const replacedText = clozeHeader + currentSelection + clozeFooter;
-                cm.replaceSelection(replacedText);
-            }
+            cm.setSelections(cm.listSelections().map((sel, index) => {
+                if(!selections[index]) {
+                    sel.head.ch -= 2;
+                    sel.anchor.ch -= 2;
+                }
+                return sel;
+            }));
             mde.focus();
         }
     });
