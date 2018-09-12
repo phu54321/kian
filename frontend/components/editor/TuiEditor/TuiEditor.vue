@@ -15,11 +15,10 @@
 
 <template lang="pug">
 
-div
+.tui-editor-container
     div(ref='mdEdit')
 
-    .preview(v-if='value')
-        .preview-header Preview
+    .preview
         .preview-body(v-html='value')
 
 </template>
@@ -28,7 +27,6 @@ div
 
 import TuiEditor from 'tui-editor';
 import crc32 from 'crc-32';
-import sanitizeHtml from 'sanitize-html';
 
 import 'codemirror/lib/codemirror.css';
 import 'tui-editor/dist/tui-editor.css';
@@ -56,12 +54,12 @@ function decodeHtml (html) {
     return markdown;
 }
 
-export function isEditableHtml (html) {
-    return decodeHtml(html) !== null;
-}
-
 export default {
     props: ['value'],
+
+    isEditableHtml (html) {
+        return decodeHtml(html) !== null;
+    },
 
     data () {
         return {
@@ -69,6 +67,7 @@ export default {
             openPreview: false,
         };
     },
+
     mounted () {
         this.editor = new TuiEditor({
             el: this.$refs.mdEdit,
@@ -82,18 +81,21 @@ export default {
             minHeight: '0',
         });
     },
+
     computed: {
         markdown () {
             return decodeHtml(this.value) || '';
         },
     },
-    watcher: {
+
+    watch: {
         value (newHtml) {
             const markdown = this.editor.getValue();
             const newMarkdown = decodeHtml(newHtml) || '';
             if(newMarkdown !== markdown) this.editor.setValue(newMarkdown);
         },
     },
+
     methods: {
         onChange () {
             const markdown = this.editor.getValue();
@@ -113,21 +115,22 @@ export default {
 
 <style scoped lang='scss'>
 
-/deep/ .te-tab {
-    display: none !important;
-}
-
-.preview {
-    margin-top: 1em;
-    .preview-header {
-        background-color: #777;
-        color: #fff;
-        padding: .1em .5em;
-        font-weight: bold;
+.tui-editor-container {
+    /deep/ .te-tab {
+        display: none !important;
     }
-    .preview-body {
-        padding: 1em;
-        background-color: #eee;
+
+    .preview {
+        width: 100%;
+        z-index: 10;
+        opacity: .9;
+        pointer-events: none;
+
+        .preview-body {
+            padding: 1em;
+            background-color: #EBF8FE;
+            border-left: 3px solid #81d4fa;
+        }
     }
 }
 

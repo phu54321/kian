@@ -16,7 +16,7 @@
 <template lang='pug'>
 
 b-form(@submit='onSave')
-    span.invisible(@click='onSave', v-hotkey=['CTRL+ENTER', 'ctrl+s'], title='Save note')
+    span.invisible(@click='onSave', v-hotkey="['CTRL+ENTER', 'ctrl+s']", title='Save note')
     table.note-zone
         tr
             th Deck
@@ -42,7 +42,7 @@ b-form(@submit='onSave')
         tr(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden', :key='fFormat.name')
             th {{fFormat.name}}
             td
-                tui-editor.editor-field(v-model='card.fields[index]')
+                tui-summernote.editor-field(v-model='card.fields[index]')
 
         tr
             th Tags
@@ -55,7 +55,7 @@ b-form(@submit='onSave')
 import ankiCall from '~/api/ankiCall';
 import ListSelector from './ListSelector';
 import Summernote from './Summernote/Summernote';
-import TuiEditor from './TuiEditor/TuiEditor';
+import TuiSummernote from './TuiSummernote';
 import TagEditor from './TagEditor';
 import './editor.scss';
 import HotkeyMap from '../HotkeyMap';
@@ -123,7 +123,7 @@ export default {
         Summernote,
         ListSelector,
         TagEditor,
-        TuiEditor,
+        TuiSummernote,
     },
     methods: {
         onSave () {
