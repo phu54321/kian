@@ -12,6 +12,12 @@ const newKeymap = {
 
 TuiEditor.defineExtension('kian-keymap', function (editor) {
     setTimeout(() => {
-        editor.commandManager.keyMapCommand = newKeymap;
+        const keyMap = Object.assign({}, newKeymap);
+        Object.keys(newKeymap).forEach(k => {
+            if(k.indexOf('CTRL') !== -1) {
+                keyMap[k.replace('CTRL', 'META')] = newKeymap[k];
+            }
+        });
+        editor.commandManager.keyMapCommand = keyMap;
     }, 0);
 });
