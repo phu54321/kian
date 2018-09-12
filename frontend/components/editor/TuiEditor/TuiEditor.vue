@@ -153,7 +153,7 @@ export default {
 
         .preview-body {
             padding: 1em;
-            background-color: #EBF8FE;
+            background-color: #f0fafe;
             border-left: 3px solid #81d4fa;
         }
     }
