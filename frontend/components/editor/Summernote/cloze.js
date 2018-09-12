@@ -15,15 +15,7 @@
 
 import { wrap } from './common';
 import { addHotkey, addFunctions } from './summernoteExtend';
-
-function getLastClozeId (code) {
-    let maxClozeId = 0;
-    code.replace(/\{\{c(\d+)::/g, (match, g1) => {
-        const clozeId = parseInt(g1);
-        if (maxClozeId < clozeId) maxClozeId = clozeId;
-    });
-    return maxClozeId;
-}
+import { getLastClozeId } from '../utils/cloze';
 
 addHotkey({
     'CTRL+SHIFT+C': 'newCloze',
