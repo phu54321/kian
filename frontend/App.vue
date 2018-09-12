@@ -36,7 +36,7 @@ div.app-body
                         b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
                             icon(name='sync')
                             span.d-sm-none.ml-2 Sync now
-                        b-nav-text.ml-3
+                        b-nav-text.ml-4
                         b-nav-item(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
                             icon(name='home')
                             span.d-sm-none.ml-2 Home
@@ -49,6 +49,10 @@ div.app-body
                         b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                             icon(name='chart-bar')
                             span.d-sm-none.ml-2 Statistics
+                        b-nav-text.ml-4
+                        b-nav-item(to='/testbed', v-b-tooltip.hover, title='Testing zone')
+                            icon(name='flask')
+                            span.d-sm-none.ml-2 Testbed
 
     b-container.app-container
         router-view
