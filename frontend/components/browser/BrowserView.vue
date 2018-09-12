@@ -40,7 +40,7 @@ div.browser-view
                     )
                         td(v-for='field in fields', :class='field.class')
                             | {{ getFormatter(field.formatter)(command.card[field.key]) }}
-                    tr.editor-row(v-if='selectedCardId === command.card.id')
+                    tr.editor-row(v-if='selectedCardId === command.card.id', :key='`${command.index}_editor`')
                         td(:colspan='fields.length')
                             .editor-row-div
                                 browser-editor(
@@ -154,8 +154,8 @@ export default {
         },
         visibleRangeWatcher () {
             if(!this.isRendering) {
-                this.renderRangeBegin = this.visibleMinIndex;
-                this.renderRangeEnd = this.visibleMaxIndex;
+                this.renderRangeBegin = Math.max(0, this.visibleMinIndex);
+                this.renderRangeEnd = Math.min(this.cardIds.length, this.visibleMaxIndex + 1);
             }
         },
         prerenderRange (r) {
@@ -246,18 +246,18 @@ export default {
         },
         prerenderRange () {
             return _.range(this.prerenderRangeBegin, this.prerenderRangeEnd);
-        }
+        },
     },
     methods: {
-        onScroll () {
+        onScroll: _.throttle(function() {
             if(!this.$refs.mainTable) return;
 
             const {top} = this.$refs.mainTable.getBoundingClientRect();
             const viewportHeight = document.documentElement.clientHeight;
-            const PADDING = 30;
+            const PADDING = 50;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
-        },
+        }, 100),
 
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
@@ -333,12 +333,7 @@ export default {
         }
         &.editor-row {
             td {
-                height: 600px;
                 padding: 1em;
-                .editor-row-div {
-                    height: 550px;
-                    overflow-y: auto;
-                }
             }
         }
         &.spacer-row {
