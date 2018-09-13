@@ -20,7 +20,11 @@ div
         template(v-for='(pack, index) in items')
             hr(v-if='index > 0')
             h5(v-if='pack[0]') {{pack[0]}}
-            ul
+            ul.d-none.d-lg-block
+                li(v-for='item in pack[1]')
+                    key-image.kimg(:keys='item[0]')
+                    .key-desc {{item[1]}}
+            ul.d-lg-none
                 li(v-for='item in pack[1]')
                     key-image.kimg(:keys='item[0]')
                     .key-desc {{item[1]}}
@@ -97,14 +101,15 @@ export default {
 
 <style lang="scss" scoped>
 
-/deep/ .modal-dialog {
-    max-width: 70% !important;
-}
-
 ul {
     list-style: none;
-    columns: 3;
     padding: 0;
+    &.d-lg-none {
+        columns: 2;
+    }
+    &.d-lg-block {
+        columns: 3;
+    }
     li {
         position: relative;
         .kimg {
