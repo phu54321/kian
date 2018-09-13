@@ -26,3 +26,4 @@ cmds.bold =  multiselectStyler('**', '**');
 cmds.italic = multiselectStyler('_', '_');
 cmds.underline = multiselectStyler('<u>', '</u>');
 cmds.comment = multiselectStyler('_^^', '^^_');
+cmds.strikethrough = multiselectStyler('~~', '~~');
