@@ -15,28 +15,5 @@
 
 import Vue from 'vue';
 
-import './plugins/kian/asyncComputed';
-import './plugins/kian/axios';
-import './plugins/kian/bootstrap-vue';
-import './plugins/kian/cookie';
-import './plugins/kian/datepicker';
-import './plugins/kian/fontawesome';
-import './plugins/kian/hotkey';
-import './plugins/kian/toasted';
-import './plugins/kian/vselect';
-import './plugins/kian/vue-perfect-scrollbar';
-
-import './plugins/allAddons';
-
-
-import VueRouter from 'vue-router';
-import router from './router';
-Vue.use(VueRouter);
-
-// App
-import App from './App';
-new Vue({
-    el: '#app',
-    render: h => h(App),
-    router,
-});
+import VuePerfectScrollbar from 'vue-perfect-scrollbar';
+Vue.component('perfect-scrollbar', VuePerfectScrollbar);

@@ -80,6 +80,7 @@
     "vue-cookie-law": "^1.6.0",
     "vue-multiselect": "^2.1.0",
     "vue-observe-visibility": "^0.4.1",
+    "vue-perfect-scrollbar": "^0.1.0",
     "vue-router": "^3.0.1",
     "vue-router-back-button": "^1.1.1",
     "vue-select": "^2.4.0",
