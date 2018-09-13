@@ -30,14 +30,17 @@ export const specialCharTable = {
     ALT: '⌥',
     SHIFT: '⇧',
     ENTER: '↩',
-    DELETE: '⌫',
+    DELETE: '⟵',
     BACKSPACE: '⌫',
     ESC: '⎋',
-    RIGHT: '→',
-    UP: '↑',
-    LEFT: '←',
-    DOWN: '↓',
-    TAB: '⇥'
+    RIGHT: '▶',
+    UP: '▲',
+    LEFT: '◀',
+    DOWN: '▼',
+    TAB: '⭾',
+    HOME: '↖',
+    END: '↘',
+    SPACE: '☐',
 };
 
 function firstLetterUpper (s) {

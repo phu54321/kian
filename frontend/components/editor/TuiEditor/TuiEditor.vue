@@ -89,6 +89,12 @@ function addImageBlobHook (blob, callback) {
     });
 }
 
+function camelCaseToSpacedText (str) {
+    return str
+        .replace(/[A-Z]/g, (s) => ` ${s.toLowerCase()}`)
+        .replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1));
+}
+
 export default {
     props: ['value'],
 
@@ -144,12 +150,18 @@ export default {
             return decodeHtml(this.value) || '';
         },
         codemirrorShortcuts () {
-            const keyMap = CodeMirror.keyMap.sublime;
+            const sublimeKeymap = CodeMirror.keyMap.sublime;
+            const fallthroughKeymap = CodeMirror.keyMap[sublimeKeymap.fallthrough];
+            const keyMap = Object.assign({}, fallthroughKeymap, sublimeKeymap);
+
             return (
                 Object.keys(keyMap)
                     .filter(k => k !== 'fallthrough')
                     .filter(k => k.indexOf(' ') === -1)  // Sequence shortcut is not supported by VueSimpleHotkey.
-                    .map(k => [k.replace(/-/g, '+').toLowerCase(), keyMap[k]])
+                    .map(k => [
+                        k.replace(/-/g, '+').toLowerCase(),
+                        camelCaseToSpacedText(keyMap[k]),
+                    ])
             );
         },
     },
