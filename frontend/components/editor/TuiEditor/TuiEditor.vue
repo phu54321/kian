@@ -42,8 +42,10 @@ import './addons/tui/arrowKeyFunction';
 
 import 'codemirror/keymap/sublime.js';
 import extraKeys from './addons/extraKeys';
+
 import './addons/cloze';
 import './addons/textStyle';
+import './addons/table';
 
 import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
