@@ -17,11 +17,9 @@ div(v-else)
 
 import TuiEditor from './TuiEditor/TuiEditor';
 import Summernote from './Summernote/Summernote';
-import TurndownService from 'turndown';
+import turndownService from './turndownService';
 
-const turndownService = new TurndownService();
-const gfm = require('turndown-plugin-gfm').gfm;
-turndownService.use(gfm);
+
 
 export default {
     props: ['value'],
