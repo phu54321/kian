@@ -31,6 +31,11 @@
 
 import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
+import './tuiAddons/continuelist';
+import './tuiAddons/gfm.js';
+
+import 'codemirror/addon/edit/trailingspace';
+
 import './codemirror-keymap';
 
 import './cloze';
@@ -129,12 +134,19 @@ export default {
 
     mounted () {
         this.editor = CodeMirror(this.$refs.mdEdit, {
-            mode: 'markdown',
+            mode: 'gfm',
             keyMap: 'sublime',
-            value: this.value,
+            value: this.markdown,
             lineNumbers: true,
+            indentUnit: 4,
+            extraKeys: {
+                'Tab': 'indentOrderedList',
+                'Enter': 'newlineAndIndentContinueMarkdownList',
+                'Shift-Tab': 'indentLess',
+                'Alt-Up': 'replaceLineTextToUpper',
+                'Alt-Down': 'replaceLineTextToLower'
+            },
         });
-        this.editor.setValue(this.markdown);
         this.editor.on('change', this.onChange);
         this.onChange();
     },
