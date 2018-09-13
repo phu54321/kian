@@ -17,7 +17,7 @@
 
 .tui-editor-container
     // hotkey trap
-    span(v-for='[key, value] in codemirrorShortcuts', v-if='key !== "esc"', v-hotkey='key', :title='value')
+    span(v-for='[key, value] in codemirrorShortcuts', v-if='key !== "esc"', v-hotkey:2='key', :title='value')
 
     div(ref='mdEdit')
 

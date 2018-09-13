@@ -19,12 +19,12 @@ import { clickVNode } from './clickElement';
 
 const hotkeyHandlersMap = new Map();
 
-function addHotkeyToMap (kString, vnode, title) {
+function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth) {
     if(!hotkeyHandlersMap.has(kString)) {
         hotkeyHandlersMap.set(kString, []);
         $(document).bind('keydown', kString, (e) => {
-            const rootElement = e.target || document.body;
-            const matchedHandler = resolveHotkey(kString, rootElement);
+            const activeElement = e.target || document.body;
+            const matchedHandler = resolveHotkey(kString, activeElement);
             if(matchedHandler) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -42,6 +42,7 @@ function addHotkeyToMap (kString, vnode, title) {
         targetEl,
         vnode,
         title,
+        maxHotkeyDepth
     });
 }
 
@@ -53,25 +54,29 @@ function removeHotkeyFromMap (kString, targetEl) {
     handlerList.splice(index, 1);
 }
 
-function resolveHotkey (kString, rootElement) {
-    const parentListFromTarget = [];
-    for(let el = rootElement; el ; el = el.parentElement) {
-        parentListFromTarget.push(el);
+function resolveHotkey (kString, activeElement) {
+    const parentsFromActiveElement = [];
+    for(let el = activeElement; el ; el = el.parentElement) {
+        parentsFromActiveElement.push(el);
     }
 
     const handlerList = hotkeyHandlersMap.get(kString);
     let matchedHandler = null;
-    let matchedElementIndex = parentListFromTarget.length;
+    let matchedElementIndex = parentsFromActiveElement.length;
 
     for(const handler of handlerList) {
-        const {targetEl} = handler;
+        const {targetEl, } = handler;
+        let maxHotkeyDepth = handler.maxHotkeyDepth || 10000;
+
         for(let el = targetEl ; el ; el = el.parentElement) {
-            const elIndex = parentListFromTarget.indexOf(el);
+            const elIndex = parentsFromActiveElement.indexOf(el);
             if(elIndex !== -1 && elIndex <= matchedElementIndex) {
                 if(elIndex === matchedElementIndex) matchedHandler = null;
                 else matchedHandler = handler;
                 matchedElementIndex = elIndex;
+                break;
             }
+            if(--maxHotkeyDepth === 0) break;
         }
     }
 
@@ -101,7 +106,7 @@ function registerHotkey (el, binding, vnode) {
     const title = (attrs && attrs.title) ? attrs.title : ($(el).text() || '(untitled hotkey)');
 
     for(let kString of hotkeyString) {
-        addHotkeyToMap(kString, vnode, title);
+        addHotkeyToMap(kString, vnode, title, binding.arg | 0);
     }
 
     el.dataset.hotkeyString = hotkeyString.join('|');
