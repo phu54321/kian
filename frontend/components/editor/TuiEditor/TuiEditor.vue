@@ -18,9 +18,8 @@
 .tui-editor-container
     // hotkey trap
     hotkey-pack(:depth='2', :pack='codemirrorShortcuts', pack-name='CodeMirror shortcuts')
-    hotkey-pack(:depth='2', :pack='tuiEditorKeymap', pack-name='tui.editor shortcuts')
 
-    div(ref='mdEdit')
+    div.codemirror-editor(ref='mdEdit')
 
     .preview
         .preview-body
@@ -30,27 +29,18 @@
 
 <script>
 
-import TuiEditor from 'tui-editor';
-import 'tui-editor/dist/tui-editor-extTable';
-import 'tui-editor/dist/tui-editor-extColorSyntax';
-
-import 'tui-editor/dist/tui-editor.css';
-import 'tui-editor/dist/tui-editor-contents.css';
-import 'tui-color-picker/dist/tui-color-picker.css';
 import 'codemirror/lib/codemirror.css';
-import 'highlight.js/styles/github.css';
-
 import CodeMirror from 'codemirror';
 import './codemirror-keymap';
 
-import {tuiEditorKeymap} from './keymap';
-import './cloze';
-import './multiselect-styling';
+// import './cloze';
+// import './multiselect-styling';
 
 import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
+import markdownRenderer from './markdownRenderer';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 
@@ -69,6 +59,7 @@ function decodeHtml (html) {
     if(htmlElement.length !== 1) return null;
     const renderedHtml = htmlElement[0].innerHTML;
     const htmlCRC = crc32.str(renderedHtml);
+
     if(htmlCRC.toString() !== expectedHtmlCRC) return null;
 
     return markdown;
@@ -96,6 +87,15 @@ function camelCaseToSpacedText (str) {
         .replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1));
 }
 
+function encodeMardownToEditableHtml (markdown) {
+    if(markdown === '') return '';
+
+    const html = markdownRenderer(markdown);
+    const htmlHash = crc32.str(html);
+    return `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`;
+}
+
+
 export default {
     props: ['value'],
 
@@ -103,9 +103,7 @@ export default {
         return decodeHtml(html) !== null;
     },
 
-    encodeMardownToEditableHtml (md) {
-        return `<script class='tui-md' type='text/markdown' hash='0'>${md}</sc` + 'ript><div class=\'tui-html\'></div>';
-    },
+    encodeMardownToEditableHtml,
 
     data () {
         return {
@@ -119,29 +117,10 @@ export default {
     },
 
     mounted () {
-        this.editor = new TuiEditor({
-            el: this.$refs.mdEdit,
-            events: {
-                change: this.onChange,
-            },
-            initialEditType: 'markdown',
-            initialValue: this.markdown,
-            previewStyle: 'tab',
-            height: 'auto',
-            minHeight: '0',
-            exts: [
-                'colorSyntax',
-
-                'codemirror-keymap',
-
-                'cloze',
-                'multiselect-styling',
-                'kian-keymap',
-            ],
-            hooks: {
-                addImageBlobHook,
-            },
-            hideModeSwitch: true,
+        this.editor = CodeMirror(this.$refs.mdEdit, {
+            value: this.markdown,
+            mode: 'markdown',
+            keyMap: 'sublime',
         });
         this.onChange();
     },
@@ -165,9 +144,6 @@ export default {
                     ])
             );
         },
-        tuiEditorKeymap () {
-            return Object.keys(tuiEditorKeymap).map(k => [k, tuiEditorKeymap[k]]);
-        }
     },
 
     watch: {
@@ -181,14 +157,7 @@ export default {
     methods: {
         onChange () {
             const markdown = this.editor.getValue();
-            if(markdown === '') {
-                return this.$emit('input', '');
-            }
-
-            const html = this.editor.getHtml();
-            const htmlHash = crc32.str(html);
-
-            this.$emit('input', `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`);
+            // this.$emit('input', encodeMardownToEditableHtml(markdown));
         },
     },
 };
@@ -198,8 +167,13 @@ export default {
 <style scoped lang='scss'>
 
 .tui-editor-container {
-    /deep/ .te-tab {
-        display: none !important;
+    .codemirror-editor {
+        /deep/ .CodeMirror {
+            font-family: 'D2Coding', 'Courier New', Courier, monospace;
+            border: 3px solid #ddd;
+            padding: .5em;
+            height: auto;
+        }    
     }
 
     .preview {
@@ -220,8 +194,5 @@ export default {
     }
 }
 
-/deep/ .CodeMirror {
-    font-family: D2Coding, 'Courier New', Courier, monospace;
-}
 
 </style>
