@@ -4,6 +4,7 @@ const extraKeys = {
     'Ctrl-B': 'bold',
     'Ctrl-I': 'italic',
     'Ctrl-U': 'underline',
+    'Shift-Ctrl-S': 'strikethrough',
     'Shift-Ctrl-C': 'cloze',
     'Shift-Ctrl-F': 'clozeSame',
     'Shift-Ctrl-R': 'makeTable',
