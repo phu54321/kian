@@ -24,17 +24,17 @@ function multiselectStyler (header, footer) {
 
 TuiEditor.defineExtension('multiselect-styling', function (editor) {
     editor.addCommand('markdown', {
-        name: 'bold-multiselect',
+        name: 'boldMultiselect',
         exec: multiselectStyler('**', '**')
     });
 
     editor.addCommand('markdown', {
-        name: 'italic-multiselect',
+        name: 'italicMultiselect',
         exec: multiselectStyler('_', '_')
     });
 
     editor.addCommand('markdown', {
-        name: 'underline-multiselect',
+        name: 'underlineMultiselect',
         exec: multiselectStyler('<u>', '</u>')
     });
 });
