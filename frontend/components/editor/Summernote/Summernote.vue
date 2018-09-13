@@ -14,7 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-    div(v-html.once="value")
+div
+    hotkey-pack(v-for='[packName, pack] in summernoteHotkeys', :pack='pack', :pack-name='packName', :depth='2', :key='packName')
+    div(ref='noteDiv', v-html.once="value")
 </template>
 
 <script>
@@ -60,21 +62,21 @@ export default {
     },
     watch: {
         value (val) {
-            const oldVal = $(this.$el).summernote('code');
+            const oldVal = $(this.$refs.noteDiv).summernote('code');
             if(oldVal !== val) {
-                $(this.$el).summernote('code', val);
+                $(this.$refs.noteDiv).summernote('code', val);
             }
         }
     },
     mounted () {
-        $(this.$el).summernote({
+        $(this.$refs.noteDiv).summernote({
             prettifyHtml: true,
             autogrow: true,
             toolbar: [],
             disableLinkTarget: true,
             callbacks: {
                 onChange: () => {
-                    this.$emit('input', $(this.$el).summernote('code'));
+                    this.$emit('input', $(this.$refs.noteDiv).summernote('code'));
                 },
                 async onImageUpload (files) {
                     for(let i = 0 ; i < files.length ; i++) {
@@ -90,11 +92,14 @@ export default {
                 }
             }
         });
-        HotkeyMap.addHotkeyPack('summernote', summernoteHotkeys);
+    },
+    computed: {
+        summernoteHotkeys () {
+            return summernoteHotkeys;
+        }
     },
     beforeDestroy () {
-        $(this.$el).summernote('destroy');
-        HotkeyMap.removeHotkeyPack('summernote');
+        $(this.$refs.noteDiv).summernote('destroy');
     },
 };
 

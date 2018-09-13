@@ -103,9 +103,9 @@ function registerHotkey (el, binding, vnode) {
     let hotkeyList = binding.value;
     if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
     const hotkeyString = hotkeyList.map(x => x.toLowerCase());
-    const attrs = vnode.data.attrs;
-    const title = (attrs && attrs.title) ? attrs.title : ($(el).text() || '(untitled hotkey)');
-    const packName = (attrs && attrs.packName) ? attrs.packName : 'default';
+    const props = vnode.data.attrs || vnode.data.props || {};
+    const title = props.title || $(el).text() || '(untitled hotkey)';
+    const packName = props.packName || 'default';
 
     for(let kString of hotkeyString) {
         addHotkeyToMap(kString, vnode, title, binding.arg | 0, packName);
@@ -136,15 +136,18 @@ export default {
         });
 
         Vue.component('hotkey-pack', {
-            props: ['depth', 'pack'],
+            props: ['depth', 'pack', 'packName'],
             render (h) {
                 return h(
                     'div',
                     { class: { invisible: true } },
                     this.pack.map(([key, value]) => h('span', {
                         directives: [
-                            { name: 'hotkey', arg: this.depth + 1, value: key }
+                            { name: 'hotkey', arg: this.depth + 1, value: key, }
                         ],
+                        props: {
+                            packName: this.packName
+                        },
                     }, [value]))
                 );
             },

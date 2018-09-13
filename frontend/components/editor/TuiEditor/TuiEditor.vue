@@ -17,7 +17,7 @@
 
 .tui-editor-container
     // hotkey trap
-    hotkey-pack(:depth='2', :pack='codemirrorShortcuts')
+    hotkey-pack(:depth='2', :pack='codemirrorShortcuts', pack-name='CodeMirror shortcuts')
 
     div(ref='mdEdit')
 
