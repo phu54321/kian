@@ -5,8 +5,6 @@
 // Insert each marker as a separate text token, and add it to delimiter list
 //
 
-const ruleName = 'kian_comment';
-
 
 function tokenize (state, silent) {
     var i, scanned, token, len, ch,
@@ -121,7 +119,6 @@ function postProcess (state) {
 }
 
 module.exports = function (md) {
-    console.log('rule added');
-    md.inline.ruler.after('emphasis', ruleName, tokenize);
-    md.inline.ruler2.after('emphasis', ruleName, postProcess);
+    md.inline.ruler.after('emphasis', 'kian_comment', tokenize);
+    md.inline.ruler2.after('emphasis', 'kian_comment', postProcess);
 };
