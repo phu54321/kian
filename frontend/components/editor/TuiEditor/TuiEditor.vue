@@ -19,7 +19,7 @@
     // hotkey trap
     hotkey-pack(:depth='2', :pack='codemirrorShortcuts', pack-name='CodeMirror shortcuts')
 
-    div.codemirror-editor(ref='mdEdit')
+    .codemirror-editor(ref='mdEdit')
 
     .preview
         .preview-body
@@ -44,7 +44,26 @@ import markdownRenderer from './markdownRenderer';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 
-function decodeHtml (html) {
+const encoderDom = document.createElement('div');
+
+function encodeMarkdown (markdown) {
+    if(markdown === '') return '';
+
+    let html = markdownRenderer(markdown);
+
+    // Note: Browser may apply its specific escaping rules when HTML really gets into DOM.
+    // ( for instance, browser may remove unmatched opening/closing tags without warning )
+    // Since `decodeMarkdown` works on this 'escaped' html, we need to emulate the same
+    // escaping process on this function for CRC32 to match.
+    encoderDom.innerHTML = html;
+    html = encoderDom.innerHTML;
+
+    const htmlHash = crc32.str(html.trim());
+    return `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`;
+}
+
+
+function decodeMarkdown (html) {
     if(!html) return '';
 
     const parser = new DOMParser();
@@ -58,7 +77,7 @@ function decodeHtml (html) {
     const htmlElement = domElement.getElementsByClassName('tui-html');
     if(htmlElement.length !== 1) return null;
     const renderedHtml = htmlElement[0].innerHTML;
-    const htmlCRC = crc32.str(renderedHtml);
+    const htmlCRC = crc32.str(renderedHtml.trim());
 
     if(htmlCRC.toString() !== expectedHtmlCRC) return null;
 
@@ -87,23 +106,15 @@ function camelCaseToSpacedText (str) {
         .replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1));
 }
 
-function encodeMardownToEditableHtml (markdown) {
-    if(markdown === '') return '';
-
-    const html = markdownRenderer(markdown);
-    const htmlHash = crc32.str(html);
-    return `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`;
-}
-
 
 export default {
     props: ['value'],
 
     isEditableHtml (html) {
-        return decodeHtml(html) !== null;
+        return decodeMarkdown(html) !== null;
     },
 
-    encodeMardownToEditableHtml,
+    encodeMarkdown,
 
     data () {
         return {
@@ -118,16 +129,19 @@ export default {
 
     mounted () {
         this.editor = CodeMirror(this.$refs.mdEdit, {
-            value: this.markdown,
             mode: 'markdown',
             keyMap: 'sublime',
+            value: this.value,
+            lineNumbers: true,
         });
+        this.editor.setValue(this.markdown);
+        this.editor.on('change', this.onChange);
         this.onChange();
     },
 
     computed: {
         markdown () {
-            return decodeHtml(this.value) || '';
+            return decodeMarkdown(this.value) || '';
         },
         codemirrorShortcuts () {
             const sublimeKeymap = CodeMirror.keyMap.sublime;
@@ -149,7 +163,7 @@ export default {
     watch: {
         value (newHtml) {
             const markdown = this.editor.getValue();
-            const newMarkdown = decodeHtml(newHtml) || '';
+            const newMarkdown = decodeMarkdown(newHtml) || '';
             if(newMarkdown !== markdown) this.editor.setValue(newMarkdown);
         },
     },
@@ -157,7 +171,7 @@ export default {
     methods: {
         onChange () {
             const markdown = this.editor.getValue();
-            // this.$emit('input', encodeMardownToEditableHtml(markdown));
+            this.$emit('input', encodeMarkdown(markdown));
         },
     },
 };
@@ -170,8 +184,6 @@ export default {
     .codemirror-editor {
         /deep/ .CodeMirror {
             font-family: 'D2Coding', 'Courier New', Courier, monospace;
-            border: 3px solid #ddd;
-            padding: .5em;
             height: auto;
         }    
     }

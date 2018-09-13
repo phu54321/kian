@@ -38,7 +38,8 @@ export default {
         },
         convertToMarkdown () {
             const markdown = turndownService.turndown(this.value);
-            const newHtml = TuiEditor.encodeMardownToEditableHtml(markdown);
+            const newHtml = TuiEditor.encodeMarkdown(markdown);
+            this.$refs.markdownConvertModal.hide();
             this.$emit('input', newHtml);
         }
     }
