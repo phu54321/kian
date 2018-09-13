@@ -100,6 +100,7 @@ import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
+import { clamp } from '~/utils/utils';
 
 export default {
     mixins: [BrowserSelection],
@@ -154,8 +155,8 @@ export default {
         },
         visibleRangeWatcher () {
             if(!this.isRendering) {
-                this.renderRangeBegin = Math.max(0, this.visibleMinIndex);
-                this.renderRangeEnd = Math.min(this.cardIds.length, this.visibleMaxIndex + 1);
+                this.renderRangeBegin = clamp(this.visibleMinIndex, 0, this.cardIds.length);
+                this.renderRangeEnd = clamp(this.visibleMaxIndex, 0, this.cardIds.length);
             }
         },
         prerenderRange (r) {
@@ -257,6 +258,12 @@ export default {
             const PADDING = 50;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
+
+            // Adjust visible range according to opened editor
+            const currentEditorPosition = this.selectedCardIndex;
+            if(currentEditorPosition !== -1) {
+                if(this.visibleMaxIndex < currentEditorPosition) this.visibleMaxIndex += 20;
+            }
         }, 100),
 
         issueSortBy (sortField) {
@@ -333,8 +340,15 @@ export default {
         }
         &.editor-row {
             td {
-                padding: 1em;
+                padding: 5px;
+                .editor-row-div {
+                    outline: 3px solid #DDF3FC;
+                    padding: 10px;
+                    height: 585px;
+                    overflow-y: auto;
+                }
             }
+            height: 600px;
         }
         &.spacer-row {
             background:

@@ -208,6 +208,10 @@ export default {
             padding: 1em;
             background-color: #f0fafe;
             border-left: 3px solid #81d4fa;
+
+            img {
+                max-width: 100%;
+            }
         }
     }
 }
