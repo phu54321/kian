@@ -31,15 +31,19 @@
 
 import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
-import './tuiAddons/continuelist';
-import './tuiAddons/gfm.js';
-
 import 'codemirror/addon/edit/trailingspace';
 
-import './codemirror-keymap';
+import './tuiAddons/fixOrderedListNumber';
+import './tuiAddons/overlay';
+import './tuiAddons/markdown';
+import './tuiAddons/gfm';
+import './tuiAddons/continuelist';
+import './tuiAddons/arrowKeyFunction';
 
+import 'codemirror/keymap/sublime.js';
+import extraKeys from './extraKeys';
 import './cloze';
-// import './multiselect-styling';
+import './multiselect-styling';
 
 import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
@@ -139,13 +143,7 @@ export default {
             value: this.markdown,
             lineNumbers: true,
             indentUnit: 4,
-            extraKeys: {
-                'Tab': 'indentOrderedList',
-                'Enter': 'newlineAndIndentContinueMarkdownList',
-                'Shift-Tab': 'indentLess',
-                'Alt-Up': 'replaceLineTextToUpper',
-                'Alt-Down': 'replaceLineTextToLower'
-            },
+            extraKeys,
         });
         this.editor.on('change', this.onChange);
         this.onChange();
