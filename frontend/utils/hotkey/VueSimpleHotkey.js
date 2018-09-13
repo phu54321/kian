@@ -19,7 +19,7 @@ import { clickVNode } from './clickElement';
 
 const hotkeyHandlersMap = new Map();
 
-function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth) {
+function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth, packName) {
     if(!hotkeyHandlersMap.has(kString)) {
         hotkeyHandlersMap.set(kString, []);
         $(document).bind('keydown', kString, (e) => {
@@ -42,7 +42,8 @@ function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth) {
         targetEl,
         vnode,
         title,
-        maxHotkeyDepth
+        maxHotkeyDepth,
+        packName
     });
 }
 
@@ -90,7 +91,7 @@ export function getHotkeyMap (el) {
     for(const kString of hotkeyHandlersMap.keys()) {
         const handler = resolveHotkey(kString, el);
         if(handler) {
-            ret[kString] = handler.title;
+            ret[kString] = handler;
         }
     }
     return ret;
@@ -104,9 +105,10 @@ function registerHotkey (el, binding, vnode) {
     const hotkeyString = hotkeyList.map(x => x.toLowerCase());
     const attrs = vnode.data.attrs;
     const title = (attrs && attrs.title) ? attrs.title : ($(el).text() || '(untitled hotkey)');
+    const packName = (attrs && attrs.packName) ? attrs.packName : 'default';
 
     for(let kString of hotkeyString) {
-        addHotkeyToMap(kString, vnode, title, binding.arg | 0);
+        addHotkeyToMap(kString, vnode, title, binding.arg | 0, packName);
     }
 
     el.dataset.hotkeyString = hotkeyString.join('|');

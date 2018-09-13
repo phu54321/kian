@@ -36,18 +36,16 @@ div
 
 import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey';
 import KeyImage from './common/KeyImage';
+import _ from 'lodash';
 
 const hotkeyPack = {};
 
+function sortObjectItemsByKey (obj) {
+    const keys = Object.keys(obj);
+    return keys.sort().map(k => [k, obj[k]]);
+}
+
 export default {
-    addHotkeyPack (id, packs) {
-        if(hotkeyPack[id]) hotkeyPack[id].ref++;
-        else hotkeyPack[id] = { packs, ref: 1};
-    },
-    removeHotkeyPack (id) {
-        hotkeyPack[id].ref--;
-        if(hotkeyPack[id].ref === 0) delete hotkeyPack[id];
-    },
     data () {
         return {
             items: [],
@@ -69,25 +67,15 @@ export default {
     watch: {
         show () {
             const hotkeyMap = getHotkeyMap(this.lastActiveElement);
-            const globalHotkeyList = (
-                Object.keys(hotkeyMap).sort()
-                    .map(kString => [kString, hotkeyMap[kString]])
-            );
-            const packHotkeyMap = {};
-            Object.values(hotkeyPack).forEach(({packs}) => {
-                packs.forEach(pack => {
-                    const [packName, packData] = pack;
-                    if(!packHotkeyMap[packName]) packHotkeyMap[packName] = [];
-                    packData.forEach(hotkey => packHotkeyMap[packName].push(hotkey));
-                });
-            });
-            this.items = [
-                ['Hotkeys', globalHotkeyList],
-                ...Object.keys(packHotkeyMap).sort((a, b) => {
-                    return a[0] < b[0] ? -1 :
-                        a[0] === b[0] ? 0 : 1;
-                }).map(packName => [packName, packHotkeyMap[packName]])
-            ];
+            const hotkeyList = Object.keys(hotkeyMap).map(kString => Object.assign({kString}, hotkeyMap[kString]));
+            const hotkeyGroup = _.groupBy(hotkeyList, 'packName');
+
+            this.items = sortObjectItemsByKey(hotkeyGroup)
+                .map(([group, handlers]) => [
+                    group,
+                    _.sortBy(handlers, 'kString')
+                        .map(handler => [handler.kString, handler.title])
+                ]);
         }
     },
     computed: {
