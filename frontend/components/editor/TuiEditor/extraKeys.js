@@ -7,6 +7,7 @@ const extraKeys = {
     'Shift-Ctrl-S': 'Strike',
     'Shift-Ctrl-C': 'cloze',
     'Shift-Ctrl-F': 'clozeSame',
+    'Ctrl-/': 'comment', 
 
     // Markdown editing related
     'Tab': 'indentOrderedList',

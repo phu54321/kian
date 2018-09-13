@@ -4,6 +4,9 @@ const md = new MarkdownIt({
     linkify: true,
 });
 
+import KianComment from './rendererAddons/comment';
+KianComment(md);
+
 export default function render (markdown) {
     return md.render(markdown);
 }
