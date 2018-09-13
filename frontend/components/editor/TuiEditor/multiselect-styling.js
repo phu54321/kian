@@ -1,8 +1,9 @@
-import TuiEditor from 'tui-editor';
+import CodeMirror from 'codemirror';
+
+const cmds = CodeMirror.commands;
 
 function multiselectStyler (header, footer) {
-    return (mde) => {
-        const cm = mde.getEditor();
+    return (cm) => {
         const selections = cm.getSelections();
         const replacements = selections.map(sel => {
             if(sel.startsWith(header) && sel.endsWith(footer)) {
@@ -18,23 +19,9 @@ function multiselectStyler (header, footer) {
             }
             return sel;
         }));
-        mde.focus();
     };
 }
 
-TuiEditor.defineExtension('multiselect-styling', function (editor) {
-    editor.addCommand('markdown', {
-        name: 'boldMultiselect',
-        exec: multiselectStyler('**', '**')
-    });
-
-    editor.addCommand('markdown', {
-        name: 'italicMultiselect',
-        exec: multiselectStyler('_', '_')
-    });
-
-    editor.addCommand('markdown', {
-        name: 'underlineMultiselect',
-        exec: multiselectStyler('<u>', '</u>')
-    });
-});
+cmds.bold =  multiselectStyler('**', '**');
+cmds.italic = multiselectStyler('_', '_');
+cmds.underline = multiselectStyler('<u>', '</u>');
