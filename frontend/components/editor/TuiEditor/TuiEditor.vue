@@ -127,7 +127,7 @@ export default {
 
     data () {
         return {
-            editor: null,
+            cm: null,
             openPreview: false,
         };
     },
@@ -137,7 +137,7 @@ export default {
     },
 
     mounted () {
-        this.editor = CodeMirror(this.$refs.mdEdit, {
+        this.cm = CodeMirror(this.$refs.mdEdit, {
             mode: 'gfm',
             keyMap: 'sublime',
             value: this.markdown,
@@ -145,7 +145,28 @@ export default {
             indentUnit: 4,
             extraKeys,
         });
-        this.editor.on('change', this.onChange);
+
+        // Image paste support. Code from tui.editor
+        this.cm.on('paste', (cm, evData) => {
+            const cbData = evData.clipboardData || window.clipboardData;
+            const blobItems = cbData && cbData.items;
+            const { types } = cbData;
+
+            if (blobItems.length === 1 && types && types.length === 1 && [].slice.call(types).indexOf('Files') !== -1) {
+                const item = blobItems[0];
+                if (item.type.indexOf('image') !== -1) {
+                    evData.preventDefault();
+                    evData.stopPropagation();
+                    evData.codemirrorIgnore = true;
+
+                    const blob = item.name ? item : item.getAsFile(); // Blob or File
+                    addImageBlobHook(blob, (fname) => {
+                        this.cm.replaceSelection(`![](${fname})`);
+                    });
+                }
+            }
+        });
+        this.cm.on('change', this.onChange);
         this.onChange();
     },
 
@@ -172,15 +193,15 @@ export default {
 
     watch: {
         value (newHtml) {
-            const markdown = this.editor.getValue();
+            const markdown = this.cm.getValue();
             const newMarkdown = decodeMarkdown(newHtml) || '';
-            if(newMarkdown !== markdown) this.editor.setValue(newMarkdown);
+            if(newMarkdown !== markdown) this.cm.setValue(newMarkdown);
         },
     },
 
     methods: {
         onChange () {
-            const markdown = this.editor.getValue();
+            const markdown = this.cm.getValue();
             this.$emit('input', encodeMarkdown(markdown));
         },
     },
