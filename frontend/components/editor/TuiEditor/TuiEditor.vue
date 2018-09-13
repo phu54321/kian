@@ -33,23 +33,23 @@ import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/edit/trailingspace';
 
-import './tuiAddons/fixOrderedListNumber';
-import './tuiAddons/overlay';
-import './tuiAddons/markdown';
-import './tuiAddons/gfm';
-import './tuiAddons/continuelist';
-import './tuiAddons/arrowKeyFunction';
+import './addons/tui/fixOrderedListNumber';
+import './addons/tui/overlay';
+import './addons/tui/markdown';
+import './addons/tui/gfm';
+import './addons/tui/continuelist';
+import './addons/tui/arrowKeyFunction';
 
 import 'codemirror/keymap/sublime.js';
-import extraKeys from './extraKeys';
-import './cloze';
-import './multiselect-styling';
+import extraKeys from './addons/extraKeys';
+import './addons/cloze';
+import './addons/textStyle';
 
 import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
-import markdownRenderer from './markdownRenderer';
+import markdownRenderer from './renderer/markdownRenderer';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 

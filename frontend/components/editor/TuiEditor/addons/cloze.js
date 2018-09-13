@@ -1,4 +1,4 @@
-import { getLastClozeId } from '../utils/cloze';
+import { getLastClozeId } from '../../utils/cloze';
 import CodeMirror from 'codemirror';
 
 CodeMirror.commands.cloze = function (cm) {
