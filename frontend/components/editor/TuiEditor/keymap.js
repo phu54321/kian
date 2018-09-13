@@ -1,21 +1,21 @@
 import TuiEditor from 'tui-editor';
 
-const newKeymap = {
-    'CTRL+B': 'bold-multiselect',
-    'CTRL+I': 'italic-multiselect',
-    'CTRL+.': 'Blockquote',
-    'CTRL+U': 'underline-multiselect',
+export const tuiEditorKeymap = {
+    'CTRL+B': 'boldMultiselect',
+    'CTRL+I': 'italicMultiselect',
+    'SHIFT+CTRL+RIGHT': 'Blockquote',
+    'CTRL+U': 'underlineMultiselect',
     'SHIFT+CTRL+S': 'Strike',
     'SHIFT+CTRL+C': 'cloze',
-    'SHIFT+CTRL+F': 'cloze-same',
+    'SHIFT+CTRL+F': 'clozeSame',
 };
 
 TuiEditor.defineExtension('kian-keymap', function (editor) {
     setTimeout(() => {
-        const keyMap = Object.assign({}, newKeymap);
-        Object.keys(newKeymap).forEach(k => {
+        const keyMap = Object.assign({}, tuiEditorKeymap);
+        Object.keys(tuiEditorKeymap).forEach(k => {
             if(k.indexOf('CTRL') !== -1) {
-                keyMap[k.replace('CTRL', 'META')] = newKeymap[k];
+                keyMap[k.replace('CTRL', 'META')] = tuiEditorKeymap[k];
             }
         });
         editor.commandManager.keyMapCommand = keyMap;

@@ -18,6 +18,7 @@
 .tui-editor-container
     // hotkey trap
     hotkey-pack(:depth='2', :pack='codemirrorShortcuts', pack-name='CodeMirror shortcuts')
+    hotkey-pack(:depth='2', :pack='tuiEditorKeymap', pack-name='tui.editor shortcuts')
 
     div(ref='mdEdit')
 
@@ -42,7 +43,7 @@ import 'highlight.js/styles/github.css';
 import CodeMirror from 'codemirror';
 import './codemirror-keymap';
 
-import './keymap';
+import {tuiEditorKeymap} from './keymap';
 import './cloze';
 import './multiselect-styling';
 
@@ -164,6 +165,9 @@ export default {
                     ])
             );
         },
+        tuiEditorKeymap () {
+            return Object.keys(tuiEditorKeymap).map(k => [k, tuiEditorKeymap[k]]);
+        }
     },
 
     watch: {
