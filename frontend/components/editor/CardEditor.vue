@@ -39,10 +39,11 @@ b-form(@submit='onSave')
                     v-model='card.model',
                     apiType='model_list')
 
-        tr(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden', :key='fFormat.name')
-            th {{fFormat.name}}
-            td
-                tui-summernote.editor-field(v-model='card.fields[index]')
+        template(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden')
+            tr
+                td.editor-row(colspan='2')
+                    .mb-2.font-weight-bold {{fFormat.name}}
+                    tui-summernote.editor-field(v-model='card.fields[index]')
 
         tr
             th Tags
@@ -129,3 +130,15 @@ export default {
 };
 
 </script>
+
+<style lang='scss' scoped>
+
+.note-zone {
+    td, th {
+        padding: .75em 0;
+        &.editor-row {
+            padding: .4em 0 .5em 0;
+        }
+    }
+}
+</style>
