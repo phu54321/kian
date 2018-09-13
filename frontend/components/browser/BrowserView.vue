@@ -42,7 +42,7 @@ div.browser-view
                             | {{ getFormatter(field.formatter)(command.card[field.key]) }}
                     tr.editor-row(v-if='selectedCardId === command.card.id', :key='`${command.index}_editor`')
                         td(:colspan='fields.length')
-                            .editor-row-div
+                            perfect-scrollbar.editor-row-div
                                 browser-editor(
                                     :cardId='selectedCardId'
                                     :key='command.card.id',
