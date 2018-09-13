@@ -17,7 +17,7 @@
 
 .tui-editor-container
     // hotkey trap
-    span(v-for='[key, value] in codemirrorShortcuts', v-if='key !== "esc"', v-hotkey:2='key', :title='value')
+    hotkey-pack(:depth='2', :pack='codemirrorShortcuts')
 
     div(ref='mdEdit')
 
@@ -156,7 +156,7 @@ export default {
 
             return (
                 Object.keys(keyMap)
-                    .filter(k => k !== 'fallthrough')
+                    .filter(k => ['fallthrough', 'esc'].indexOf(k.toLowerCase()) === -1)
                     .filter(k => k.indexOf(' ') === -1)  // Sequence shortcut is not supported by VueSimpleHotkey.
                     .map(k => [
                         k.replace(/-/g, '+').toLowerCase(),

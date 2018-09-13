@@ -132,5 +132,20 @@ export default {
                 unregisterHotkey(el);
             }
         });
+
+        Vue.component('hotkey-pack', {
+            props: ['depth', 'pack'],
+            render (h) {
+                return h(
+                    'div',
+                    { class: { invisible: true } },
+                    this.pack.map(([key, value]) => h('span', {
+                        directives: [
+                            { name: 'hotkey', arg: this.depth + 1, value: key }
+                        ],
+                    }, [value]))
+                );
+            },
+        });
     }
 };
