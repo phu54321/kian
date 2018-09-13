@@ -20,6 +20,9 @@ function multiselectStyler (header, footer) {
     };
 }
 
-CodeMirror.commands.bold =  multiselectStyler('**', '**');
-CodeMirror.commands.italic = multiselectStyler('_', '_');
-CodeMirror.commands.underline = multiselectStyler('<u>', '</u>');
+const cmds = CodeMirror.commands;
+
+cmds.bold =  multiselectStyler('**', '**');
+cmds.italic = multiselectStyler('_', '_');
+cmds.underline = multiselectStyler('<u>', '</u>');
+cmds.comment = multiselectStyler('_^^', '^^_');
