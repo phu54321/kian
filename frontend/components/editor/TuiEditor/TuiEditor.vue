@@ -156,7 +156,7 @@ export default {
         codemirrorShortcuts () {
             const sublimeKeymap = CodeMirror.keyMap.sublime;
             const fallthroughKeymap = CodeMirror.keyMap[sublimeKeymap.fallthrough];
-            const keyMap = Object.assign({}, fallthroughKeymap, sublimeKeymap);
+            const keyMap = Object.assign({}, fallthroughKeymap, sublimeKeymap, extraKeys);
 
             return (
                 Object.keys(keyMap)
