@@ -33,7 +33,7 @@ import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
 import './codemirror-keymap';
 
-// import './cloze';
+import './cloze';
 // import './multiselect-styling';
 
 import crc32 from 'crc-32';
