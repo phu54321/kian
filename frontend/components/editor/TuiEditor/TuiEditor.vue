@@ -16,6 +16,9 @@
 <template lang="pug">
 
 .tui-editor-container
+    // hotkey trap
+    span(v-for='[key, value] in codemirrorShortcuts', v-if='key !== "esc"', v-hotkey='key', :title='value')
+
     div(ref='mdEdit')
 
     .preview
@@ -36,6 +39,7 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import 'codemirror/lib/codemirror.css';
 import 'highlight.js/styles/github.css';
 
+import CodeMirror from 'codemirror';
 import './codemirror-keymap';
 
 import './keymap';
@@ -138,6 +142,15 @@ export default {
     computed: {
         markdown () {
             return decodeHtml(this.value) || '';
+        },
+        codemirrorShortcuts () {
+            const keyMap = CodeMirror.keyMap.sublime;
+            return (
+                Object.keys(keyMap)
+                    .filter(k => k !== 'fallthrough')
+                    .filter(k => k.indexOf(' ') === -1)  // Sequence shortcut is not supported by VueSimpleHotkey.
+                    .map(k => [k.replace(/-/g, '+').toLowerCase(), keyMap[k]])
+            );
         },
     },
 
