@@ -1,7 +1,5 @@
 import CodeMirror from 'codemirror';
 
-const cmds = CodeMirror.commands;
-
 function multiselectStyler (header, footer) {
     return (cm) => {
         const selections = cm.getSelections();
@@ -22,6 +20,6 @@ function multiselectStyler (header, footer) {
     };
 }
 
-cmds.bold =  multiselectStyler('**', '**');
-cmds.italic = multiselectStyler('_', '_');
-cmds.underline = multiselectStyler('<u>', '</u>');
+CodeMirror.commands.bold =  multiselectStyler('**', '**');
+CodeMirror.commands.italic = multiselectStyler('_', '_');
+CodeMirror.commands.underline = multiselectStyler('<u>', '</u>');
