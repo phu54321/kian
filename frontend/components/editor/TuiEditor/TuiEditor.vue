@@ -145,6 +145,7 @@ export default {
             value: this.markdown,
             lineNumbers: true,
             indentUnit: 4,
+            lineWrapping: true,
             extraKeys,
         });
 
