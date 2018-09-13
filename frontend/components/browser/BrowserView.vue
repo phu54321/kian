@@ -370,13 +370,10 @@ export default {
         position: sticky;
         bottom: 4em;
         .tools-container {
-            display: inline-block;
-            opacity: 0;
+            display: none;
             &.enabled {
-                opacity: 1;
-                pointer-events: initial;
+                display: inline-block;
             }
-            transition: opacity .3s;
         }
     }
 }
