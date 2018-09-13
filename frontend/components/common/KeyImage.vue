@@ -31,7 +31,7 @@ export const specialCharTable = {
     SHIFT: '⇧',
     ENTER: '↩',
     DELETE: '⌫',
-    BACKSLASH: '⌫',
+    BACKSPACE: '⌫',
     ESC: '⎋',
     RIGHT: '→',
     UP: '↑',
