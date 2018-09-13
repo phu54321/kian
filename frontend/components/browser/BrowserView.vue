@@ -262,7 +262,9 @@ export default {
             // Adjust visible range according to opened editor
             const currentEditorPosition = this.selectedCardIndex;
             if(currentEditorPosition !== -1) {
-                if(this.visibleMaxIndex < currentEditorPosition) this.visibleMaxIndex += 20;
+                if(this.visibleMaxIndex < currentEditorPosition) {
+                    this.visibleMaxIndex += 30;
+                }
             }
         }, 100),
 
@@ -340,15 +342,15 @@ export default {
         }
         &.editor-row {
             td {
-                padding: 5px;
+                padding: 5px 0;
                 .editor-row-div {
-                    outline: 3px solid #DDF3FC;
-                    padding: 10px;
-                    height: 585px;
+                    border: 3px double #eee;
+                    padding: 20px;
+                    height: 885px;
                     overflow-y: auto;
                 }
             }
-            height: 600px;
+            height: 900px;
         }
         &.spacer-row {
             background:
