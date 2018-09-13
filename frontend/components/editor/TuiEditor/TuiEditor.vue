@@ -232,7 +232,7 @@ export default {
             background-color: #f0fafe;
             border-left: 3px solid #81d4fa;
 
-            img {
+            /deep/ img {
                 max-width: 100%;
             }
         }

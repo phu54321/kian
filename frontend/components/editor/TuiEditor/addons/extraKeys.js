@@ -19,6 +19,13 @@ const extraKeys = {
 };
 
 
+// For 'save note' keys
+delete CodeMirror.keyMap.pcSublime['Ctrl-Enter'];
+delete CodeMirror.keyMap.macSublime['Cmd-Enter'];
+
+delete CodeMirror.keyMap.pcDefault['Ctrl-S'];
+delete CodeMirror.keyMap.pcDefault['Cmd-S'];
+
 // MPC → Mac conversion
 const isMac = (CodeMirror.keyMap.sublime === CodeMirror.keyMap.macSublime);
 Object.keys(extraKeys).forEach(pcKeyString => {
