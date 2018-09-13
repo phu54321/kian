@@ -66,7 +66,7 @@
       },
       style: {
         style: 'Estilo',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Citação',
         pre: 'Código',
         h1: 'Título 1',
@@ -102,7 +102,8 @@
         transparent: 'Transparente',
         setTransparent: 'Fundo transparente',
         reset: 'Restaurar',
-        resetToDefault: 'Restaurar padrão'
+        resetToDefault: 'Restaurar padrão',
+        cpSelect: 'Selecionar'
       },
       shortcut: {
         shortcuts: 'Atalhos do teclado',

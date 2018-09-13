@@ -37,7 +37,7 @@ const summernoteHotkeys = [
         ['CTRL+U', 'Underline'],
         ['CTRL+SHIFT+S', 'Strikethrough'],
         ['CTRL+K', 'Create link'],
-        ['CTRL+BACKSLASH', 'Remove formatting'],
+        ['CTRL+BACKSPACE', 'Remove formatting'],
         ['Ctrl+Shift+C', 'Cloze w/ new number'],
         ['Ctrl+Shift+Alt+C', 'Cloze w/ same number'],
     ]],
