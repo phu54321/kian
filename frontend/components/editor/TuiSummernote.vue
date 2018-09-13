@@ -17,7 +17,7 @@ div(v-else)
 
 import TuiEditor from './TuiEditor/TuiEditor';
 import Summernote from './Summernote/Summernote';
-import markdownDecompiler from './TuiEditor/markdownDecompiler';
+import markdownDecompiler from './TuiEditor/decompiler/markdownDecompiler';
 
 
 
