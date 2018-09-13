@@ -53,6 +53,9 @@ export default {
                 fields: card.fields,
                 tags: card.tags,
             }).then(() => {
+                this.$toasted.show('Edit saved', {
+                    icon: 'save',
+                });
                 this.$emit('updateCardIds');
             }).catch(err => {
                 ErrorDialog.openErrorDialog(null, err.message);

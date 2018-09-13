@@ -46,7 +46,7 @@ div.browser-view
                                 browser-editor(
                                     :cardId='selectedCardId'
                                     :key='command.card.id',
-                                    @updateView='updateView++'
+                                    @updateCardIds='updateCardIds'
                                 )
 
                 template(v-else-if='command.type === "space"')
@@ -88,7 +88,7 @@ div.browser-view
             b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', v-b-modal.browserRemoveCards)
                 icon(name='regular/trash-alt')
 
-    browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='$emit("updateCardIds")')
+    browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
 
 </template>
 
@@ -307,6 +307,12 @@ export default {
             // cardCache is just a cache, so it doesn't need to be reactive
             // so we just use plain assignment instead of using this.$set
             renderRequests.forEach((idx, i) => cardCache[idx] = renderedRows[i]);
+        },
+
+        updateCardIds () {
+            this.resetCardCache();
+            this.resetSelectedCards();
+            this.$emit('updateCardIds');
         }
     }
 };
