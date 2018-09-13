@@ -18,12 +18,16 @@
 </template>
 
 <script>
+
 export default {
     props: ['html'],
     data () {
         return {
             shadowRoot: null
         };
+    },
+    computed: {
+        defaultStyle: () => '<style>img { max-width: 95%; max-height: 95%; }</style>',
     },
     watch: {
         html (val) {
@@ -37,7 +41,7 @@ export default {
             while(shadowRoot.firstChild) shadowRoot.removeChild(shadowRoot.firstChild);
 
             const div = document.createElement('div');
-            div.innerHTML = html;
+            div.innerHTML = this.defaultStyle + html;
             while(div.firstChild) shadowRoot.appendChild(div.firstChild);
         }
     },
