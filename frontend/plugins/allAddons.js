@@ -15,3 +15,4 @@
 
 import './addons/ClozeHideAll';
 import './addons/ClozeOverlapper';
+import './addons/Testbed';

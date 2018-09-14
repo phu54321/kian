@@ -30,7 +30,7 @@ import './plugins/allAddons';
 
 
 import VueRouter from 'vue-router';
-import { createRouter } from './router';
+import Router from './router';
 Vue.use(VueRouter);
 
 // App
@@ -38,5 +38,5 @@ import App from './App';
 new Vue({
     el: '#app',
     render: h => h(App),
-    router: createRouter(),
+    router: Router.createRouter(),
 });
