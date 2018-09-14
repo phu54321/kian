@@ -203,8 +203,8 @@ export default {
     &.focused {
         .preview-body {
             padding: .5em 1em;
-            background-color: #FDECEC;
-            border-left: 3px solid #FA9D9D;
+            background-color: #E8FCEB;
+            border-left: 3px solid #99F9A9;
         }
     }
 }
