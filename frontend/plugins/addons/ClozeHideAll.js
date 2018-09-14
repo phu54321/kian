@@ -78,7 +78,7 @@ function makeClozeCompatiable (html) {
     );
     html = html.replace(
         /\{\{c(\d+)::([^!]([^:}]|:[^:}])*?)::(([^:}]|:[^:}])*?)\}\}/g,
-        (...match) => `{{c${match[1]}}::${wrapClozeTag(match[2], match[1] | 0)}::${match[4]}}}`
+        (...match) => `{{c${match[1]}::${wrapClozeTag(match[2], match[1] | 0)}::${match[4]}}}`
     );
     html = html.replace(
         /\{\{c(\d+)::!/g,
