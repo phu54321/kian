@@ -17,12 +17,18 @@
 div
     h1.mb-4 JokboReader
 
-    div(v-for='{qUrl, aUrl} in qaPair')
-        b-row
+    input(type="file", @change="onFileChange")
+    b-alert.mt-3(show) {{message}}
+
+    div(v-for='({qUrl, aUrl}, index) in qaPair')
+        b-row.imgRow
+            .toolbar
+                b-btn.mr-1(size='sm', variant='primary') Add
+                b-btn.mr-1(size='sm', variant='danger') Pass
             b-col
-                img(:src='qUrl')
+                img.downscale(:src='qUrl')
             b-col
-                img(:src='aUrl')
+                img.downscale(:src='aUrl')
 
 
 </template>
@@ -31,6 +37,7 @@ div
 <script>
 
 import Jimp from 'jimp';
+import PDFJS from 'pdfjs-dist';
 import { parseQAPair } from './qaPairParser';
 
 
@@ -43,39 +50,82 @@ export default {
     },
     data () {
         return {
-            qaPair: []
+            qaPair: [],
+            message: 'Select a file.',
         };
     },
     methods: {
-        handlePaste (event) {
-            if (event.clipboardData) {
-                var items = event.clipboardData.items;
-                if (!items) return;
-                
-                //access data directly
-                for (var i = 0; i < items.length; i++) {
-                    if (items[i].type.indexOf('image') !== -1) {
-                        //image
-                        var blob = items[i].getAsFile();
-                        var URLObj = window.URL || window.webkitURL;
-                        var source = URLObj.createObjectURL(blob);
-                        Jimp.read(source).then(img => {
-                            const qaPair = parseQAPair(img);
-                            qaPair.forEach(([q, a]) => {
-                                Promise.all([
-                                    q.getBase64Async('image/png'),
-                                    a.getBase64Async('image/png')
-                                ]).then(([qUrl, aUrl]) => {
-                                    this.qaPair.push({qUrl, aUrl});
-                                });
-                            });
-                        });
-                    }
-                }
-                event.preventDefault();
+        onFileChange (e) {
+            const files = e.target.files || e.dataTransfer.files;
+            if (!files.length) return;
+            this.handlePdf(files[0]);
+        },
+        async handlePdf (pdfFile) {
+            const URLObj = window.URL || window.webkitURL;
+            const source = URLObj.createObjectURL(pdfFile);
+            const pdf = await PDFJS.getDocument({ url: source });
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            const promises = [];
+            const pageNum = pdf.numPages;
+            for(let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {
+                const page = await pdf.getPage(pageIndex);
+                const scale = 2;
+                const viewport = page.getViewport(scale);
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                });
+                promises.push(this.handleImage(canvas.toDataURL()));
+                this.message = `Processing page ${pageIndex}/${pageNum}`;
             }
+            this.message = `Waiting for page extraction...`;
+            await Promise.all(promises);
+            this.message = `Done!`;
+        },
+
+        async handleImage (url) {
+            Jimp.read(url).then(img => {
+                const qaPair = parseQAPair(img);
+                qaPair.forEach(([q, a]) => {
+                    Promise.all([
+                        q.getBase64Async('image/png'),
+                        a.getBase64Async('image/png')
+                    ]).then(([qUrl, aUrl]) => {
+                        this.qaPair.push({qUrl, aUrl});
+                    });
+                });
+            });
         }
     },
 };
 
 </script>
+
+<style scoped lang='scss'>
+
+.imgRow {
+    border: 1px solid #ccc;
+    margin: 1em 0;
+    padding: .3em;
+    position: relative;
+
+    .toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .downscale {
+        max-width: 95%;
+    }    
+}
+
+</style>

@@ -40,7 +40,10 @@ export function parseQAPair (image) {
 
     const XPADDING = 3, YPADDING = 3;
     imgBlockYRange.forEach(([y0, y1]) => {
-        const cropped = image.clone().crop(0, y0 + YPADDING, width, y1 - y0 - 2 * YPADDING).autocrop();
+        const cropHeight = y1 - y0 - 2 * YPADDING;
+        if(cropHeight <= 0) return;
+
+        const cropped = image.clone().crop(0, y0 + YPADDING, width, cropHeight).autocrop();
 
         const {
             data: croppedData,
