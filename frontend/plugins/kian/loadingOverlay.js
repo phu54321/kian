@@ -14,30 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Vue from 'vue';
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.min.css';
 
-import './plugins/kian/asyncComputed';
-import './plugins/kian/axios';
-import './plugins/kian/bootstrap-vue';
-import './plugins/kian/cookie';
-import './plugins/kian/datepicker';
-import './plugins/kian/fontawesome';
-import './plugins/kian/hotkey';
-import './plugins/kian/toasted';
-import './plugins/kian/vselect';
-import './plugins/kian/vue-perfect-scrollbar';
-import './plugins/kian/loadingOverlay';
-
-import './plugins/allAddons';
-
-
-import VueRouter from 'vue-router';
-import router from './router';
-Vue.use(VueRouter);
-
-// App
-import App from './App';
-new Vue({
-    el: '#app',
-    render: h => h(App),
-    router,
-});
+Vue.use(Loading);
