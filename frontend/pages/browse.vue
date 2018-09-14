@@ -43,12 +43,9 @@ import ankiCall from '~/api/ankiCall';
 import BrowserView from '~/components/browser/BrowserView';
 import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
 
-import fuzzysearch from 'fuzzysearch';
+import { fuzzyMatch } from '~/utils/utils';
 import _ from 'lodash';
 
-function fuzzyMatch (needle, haystack) {
-    return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
-}
 
 function parseQueryToken (tok) {
     const pos = tok.indexOf(':');

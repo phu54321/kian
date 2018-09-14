@@ -38,6 +38,7 @@ b-form(@submit='onSave')
                     title='Change model',
                     v-model='card.model',
                     apiType='model_list')
+                quick-model-selector.mt-2(v-model='card.model')
 
         template(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden')
             tr
@@ -58,6 +59,7 @@ import ListSelector from '../common/ListSelector';
 import Summernote from './Summernote/Summernote';
 import TuiSummernote from './TuiSummernote';
 import TagEditor from '../common/TagEditor';
+import QuickModelSelector from './QuickModelSelector';
 import './editor.scss';
 import { runHook } from '~/utils/hookBase';
 
@@ -83,6 +85,7 @@ export default {
         ListSelector,
         TagEditor,
         TuiSummernote,
+        QuickModelSelector,
     },
     methods: {
         onSave () {
