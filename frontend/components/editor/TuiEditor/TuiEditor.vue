@@ -142,8 +142,10 @@ export default {
                     evData.codemirrorIgnore = true;
 
                     const blob = item.name ? item : item.getAsFile(); // Blob or File
+                    const loader = this.$loading.show();
                     addImageBlobHook(blob, (fname) => {
                         this.cm.replaceSelection(`![](${fname})`);
+                        loader.hide();
                     });
                 }
             }
