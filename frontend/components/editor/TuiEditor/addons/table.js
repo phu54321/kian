@@ -1,4 +1,3 @@
-import { getLastClozeId } from '../../utils/cloze';
 import CodeMirror from 'codemirror';
 
 CodeMirror.commands.makeTable = function (cm) {

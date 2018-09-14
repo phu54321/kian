@@ -24,8 +24,6 @@ div
 import $ from 'jquery';
 import ankiCall from '~/api/ankiCall';
 
-import HotkeyMap from '~/components/HotkeyMap';
-
 import './cloze';
 import './table';
 import './htmledit';

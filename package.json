@@ -15,9 +15,13 @@
     "clean": "shx rm -rf dist",
     "build:backend": "pyinstaller server.spec && shx mv dist/server/* dist && shx rm -r dist/server",
     "build:frontend": "poi build frontend/index.js",
-    "test": "mocha",
     "lint": "npm-run-all lint:*",
     "lint:frontend": "eslint --fix frontend/**"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",
@@ -37,6 +41,7 @@
     "hotkeys-js": "^3.3.5",
     "html-to-text": "^4.0.0",
     "http-errors": "~1.6.2",
+    "husky": "^1.0.0-rc.14",
     "install": "^0.12.1",
     "jquery": "^3.3.1",
     "jquery-ui": "^1.12.1",

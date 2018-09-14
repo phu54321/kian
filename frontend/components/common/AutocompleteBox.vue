@@ -33,7 +33,6 @@
 
 import $ from 'jquery';
 import ColoredBadge from './ColoredBadge';
-import HotkeyMap from '../HotkeyMap';
 
 
 export default {
