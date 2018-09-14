@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import nanoid from 'nanoid';
+import ankiCall from '~/api/ankiCall';
 
 
 function base64ArrayBuffer (arrayBuffer) {
@@ -87,4 +88,13 @@ export function getRandomFilename (filename) {
     if(lastDotIndex !== -1) {
         return nanoid() + filename.substr(lastDotIndex);
     } else return filename;
+}
+
+export async function uploadImageFromDataURI (filename, datab64) {
+    filename = getRandomFilename(filename);
+
+    return ankiCall('media_upload', {
+        filename,
+        datab64,
+    });
 }
