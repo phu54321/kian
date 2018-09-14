@@ -17,7 +17,8 @@ div(v-else)
 
 import TuiEditor from './TuiEditor/TuiEditor';
 import Summernote from './Summernote/Summernote';
-import markdownDecompiler from './TuiEditor/decompiler/markdownDecompiler';
+import encodeMarkdown from './TuiEditor/renderer/markdownRenderer';
+import { turndown } from './TuiEditor/decompiler/markdownDecompiler';
 
 
 
@@ -37,8 +38,8 @@ export default {
             this.$refs.markdownConvertModal.show();
         },
         convertToMarkdown () {
-            const markdown = markdownDecompiler(this.value);
-            const newHtml = TuiEditor.encodeMarkdown(markdown);
+            const markdown = turndown(this.value);
+            const newHtml = encodeMarkdown(markdown);
             this.$refs.markdownConvertModal.hide();
             this.$emit('input', newHtml);
         }
