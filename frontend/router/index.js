@@ -19,9 +19,12 @@ import {
     routerHistory,
     writeHistory
 } from 'vue-router-back-button';
+Vue.use(Router);
+Vue.use(routerHistory);
+
 import routes from 'vue-auto-routing';
 
-const newRoutes = routes.map(route => {
+const propEnabledRoutes = routes.map(route => {
     const propsHandler = (route) => {
         // Type-cast route.parameter based on component's property definition.
         const component = route.matched[route.matched.length - 1].components.default;
@@ -38,18 +41,23 @@ const newRoutes = routes.map(route => {
     };
     return Object.assign({props: propsHandler}, route);
 });
-newRoutes.push({
-    path: '*',
-    redirect: '/',
-});
 
-Vue.use(Router);
-Vue.use(routerHistory);
+export function addRouteEntry (entry) {
+    propEnabledRoutes.push(entry);
+}
 
-const router = new Router({
-    routes: newRoutes
-});
 
-router.afterEach(writeHistory);
+export function createRouter () {
+    propEnabledRoutes.push({
+        path: '*',
+        redirect: '/',
+    });
 
-export default router;
+    const router = new Router({
+        routes: propEnabledRoutes
+    });
+
+    router.afterEach(writeHistory);
+    return router;
+}
+

@@ -24,14 +24,13 @@ import './plugins/kian/fontawesome';
 import './plugins/kian/hotkey';
 import './plugins/kian/toasted';
 import './plugins/kian/vselect';
-import './plugins/kian/vue-perfect-scrollbar';
 import './plugins/kian/loadingOverlay';
 
 import './plugins/allAddons';
 
 
 import VueRouter from 'vue-router';
-import router from './router';
+import { createRouter } from './router';
 Vue.use(VueRouter);
 
 // App
@@ -39,5 +38,5 @@ import App from './App';
 new Vue({
     el: '#app',
     render: h => h(App),
-    router,
+    router: createRouter(),
 });
