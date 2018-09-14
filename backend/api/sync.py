@@ -10,11 +10,10 @@ from utils.col import (
     mainColLock
 )
 
-import asyncio
 import time
 import traceback
 from queue import Queue
-from threading import Thread, Lock
+from threading import Thread
 
 from anki import Collection
 from anki.sync import (
@@ -37,6 +36,7 @@ from anki.hooks import (
 syncThread = None
 syncMessageQueue = Queue()
 
+
 @registerApi('sync')
 def onSync(msg):
     global syncThread
@@ -52,11 +52,12 @@ def onSync(msg):
         hKey = msg['authKey']
         auth = None
 
-    # SyncThread should open the collection, so here we kill existing connection.
+    # Free existing collection connection  to make it accessible to syncThread
     forceCloseCol()
     syncThread = SyncThread(path=db_path, hkey=hKey, auth=auth)
 
-    syncThread.listeners.append(lambda cmd, arg: syncMessageQueue.put((cmd, arg)))
+    syncThread.listeners.append(
+        lambda cmd, arg: syncMessageQueue.put((cmd, arg)))
     syncThread.start()
     return emit.emitResult(True)
 
@@ -87,6 +88,7 @@ def issueFullSync(msg):
 
     syncThread.fullSyncChoice = msg['mode']
 
+
 @registerApi('sync_terminate')
 def terminateSync(msg):
     global syncThread
@@ -99,8 +101,6 @@ def terminateSync(msg):
     return emit.emitResult(True)
 
 
-
-
 # SyncThread, from aqt/sync.py
 
 class SyncThread(Thread):
@@ -111,7 +111,7 @@ class SyncThread(Thread):
         self.auth = auth
         self.media = media
         self.hostNum = hostNum
-        self._abort = 0 # 1=flagged, 2=aborting
+        self._abort = 0  # 1=flagged, 2=aborting
         self.listeners = []
 
     def flagAbort(self):
@@ -127,17 +127,20 @@ class SyncThread(Thread):
         try:
             try:
                 self.col = Collection(self.path, log=True)
-            except:
+            except Exception:
                 self.fireEvent("corrupt")
                 return
             self.server = RemoteServer(self.hkey, hostNum=self.hostNum)
             self.client = Syncer(self.col, self.server)
             self.sentTotal = 0
             self.recvTotal = 0
+
             def syncEvent(type):
                 self.fireEvent("sync", type)
+
             def syncMsg(msg):
                 self.fireEvent("syncMsg", msg)
+
             def sendEvent(bytes):
                 if not self._abort:
                     self.sentTotal += bytes
@@ -145,6 +148,7 @@ class SyncThread(Thread):
                 elif self._abort == 1:
                     self._abort = 2
                     raise Exception("sync cancelled")
+
             def recvEvent(bytes):
                 if not self._abort:
                     self.recvTotal += bytes
@@ -161,7 +165,7 @@ class SyncThread(Thread):
             # run sync and catch any errors
             try:
                 self._sync()
-            except:
+            except Exception:
                 err = traceback.format_exc()
                 self.fireEvent("error", err)
             finally:
@@ -202,7 +206,7 @@ class SyncThread(Thread):
             log = traceback.format_exc()
             err = repr(str(e))
             if ("Unable to find the server" in err or
-                "Errno 2" in err or "getaddrinfo" in err):
+                    "Errno 2" in err or "getaddrinfo" in err):
                 self.fireEvent("offline")
             elif "sync cancelled" in err:
                 pass
@@ -263,8 +267,12 @@ class SyncThread(Thread):
     def _syncMedia(self):
         if not self.media:
             return
-        self.server = RemoteMediaServer(self.col, self.hkey, self.server.client,
-                                        hostNum=self.hostNum)
+        self.server = RemoteMediaServer(
+            self.col,
+            self.hkey,
+            self.server.client,
+            hostNum=self.hostNum
+        )
         self.client = MediaSyncer(self.col, self.server)
         try:
             ret = self.client.sync()

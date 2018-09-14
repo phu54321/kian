@@ -34,7 +34,6 @@ def listDeck(msg):
         return emit.emitResult(cIds)
 
 
-
 @registerApi('browser_get_batch')
 def getCardsBatch(msg):
     typeCheck(msg, {
@@ -59,7 +58,7 @@ def getCardsBatch(msg):
                 due = card.due
             elif card.queue == 0 or card.type == 0:  # New cards
                 due = '(new card)'
-            elif card.queue in (2,3) or (card.type == 2 and card.queue < 0):
+            elif card.queue in (2, 3) or (card.type == 2 and card.queue < 0):
                 due = col.crt + 86400 * card.due
             else:
                 due = ''

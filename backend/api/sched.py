@@ -10,8 +10,6 @@ from utils import (
     emit,
 )
 
-from .card import getNidSet
-
 
 @registerApi('card_sched_reset')
 def resetScheduling(msg):
@@ -40,12 +38,12 @@ def changeDues(msg):
         maxDue = (msg['maxDue'] - col.crt) // 86400
         for cid in cids:
             card = col.getCard(cid)
-            oldIvl, oldDue = card.ivl, card.due
+            oldDue = card.due
 
             if card.queue == 0 or card.type == 0:  # Ignore for new cards
                 continue
 
-            # TODO: Properly calculate the next interval using exponential learning curve
+            # TODO: Properly calculate the next interval using learning curve
             oldDue = card.due
             newDue = random.randint(minDue, maxDue)
             print(oldDue, newDue)

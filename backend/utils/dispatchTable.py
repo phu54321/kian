@@ -5,11 +5,13 @@ import asyncio
 
 _apiTable = {}
 
+
 def registerApi(name):
     def _(func):
         _apiTable[name] = func
         return func
     return _
+
 
 async def apiDispatch(msg):
     if 'apiType' not in msg:

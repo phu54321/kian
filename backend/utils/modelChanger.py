@@ -48,6 +48,7 @@ def newChange(self, m, nids, newModel, fmap, cmap):
     self.col._remNotes(nids)
     return new_nids
 
+
 def timestampID(db, table, t=None):
     "Return a non-conflicting timestamp for table."
     # be careful not to create multiple objects without flushing them, or they
@@ -65,7 +66,7 @@ def copyCards(col):
         model = note._model
 
         # Create new note
-        note_copy = Note(col,model=model)
+        note_copy = Note(col, model=model)
         # Copy tags and fields (all model fields) from original note
         note_copy.tags = note.tags
         note_copy.fields = note.fields
@@ -76,19 +77,18 @@ def copyCards(col):
         col.addNote(note_copy)
         nid_copy = note_copy.id
 
-        cards_copy= note_copy.cards()
-        cards= note.cards()
-        ord_to_card = {card.ord:card for card in cards}
-        ord_to_card_copy = {card.ord:card for card in cards_copy}
+        cards_copy = note_copy.cards()
+        cards = note.cards()
+        ord_to_card_copy = {card.ord: card for card in cards_copy}
         for card in cards:
             ord = card.ord
             card_copy = ord_to_card_copy.get(ord)
             if card_copy:
-                card.id=card_copy.id
+                card.id = card_copy.id
                 card.nid = nid_copy
             else:
-                card.id=timestampID(col.db,"cards")
-                card.nid=nid_copy
+                card.id = timestampID(col.db, "cards")
+                card.nid = nid_copy
             card.flush()
 
         return new_id
@@ -103,4 +103,3 @@ def changeNotesModel(col, nids, newModel):
                   getFieldMap(oldModel, newModel),
                   getCardMap(oldModel, newModel))
     col.reset()
-

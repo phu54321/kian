@@ -1,17 +1,21 @@
 from anki import Collection
 from anki.collection import _Collection
-import os, sys
+
+import os
+import sys
 from threading import Timer, Lock
 
 
-## From https://stackoverflow.com/questions/15511363/what-is-the-most-convenient-way-to-use-dialogs-in-non-gui-app
+# From https://stackoverflow.com/questions/15511363/
+# what-is-the-most-convenient-way-to-use-dialogs-in-non-gui-app
 def getDBPath():
-    import win32ui, win32con
+    import win32ui
+    import win32con
     dlg = win32ui.CreateFileDialog(
         1,
         None,
         None,
-        win32con.OFN_OVERWRITEPROMPT|win32con.OFN_FILEMUSTEXIST,
+        win32con.OFN_OVERWRITEPROMPT | win32con.OFN_FILEMUSTEXIST,
         "Anki database|collection.anki2||")
 
     if dlg.DoModal() != win32con.IDOK:
@@ -48,8 +52,10 @@ def debounce(wait):
         return debounced
     return decorator
 
+
 mainCol = None
 mainColLock = Lock()
+
 
 class Col(object):
     def __enter__(self) -> _Collection:
@@ -58,6 +64,7 @@ class Col(object):
         if not mainCol:
             mainCol = Collection(db_path, log=True)
         return mainCol
+
     def __exit__(self, type, value, trace_back):
         saveMainCollection()
         mainColLock.release()

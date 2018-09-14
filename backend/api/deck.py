@@ -19,6 +19,7 @@ def listDeck(msg):
 def listDeckDue(msg):
     with Col() as col:
         dueTree = col.sched.deckDueTree()
+
         def traverseDueTree(tree, prefix=''):
             result = []
             for name, deckId, rev, lrn, new, subTree in tree:
@@ -37,6 +38,7 @@ def listDeckDue(msg):
         return emit.emitResult(
             traverseDueTree(dueTree)
         )
+
 
 @registerApi('deck_collapse')
 def collapseDeck(msg):
@@ -67,13 +69,15 @@ def getDeckInfo(msg):
                 # SQL Code from More Overview Stats 2 addon
                 col.decks.select(did)
                 total, mature, young, unseen, suspended, due = col.db.first(
-                        '''select
+                    '''select
                         -- total
                         count(id),
                         -- mature
-                        sum(case when queue = 2 and ivl >= 21 then 1 else 0 end),
+                        sum(case when queue = 2 and
+                            ivl >= 21 then 1 else 0 end),
                         -- young / learning
-                        sum(case when queue in (1, 3) or (queue = 2 and ivl < 21) then 1 else 0 end),
+                        sum(case when queue in (1, 3) or
+                            (queue = 2 and ivl < 21) then 1 else 0 end),
                         -- unseen
                         sum(case when queue = 0 then 1 else 0 end),
                         -- suspended
@@ -120,4 +124,3 @@ def updateCardsDeck(msg):
 
         col.reset()
         return emit.emitResult(True)
-

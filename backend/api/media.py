@@ -7,6 +7,7 @@ from utils import (
 
 import base64
 
+
 @registerApi('media_upload')
 def getModelList(msg):
     typeCheck(msg, {

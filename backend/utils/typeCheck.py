@@ -5,4 +5,3 @@ def typeCheck(obj, typeDef):
                 raise TypeError
         elif isinstance(v, dict):
             typeCheck(obj[k], v)
-
