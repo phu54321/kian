@@ -115,11 +115,11 @@ def updateCardsDeck(msg):
         'cardIds': list,
     })
     with Col() as col:
-        newDeck = col.decks.byName(msg['deck'])
+        newDeckId = col.decks.id(msg['deck'], create=True)
 
         for cardId in msg['cardIds']:
             card = col.getCard(cardId)
-            card.did = newDeck['id']
+            card.did = newDeckId
             card.flush()
 
         col.reset()
