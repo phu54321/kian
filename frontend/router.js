@@ -24,7 +24,7 @@ Vue.use(routerHistory);
 
 import routes from 'vue-auto-routing';
 
-const propEnabledRoutes = routes.map(route => {
+function propEnableRouteEntry (route) {
     const propsHandler = (route) => {
         // Type-cast route.parameter based on component's property definition.
         const component = route.matched[route.matched.length - 1].components.default;
@@ -40,24 +40,29 @@ const propEnabledRoutes = routes.map(route => {
         return typeCastedParams;
     };
     return Object.assign({props: propsHandler}, route);
-});
-
-export function addRouteEntry (entry) {
-    propEnabledRoutes.push(entry);
 }
 
+const propEnabledRoutes = routes.map(propEnableRouteEntry);
 
-export function createRouter () {
-    propEnabledRoutes.push({
-        path: '*',
-        redirect: '/',
-    });
+export default {
+    add (path, component) {
+        propEnabledRoutes.push(propEnableRouteEntry({
+            path,
+            component
+        }));
+    },
 
-    const router = new Router({
-        routes: propEnabledRoutes
-    });
+    createRouter () {
+        propEnabledRoutes.push({
+            path: '*',
+            redirect: '/',
+        });
 
-    router.afterEach(writeHistory);
-    return router;
-}
+        const router = new Router({
+            routes: propEnabledRoutes
+        });
 
+        router.afterEach(writeHistory);
+        return router;
+    }
+};

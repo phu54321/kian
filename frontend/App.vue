@@ -30,13 +30,21 @@ div.app-body
 
                 b-collapse(is-nav, id="nav_collapse")
                     b-navbar-nav.ml-auto
+                        // Plugin-customizable toolbar
+                        b-nav-item(v-for='item in toolbarList', :key='item.title', :to='item.to', v-b-tooltip.hover, :title='item.title')
+                            icon(:name='item.icon')
+                            span.d-sm-none.ml-2 {{item.title}}
+                        b-nav-text.ml-3(v-if='toolbarList')
+
+                        // Default Kian toolbar
                         b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet (Ctrl/Cmd)')
                             icon(name='regular/keyboard', scale='1.3')
                             span.d-sm-none.ml-2 Show cheatsheet
                         b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
                             icon(name='sync')
                             span.d-sm-none.ml-2 Sync now
-                        b-nav-text.ml-4
+                        b-nav-text.ml-3
+
                         b-nav-item(v-hotkey='"H"', to='/decks', v-b-tooltip.hover, title='Home')
                             icon(name='home')
                             span.d-sm-none.ml-2 Home
@@ -49,10 +57,6 @@ div.app-body
                         b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                             icon(name='chart-bar')
                             span.d-sm-none.ml-2 Statistics
-                        b-nav-text.ml-4
-                        b-nav-item(to='/testbed', v-b-tooltip.hover, title='Testing zone')
-                            icon(name='flask')
-                            span.d-sm-none.ml-2 Testbed
 
     b-container.app-container
         router-view
@@ -65,11 +69,14 @@ div.app-body
 
 <script>
 
-import './css/kian.scss';
 import ErrorDialog from './components/ErrorDialog';
 import HotkeyMap from './components/HotkeyMap';
 import CookieLaw from 'vue-cookie-law';
 import SyncDialog from './components/SyncDialog';
+
+import './css/kian.scss';
+
+import MainToolbar from './toolbar';
 
 export default {
     components: {
@@ -78,10 +85,12 @@ export default {
         CookieLaw,
         SyncDialog,
     },
-    data () {
-        return { msg: 'world' };
-    }
+
+    computed: {
+        toolbarList: () => MainToolbar.list(),
+    },
 };
+
 </script>
 
 <style scoped>
