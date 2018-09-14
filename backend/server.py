@@ -13,6 +13,9 @@ from utils.dispatchTable import apiDispatch
 from utils.col import db_path
 
 
+assert api  # Disable unused import warning
+
+
 NET_PORT = 28735
 LOG_FILENAME = 'server.out'
 
@@ -21,9 +24,11 @@ LOG_FILENAME = 'server.out'
 
 sio = socketio.AsyncServer()
 
+
 @sio.on('connect')
 def connect(sid, environ):
     print("socket.io connected:", sid)
+
 
 @sio.on('msg')
 async def message(sid, data):
@@ -35,9 +40,11 @@ async def message(sid, data):
     result['syncKey'] = syncKey
     await sio.emit('msg', result, room=sid)
 
+
 @sio.on('disconnect')
 def disconnect(sid):
     print('socket.io disconnected:', sid)
+
 
 def main():
     logging.basicConfig(
@@ -62,7 +69,9 @@ def main():
             resolvedPath = os.path.join('frontend/', path)
             print('try1', resolvedPath)
             if not os.path.exists(resolvedPath):
-                resolvedPath = os.path.join(os.path.dirname(db_path), 'collection.media/', path)
+                resolvedPath = os.path.join(
+                    os.path.dirname(db_path),
+                    'collection.media/', path)
                 print('try2', resolvedPath)
                 if not os.path.exists(resolvedPath):
                     return web.Response(status=404, text='Not found')
@@ -73,7 +82,7 @@ def main():
                         content_type=mimetypes.guess_type(resolvedPath)[0],
                         body=f.read(),
                     )
-            except:
+            except Exception:
                 return web.Response(status=404, text='Not found')
 
         app.router.add_route('GET', '/{tail:.*}', handler)
@@ -83,7 +92,6 @@ def main():
         webbrowser.open('http://localhost:%d/' % NET_PORT)
 
     web.run_app(app, host='127.0.0.1', port=NET_PORT)
-
 
 
 if __name__ == '__main__':

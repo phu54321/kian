@@ -31,6 +31,7 @@ def getNote(msg):
             'tags': note.tags,
         })
 
+
 @registerApi('note_update')
 def updateNote(msg):
     typeCheck(msg, {
@@ -52,7 +53,6 @@ def updateNote(msg):
         return emit.emitResult(True)
 
 
-
 @registerApi('nid_from_cid')
 def getNidFromCid(msg):
     typeCheck(msg, {
@@ -61,6 +61,7 @@ def getNidFromCid(msg):
     with Col() as col:
         cid = msg['cardId']
         return emit.emitResult(col.getCard(cid).nid)
+
 
 @registerApi('cid_from_nid')
 def getCidFromNid(msg):
@@ -90,7 +91,7 @@ def addNote(msg):
     })
     with Col() as col:
         model = col.models.byName(msg['model'])
-        did = col.decks.id(msg['deck'], create=True)  # cf) Create deck if not exists
+        did = col.decks.id(msg['deck'], create=True)
         fields = msg['fields']
         tags = msg['tags']
 
@@ -98,12 +99,16 @@ def addNote(msg):
             return emit.emitError('First field should not be empty')
 
         if isClozeNote(fields) and model['type'] == 0:
-            if msg['model'] in ('Basic', _('Basic')):  # Automatic Basic → Cloze
-                model = col.models.byName('Cloze') or col.models.byName(_('Cloze'))
+            # Automatic Basic → Cloze
+            if msg['model'] in ('Basic', _('Basic')):
+                model = (
+                    col.models.byName('Cloze') or
+                    col.models.byName(_('Cloze'))
+                )
             else:
                 model = None
             if not model:
-                return emit.emitError('You need a cloze note type to make cloze notes')
+                return emit.emitError('Need a cloze note type for cloze notes')
 
         if not isClozeNote(fields) and model['type'] == 1:
             return emit.emitError('You need at least one cloze deletion.')

@@ -14,6 +14,7 @@ def getModelList(msg):
     with Col() as col:
         return emit.emitResult(col.models.allNames())
 
+
 @registerApi('model_get')
 def getModel(msg):
     typeCheck(msg, {

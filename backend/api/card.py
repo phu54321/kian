@@ -64,6 +64,7 @@ def updateCard(msg):
         card.flush()
         return emit.emitResult(True)
 
+
 @registerApi('card_delete_batch')
 def deleteCardBatch(msg):
     typeCheck(msg, {
