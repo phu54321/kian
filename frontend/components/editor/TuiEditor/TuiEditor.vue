@@ -15,12 +15,11 @@
 
 <template lang="pug">
 
-.tui-editor-container
+.tui-editor-container(:class='{focused: focused}')
     // hotkey trap
     hotkey-pack(:depth='2', :pack='codemirrorShortcuts', pack-name='CodeMirror shortcuts')
 
     .codemirror-editor(ref='mdEdit')
-
     .preview
         .preview-body
             shadow-dom(:html='value')
@@ -131,6 +130,7 @@ export default {
         return {
             cm: null,
             openPreview: false,
+            focused: false,
         };
     },
 
@@ -148,6 +148,9 @@ export default {
             lineWrapping: true,
             extraKeys,
         });
+
+        this.cm.on('focus', () => this.focused = true);
+        this.cm.on('blur', () => this.focused = false);
 
         // Image paste support. Code from tui.editor
         this.cm.on('paste', (cm, evData) => {
@@ -215,6 +218,7 @@ export default {
 <style scoped lang='scss'>
 
 .tui-editor-container {
+    position: relative;
     .codemirror-editor {
         /deep/ .CodeMirror {
             font-family: 'D2Coding', 'Courier New', Courier, monospace;
@@ -222,20 +226,20 @@ export default {
         }    
     }
 
-    .preview {
-        width: 100%;
-        z-index: 10;
-        opacity: .9;
-        pointer-events: none;
+    .preview-body {
+        padding: .5em 1em;
+        background-color: #f0fafe;
+        border-left: 3px solid #81d4fa;
+        transition:
+            .2s linear background-color,
+            .2s linear border,
+    }
 
+    &.focused {
         .preview-body {
-            padding: 1em;
-            background-color: #f0fafe;
-            border-left: 3px solid #81d4fa;
-
-            /deep/ img {
-                max-width: 100%;
-            }
+            padding: .5em 1em;
+            background-color: #FDECEC;
+            border-left: 3px solid #FA9D9D;
         }
     }
 }
