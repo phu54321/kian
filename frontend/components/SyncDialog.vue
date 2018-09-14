@@ -40,7 +40,7 @@ b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='o
                 b-badge(variant='primary') Sent: {{formatBytes(sendBytes)}}
                 b-badge.ml-2(variant='success') Recv: {{formatBytes(recvBytes)}}
         b-progress.mt-2(:value='100', :max='100', animated)
-        ul.list-group
+        ul.list-group(ref='messageContainer')
             li.list-group-item(v-for='message in syncMessages') {{message}}
 
 </template>
@@ -69,10 +69,14 @@ export default {
             recvBytes: 0,
         };
     },
+    updated () {
+        const container = this.$refs.messageContainer;
+        if(container) container.scrollTop = container.scrollHeight;
+    },
     methods: {
         formatBytes (bytes) {
             if(bytes >= 1024 * 1024) {
-                return (bytes / 1024 * 1024).toFixed(1) + 'MB';
+                return (bytes / 1024 / 1024).toFixed(1) + 'MB';
             } else if(bytes >= 1024) {
                 return (bytes / 1024).toFixed(1) + 'KB';
             } else {
