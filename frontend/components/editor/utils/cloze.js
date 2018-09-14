@@ -5,4 +5,4 @@ export function getLastClozeId (code) {
         if (maxClozeId < clozeId) maxClozeId = clozeId;
     });
     return maxClozeId;
-};
+}

@@ -30,7 +30,7 @@ div.app-body
 
                 b-collapse(is-nav, id="nav_collapse")
                     b-navbar-nav.ml-auto
-                        b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet')
+                        b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet (Ctrl/Cmd)')
                             icon(name='regular/keyboard', scale='1.3')
                             span.d-sm-none.ml-2 Show cheatsheet
                         b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)

@@ -28,8 +28,6 @@ div
                 li(v-for='item in pack[1]')
                     key-image.kimg(:keys='item[0]')
                     .key-desc {{item[1]}}
-
-    span(v-hotkey='"esc"', @click='toggleShow', title='Show cheatsheet')
 </template>
 
 <script>
@@ -37,8 +35,6 @@ div
 import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey';
 import KeyImage from './common/KeyImage';
 import _ from 'lodash';
-
-const hotkeyPack = {};
 
 function sortObjectItemsByKey (obj) {
     const keys = Object.keys(obj);
@@ -51,7 +47,16 @@ export default {
             items: [],
             show: false,
             lastActiveElement: null,
+            openHotkeyMapTimer: null,
         };
+    },
+    created () {
+        window.addEventListener('keydown', this.detectLongCtrlPress_keydown, true);
+        window.addEventListener('keyup', this.detectLongCtrlPress_keyup, true);
+    },
+    destroyed () {
+        window.removeEventListener('keydown', this.detectLongCtrlPress_keydown);
+        window.removeEventListener('keyup', this.detectLongCtrlPress_keyup);
     },
     components: {
         KeyImage,
@@ -62,7 +67,22 @@ export default {
             if(document.querySelectorAll('.modal.show').length > 0) return;
             this.lastActiveElement = document.activeElement;
             this.show = true;
-        }
+        },
+        detectLongCtrlPress_keydown (event) {
+            if (event.keyCode === 17 && this.openHotkeyMapTimer === null) {  // Ctrl on Win/Linux, Cmd on macOS
+                this.openHotkeyMapTimer = window.setTimeout(() => {
+                    this.toggleShow();
+                    window.clearTimeout(this.openHotkeyMapTimer);
+                    this.openHotkeyMapTimer = null;
+                }, 1300);
+            }
+        },
+        detectLongCtrlPress_keyup (event) {
+            if(event.keyCode === 17 && this.openHotkeyMapTimer) {
+                window.clearTimeout(this.openHotkeyMapTimer);
+                this.openHotkeyMapTimer = null;
+            }
+        },
     },
     watch: {
         show () {

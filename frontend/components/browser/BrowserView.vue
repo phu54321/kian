@@ -250,7 +250,7 @@ export default {
         },
     },
     methods: {
-        onScroll: _.throttle(function() {
+        onScroll: _.throttle(function () {
             if(!this.$refs.mainTable) return;
 
             const {top} = this.$refs.mainTable.getBoundingClientRect();
