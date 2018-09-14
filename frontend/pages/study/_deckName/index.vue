@@ -32,12 +32,12 @@ div
     p.text-center
         template(v-if='!flipped')
             .mb-4
-                shadow-dom.userContent.front.card(:html="card.front")
+                shadow-dom.front.card(:html="card.front")
             b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
 
         template(v-else)
             .mb-4
-                shadow-dom.userContent.back.card(:html="card.back")
+                shadow-dom.back.card(:html="card.back")
             b-button.mr-2(
                 v-for='(button, index) in answerButtons',
                 :key='button'

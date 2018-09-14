@@ -17,7 +17,8 @@
 
 .tui-editor-container(:class='{focused: focused}')
     // hotkey trap
-    hotkey-pack(:depth='2', :pack='codemirrorShortcuts', pack-name='CodeMirror shortcuts')
+    hotkey-pack(:depth='2', :pack='codeMirrorKeymap', pack-name='CodeMirror shortcuts')
+    hotkey-pack(:depth='2', :pack='textStylingKeymap', pack-name='Text styling shortcuts')
 
     .codemirror-editor(ref='mdEdit')
     .preview
@@ -52,6 +53,8 @@ import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
 import markdownRenderer from './renderer/markdownRenderer';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
+
+
 
 
 const encoderDom = document.createElement('div');
@@ -110,11 +113,28 @@ function addImageBlobHook (blob, callback) {
     });
 }
 
-function camelCaseToSpacedText (str) {
-    return str
-        .replace(/[A-Z]/g, (s) => ` ${s.toLowerCase()}`)
-        .replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.substr(1));
-}
+
+const codeMirrorKeymap = [
+    ['alt+down', 'Move line down'],
+    ['alt+up', 'Move line up'],
+    ['shift+ctrl+d', 'Duplicate line'],
+    ['ctrl+d', 'Select next occurrence'],
+    ['alt+f3', 'Select all occurrences'],
+    ['f9', 'Sort lines'],
+    ['ctrl+j', 'Join lines'],
+    ['tab', 'Indent list'],
+    ['shift+tab', 'Dedent list'],
+];
+
+const textStylingKeymap = [
+    ['ctrl+b', 'Bold'],
+    ['ctrl+i', 'Italic'],
+    ['ctrl+shift+s', 'Strikethrough'],
+    ['ctrl+/', 'Comment'],
+    ['ctrl+shift+c', 'Cloze (new number)'],
+    ['ctrl+shift+f', 'Cloze (same number)'],
+    ['ctrl+shift+r', 'Make table (power format pack)'],
+];
 
 
 export default {
@@ -180,21 +200,8 @@ export default {
         markdown () {
             return decodeMarkdown(this.value) || '';
         },
-        codemirrorShortcuts () {
-            const sublimeKeymap = CodeMirror.keyMap.sublime;
-            const fallthroughKeymap = CodeMirror.keyMap[sublimeKeymap.fallthrough];
-            const keyMap = Object.assign({}, fallthroughKeymap, sublimeKeymap, extraKeys);
-
-            return (
-                Object.keys(keyMap)
-                    .filter(k => ['fallthrough', 'esc'].indexOf(k.toLowerCase()) === -1)
-                    .filter(k => k.indexOf(' ') === -1)  // Sequence shortcut is not supported by VueSimpleHotkey.
-                    .map(k => [
-                        k.replace(/-/g, '+').toLowerCase(),
-                        camelCaseToSpacedText(keyMap[k]),
-                    ])
-            );
-        },
+        codeMirrorKeymap: () => codeMirrorKeymap,
+        textStylingKeymap: () => textStylingKeymap,
     },
 
     watch: {
