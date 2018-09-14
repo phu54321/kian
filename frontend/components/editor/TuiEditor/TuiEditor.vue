@@ -47,55 +47,13 @@ import './addons/cloze';
 import './addons/textStyle';
 import './addons/table';
 
-import crc32 from 'crc-32';
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
-import markdownRenderer from './renderer/markdownRenderer';
+import encodeMarkdown from './renderer/markdownRenderer';
+import decodeMarkdown from './decompiler/markdownDecompiler';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
-
-
-
-const encoderDom = document.createElement('div');
-
-function encodeMarkdown (markdown) {
-    if(markdown === '') return '';
-
-    let html = markdownRenderer(markdown);
-
-    // Note: Browser may apply its specific escaping rules when HTML really gets into DOM.
-    // ( for instance, browser may remove unmatched opening/closing tags without warning )
-    // Since `decodeMarkdown` works on this 'escaped' html, we need to emulate the same
-    // escaping process on this function for CRC32 to match.
-    encoderDom.innerHTML = html;
-    html = encoderDom.innerHTML;
-
-    const htmlHash = crc32.str(html.trim());
-    return `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript><div class='tui-html'>${html}</div>`;
-}
-
-
-function decodeMarkdown (html) {
-    if(!html) return '';
-
-    const parser = new DOMParser();
-    const domElement = parser.parseFromString(html, 'text/html');
-    
-    const markdownElements = domElement.getElementsByClassName('tui-md');
-    if(markdownElements.length !== 1) return null;
-    const markdown = markdownElements[0].innerHTML;
-    const expectedHtmlCRC = markdownElements[0].getAttribute('hash');
-
-    const htmlElement = domElement.getElementsByClassName('tui-html');
-    if(htmlElement.length !== 1) return null;
-    const renderedHtml = htmlElement[0].innerHTML;
-    const htmlCRC = crc32.str(renderedHtml.trim());
-
-    if(htmlCRC.toString() !== expectedHtmlCRC) return null;
-
-    return markdown;
-}
 
 function addImageBlobHook (blob, callback) {
     const filename = getRandomFilename(blob.name);
@@ -143,8 +101,6 @@ export default {
     isEditableHtml (html) {
         return decodeMarkdown(html) !== null;
     },
-
-    encodeMarkdown,
 
     data () {
         return {
