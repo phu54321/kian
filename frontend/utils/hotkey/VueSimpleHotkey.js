@@ -103,9 +103,9 @@ function registerHotkey (el, binding, vnode) {
     let hotkeyList = binding.value;
     if (typeof hotkeyList === 'string') hotkeyList = [hotkeyList];
     const hotkeyString = hotkeyList.map(x => x.toLowerCase());
-    const props = vnode.data.attrs || vnode.data.props || {};
+    const props = Object.assign({}, vnode.data.attrs, vnode.data.props);
     const title = props.title || $(el).text() || '(untitled hotkey)';
-    const packName = props.packName || 'default';
+    const packName = props.packName || props['pack-name'] || 'default';
 
     for(let kString of hotkeyString) {
         addHotkeyToMap(kString, vnode, title, binding.arg | 0, packName);

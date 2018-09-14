@@ -138,6 +138,7 @@ export default {
 
 .item-input {
     display: flex;
+    flex-wrap: wrap;
     .item-existing {
         flex: 0;
         vertical-align: top;
