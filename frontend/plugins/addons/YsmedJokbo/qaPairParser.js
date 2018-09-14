@@ -81,6 +81,10 @@ export function parseQAPair (image) {
             .crop(minLineX + XPADDING, 0, croppedWidth - minLineX - XPADDING, croppedHeight)
             .padWhite(1).autocrop().padWhite(20);
 
+        // Ignore some too-small-for-qapair images
+        if(questionImg.bitmap.height < 60 && answerImg.bitmap.height < 60) {
+            return;
+        }
         qaPair.push([questionImg, answerImg]);
     });
     return qaPair;
