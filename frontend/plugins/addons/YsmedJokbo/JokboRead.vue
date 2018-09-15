@@ -17,6 +17,8 @@
 div
     h1.mb-4 JokboReader
 
+    div(ref='scriptHolder')
+
     list-selector(
         v-model='deck',
         apiType='deck_list')
@@ -45,7 +47,6 @@ div
 <script>
 
 import Jimp from 'jimp';
-import PDFJS from 'pdfjs';
 import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
 import ankiCall from '~/api/ankiCall';
@@ -61,6 +62,12 @@ export default {
     destroyed () {
         document.removeEventListener('paste', this.handlePaste);
     },
+    mounted () {
+        const scriptEl = document.createElement('script');
+        scriptEl.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.550/pdf.min.js');
+        this.$refs.scriptHolder.appendChild(scriptEl);
+        this.PDFJS = window.pdfjsLib;
+    },
     data () {
         return {
             qaPair: [],
@@ -68,6 +75,7 @@ export default {
             deck: 'Default',
             addedCardIds: [],
             updateCardIds: 0,
+            PDFJS: null,
         };
     },
     mixins: [asyncData(async () => {
@@ -103,7 +111,7 @@ export default {
 
             const URLObj = window.URL || window.webkitURL;
             const source = URLObj.createObjectURL(pdfFile);
-            const pdf = await PDFJS.getDocument({ url: source });
+            const pdf = await this.PDFJS.getDocument({ url: source });
 
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
