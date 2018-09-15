@@ -14,7 +14,6 @@ module.exports = {
         config.externals = {
             jquery: 'jQuery',
             $: 'jQuery',
-            pdfjs: 'PDFJS',
         };
         config.resolve = {
             extensions: ['.js', '.vue', '.json'],
