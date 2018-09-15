@@ -66,7 +66,9 @@ export default {
         const scriptEl = document.createElement('script');
         scriptEl.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.550/pdf.min.js');
         this.$refs.scriptHolder.appendChild(scriptEl);
-        this.PDFJS = window.pdfjsLib;
+        this.$nextTick(() => {
+            this.PDFJS = window.pdfjsLib;
+        });
     },
     data () {
         return {
