@@ -98,11 +98,6 @@ export default {
                 ]);
         }
     },
-    computed: {
-        hotkeyList () {
-            return Object.keys(this.globalHotkeyMap).sort();
-        }
-    }
 };
 
 </script>

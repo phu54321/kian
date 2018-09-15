@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-    b-modal(v-model='modalShow', size='lg', :title='title', :return-focus='retFocus')
+    b-modal(v-model='modalShow', lazy, size='lg', :title='title', :return-focus='retFocus')
         template(v-if='msg')
             pre.mt-3 {{msg}}
         div(slot='modal-footer')
