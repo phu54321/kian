@@ -12,18 +12,15 @@ export function parseQAPair (image) {
     const qaPair = [];
 
     // y-split things
-    const {data, width, height} = image.bitmap;
+    const {width, height} = image.bitmap;
 
     // Split by white horizontal lines
     const isYLineWhite = [];
     for(let y = 0 ; y < height ; y++) {
         let x;
         for(x = 0 ; x < width ; x++) {
-            const index = image.getPixelIndex(x, y);
-            const r = data[index + 0];
-            const g = data[index + 1];
-            const b = data[index + 2];
-            if(!(r === 0xFF && g === 0xFF && b === 0xFF)) break;
+            const col = image.getPixelColor(x, y);
+            if((col >>> 8) !== 0xFFFFFF) break;
         }
         isYLineWhite.push(x === width);
     }
@@ -46,7 +43,6 @@ export function parseQAPair (image) {
         const cropped = image.clone().crop(0, y0 + YPADDING, width, cropHeight).autocrop();
 
         const {
-            data: croppedData,
             width: croppedWidth,
             height: croppedHeight
         } = cropped.bitmap;
@@ -54,18 +50,14 @@ export function parseQAPair (image) {
 
         let minLineX = -1;
         for(let x = 0 ; x < croppedWidth ; x++) {
-            const x0Index = image.getPixelIndex(x, 0);
-            const r = croppedData[x0Index + 0], g = croppedData[x0Index + 1], b = croppedData[x0Index + 2];
+            const x0Color = cropped.getPixelColor(x, 0);
+            const {r, g, b} = Jimp.intToRGBA(x0Color);
             if(r > 0x80 || g > 0x80 || b > 0x80) continue;
 
             let y;
             for(y = 1 ; y < croppedHeight ; y++) {
-                const index = image.getPixelIndex(x, 0);
-                if(
-                    r !== croppedData[index + 0] ||
-                    g !== croppedData[index + 1] ||
-                    b !== croppedData[index + 2]
-                ) break;
+                const color = cropped.getPixelColor(x, y);
+                if(color !== x0Color) break;
             }
             if(y !== croppedHeight) continue;
 
