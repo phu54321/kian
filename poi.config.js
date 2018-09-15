@@ -10,6 +10,10 @@ module.exports = {
         title: 'Kian',
         description: 'Spaced learning app'
     },
+    restartOnFileChanges: [
+        'frontend/addons/staticServe.js',
+        'poi.config.js',
+    ],
     configureWebpack (config, _context) {
         config.externals = {
             jquery: 'jQuery',
@@ -35,8 +39,10 @@ module.exports = {
     },
     devServer: {
         after (app) {
+            const addonStaticServe = require('./frontend/addons/staticServe');
             app.use(express.static('backend/testdata/collection.media'));
             app.use(express.static('frontend/public'));
+            addonStaticServe(app);
         }
     }
 };

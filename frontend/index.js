@@ -15,18 +15,18 @@
 
 import Vue from 'vue';
 
-import './plugins/kian/asyncComputed';
-import './plugins/kian/axios';
-import './plugins/kian/bootstrap-vue';
-import './plugins/kian/cookie';
-import './plugins/kian/datepicker';
-import './plugins/kian/fontawesome';
-import './plugins/kian/hotkey';
-import './plugins/kian/toasted';
-import './plugins/kian/vselect';
-import './plugins/kian/loadingOverlay';
+import './helpers/asyncComputed';
+import './helpers/axios';
+import './helpers/bootstrap-vue';
+import './helpers/cookie';
+import './helpers/datepicker';
+import './helpers/fontawesome';
+import './helpers/hotkey';
+import './helpers/toasted';
+import './helpers/vselect';
+import './helpers/loadingOverlay';
 
-import './plugins/allAddons';
+import './addons/install';
 
 
 import VueRouter from 'vue-router';
