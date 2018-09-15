@@ -25,13 +25,13 @@ b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='o
 
         template(slot='modal-footer')
             b-btn(variant='primary', @click='startSync', v-hotkey='"enter"') Login
-            b-btn(variant='outline-secondary', @click='show = false', v-hotkey='"esc"') Cancel
+            b-btn(variant='outline-secondary', @click='show = false', v-hotkey='"esc"', pack-name='Sync dialog') Cancel
 
     template(v-else-if='fullSyncAsked')
         p Should issue full sync.
         b-btn(variant='outline-danger', @click='fullSyncOption("upload")') Upload
         b-btn.ml-1(variant='outline-danger', @click='fullSyncOption("download")') Download
-        b-btn.ml-1(variant='outline-secondary', @click='fullSyncOption("cancel")', v-hotkey='"esc"') Cancel
+        b-btn.ml-1(variant='outline-secondary', @click='fullSyncOption("cancel")', v-hotkey='"esc"', pack-name='Sync dialog') Cancel
 
     template(v-else)
         template(slot='modal-header')
