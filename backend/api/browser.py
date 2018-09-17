@@ -180,3 +180,20 @@ def toggleMarked(msg):
                 note.flush()
 
         return emit.emitResult(True)
+
+
+@registerApi('card_toggle_suspended_batch')
+def toggleSuspended(msg):
+    typeCheck(msg, {
+        'cardIds': list,
+    })
+    with Col() as col:
+        cardIds = msg['cardIds']
+        cards = [col.getCard(cid) for cid in cardIds]
+        if all(card.queue == -1 for card in cards):
+            col.sched.unsuspendCards(cardIds)
+        else:
+            col.sched.suspendCards(cardIds)
+
+        col.reset()
+        return emit.emitResult(True)
