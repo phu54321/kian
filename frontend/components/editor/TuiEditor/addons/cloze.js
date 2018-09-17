@@ -92,6 +92,6 @@ CodeMirror.defineMode('kian_gfm', function (config, modeConfig) {
         gfmConfig[attr] = modeConfig[attr];
     }
     gfmConfig.name = 'gfm';
-    return CodeMirror.overlayMode(clozeHighlighter, CodeMirror.getMode(config, gfmConfig));
+    return CodeMirror.overlayMode(CodeMirror.getMode(config, gfmConfig), clozeHighlighter);
 
 }, 'markdown');
