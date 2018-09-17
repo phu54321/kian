@@ -38,9 +38,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
   if (modeCfg.strikethrough === undefined)
     modeCfg.strikethrough = false;
 
-  if (modeCfg.emoji === undefined)
-    modeCfg.emoji = false;
-
   if (modeCfg.fencedCodeBlockHighlighting === undefined)
     modeCfg.fencedCodeBlockHighlighting = true;
 
@@ -70,7 +67,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
     em: "em",
     strong: "strong",
     strikethrough: "strikethrough",
-    emoji: "builtin"
   };
 
   for (var tokenType in tokenTypes) {
@@ -357,7 +353,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
       if (state.strong) { styles.push(tokenTypes.strong); }
       if (state.em) { styles.push(tokenTypes.em); }
       if (state.strikethrough) { styles.push(tokenTypes.strikethrough); }
-      if (state.emoji) { styles.push(tokenTypes.emoji); }
       if (state.linkText) { styles.push(tokenTypes.linkText); }
       if (state.code) { styles.push(tokenTypes.code); }
       if (state.image) { styles.push(tokenTypes.image); }
@@ -616,13 +611,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
       }
     }
 
-    if (modeCfg.emoji && ch === ":" && stream.match(/^[a-z_\d+-]+:/)) {
-      state.emoji = true;
-      if (modeCfg.highlightFormatting) state.formatting = "emoji";
-      var retType = getType(state);
-      state.emoji = false;
-      return retType;
-    }
 
     if (ch === ' ') {
       if (stream.match(/^ +$/, false)) {
@@ -767,7 +755,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
         trailingSpace: 0,
         trailingSpaceNewLine: false,
         strikethrough: false,
-        emoji: false,
         fencedEndRE: null
       };
     },
@@ -796,7 +783,6 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
         em: s.em,
         strong: s.strong,
         strikethrough: s.strikethrough,
-        emoji: s.emoji,
         header: s.header,
         setext: s.setext,
         hr: s.hr,
