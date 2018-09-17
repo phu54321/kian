@@ -116,7 +116,7 @@ export default {
 
     mounted () {
         this.cm = CodeMirror(this.$refs.mdEdit, {
-            mode: 'gfm',
+            mode: 'kian_gfm',
             keyMap: 'sublime',
             value: this.markdown,
             lineNumbers: true,
