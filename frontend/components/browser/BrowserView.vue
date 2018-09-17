@@ -77,8 +77,12 @@ div.browser-view
                 b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', v-b-modal.browserRemoveTags)
                     icon.mr-1(name='minus')
                     | Tag
+
+            b-button-group.mr-2
                 b-button(size='sm', variant='danger', v-hotkey=['ctrl+k'], v-b-tooltip.hover, title='Mark', @click='markCards')
                     icon(name='star')
+                b-button(size='sm', variant='warning', v-hotkey=['ctrl+j'], v-b-tooltip.hover, title='Suspend', @click='suspendCards')
+                    icon.text-white(name='pause')
 
             b-button-group.mr-2
                 b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', v-b-modal.browserResetSched)
@@ -332,7 +336,14 @@ export default {
                 cardIds: this.selectedCardList
             });
             this.updateView++;
-        }
+        },
+
+        async suspendCards () {
+            await ankiCall('card_toggle_suspended_batch', {
+                cardIds: this.selectedCardList
+            });
+            this.updateView++;
+        },
     }
 };
 
