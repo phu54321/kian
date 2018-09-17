@@ -40,14 +40,6 @@ div.browser-view
                     )
                         td(v-for='field in fields', :class='field.class')
                             | {{ getFormatter(field.formatter)(command.card[field.key]) }}
-                    tr.editor-row(v-if='selectedCardId === command.card.id', :key='`${command.index}_editor`')
-                        td(:colspan='fields.length')
-                            .editor-row-div
-                                browser-editor(
-                                    :cardId='selectedCardId'
-                                    :key='command.card.id',
-                                    @updateCardIds='updateCardIds'
-                                )
 
                 template(v-else-if='command.type === "space"')
                     tr.spacer-row(:key='command.index')
@@ -61,9 +53,16 @@ div.browser-view
                                 | &nbsp;Oops, no cards :(
                             p Try different query instead.
 
-    .browser-tools
-        .tools-container(:class='{enabled: selectedCardList.length > 0}')
+    .editor-spacer(v-if='selectedCardId !== -1')
+    .editor-row(v-if='selectedCardId !== -1')
+        browser-editor(
+            :cardId='selectedCardId',
+            @updateCardIds='updateCardIds',
+        )
 
+
+    .browser-tools(:class='{ "spacing-on-editor": selectedCardId !== -1 }')
+        .tools-container(:class='{enabled: selectedCardList.length > 0}')
             b-button-group.mr-2
                 b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
                     icon.mr-1(name='sync')
@@ -258,14 +257,6 @@ export default {
             const PADDING = 50;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
-
-            // Adjust visible range according to opened editor
-            const currentEditorPosition = this.selectedCardIndex;
-            if(currentEditorPosition !== -1) {
-                if(this.visibleMaxIndex < currentEditorPosition) {
-                    this.visibleMaxIndex += 30;
-                }
-            }
         }, 100),
 
         issueSortBy (sortField) {
@@ -341,54 +332,72 @@ export default {
         }
     }
 
-    tbody tr {
-        transition: background-color .3s;
-        &.item-row {
-            user-select: none;
-            font-size: .8em;
-            &:hover {
-                background-color: #eee;
-            }
-            &.marked {
-                background-color: #fdd8d8;
-            }
-            &.suspended {
-                background-color: #fffc9f;
-            }
-            &.selected {
-                background-color: #afe2c4;
-            }
-            height: 30px;
-        }
-        &.editor-row {
-            td {
-                padding: 5px 0;
-                .editor-row-div {
-                    border: 3px double #eee;
-                    padding: 20px;
-                    height: 885px;
-                    overflow-y: auto;
+    table {
+        tbody tr {
+            transition: background-color .3s;
+            &.item-row {
+                user-select: none;
+                font-size: .8em;
+                &:hover {
+                    background-color: #eee;
                 }
+                &.marked {
+                    background-color: #fdd8d8;
+                }
+                &.suspended {
+                    background-color: #fffc9f;
+                }
+                &.selected {
+                    background-color: #afe2c4;
+                }
+                height: 30px;
             }
-            height: 900px;
+            &.spacer-row {
+                background:
+                    linear-gradient(90deg, #fff 16px, transparent 1%) center,
+                    linear-gradient(#fff 16px, transparent 1%) center,
+                    #eee;
+                background-size: 20px 20px;
+            }
+            .no-card {
+                text-align: center;
+                padding: 4em;
+            }
         }
-        &.spacer-row {
-            background:
-                linear-gradient(90deg, #fff 16px, transparent 1%) center,
-                linear-gradient(#fff 16px, transparent 1%) center,
-                #eee;
-            background-size: 20px 20px;
-          }
-        .no-card {
+        margin-bottom: 0;
+    }
+
+    .editor-spacer {
+        height: 350px;
+    }
+    .editor-row {
+        position: fixed;
+
+        border: 5px double #eee;
+        height: 350px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        padding: 40px;
+        background-color: white;
+        overflow-y: auto;
+
+        .browser-not-selected {
+            color: #aaa;
             text-align: center;
-            padding: 4em;
+            font-size: 3em;
         }
     }
+
 
     .browser-tools {
         text-align: center;
         position: sticky;
-        bottom: 4em;
+        bottom: 60px;
+        &.spacing-on-editor {
+            bottom: 380px;
+        }
         .tools-container {
             display: none;
             &.enabled {
