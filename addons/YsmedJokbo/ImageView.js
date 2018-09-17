@@ -1,3 +1,5 @@
+import Jimp from 'jimp';
+
 class ImageView {
     constructor (img, cropArea) {
         this.img = img;
@@ -108,6 +110,16 @@ class ImageView {
 
     toJimp () {
         return this.img.clone().crop(this.x0, this.y0, this.w, this.h);
+    }
+
+    toJimpWithPad (padding) {
+        const outImg = new Jimp(
+            this.w + padding * 2,
+            this.h + padding * 2,
+            0xFFFFFFFF
+        );
+        outImg.blit(this.img, padding, padding, this.x0, this.y0, this.w, this.h);
+        return outImg;
     }
 }
 

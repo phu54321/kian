@@ -16,14 +16,6 @@
 import Jimp from 'jimp';
 import ImageView from './ImageView';
 
-Jimp.prototype.padWhite = function (padding) {
-    const {width, height} = this.bitmap;
-    const newImage = new Jimp(width + padding * 2, height + padding * 2, 0xFFFFFFFF);
-    newImage.blit(this, padding, padding);
-    return newImage;
-};
-
-
 
 function isHorizontalLineWhite (view, y) {
     const {data} = view;
@@ -100,13 +92,13 @@ export function parseQAPair (image) {
         const questionImg = cropped
             .crop(0, 0, minLineX - XPADDING, croppedHeight)
             .autocrop()
-            .toJimp().padWhite(20);
+            .toJimp();
         const answerImg = cropped
             .crop(minLineX + XPADDING, 0, croppedWidth - minLineX - XPADDING, croppedHeight)
             .autocrop()
-            .toJimp().padWhite(20);
+            .toJimp();
 
-            // Ignore some too-small-for-qapair images
+        // Ignore some too-small-for-qapair images
         if(questionImg.bitmap.height < 60 && answerImg.bitmap.height < 60) {
             return;
         }
