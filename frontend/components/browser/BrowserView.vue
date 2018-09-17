@@ -17,6 +17,7 @@
 
 div.browser-view
     span(v-hotkey="'ctrl+a'", title='Select all cards', pack-name='Browser hotkeys', @click='onSelectAll')
+    span(v-hotkey="'ctrl+r'", title='Refresh browser', pack-name='Browser hotkeys', @click='updateCardIds')
 
     table.table.table-sm(ref='mainTable')
         thead(slot='before-content')

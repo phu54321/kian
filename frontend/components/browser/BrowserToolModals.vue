@@ -86,7 +86,7 @@ export default {
                 cardIds: this.selected,
             });
             this.deck = '';
-            this.$emit('updateCardIds');
+            this.$emit('updateView');
         },
         async changeModel () {
             await ankiCall('card_update_model_batch', {
@@ -102,7 +102,7 @@ export default {
                 cardIds: this.selected,
             });
             this.tags = [];
-            this.$emit('updateCardIds');
+            this.$emit('updateView');
         },
         async removeTags () {
             await ankiCall('card_remove_tag_batch', {
@@ -110,13 +110,13 @@ export default {
                 cardIds: this.selected,
             });
             this.tags = [];
-            this.$emit('updateCardIds');
+            this.$emit('updateView');
         },
         async resetSched () {
             await ankiCall('card_sched_reset', {
                 cardIds: this.selected,
             });
-            this.$emit('updateCardIds');
+            this.$emit('updateView');
         },
         async changeDue () {
             const dueTimestamp = (this.due.getTime() / 1000) | 0;
@@ -126,7 +126,7 @@ export default {
                 maxDue: dueTimestamp,
             });
             this.due = null;
-            this.$emit('updateCardIds');
+            this.$emit('updateView');
         },
         async deleteCards () {
             await ankiCall('card_delete_batch', {
