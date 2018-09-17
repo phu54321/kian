@@ -320,6 +320,11 @@ export default {
 
 <style lang="scss" scoped>
 
+$color-row-hovered: #eee;
+$color-row-marked: #fdd8d8;
+$color-row-suspended: #fffc9f;
+$color-row-selected: #afe2c480;
+
 .browser-view {
     position: relative;
     .browser-head {
@@ -338,18 +343,11 @@ export default {
             &.item-row {
                 user-select: none;
                 font-size: .8em;
-                &:hover {
-                    background-color: #eee;
-                }
-                &.marked {
-                    background-color: #fdd8d8;
-                }
-                &.suspended {
-                    background-color: #fffc9f;
-                }
-                &.selected {
-                    background-color: #afe2c4;
-                }
+
+                &:hover { background-color: $color-row-hovered; }
+                &.marked { background-color: $color-row-marked; }
+                &.suspended { background-color: $color-row-suspended; }
+                &.selected td { background-color: $color-row-selected; }
                 height: 30px;
             }
             &.spacer-row {
@@ -389,7 +387,6 @@ export default {
             font-size: 3em;
         }
     }
-
 
     .browser-tools {
         text-align: center;
