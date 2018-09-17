@@ -3,11 +3,7 @@ from utils import (
     registerApi,
     typeCheck,
     emit,
-    modelChanger,
 )
-
-from .card import getNidSet
-
 
 @registerApi('model_list')
 def getModelList(msg):
@@ -41,17 +37,3 @@ def getModel(msg):
                 } for fFormat in model['flds']
             ]
         })
-
-
-@registerApi('card_update_model_batch')
-def updateCardsModel(msg):
-    typeCheck(msg, {
-        'model': str,
-        'cardIds': list,
-    })
-    with Col() as col:
-        model = col.models.byName(msg['model'])
-        nidSet = getNidSet(col, msg['cardIds'])
-        modelChanger.changeNotesModel(col, nidSet, model)
-
-        return emit.emitResult(True)

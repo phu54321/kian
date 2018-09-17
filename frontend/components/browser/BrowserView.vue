@@ -76,6 +76,8 @@ div.browser-view
                 b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', v-b-modal.browserRemoveTags)
                     icon.mr-1(name='minus')
                     | Tag
+                b-button(size='sm', variant='danger', v-hotkey=['ctrl+k'], v-b-tooltip.hover, title='Mark', @click='markCards')
+                    icon(name='star')
 
             b-button-group.mr-2
                 b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', v-b-modal.browserResetSched)
@@ -322,6 +324,13 @@ export default {
             this.resetCardCache();
             this.resetSelectedCards();
             this.$emit('updateCardIds');
+        },
+
+        async markCards () {
+            await ankiCall('card_toggle_marked_batch', {
+                cardIds: this.selectedCardList
+            });
+            this.updateView++;
         }
     }
 };
