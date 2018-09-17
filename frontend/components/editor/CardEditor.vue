@@ -44,7 +44,7 @@ b-form(@submit='onSave')
             tr
                 td.editor-row(colspan='2')
                     .mb-2.font-weight-bold {{fFormat.name}}
-                    tui-summernote.editor-field(v-model='card.fields[index]')
+                    tui-summernote.editor-field(v-model='card.fields[index]', :modelData='modelData')
 
         tr
             th Tags
@@ -103,6 +103,15 @@ export default {
             return ankiCall('tag_suggestions', {
                 query: tag
             });
+        }
+    },
+    asyncComputed: {
+        modelData: {
+            get () {
+                if (!this.currentModel) return {};
+                return ankiCall('model_get', {modelName: this.currentModel});
+            },
+            default: {},
         }
     },
     computed: {

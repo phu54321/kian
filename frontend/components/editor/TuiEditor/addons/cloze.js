@@ -18,6 +18,13 @@ CodeMirror.commands.cloze = function (cm) {
         }
         return sel;
     }));
+
+    const $vnode = cm.$vnode;
+    if($vnode.modelData.type !== 'cloze') {
+        $vnode.$toasted.info('You should only add clozes to cloze note types.', {
+            icon: 'exclamation-triangle',
+        });
+    }
 };
 
 CodeMirror.commands.clozeSame = function (cm) {
@@ -33,6 +40,13 @@ CodeMirror.commands.clozeSame = function (cm) {
         }
         return sel;
     }));
+
+    const $vnode = cm.$vnode;
+    if($vnode.modelData.type !== 'cloze') {
+        $vnode.$toasted.show('You should only add clozes to cloze note types.', {
+            icon: 'exclamation-triangle',
+        });
+    }
 };
 
 

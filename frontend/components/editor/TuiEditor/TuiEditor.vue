@@ -103,7 +103,7 @@ const generalKeymap = [
 
 
 export default {
-    props: ['value'],
+    props: ['value', 'modelData'],
 
     isEditableHtml (html) {
         return decodeMarkdown(html) !== null;
@@ -132,6 +132,7 @@ export default {
             extraKeys,
         });
 
+        this.cm.$vnode = this;
         this.cm.on('focus', () => this.focused = true);
         this.cm.on('blur', () => this.focused = false);
 
