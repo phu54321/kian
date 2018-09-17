@@ -19,6 +19,7 @@
     // hotkey trap
     hotkey-pack(:depth='2', :pack='codeMirrorKeymap', pack-name='CodeMirror shortcuts')
     hotkey-pack(:depth='2', :pack='textStylingKeymap', pack-name='Text styling shortcuts')
+    hotkey-pack(:depth='2', :pack='generalKeymap', pack-name='Text styling shortcuts')
 
     .codemirror-editor(ref='mdEdit')
     .preview
@@ -94,6 +95,12 @@ const textStylingKeymap = [
     ['ctrl+shift+r', 'Make table (power format pack)'],
 ];
 
+const generalKeymap = [
+    ['ctrl+a', 'Select All'],
+    ['ctrl+z', 'Undo'],
+    ['ctrl+y', 'Redo',]
+];
+
 
 export default {
     props: ['value'],
@@ -160,6 +167,7 @@ export default {
         },
         codeMirrorKeymap: () => codeMirrorKeymap,
         textStylingKeymap: () => textStylingKeymap,
+        generalKeymap: () => generalKeymap,
     },
 
     watch: {
