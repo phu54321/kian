@@ -109,7 +109,7 @@ class ImageView {
     }
 
     toJimp () {
-        return this.img.clone().crop(this.x0, this.y0, this.w, this.h);
+        return this.toJimpWithPad(0);
     }
 
     toJimpWithPad (padding) {
@@ -118,7 +118,19 @@ class ImageView {
             this.h + padding * 2,
             0xFFFFFFFF
         );
-        outImg.blit(this.img, padding, padding, this.x0, this.y0, this.w, this.h);
+        const outData = outImg.bitmap.data;
+        const { data: srcData, w, h, pitch: srcPitch } = this;
+        const dstPitch = (this.w + padding * 2) * 4;
+
+        let srcIndex = this.dataIndex(0, 0);
+        let dstIndex = padding * 4 + padding * dstPitch;
+        const copyLength = w * 4;
+
+        for(let y = 0 ; y < h ; y++) {
+            srcData.copy(outData, dstIndex, srcIndex, srcIndex + copyLength);
+            srcIndex += srcPitch;
+            dstIndex += dstPitch;
+        }
         return outImg;
     }
 }

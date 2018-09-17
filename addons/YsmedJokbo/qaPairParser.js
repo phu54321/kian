@@ -92,11 +92,11 @@ export function parseQAPair (image) {
         const questionImg = cropped
             .crop(0, 0, minLineX - XPADDING, croppedHeight)
             .autocrop()
-            .toJimp();
+            .toJimpWithPad(20);
         const answerImg = cropped
             .crop(minLineX + XPADDING, 0, croppedWidth - minLineX - XPADDING, croppedHeight)
             .autocrop()
-            .toJimp();
+            .toJimpWithPad(20);
 
         // Ignore some too-small-for-qapair images
         if(questionImg.bitmap.height < 60 && answerImg.bitmap.height < 60) {
