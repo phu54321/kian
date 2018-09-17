@@ -146,7 +146,6 @@ export default {
     },
     watch: {
         cardIds () {
-            Object.freeze(this.cardIds);
             this.resetCardCache();
             this.resetSelectedCards();
         },
@@ -155,8 +154,8 @@ export default {
         },
         visibleRangeWatcher () {
             if(!this.isRendering) {
-                this.renderRangeBegin = clamp(this.visibleMinIndex, 0, this.cardIds.length);
-                this.renderRangeEnd = clamp(this.visibleMaxIndex, 0, this.cardIds.length);
+                this.renderRangeBegin = clamp(this.visibleMinIndex, 0, this.frozenCardIds.length);
+                this.renderRangeEnd = clamp(this.visibleMaxIndex, 0, this.frozenCardIds.length);
             }
         },
         prerenderRange (r) {
@@ -166,7 +165,7 @@ export default {
     asyncComputed: {
         displayCommands: {
             async get () {
-                const {cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex} = this;
+                const {frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex} = this;
                 if(cardIds.length === 0) return [{type: 'noCards'}];
 
                 // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
@@ -233,6 +232,9 @@ export default {
         },
     },
     computed: {
+        frozenCardIds () {
+            return Object.freeze(this.cardIds.slice());
+        },
         fields () {
             return [
                 { label: 'Preview', key: 'preview', sortable: this.enableSort, class: 'ellipsis' },
@@ -301,7 +303,7 @@ export default {
         },
 
         async ensureCardRendered (cardIndexes) {
-            const {cardIds, cardCache} = this;
+            const {frozenCardIds: cardIds, cardCache} = this;
             const renderRequests = cardIndexes.filter(idx => (
                 0 <= idx && idx < cardIds.length &&
                 !cardCache[idx]
