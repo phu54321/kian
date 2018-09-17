@@ -20,13 +20,14 @@ div
     div(ref='scriptHolder')
 
     list-selector(
+        taggable,
         v-model='deck',
         apiType='deck_list')
 
     input.mt-2(type="file", @change="onFileChange")
     b-alert.mt-2(show)
         | {{message}}
-        span(v-if='qaPair.length') ({{qaPair.length}} question found)
+        span.ml-2(v-if='qaPair.length') ({{qaPair.length}} question found)
 
     div(v-show='qaPair.length')
         b-row.imgRow
@@ -139,7 +140,7 @@ export default {
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
 
-                const pageNum = 10; // pdf.numPages;
+                const pageNum = pdf.numPages;
                 for(let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {
                     const page = await pdf.getPage(pageIndex);
                     const scale = 1.5;
@@ -153,7 +154,7 @@ export default {
                         viewport: viewport
                     });
                     this.message = `Processing page ${pageIndex}/${pageNum}`;
-                    this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height));
+                    this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex);
                 }
                 this.message = 'Waiting for page extraction...';
                 this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `;
@@ -162,12 +163,12 @@ export default {
             }
         },
 
-        handleImage (imageData) {
+        handleImage (imageData, page) {
             const qaPair = parseQAPair(new Jimp(imageData));
             qaPair.forEach(([q, a]) => {
                 const qImgData = imageDataFromJimp(q);
                 const aImgData = imageDataFromJimp(a);
-                this.qaPair.push([qImgData, aImgData]);
+                this.qaPair.push([qImgData, aImgData, page]);
             });
         },
 
@@ -175,6 +176,7 @@ export default {
             const {qImgCanvas, aImgCanvas} = this.$refs;
             const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
             const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
+            const page = this.qaFirst[2];
 
             this.qaPair.splice(0, 1);
 
@@ -188,7 +190,7 @@ export default {
                 model: 'Basic',
                 fields: [
                     `<img src="${encodeURIComponent(qUrl)}">`,
-                    `<img src="${encodeURIComponent(aUrl)}">`,
+                    `<p><i>Page: ${page}</i></p><img src="${encodeURIComponent(aUrl)}">`,
                 ],
                 tags: [],
             });
