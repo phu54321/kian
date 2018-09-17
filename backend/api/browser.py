@@ -76,5 +76,6 @@ def getCardsBatch(msg):
                 'due': due,
                 'type': card.type,
                 'queue': card.queue,
+                'suspended': card.queue == -1,
             })
         return emit.emitResult(ret)

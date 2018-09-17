@@ -31,7 +31,7 @@ div.browser-view
         tbody
             template(v-for='command in displayCommands')
                 template(v-if='command.type === "card"')
-                    tr.item-row(:class='{selected: cardSelected[command.index]}',
+                    tr.item-row(:class='computeRowClass(command)',
                         :key='command.index'
                         @click.exact.prevent='selectCardIndexOnly(command.index)'
                         @click.shift.exact.prevent='onSelectSequential(command.index)'
@@ -184,7 +184,7 @@ export default {
                         type: 'card',
                         index,
                         card: cardCache[index]
-                    };                    
+                    };
                 };
 
                 _.range(renderRangeBegin, renderRangeEnd).forEach(i => addIndexToRenderCommand(i));
@@ -199,7 +199,7 @@ export default {
                         list.push({
                             type: 'space',
                             length: 1
-                        }); 
+                        });
                     } else {
                         list.push(entry);
                     }
@@ -284,6 +284,14 @@ export default {
             this.$emit('update:sortOrder', sortOrder);
         },
 
+        computeRowClass (command) {
+            return {
+                selected: this.cardSelected[command.index],
+                marked: command.card.tags.indexOf('marked') !== -1,
+                suspended: command.card.suspended,
+            };
+        },
+
         getFormatter (formatter) {
             if(formatter) return fieldFormatter[formatter];
             else return (x) => x;
@@ -340,6 +348,12 @@ export default {
             font-size: .8em;
             &:hover {
                 background-color: #eee;
+            }
+            &.marked {
+                background-color: #fdd8d8;
+            }
+            &.suspended {
+                background-color: #fffc9f;
             }
             &.selected {
                 background-color: #afe2c4;
