@@ -8,23 +8,27 @@ const extraKeys = {
     'Shift-Ctrl-C': 'cloze',
     'Shift-Ctrl-F': 'clozeSame',
     'Shift-Ctrl-R': 'makeTable',
-    'Ctrl-/': 'comment', 
+    'Ctrl-/': 'comment',
 
     // Markdown editing related
-    'Tab': 'indentOrderedList',
+    'Alt-Left': 'indentLess',
+    'Alt-Right': 'indentOrderedList',
     'Enter': 'newlineAndIndentContinueMarkdownList',
-    'Shift-Tab': 'indentLess',
     'Alt-Up': 'replaceLineTextToUpper',
-    'Alt-Down': 'replaceLineTextToLower'
+    'Alt-Down': 'replaceLineTextToLower',
 };
 
+// Re-enable tab navigation
+delete CodeMirror.keyMap.basic['Tab'];
+delete CodeMirror.keyMap.basic['Shift-Tab'];
+delete CodeMirror.keyMap.sublime['Shift-Tab'];
 
 // For 'save note' keys
-delete CodeMirror.keyMap.pcSublime['Ctrl-Enter'];
-delete CodeMirror.keyMap.macSublime['Cmd-Enter'];
+delete CodeMirror.keyMap.sublime['Ctrl-Enter'];
+delete CodeMirror.keyMap.sublime['Cmd-Enter'];
 
-delete CodeMirror.keyMap.pcDefault['Ctrl-S'];
-delete CodeMirror.keyMap.pcDefault['Cmd-S'];
+delete CodeMirror.keyMap.default['Ctrl-S'];
+delete CodeMirror.keyMap.default['Cmd-S'];
 
 // MPC → Mac conversion
 const isMac = (CodeMirror.keyMap.sublime === CodeMirror.keyMap.macSublime);
