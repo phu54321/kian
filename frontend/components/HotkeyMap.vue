@@ -69,12 +69,18 @@ export default {
             this.show = true;
         },
         detectLongCtrlPress_keydown (event) {
-            if (event.keyCode === 17 && this.openHotkeyMapTimer === null) {  // Ctrl on Win/Linux, Cmd on macOS
-                this.openHotkeyMapTimer = window.setTimeout(() => {
-                    this.toggleShow();
-                    window.clearTimeout(this.openHotkeyMapTimer);
-                    this.openHotkeyMapTimer = null;
-                }, 1300);
+            if (event.keyCode === 17) {
+                if(this.openHotkeyMapTimer === null) {  // Ctrl on Win/Linux, Cmd on macOS
+                    this.openHotkeyMapTimer = window.setTimeout(() => {
+                        this.toggleShow();
+                        window.clearTimeout(this.openHotkeyMapTimer);
+                        this.openHotkeyMapTimer = null;
+                    }, 1300);
+                }
+            } else if(this.openHotkeyMapTimer) {
+                //  Ignore if other keys are pressed
+                window.clearTimeout(this.openHotkeyMapTimer);
+                this.openHotkeyMapTimer = null;
             }
         },
         detectLongCtrlPress_keyup (event) {
