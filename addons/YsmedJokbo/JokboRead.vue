@@ -139,9 +139,8 @@ export default {
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
 
-                const promises = [];
                 const pageNum = 10; // pdf.numPages;
-                for(let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {  // TODO: fix this to 1
+                for(let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {
                     const page = await pdf.getPage(pageIndex);
                     const scale = 1.5;
                     const viewport = page.getViewport(scale);
@@ -153,20 +152,18 @@ export default {
                         canvasContext: context,
                         viewport: viewport
                     });
-                    promises.push(this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height)));
                     this.message = `Processing page ${pageIndex}/${pageNum}`;
+                    this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height));
                 }
                 this.message = 'Waiting for page extraction...';
-                await Promise.all(promises);
                 this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `;
             } finally {
                 pdf.destroy();
             }
         },
 
-        async handleImage (imageData) {
-            const img = await new Jimp(imageData);
-            const qaPair = parseQAPair(img);
+        handleImage (imageData) {
+            const qaPair = parseQAPair(new Jimp(imageData));
             qaPair.forEach(([q, a]) => {
                 const qImgData = imageDataFromJimp(q);
                 const aImgData = imageDataFromJimp(a);
