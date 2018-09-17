@@ -28,17 +28,17 @@ div
         | {{message}}
         span(v-if='qaPair.length') ({{qaPair.length}} question found)
 
-    div(v-if='qaPair.length')
+    div(v-show='qaPair.length')
         b-row.imgRow
             .toolbar
-                b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair(0)', v-hotkey='"left"') Accept
-                b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair(0)', v-hotkey='"right"') Dismiss
+                b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
+                b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
             b-col
-                img.downscale(:src='qaPair[0].qUrl')
+                canvas.downscale(ref='qImgCanvas')
             b-col
-                img.downscale(:src='qaPair[0].aUrl')
+                canvas.downscale(ref='aImgCanvas')
 
-    browser-view(:cardIds='addedCardIds')
+    browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
 
 
 </template>
@@ -54,6 +54,14 @@ import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import asyncData from '~/utils/asyncData';
 import BrowserView from '~/components/browser/BrowserView';
 
+const URLObj = window.URL || window.webkitURL;
+
+function imageDataFromJimp (img) {
+    return new ImageData(
+        new Uint8ClampedArray(img.bitmap.data),
+        img.bitmap.width, img.bitmap.height
+    );
+}
 
 export default {
     created () {
@@ -85,6 +93,11 @@ export default {
             addedCardIds: createdCards.slice(0, 20)
         };
     })],
+    computed: {
+        qaFirst () {
+            return this.qaPair[0];
+        },
+    },
     watch: {
         async updateCardIds () {
             const createdCards = await ankiCall('browser_query', {
@@ -92,6 +105,18 @@ export default {
                 sortBy: 'createdAt'
             });
             this.addedCardIds = createdCards.slice(0, 20);
+        },
+        qaFirst (v) {
+            const [q, a] = v;
+
+            const {qImgCanvas, aImgCanvas} = this.$refs;
+            qImgCanvas.width = q.width;
+            qImgCanvas.height = q.height;
+            qImgCanvas.getContext('2d').putImageData(q, 0, 0);
+
+            aImgCanvas.width = q.width;
+            aImgCanvas.height = q.height;
+            aImgCanvas.getContext('2d').putImageData(a, 0, 0);
         }
     },
     components: {
@@ -106,8 +131,6 @@ export default {
         },
         async handlePdf (pdfFile) {
             this.message = `Processing ${pdfFile.name}...`;
-
-            const URLObj = window.URL || window.webkitURL;
             const source = URLObj.createObjectURL(pdfFile);
             const pdf = await window.PDFJS.getDocument({ url: source });
 
@@ -145,22 +168,19 @@ export default {
             Jimp.read(url).then(img => {
                 const qaPair = parseQAPair(img);
                 qaPair.forEach(([q, a]) => {
-                    Promise.all([
-                        q.getBase64Async('image/jpeg'),
-                        a.getBase64Async('image/jpeg')
-                    ]).then(([qUrl, aUrl]) => {
-                        this.qaPair.push({qUrl, aUrl});
-                    });
+                    const qImgData = imageDataFromJimp(q);
+                    const aImgData = imageDataFromJimp(a);
+                    this.qaPair.push([qImgData, aImgData]);
                 });
             });
         },
 
-        async acceptQAPair (index) {
-            let {qUrl: q, aUrl: a} = this.qaPair[index];
-            this.qaPair.splice(index, 1);
+        async acceptQAPair () {
+            const {qImgCanvas, aImgCanvas} = this.$refs;
+            const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
+            const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
 
-            q = q.split('base64,')[1];
-            a = a.split('base64,')[1];
+            this.qaPair.splice(0, 1);
 
             const [qUrl, aUrl] = await Promise.all([
                 uploadImageFromDataURI('image.jpg', q),
@@ -178,8 +198,8 @@ export default {
             });
             this.updateCardIds++;
         },
-        async dismissQAPair (index) {
-            this.qaPair.splice(index, 1);
+        async dismissQAPair () {
+            this.qaPair.splice(0, 1);
         },
     },
 };
