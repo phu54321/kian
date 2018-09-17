@@ -392,11 +392,14 @@ $color-row-selected: #afe2c480;
         text-align: center;
         position: sticky;
         bottom: 60px;
+        pointer-events: none;
+
         &.spacing-on-editor {
             bottom: 380px;
         }
         .tools-container {
             display: none;
+            pointer-events: initial;
             &.enabled {
                 display: inline-block;
             }
