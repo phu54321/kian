@@ -146,6 +146,7 @@ export default {
     },
     watch: {
         cardIds () {
+            Object.freeze(this.cardIds);
             this.resetCardCache();
             this.resetSelectedCards();
         },
@@ -165,7 +166,7 @@ export default {
     asyncComputed: {
         displayCommands: {
             async get () {
-                const {cardIds, cardCache, renderRangeBegin, renderRangeEnd, selectedCardIndex} = this;
+                const {cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex} = this;
                 if(cardIds.length === 0) return [{type: 'noCards'}];
 
                 // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
@@ -179,10 +180,17 @@ export default {
                 // Build basic render commands
                 const renderCommands = new Array(cardIds.length).fill(null);
                 const addIndexToRenderCommand = (index) => {
+                    // We store each cards' selection state in displayCommand, rather than
+                    // accessing this.cardSelected inside computeRowClass. That is because,
+                    // accessing `cardSelected` takes quite a time (~10ms), and computing
+                    // each card's selected state for each commands takes quite long, since
+                    // evaluation `this.cardSelected` for each card commands trigger a reactive
+                    // getter of it.
                     renderCommands[index] = {
                         type: 'card',
                         index,
-                        card: cardCache[index]
+                        card: cardCache[index],
+                        selected: cardSelected[index]
                     };
                 };
 
@@ -215,11 +223,11 @@ export default {
                 // Prerender some items below/over the table.
                 // These items don't need to be rendered right now, but they may be needed after scrolling.
                 // Return the currently rendered rows and pend the prerender task to watch() tags.
-                const PRERENDER_PADDING = 400;
+                const PRERENDER_PADDING = 500;
                 this.prerenderRangeBegin = this.renderRangeBegin - PRERENDER_PADDING;
                 this.prerenderRangeEnd = this.renderRangeEnd + PRERENDER_PADDING;
 
-                return compressedRenderCommands.filter(x => x);
+                return Object.freeze(compressedRenderCommands.filter(x => x));
             },
             default: [{ type: 'loading' }],
         },
@@ -254,7 +262,7 @@ export default {
 
             const {top} = this.$refs.mainTable.getBoundingClientRect();
             const viewportHeight = document.documentElement.clientHeight;
-            const PADDING = 50;
+            const PADDING = 100;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
         }, 100),
@@ -277,7 +285,7 @@ export default {
 
         computeRowClass (command) {
             return {
-                selected: this.cardSelected[command.index],
+                selected: command.selected,
                 marked: command.card.tags.indexOf('marked') !== -1,
                 suspended: command.card.suspended,
             };
