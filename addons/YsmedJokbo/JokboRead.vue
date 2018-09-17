@@ -114,8 +114,8 @@ export default {
             qImgCanvas.height = q.height;
             qImgCanvas.getContext('2d').putImageData(q, 0, 0);
 
-            aImgCanvas.width = q.width;
-            aImgCanvas.height = q.height;
+            aImgCanvas.width = a.width;
+            aImgCanvas.height = a.height;
             aImgCanvas.getContext('2d').putImageData(a, 0, 0);
         }
     },
@@ -153,7 +153,7 @@ export default {
                         canvasContext: context,
                         viewport: viewport
                     });
-                    promises.push(this.handleImage(canvas.toDataURL()));
+                    promises.push(this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height)));
                     this.message = `Processing page ${pageIndex}/${pageNum}`;
                 }
                 this.message = 'Waiting for page extraction...';
@@ -164,14 +164,13 @@ export default {
             }
         },
 
-        async handleImage (url) {
-            Jimp.read(url).then(img => {
-                const qaPair = parseQAPair(img);
-                qaPair.forEach(([q, a]) => {
-                    const qImgData = imageDataFromJimp(q);
-                    const aImgData = imageDataFromJimp(a);
-                    this.qaPair.push([qImgData, aImgData]);
-                });
+        async handleImage (imageData) {
+            const img = await new Jimp(imageData);
+            const qaPair = parseQAPair(img);
+            qaPair.forEach(([q, a]) => {
+                const qImgData = imageDataFromJimp(q);
+                const aImgData = imageDataFromJimp(a);
+                this.qaPair.push([qImgData, aImgData]);
             });
         },
 
