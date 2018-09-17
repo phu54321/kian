@@ -80,8 +80,8 @@ const codeMirrorKeymap = [
     ['alt+f3', 'Select all occurrences'],
     ['f9', 'Sort lines'],
     ['ctrl+j', 'Join lines'],
-    ['tab', 'Indent list'],
-    ['shift+tab', 'Dedent list'],
+    ['alt+right', 'Indent list'],
+    ['alt+left', 'Dedent list'],
 ];
 
 const textStylingKeymap = [
@@ -188,7 +188,7 @@ export default {
         /deep/ .CodeMirror {
             font-family: 'D2Coding', 'Courier New', Courier, monospace;
             height: auto;
-        }    
+        }
     }
 
     .preview-body {
