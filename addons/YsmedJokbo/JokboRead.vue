@@ -115,7 +115,7 @@ export default {
             const context = canvas.getContext('2d');
 
             const promises = [];
-            const pageNum = pdf.numPages;
+            const pageNum = 10; // pdf.numPages;
             for(let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {  // TODO: fix this to 1
                 const page = await pdf.getPage(pageIndex);
                 const scale = 1.5;
@@ -198,7 +198,7 @@ export default {
 
     .downscale {
         max-width: 95%;
-    }    
+    }
 }
 
 </style>

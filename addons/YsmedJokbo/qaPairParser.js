@@ -1,15 +1,15 @@
 // Copyright (C) 2018 Hyun Woo Park
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -23,21 +23,41 @@ Jimp.prototype.padWhite = function (padding) {
 };
 
 
+function isHorizontalLineWhite (data, width, y) {
+    const dataIndexStart = width * y * 4;
+    const dataIndexEnd = dataIndexStart + width * 4;
+    for(let i = dataIndexStart ; i < dataIndexEnd ; i += 4) {
+        if(data.readUInt32BE(i) !== 0xFFFFFFFF) return false;
+    }
+    return true;
+}
+
+function isVerticalLine (data, width, height, x) {
+    const dataIndexStart = x * 4;
+    const step = width * 4;
+    const dataIndexEnd = dataIndexStart + step * height;
+
+    const y0Color = data.readUInt32BE(dataIndexStart);
+    const {r, g, b} = Jimp.intToRGBA(y0Color);
+    if(r > 0x80 || g > 0x80 || b > 0x80) return false;
+
+    for(let i = dataIndexStart + step ; i < dataIndexEnd ; i += step) {
+        if(data.readUInt32BE(i) !== y0Color) return false;
+    }
+    return true;
+}
+
+
 export function parseQAPair (image) {
     const qaPair = [];
 
     // y-split things
-    const {width, height} = image.bitmap;
+    const {data, width, height} = image.bitmap;
 
     // Split by white horizontal lines
     const isYLineWhite = [];
     for(let y = 0 ; y < height ; y++) {
-        let x;
-        for(x = 0 ; x < width ; x++) {
-            const col = image.getPixelColor(x, y);
-            if((col >>> 8) !== 0xFFFFFF) break;
-        }
-        isYLineWhite.push(x === width);
+        isYLineWhite.push(isHorizontalLineWhite(data, width, y));
     }
 
     const imgBlockYRange = [];
@@ -58,26 +78,19 @@ export function parseQAPair (image) {
         const cropped = image.clone().crop(0, y0 + YPADDING, width, cropHeight).autocrop();
 
         const {
+            data: croppedData,
             width: croppedWidth,
-            height: croppedHeight
+            height: croppedHeight,
         } = cropped.bitmap;
         // Find vertical line.
 
+
         let minLineX = -1;
         for(let x = 0 ; x < croppedWidth ; x++) {
-            const x0Color = cropped.getPixelColor(x, 0);
-            const {r, g, b} = Jimp.intToRGBA(x0Color);
-            if(r > 0x80 || g > 0x80 || b > 0x80) continue;
-
-            let y;
-            for(y = 1 ; y < croppedHeight ; y++) {
-                const color = cropped.getPixelColor(x, y);
-                if(color !== x0Color) break;
+            if(isVerticalLine(croppedData, croppedWidth, cropHeight, x)) {
+                if(minLineX !== -1 && minLineX !== x - 1) return;
+                minLineX = x;
             }
-            if(y !== croppedHeight) continue;
-
-            if(minLineX === -1) minLineX = x;
-            else if(minLineX !== x - 1) return;  // Vertical line not unique
         }
         if(minLineX === -1) return;  // No vertical line
 
