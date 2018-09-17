@@ -388,8 +388,10 @@ $color-row-selected: #afe2c480;
     .editor-spacer {
         height: 350px;
     }
+
     .editor-row {
         position: fixed;
+        z-index: 10;
 
         border: 5px double #eee;
         height: 350px;
