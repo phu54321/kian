@@ -3,6 +3,7 @@ const md = new MarkdownIt({ html: true, linkify: true, });
 md.use(require('markdown-it-katex'), {
     throwOnError: false,
 });
+md.use(require('markdown-it-underline'));
 md.use(require('./comment'));
 
 

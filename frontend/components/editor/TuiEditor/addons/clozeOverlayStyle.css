@@ -14,3 +14,7 @@
 .cm-cloze-hint {
     color: #3a7fff;
 }
+
+.cm-underline {
+    text-decoration: underline;
+}

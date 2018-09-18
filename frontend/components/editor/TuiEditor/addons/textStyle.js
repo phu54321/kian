@@ -23,7 +23,7 @@ function multiselectStyler (header, footer) {
 const cmds = CodeMirror.commands;
 
 cmds.bold =  multiselectStyler('**', '**');
-cmds.italic = multiselectStyler('_', '_');
-cmds.underline = multiselectStyler('<u>', '</u>');
-cmds.comment = multiselectStyler('_^^', '^^_');
+cmds.italic = multiselectStyler('*', '*');
+cmds.underline = multiselectStyler('_', '_');
+cmds.comment = multiselectStyler('^^', '^^');
 cmds.strikethrough = multiselectStyler('~~', '~~');

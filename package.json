@@ -52,6 +52,7 @@
     "lodash": "^4.17.10",
     "markdown-it": "^8.4.2",
     "markdown-it-katex": "^2.0.3",
+    "markdown-it-underline": "^1.0.1",
     "material-design-icons-iconfont": "^3.0.3",
     "mocha": "^5.2.0",
     "morgan": "~1.9.0",
