@@ -7,7 +7,7 @@ export function clamp (x, min, max) {
     return x;
 }
 
-function joinArray(x) {
+function joinArray (x) {
     if (Array.isArray(x)) return x.join('');
     else return x;
 }

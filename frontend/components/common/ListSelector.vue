@@ -55,7 +55,10 @@ export default {
 
     mounted () {
         if(this.focus !== undefined) {
-            this.$refs.inputBox.focus();
+            window.setTimeout(() => {
+                this.$refs.inputBox.focus();
+                this.$refs.inputBox.select();
+            }, 1);
         }
         if(!this.value && this.options.length) {
             this.$emit('input', this.options[0]); // Select first option by default
