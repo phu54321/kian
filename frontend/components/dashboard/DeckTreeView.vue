@@ -15,7 +15,7 @@
 
 <template lang="pug">
     div
-        div(v-for='deck in sortedDeckTree', :key='deck.fullname')
+        div(v-for='deck in tree', :key='deck.fullname')
             b-link(:to='"/deck/" + encodeURIComponent(deck.fullname)', router-tag='div')
                 // Indent
                 div.deck-row(:style='{"margin-left": (2 * indent) + "em"}')
@@ -41,13 +41,6 @@ import ankiCall from '~/api/ankiCall';
 
 export default {
     props: ['tree', 'indent'],
-    computed: {
-        sortedDeckTree () {
-            return this.tree.slice().sort((a, b) => {
-                return a.name > b.name;
-            });
-        }
-    },
     methods: {
         toggleDeckCollapse (deck) {
             const newCollapsed = !deck.collapsed;
