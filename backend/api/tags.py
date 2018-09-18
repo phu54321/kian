@@ -3,9 +3,8 @@ from utils import (
     registerApi,
     typeCheck,
     emit,
+    fuzzyMatch,
 )
-
-from .card import getNidSet
 
 
 @registerApi('tag_suggestions')
@@ -16,7 +15,5 @@ def queryTagSuggestions(msg):
     query = msg['query']
     with Col() as col:
         tagList = col.tags.all()
-        tagList = [tag for tag in tagList if tag.startswith(query)]
+        tagList = [tag for tag in tagList if fuzzyMatch(query, tag)]
         return emit.emitResult(tagList)
-
-

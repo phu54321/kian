@@ -5,3 +5,4 @@ decorator
 aiohttp
 aiohttp-index
 python-socketio
+hgtk
