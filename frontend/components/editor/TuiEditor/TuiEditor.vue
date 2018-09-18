@@ -24,7 +24,7 @@
     .codemirror-editor(ref='mdEdit')
     .preview
         .preview-body
-            shadow-dom(:html='value')
+            div(v-html='value')
 
 </template>
 
