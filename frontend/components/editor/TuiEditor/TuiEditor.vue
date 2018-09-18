@@ -24,7 +24,7 @@
     .codemirror-editor(ref='mdEdit')
     .preview
         .preview-body
-            div(v-html='value')
+            div(v-html='strippedHtml')
 
 </template>
 
@@ -166,6 +166,12 @@ export default {
     computed: {
         markdown () {
             return decodeMarkdown(this.value) || '';
+        },
+        strippedHtml () {
+            if(this.value === '') return '';
+            const parser = new DOMParser();
+            const domElement = parser.parseFromString(this.value, 'text/html');
+            return domElement.getElementsByClassName('tui-html')[0].innerHTML;
         },
         codeMirrorKeymap: () => codeMirrorKeymap,
         textStylingKeymap: () => textStylingKeymap,
