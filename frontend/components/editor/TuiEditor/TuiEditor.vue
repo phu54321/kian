@@ -38,6 +38,7 @@ import './addons/tui/fixOrderedListNumber';
 import './addons/tui/overlay';
 import './addons/tui/markdown';
 import './addons/tui/gfm';
+import './addons/kianGfm';
 import './addons/tui/continuelist';
 import './addons/tui/arrowKeyFunction';
 

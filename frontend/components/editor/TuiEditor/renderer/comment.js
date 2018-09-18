@@ -74,22 +74,16 @@ function postProcess (state) {
 
         token         = state.tokens[startDelim.token];
         token.type    = 'cm_open';
-        token.tag     = 'font';
-        token.attrs = [ ['color', '00aaff']];
         token.nesting = 1;
-        token.markup  = '//';
-        token.content = '';
+        token.markup  = '^^';
 
         token         = state.tokens[endDelim.token];
         token.type    = 'cm_close';
-        token.tag     = 'font';
         token.nesting = -1;
-        token.markup  = '//';
-        token.content = '';
+        token.markup  = '^^';
 
         if (state.tokens[endDelim.token - 1].type === 'text' &&
         state.tokens[endDelim.token - 1].content === '^') {
-
             loneMarkers.push(endDelim.token - 1);
         }
     }
@@ -118,7 +112,13 @@ function postProcess (state) {
     }
 }
 
+function commentRenderer (tokens, idx){
+    return tokens[idx];
+}
+
 module.exports = function (md) {
     md.inline.ruler.after('emphasis', 'kian_comment', tokenize);
     md.inline.ruler2.after('emphasis', 'kian_comment', postProcess);
+    md.renderer.rules.cm_open = () => '<i><font color=#00aaff>';
+    md.renderer.rules.cm_close = () => '</font></i>';
 };
