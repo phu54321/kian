@@ -19,11 +19,21 @@ import { clickVNode } from './clickElement';
 
 const hotkeyHandlersMap = new Map();
 
+function getActiveElement (el) {
+    if(el === undefined) el = document.activeElement;
+    if(el) return el;
+
+    const modalDialogs = document.querySelectorAll('.modal.show');
+    if(modalDialogs.length === 1) return modalDialogs[0];
+
+    return document.body;
+}
+
 function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth, packName) {
     if(!hotkeyHandlersMap.has(kString)) {
         hotkeyHandlersMap.set(kString, []);
         $(document).bind('keydown', kString, (e) => {
-            const activeElement = e.target || document.body;
+            const activeElement = getActiveElement(e.target);
             const matchedHandler = resolveHotkey(kString, activeElement);
             if(matchedHandler) {
                 e.stopPropagation();
@@ -59,6 +69,7 @@ function resolveHotkey (kString, activeElement) {
     const parentsFromActiveElement = [];
     for(let el = activeElement; el ; el = el.parentElement) {
         parentsFromActiveElement.push(el);
+        if(el.classList.contains('modal') && el.classList.contains('show')) break;
     }
 
     const handlerList = hotkeyHandlersMap.get(kString);
@@ -87,7 +98,7 @@ function resolveHotkey (kString, activeElement) {
 export function getHotkeyMap (el) {
     const ret = {};
 
-    el = el || document.body;
+    el = getActiveElement(el);
     for(const kString of hotkeyHandlersMap.keys()) {
         const handler = resolveHotkey(kString, el);
         if(handler) {
