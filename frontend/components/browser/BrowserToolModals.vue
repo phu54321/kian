@@ -17,16 +17,16 @@
 
 div
     b-modal(id='browserChangeDeck', title='Change deck', lazy, @ok='changeDeck')
-        list-selector(taggable, focused, title='Deck name', v-model='deck', apiType='deck_list')
+        list-selector(taggable, focus, title='Deck name', v-model='deck', apiType='deck_list')
 
     b-modal(id='browserChangeModel', title='Change model', lazy, @ok='changeModel')
-        list-selector(focused, title='Model name', v-model='model', apiType='model_list')
+        list-selector(focus, title='Model name', v-model='model', apiType='model_list')
 
     b-modal(id='browserAddTags', title='Add tags', lazy, @ok='addTags')
-        tag-editor(focused, v-model='tags')
+        tag-editor(focus, v-model='tags')
 
     b-modal(id='browserRemoveTags', title='Remove tags', lazy, @ok='removeTags')
-        tag-editor(focused, v-model='tags')
+        tag-editor(focus, v-model='tags')
 
     b-modal(id='browserResetSched', title='Forget cards', lazy, ok-variant='danger', @ok='resetSched')
         | Are you sure you want to reset(forget) this card's scheduling?

@@ -15,7 +15,7 @@
 
 <template lang='pug'>
 space-seperated-input(
-    :focused='focused',
+    :focus='focus',
     :value='value',
     @input='v => $emit("input", v)'
     placeholder='Add new tags...',
@@ -32,7 +32,7 @@ import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 export default {
     props: {
         value: Array,
-        focused: Boolean
+        focus: Boolean
     },
     components: {
         SpaceSeperatedInput,
