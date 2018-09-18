@@ -29,8 +29,10 @@ div
             b-input-group-append
                 b-btn(variant='primary', type='submit')
                     icon(name='search')
-                b-btn(variant='info', v-b-modal.browserHelp)
-                    icon(name='question', v-b-tooltip, title='Help')
+                b-btn(variant='info', v-b-modal.browserHelp, title='Help', v-b-tooltip.hover)
+                    icon(name='question')
+                b-btn(variant='secondary', title='Refresh browser', v-b-tooltip.hover, @click='updateCardIds++')
+                    icon(name='sync')
         b-modal(id='browserHelp', title='Browser help')
             | TODO: Add help here
 
