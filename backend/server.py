@@ -11,6 +11,7 @@ import mimetypes
 
 from utils.dispatchTable import apiDispatch
 from utils.col import db_path
+from utils.copyMedia import copyAllMedia
 
 
 assert api  # Disable unused import warning
@@ -54,6 +55,8 @@ def main():
     )
     logging.getLogger().addHandler(logging.StreamHandler())
 
+    copyAllMedia()
+
     app = web.Application(middlewares=[IndexMiddleware()])
     sio.attach(app)
 
@@ -64,15 +67,12 @@ def main():
                 path = path[1:]
             if path == '':
                 path = 'index.html'
-            print(path)
 
             resolvedPath = os.path.join('frontend/', path)
-            print('try1', resolvedPath)
             if not os.path.exists(resolvedPath):
                 resolvedPath = os.path.join(
                     os.path.dirname(db_path),
                     'collection.media/', path)
-                print('try2', resolvedPath)
                 if not os.path.exists(resolvedPath):
                     return web.Response(status=404, text='Not found')
 

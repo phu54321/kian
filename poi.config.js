@@ -5,7 +5,7 @@ const webpack = require('webpack');
 
 module.exports = {
     outDir: 'dist/frontend',
-    staticFolder: 'frontend/public',
+    staticFolder: 'public',
     html: {
         title: 'Kian',
         description: 'Spaced learning app'
