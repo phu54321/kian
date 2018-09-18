@@ -70,7 +70,10 @@ export default {
     },
     mounted () {
         if (this.focus) {
-            setTimeout(() => this.$refs.input.focus(), 1);
+            setTimeout(() => {
+                this.$refs.input.focus();
+                this.$refs.input.select();
+            }, 1);
         }
     },
     asyncComputed: {
