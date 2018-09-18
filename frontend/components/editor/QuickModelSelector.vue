@@ -19,6 +19,7 @@ div
         :value='modelList',
         @input='onInput',
         placeholder='Quick model selector...',
+        :renderer='(v) => ({ title: v, variant: "info" })',
         :validator='modelValidator',
         :suggestions='modelSuggestions')
 
