@@ -77,7 +77,8 @@ export default {
     ],
     data () {
         return {
-            card: runHook('edit_card_load', this.value)
+            card: runHook('edit_card_load', this.value),
+            unloadHandle: null,
         };
     },
     components: {
@@ -88,6 +89,7 @@ export default {
         QuickModelSelector,
     },
     methods: {
+        unloadHandler () { return 'Really leave?'; },
         onSave () {
             const newCard = runHook('edit_card_save', Object.assign({}, this.card));
             this.$emit('save', newCard);

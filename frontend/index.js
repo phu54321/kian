@@ -28,10 +28,13 @@ import './helpers/loadingOverlay';
 
 import './addons/install';
 
-
 import VueRouter from 'vue-router';
 import Router from './router';
 Vue.use(VueRouter);
+
+window.onbeforeunload = function () {
+    return 'Really refresh?';
+};
 
 // App
 import App from './App';
