@@ -119,6 +119,7 @@ export default {
                 if(msg.completed) {
                     this.syncTimeout = null;
                     this.show = false;
+                    window.onbeforeunload = undefined;
                     this.$router.go();
                 }
                 else {
