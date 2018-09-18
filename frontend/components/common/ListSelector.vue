@@ -20,8 +20,8 @@ autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
         input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
             :placeholder='placeholder',
             @input='onInput', @keyup='onInput',
-            @focus='isFocused = true', @blur='isFocused = false')
-        .dropdown-indicator(:class='{enabled: isFocused}') ▼
+            @focus='focused = true', @blur='focused = false')
+        .dropdown-indicator(:class='{enabled: focused}') ▼
 </template>
 
 <script>
@@ -31,7 +31,7 @@ import { fuzzyMatch } from '~/utils/utils';
 import AutocompleteBox from './AutocompleteBox';
 
 export default {
-    props: ['placeholder', 'value', 'apiType', 'disabled', 'taggable', 'focused'],
+    props: ['placeholder', 'value', 'apiType', 'disabled', 'taggable', 'focus'],
     name: 'list-selector',
     components: {
         AutocompleteBox,
@@ -41,7 +41,7 @@ export default {
         return {
             options: [this.value],
             internalValue: this.value,
-            isFocused: false,
+            focused: false,
         };
     },
 
@@ -54,7 +54,7 @@ export default {
     })],
 
     mounted () {
-        if(this.focused !== undefined) {
+        if(this.focus !== undefined) {
             this.$refs.inputBox.focus();
         }
         if(!this.value && this.options.length) {

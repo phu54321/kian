@@ -36,8 +36,6 @@ autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit=
 
 import { KEY_MAP } from '../../utils/keycode';
 import AutocompleteBox from './AutocompleteBox';
-
-import $ from 'jquery';
 import ColoredBadge from './ColoredBadge';
 
 export default {
@@ -59,7 +57,7 @@ export default {
             type: String,
             default: ''
         },
-        focused: Boolean,
+        focus: Boolean,
     },
     components: {
         AutocompleteBox,
@@ -71,9 +69,8 @@ export default {
         };
     },
     mounted () {
-        if (this.focused) {
-            const inputEl = this.$el.querySelector('.item-new');
-            setTimeout(() => inputEl.focus(), 1);
+        if (this.focus) {
+            setTimeout(() => this.$refs.input.focus(), 1);
         }
     },
     asyncComputed: {
@@ -90,7 +87,7 @@ export default {
     methods: {
         onKeyDown (e) {
             if(e.keyCode === KEY_MAP['BACKSPACE']) {
-                const inputEl = $(this.$el).find('.item-new')[0];
+                const inputEl = this.$refs.input;
                 if(inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
                     const items = this.value.slice();
                     items.pop();
