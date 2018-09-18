@@ -33,6 +33,7 @@ def listDeckDue(msg):
                     'subDecks': traverseDueTree(subTree, prefix + name + '::'),
                     'collapsed': deck['collapsed']
                 })
+            result.sort(key=lambda x: x['name'])
             return result
 
         return emit.emitResult(
