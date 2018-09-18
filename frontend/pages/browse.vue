@@ -17,7 +17,7 @@
 div
     h1.mb-4 Browser
 
-    b-form.queryBox(@submit.prevent='query = queryString.join(" ")')
+    .queryBox(@submit.prevent='query = queryString.join(" ")')
         b-input-group
             space-seperated-input.sep-input.form-control(
                 v-model='queryString',
@@ -36,7 +36,7 @@ div
         b-modal(id='browserHelp', title='Browser help')
             | TODO: Add help here
 
-    browser-view(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
+    browser-view.mt-2(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
 </template>
 
 <script>
@@ -239,7 +239,12 @@ function queryValidator (chunk) {
 <style lang="scss" scoped>
 
 .queryBox {
-    margin: 1em 0;
+    position: sticky;
+    padding: .1px 0;
+    top: 56px;
+    background-color: #fff;
+    z-index: 2;
+
     .sep-input {
         padding-left: .4em;
     }
