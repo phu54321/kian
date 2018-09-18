@@ -1,15 +1,14 @@
 import MarkdownIt from 'markdown-it';
-const md = new MarkdownIt({ html: true, linkify: true, });
-md.use(require('markdown-it-katex'), {
-    throwOnError: false,
-});
-md.use(require('markdown-it-underline'));
-md.use(require('./comment'));
-
-
 import crc32 from 'crc-32';
+import base64 from 'base-64';
+import utf8 from 'utf8';
 
 const encoderDom = document.createElement('div');
+
+const md = new MarkdownIt({ html: true, linkify: true, });
+md.use(require('markdown-it-katex'), { throwOnError: false, });
+md.use(require('markdown-it-underline'));
+md.use(require('./comment'));
 
 export default function encodeMarkdown (markdown) {
     if(markdown === '') return '';
@@ -27,5 +26,5 @@ export default function encodeMarkdown (markdown) {
     const additionalHtml = `
         <link rel="stylesheet" type="text/css" href="_kian/katex/katex.min.css">
     `;
-    return `<script class='tui-md' type='text/markdown' hash='${htmlHash}'>${markdown}</sc` + `ript>${additionalHtml}<div class='tui-html'>${html}</div>`;
+    return `<script class='tui-md-b64' type='text/markdown' hash='${htmlHash}'>${base64.encode(utf8.encode(markdown))}</sc` + `ript>${additionalHtml}<div class='tui-html'>${html}</div>`;
 }
