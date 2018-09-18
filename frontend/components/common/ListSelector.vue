@@ -14,43 +14,107 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-    v-select(:value='value', :taggable='taggable', :options='options', :disabled='disabled' @input='onInput')
+
+autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
+    .dropdown-input
+        input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
+            @input='onInput', @keyup='onInput',
+            @focus='isFocused = true', @blur='isFocused = false')
+        .dropdown-indicator(:class='{enabled: isFocused}') ▼
 </template>
 
 <script>
 import asyncData from '~/utils/asyncData';
 import ankiCall from '~/api/ankiCall';
+import { fuzzyMatch } from '~/utils/utils';
+import AutocompleteBox from './AutocompleteBox';
 
 export default {
     props: ['value', 'apiType', 'disabled', 'taggable', 'focused'],
     name: 'list-selector',
+    components: {
+        AutocompleteBox,
+    },
+
     data () {
         return {
-            options: [this.value]
+            options: [this.value],
+            internalValue: this.value,
+            isFocused: false,
         };
     },
-    mounted () {
-        if(this.focused !== undefined) {
-            const toggleEl = this.$el.querySelector('.dropdown-toggle');
-            toggleEl.dispatchEvent(new Event('mousedown'));
-            setTimeout(() => toggleEl.querySelector('input').focus(), 1);
-        }
-    },
-    methods: {
-        onInput (val) {
-            this.$emit('input', val);
-        }
-    },
+
     mixins: [asyncData(async props => {
         const options = await ankiCall(props.apiType);
         options.sort();
         return {
             options
         };
-    }, function () {
-        if(!this.value && this.options.length !== 0) {
-            this.$emit('input', this.options[0]);
-        }
     })],
+
+    mounted () {
+        if(this.focused !== undefined) {
+            this.$refs.inputBox.focus();
+        }
+        if(!this.value && this.options.length) {
+            this.$emit('input', this.options[0]); // Select first option by default
+        }
+    },
+
+    computed: {
+        autocompleteList () {
+            return this.options.filter(option => fuzzyMatch(this.internalValue, option));
+        }
+    },
+
+    methods: {
+        isValidInput (v) {
+            if(this.taggable) return true;
+            else return this.options.indexOf(v) !== -1;
+        },
+        onInput () {
+            this.internalValue = this.$refs.inputBox.value;
+        },
+        onAutocomplete (val) {
+            this.internalValue = val;
+        },
+
+    },
+
+    watch: {
+        value (v) {
+            this.internalValue = v;
+        },
+        internalValue (v) {
+            if (this.isValidInput(v)) {
+                this.$emit('input', v);
+            }
+        },
+        options () {
+            if(!this.value && this.options.length) {
+                this.$emit('input', this.options[0]); // Select first option by default
+            }   
+        }
+    }
 };
+
 </script>
+
+<style lang='scss' scoped>
+
+.dropdown-input {
+    position: relative;
+    .dropdown-indicator {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        display: inline-block;
+        &.enabled {
+            transform: rotateX(180deg);
+        }
+        transition: .3s transform;
+        transition-timing-function: ease-in-out;
+    }
+}
+
+</style>
