@@ -104,7 +104,7 @@ export default {
                 password: this.password,
                 authKey: this.authKey,
             }).then(() => {
-                this.syncTimeout = setTimeout(this.syncProcess, 500);
+                this.syncTimeout = setTimeout(this.syncProcess, 1000);
             }).catch(err => {
                 ErrorDialog.openErrorDialog('Sync failed', err.message);
                 this.show = false;
@@ -123,7 +123,7 @@ export default {
                     this.$router.go();
                 }
                 else {
-                    this.syncTimeout = setTimeout(this.syncProcess, 500);
+                    this.syncTimeout = setTimeout(this.syncProcess, 1000);
                 }
             });
         },
