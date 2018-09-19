@@ -146,15 +146,19 @@ export default {
             if (blobItems.length === 1 && types && types.length === 1 && [].slice.call(types).indexOf('Files') !== -1) {
                 const item = blobItems[0];
                 if (item.type.indexOf('image') !== -1) {
+                    const loader = this.$loading.show();
+                    const oldSelections = this.cm.listSelections();
+                    this.cm.getInputField().blur();
                     evData.preventDefault();
                     evData.stopPropagation();
                     evData.codemirrorIgnore = true;
 
                     const blob = item.name ? item : item.getAsFile(); // Blob or File
-                    const loader = this.$loading.show();
                     addImageBlobHook(blob, (fname) => {
-                        this.cm.replaceSelection(`![](${fname})`);
                         loader.hide();
+                        this.cm.getInputField().focus();
+                        this.cm.setSelections(oldSelections);
+                        this.cm.replaceSelection(`![](${fname})`);
                     });
                 }
             }
