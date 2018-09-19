@@ -17,3 +17,15 @@ export function fuzzyMatch (needle, haystack) {
     haystack = joinArray(Hangul.disassemble(haystack));
     return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
 }
+
+export function focusNextElement () {
+    var focussableElements = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
+    if (document.activeElement && document.activeElement.form) {
+        var focussable = Array.prototype.filter.call(document.activeElement.form.querySelectorAll(focussableElements),
+            function (element) {
+                return element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement;
+            });
+        var index = focussable.indexOf(document.activeElement);
+        focussable[index + 1].focus();
+    }
+}

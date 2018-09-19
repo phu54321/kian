@@ -64,10 +64,11 @@ export default {
                     e.preventDefault();
                     e.stopPropagation();
                 }
-            } else if (e.keyCode === 13) {
+            } else if (e.keyCode === 13) {  // enter
                 if (this.selected !== -1) {
-                    this.applyAutocomplete(this.selected);
                     e.stopPropagation();
+                    e.preventDefault();
+                    this.applyAutocomplete(this.selected);
                 }
             }
         });
