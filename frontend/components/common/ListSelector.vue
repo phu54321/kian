@@ -19,7 +19,7 @@ autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
     .dropdown-input
         input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
             :placeholder='placeholder',
-            @input='onInput', @keyup='onInput',
+            @keydown='onKeyDown', @input='onInput', @keyup='onInput',
             @focus='onFocus(true)', @blur='onFocus(false)')
         .dropdown-indicator(:class='{enabled: focused}') ▼
 </template>
@@ -84,6 +84,13 @@ export default {
         },
         onInput () {
             this.internalValue = this.$refs.inputBox.value;
+        },
+        onKeyDown (e) {
+            if(e.keyCode === 27) {  // ESC
+                this.$refs.inputBox.blur();
+                e.stopPropagation();
+                e.preventDefault();
+            }
         },
         onAutocomplete (val) {
             this.internalValue = val;
