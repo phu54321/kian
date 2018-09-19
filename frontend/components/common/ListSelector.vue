@@ -20,14 +20,14 @@ autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
         input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
             :placeholder='placeholder',
             @input='onInput', @keyup='onInput',
-            @focus='focused = true', @blur='focused = false')
+            @focus='onFocus(true)', @blur='onFocus(false)')
         .dropdown-indicator(:class='{enabled: focused}') ▼
 </template>
 
 <script>
 import asyncData from '~/utils/asyncData';
 import ankiCall from '~/api/ankiCall';
-import { fuzzyMatch } from '~/utils/utils';
+import { fuzzyMatch, focusNextElement } from '~/utils/utils';
 import AutocompleteBox from './AutocompleteBox';
 
 export default {
@@ -76,11 +76,18 @@ export default {
             if(this.taggable) return true;
             else return this.options.indexOf(v) !== -1;
         },
+        onFocus (v) {
+            this.focused = v;
+            if(v) {
+                this.$refs.inputBox.select();
+            }
+        },
         onInput () {
             this.internalValue = this.$refs.inputBox.value;
         },
         onAutocomplete (val) {
             this.internalValue = val;
+            focusNextElement();
         },
 
     },
