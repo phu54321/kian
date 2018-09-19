@@ -51,12 +51,14 @@ div.browser-view
                                 | &nbsp;Oops, no cards :(
                             p Try different query instead.
 
-    .editor-spacer(v-if='selectedCardId !== -1', :style='{height: editorHeight + "px"}')
-    .editor-row(v-if='selectedCardId !== -1', :style='{height: editorHeight + "px"}')
-        browser-editor(
-            :cardId='selectedCardId',
-            @updateCardIds='updateCardIds',
-        )
+    .editor-spacer(v-if='selectedCardId !== -1', :style='{height: browserEditorHeight + "px"}')
+    .editor-row(v-if='selectedCardId !== -1', :style='{height: browserEditorHeight + "px"}')
+        .drag-handle(@mousedown='onDragStart')
+        .editor-div
+            browser-editor(
+                :cardId='selectedCardId',
+                @updateCardIds='updateCardIds',
+            )
 
 
     .browser-tools
@@ -90,7 +92,7 @@ div.browser-view
 
             b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', v-b-modal.browserRemoveCards)
                 icon(name='regular/trash-alt')
-        .editor-spacer(v-if='selectedCardId !== -1', :style='{height: (editorHeight - 50) + "px"}')
+        .editor-spacer(v-if='selectedCardId !== -1', :style='{height: (browserEditorHeight - 50) + "px"}')
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
 
@@ -141,7 +143,8 @@ export default {
 
             isRendering: false,
 
-            editorHeight: 350,
+            browserEditorHeight: (this.$cookie.get('browserEditorHeight') || 350) | 0,
+            oldPageY: null,
         };
     },
     created () {
@@ -344,6 +347,24 @@ export default {
             });
             this.updateView++;
         },
+
+        onDragStart (ev) {
+            document.addEventListener('mousemove', this.onDragMove, false);
+            document.addEventListener('mouseup', this.onDragEnd, false);
+            this.oldPageY = ev.pageY;
+        },
+        onDragMove (ev) {
+            const yMovement = ev.pageY - this.oldPageY;
+            this.browserEditorHeight -= yMovement;
+            if(this.browserEditorHeight < 100) this.browserEditorHeight = 100;
+            else if(this.browserEditorHeight > 800) this.browserEditorHeight = 800;
+            this.$cookie.set('browserEditorHeight', this.browserEditorHeight);
+            this.oldPageY = ev.pageY;
+        },
+        onDragEnd () {
+            document.removeEventListener('mousemove', this.onDragMove, false);
+            document.removeEventListener('mouseup', this. onDragEnd, false);
+        }
     }
 };
 
@@ -398,21 +419,26 @@ $color-row-selected: #afe2c480;
 
     .editor-row {
         position: fixed;
+        display: flex;
+        flex-direction: column;
         z-index: 10;
 
-        border: 5px double #eee;
         bottom: 0;
         left: 0;
         right: 0;
 
-        padding: 40px;
-        background-color: white;
-        overflow-y: auto;
+        .drag-handle {
+            cursor: row-resize;
+            border-top: 5px double #ddd;
+            border-bottom: 5px double #ddd;
+            background-color: white;
+        }
 
-        .browser-not-selected {
-            color: #aaa;
-            text-align: center;
-            font-size: 3em;
+        .editor-div {
+            flex: 1;
+            padding: 40px;
+            background-color: white;
+            overflow-y: auto;
         }
     }
 
