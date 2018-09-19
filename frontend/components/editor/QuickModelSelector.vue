@@ -28,7 +28,7 @@ div
         v-hotkey='`ctrl+${index + 1}`',
         pack-name='Quick model select',
         :title='model',
-        @click='$emit("input", model)')
+        @click='changeModel(model)')
 
 </template>
 
@@ -67,6 +67,12 @@ export default {
             this.modelList = val;
             this.$cookie.set('quick_model_selector_list', JSON.stringify(val));
         },
+        changeModel (model) {
+            this.$toasted.show(`Quick model change to "${model}"`, {
+                icon: 'sync'
+            });
+            this.$emit('input', model);
+        }
     },
 };
 </script>
