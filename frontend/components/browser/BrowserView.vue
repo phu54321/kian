@@ -51,15 +51,15 @@ div.browser-view
                                 | &nbsp;Oops, no cards :(
                             p Try different query instead.
 
-    .editor-spacer(v-if='selectedCardId !== -1')
-    .editor-row(v-if='selectedCardId !== -1')
+    .editor-spacer(v-if='selectedCardId !== -1', :style='{height: editorHeight + "px"}')
+    .editor-row(v-if='selectedCardId !== -1', :style='{height: editorHeight + "px"}')
         browser-editor(
             :cardId='selectedCardId',
             @updateCardIds='updateCardIds',
         )
 
 
-    .browser-tools(:class='{ "spacing-on-editor": selectedCardId !== -1 }')
+    .browser-tools
         .tools-container(:class='{enabled: selectedCardList.length > 0}')
             b-button-group.mr-2
                 b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
@@ -90,6 +90,7 @@ div.browser-view
 
             b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', v-b-modal.browserRemoveCards)
                 icon(name='regular/trash-alt')
+        .editor-spacer(v-if='selectedCardId !== -1', :style='{height: (editorHeight - 50) + "px"}')
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
 
@@ -139,6 +140,8 @@ export default {
             prerenderRangeEnd: 0,
 
             isRendering: false,
+
+            editorHeight: 350,
         };
     },
     created () {
@@ -393,16 +396,11 @@ $color-row-selected: #afe2c480;
         margin-bottom: 0;
     }
 
-    .editor-spacer {
-        height: 350px;
-    }
-
     .editor-row {
         position: fixed;
         z-index: 10;
 
         border: 5px double #eee;
-        height: 350px;
         bottom: 0;
         left: 0;
         right: 0;
@@ -424,9 +422,6 @@ $color-row-selected: #afe2c480;
         bottom: 60px;
         pointer-events: none;
 
-        &.spacing-on-editor {
-            bottom: 380px;
-        }
         .tools-container {
             display: none;
             pointer-events: initial;
@@ -436,14 +431,6 @@ $color-row-selected: #afe2c480;
         }
     }
 }
-
-.refresh-button {
-    position: absolute;
-    display: inline-block;
-    top: -40px;
-    right: 0;
-}
-
 
 div /deep/ td {
     &.ellipsis {
