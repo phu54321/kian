@@ -84,7 +84,7 @@ export default {
         },
         onShow () {
             this.syncMessages = [];
-            this.authKey = this.$cookie.get('syncKey');
+            this.authKey = this.$localStorage.get('syncKey');
             if(this.authKey) {
                 this.email = this.password = '';
                 this.startSync();
@@ -129,9 +129,9 @@ export default {
         processSyncMessage (cmd, arg) {
             if (cmd === 'badAuth') {
                 ErrorDialog.openErrorDialog('Sync failed', 'Invalid AnkiWeb ID/Password');
-                this.$cookie.delete('syncKey');
+                this.$localStorage.delete('syncKey');
             } else if(cmd === 'newKey') {
-                this.$cookie.set('syncKey', arg);
+                this.$localStorage.set('syncKey', arg);
             } else if(cmd === 'offline') {
                 this.$toasted.show('Internet offline');
             } else if(cmd === 'upbad') {

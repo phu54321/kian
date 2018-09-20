@@ -43,7 +43,7 @@ export default {
         SpaceSeperatedInput,
     },
     data () {
-        const selectorList = this.$cookie.get('quick_model_selector_list');
+        const selectorList = this.$localStorage.get('quick_model_selector_list');
         return {
             availableModels: [],
             modelList: selectorList ? JSON.parse(selectorList) : []
@@ -63,7 +63,7 @@ export default {
         },
         onInput (val) {
             this.modelList = val;
-            this.$cookie.set('quick_model_selector_list', JSON.stringify(val));
+            this.$localStorage.set('quick_model_selector_list', JSON.stringify(val));
         },
         changeModel (model) {
             this.$toasted.show(`Quick model change to "${model}"`, {
