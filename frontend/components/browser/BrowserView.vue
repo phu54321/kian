@@ -58,6 +58,7 @@ div.browser-view
             browser-editor(
                 :cardId='selectedCardId',
                 @updateCardIds='updateCardIds',
+                @updateView='updateView++',
             )
 
 

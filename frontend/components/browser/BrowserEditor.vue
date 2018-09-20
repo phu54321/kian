@@ -19,7 +19,7 @@ card-editor(
     v-model='card',
     deck-fixed,
     model-fixed,
-    @save='onNoteEdit'
+    @save='onNoteEdit(false)'
 )
 </template>
 
@@ -34,31 +34,59 @@ export default {
         CardEditor,
         ErrorDialog,
     },
-    asyncComputed: {
-        card () {
-            return this.$ankiCall('card_get', {
-                cardId: this.cardId
+    data () {
+        return {
+            card: {
+                id: null,
+                deck: '',
+                model: '',
+                fieldFormats: [],
+                fields: [],
+                tags: [],
+            },
+        };
+    },
+    async asyncData (props) {
+        return {
+            card: await this.$ankiCall('card_get', {
+                cardId: props.cardId
+            })
+        };
+    },
+    watch: {
+        async cardId (value) {
+            await this.onNoteEdit(true);
+            this.$emit('updateView');
+            this.card = await this.$ankiCall('card_get', {
+                cardId: value
             });
-        },
+        }
     },
     methods: {
-        onNoteEdit () {
-            const card = this.card;
-            this.$ankiCall('card_update', {
-                cardId: this.cardId,
-                deck: card.deck,
-                model: card.model,
-                fields: card.fields,
-                tags: card.tags,
-            }).then(() => {
+        async onNoteEdit (silent) {
+            try {
+                const card = this.card;
+                await this.$ankiCall('card_update', {
+                    cardId: card.id,
+                    deck: card.deck,
+                    model: card.model,
+                    fields: card.fields,
+                    tags: card.tags,
+                });
+                if(silent) return;
+
                 this.$toasted.show('Edit saved', {
                     icon: 'save',
                 });
                 this.$emit('updateCardIds');
-            }).catch(err => {
+            } catch (err) {
                 ErrorDialog.openErrorDialog(null, err.message);
-            });
+            }
         },
+    },
+    beforeDestroy () {
+        this.onNoteEdit(true);
+        this.$emit('updateView');
     },
 };
 
