@@ -53,10 +53,12 @@ export default {
     created () {
         window.addEventListener('keydown', this.detectLongCtrlPress_keydown, true);
         window.addEventListener('keyup', this.detectLongCtrlPress_keyup, true);
+        window.addEventListener('blur', this.detectLongCtrlPress_keyup, true);
     },
     destroyed () {
         window.removeEventListener('keydown', this.detectLongCtrlPress_keydown);
         window.removeEventListener('keyup', this.detectLongCtrlPress_keyup);
+        window.removeEventListener('blur', this.detectLongCtrlPress_keyup);
     },
     components: {
         KeyImage,
@@ -84,7 +86,10 @@ export default {
             }
         },
         detectLongCtrlPress_keyup (event) {
-            if(event.keyCode === 17 && this.openHotkeyMapTimer) {
+            if((
+                event.type === 'blur' || 
+                (event.type === 'keyup' && event.keyCode === 17)
+            ) && this.openHotkeyMapTimer) {
                 window.clearTimeout(this.openHotkeyMapTimer);
                 this.openHotkeyMapTimer = null;
             }
