@@ -29,7 +29,6 @@ div
 <script>
 
 import ankiCall from '~/api/ankiCall';
-import asyncData from '~/utils/asyncData';
 import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
 import ErrorDialogVue from '~/components/ErrorDialog.vue';
@@ -55,7 +54,7 @@ export default {
             updateCardIds: 0,
         };
     },
-    mixins: [asyncData(async () => {
+    async asyncData () {
         const createdCards = await ankiCall('browser_query', {
             query: '',
             sortBy: 'createdAt'
@@ -63,7 +62,7 @@ export default {
         return {
             addedCardIds: createdCards.slice(0, historyNum)
         };
-    })],
+    },
     watch: {
         async updateCardIds () {
             const createdCards = await ankiCall('browser_query', {
