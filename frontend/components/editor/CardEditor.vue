@@ -54,7 +54,6 @@ b-form(@submit='onSave')
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
 import ListSelector from '../common/ListSelector';
 import Summernote from './Summernote/Summernote';
 import TuiSummernote from './TuiSummernote';
@@ -102,7 +101,7 @@ export default {
             };
         },
         async fetchTags (tag) {
-            return ankiCall('tag_suggestions', {
+            return this.$ankiCall('tag_suggestions', {
                 query: tag
             });
         }
@@ -111,7 +110,7 @@ export default {
         modelData: {
             get () {
                 if (!this.currentModel) return {};
-                return ankiCall('model_get', {modelName: this.currentModel});
+                return this.$ankiCall('model_get', {modelName: this.currentModel});
             },
             default: {},
         }
@@ -132,7 +131,7 @@ export default {
                 return;
             }
 
-            const model = await ankiCall('model_get', { modelName });
+            const model = await this.$ankiCall('model_get', { modelName });
             const fieldFormats = model.fieldFormats;
             this.card.fieldFormats = fieldFormats;
             const newFields = this.card.fields;

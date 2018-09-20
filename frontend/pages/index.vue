@@ -21,12 +21,12 @@ div
 </template>
 
 <script>
-import ankiCall from '~/api/ankiCall';
+
 import DeckTreeView from '~/components/dashboard/DeckTreeView';
 
 export default {
     async asyncData () {
-        const response = await ankiCall('dashboard_deck_tree');
+        const response = await this.$ankiCall('dashboard_deck_tree');
         return {
             deckDueTree: response
         };

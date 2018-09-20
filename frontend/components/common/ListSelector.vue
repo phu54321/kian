@@ -25,7 +25,6 @@ autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
 </template>
 
 <script>
-import ankiCall from '~/api/ankiCall';
 import { fuzzyMatch, focusNextElement } from '~/utils/utils';
 import AutocompleteBox from './AutocompleteBox';
 
@@ -45,7 +44,8 @@ export default {
     },
 
     async asyncData (props) {
-        const options = await ankiCall(props.apiType);
+        console.log(this.$ankiCall, props.apiType);
+        const options = await this.$ankiCall(props.apiType);
         options.sort();
         return {
             options

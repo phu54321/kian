@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import io from 'socket.io-client';
+import Vue from 'vue';
 
 const apiRoot = 'http://localhost:28735/';
-
 const socket = io(apiRoot);
 
 const syncKeyHeader = Math.random().toString();
@@ -48,3 +48,6 @@ export default function ankiCall (apiType, data) {
         });
     });
 }
+
+Vue.prototype.$ankiCall = ankiCall;
+
