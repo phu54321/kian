@@ -44,7 +44,6 @@ export default {
     },
 
     async asyncData (props) {
-        console.log(this.$ankiCall, props.apiType);
         const options = await this.$ankiCall(props.apiType);
         options.sort();
         return {
@@ -58,9 +57,6 @@ export default {
                 this.$refs.inputBox.focus();
                 this.$refs.inputBox.select();
             }, 1);
-        }
-        if(!this.value && this.options.length) {
-            this.$emit('input', this.options[0]); // Select first option by default
         }
     },
 

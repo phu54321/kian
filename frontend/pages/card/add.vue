@@ -28,6 +28,8 @@ div
 
 <script>
 
+import { mapGetters } from 'vuex';
+
 import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
 import ErrorDialogVue from '~/components/ErrorDialog.vue';
@@ -62,6 +64,11 @@ export default {
             addedCardIds: createdCards.slice(0, historyNum)
         };
     },
+    async mounted () {
+        const userConfig = this.userConfig;
+        this.card.deck = userConfig.currentDeck;
+        this.card.model = userConfig.currentModel;
+    },
     watch: {
         async updateCardIds () {
             const createdCards = await this.$ankiCall('browser_query', {
@@ -70,6 +77,11 @@ export default {
             });
             this.addedCardIds = createdCards.slice(0, historyNum);
         }
+    },
+    computed: {
+        ...mapGetters([
+            'userConfig'
+        ]),
     },
     methods: {
         async save (card) {
