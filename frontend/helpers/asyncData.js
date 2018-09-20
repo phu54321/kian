@@ -58,7 +58,10 @@ const baseThis = Object.freeze({
 Vue.mixin({
     props: ['$asyncDataTrap'],
     created () {
-        const component = this.$vnode.componentOptions.Ctor.extendOptions;
+        const vnode = this.$vnode;
+        if(!vnode) return;
+
+        const component = vnode.componentOptions.Ctor.extendOptions;
         if(!component.asyncData) return;
 
         if (this.$route.params.$asyncDataTrap) {
