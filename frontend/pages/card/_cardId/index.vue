@@ -23,7 +23,6 @@ b-form(@submit='save')
 <script>
 
 import ankiCall from '~/api/ankiCall';
-import asyncData from '~/utils/asyncData';
 import ErrorDialog from '~/components/ErrorDialog';
 import CardEditor from '~/components/editor/CardEditor';
 
@@ -61,7 +60,7 @@ export default {
             });
         }
     },
-    mixins: [asyncData(async props => {
+    async asyncData(props) {
         const cardId = props.cardId;
         const card = await ankiCall('card_get', {
             cardId
@@ -75,7 +74,7 @@ export default {
                 tags: card.tags,
             }
         };
-    })],
+    },
     name: 'card-edit',
 };
 
