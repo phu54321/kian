@@ -25,7 +25,7 @@ b-form(@submit='onSave')
                     taggable,
                     v-hotkey="['ctrl+d']",
                     title='Change deck'
-                    v-model='card.deck',
+                    v-model='internalValue.deck',
                     :disabled='deckFixed',
                     apiType='deck_list')
 
@@ -36,20 +36,20 @@ b-form(@submit='onSave')
                     :disabled='modelFixed',
                     v-hotkey="['ctrl+m']",
                     title='Change model',
-                    v-model='card.model',
+                    v-model='internalValue.model',
                     apiType='model_list')
-                quick-model-selector.mt-2(v-model='card.model')
+                quick-model-selector.mt-2(v-model='internalValue.model')
 
-        template(v-for='(fFormat, index) in card.fieldFormats', v-if='!fFormat.hidden')
+        template(v-for='(fFormat, index) in internalValue.fieldFormats', v-if='!fFormat.hidden')
             tr
                 td.editor-row(colspan='2')
                     .mb-2.font-weight-bold {{fFormat.name}}
-                    tui-summernote.editor-field(v-model='card.fields[index]', :modelData='modelData')
+                    tui-summernote.editor-field(v-model='internalValue.fields[index]', :modelData='modelData')
 
         tr
             th Tags
             td
-                tag-editor(v-model='card.tags')
+                tag-editor(v-model='internalValue.tags')
 </template>
 
 <script>
@@ -59,6 +59,8 @@ import Summernote from './Summernote/Summernote';
 import TuiSummernote from './TuiSummernote';
 import TagEditor from '../common/TagEditor';
 import QuickModelSelector from './QuickModelSelector';
+import _ from 'lodash';
+
 import './editor.scss';
 import { runHook } from '~/utils/hookBase';
 
@@ -76,8 +78,7 @@ export default {
     ],
     data () {
         return {
-            card: runHook('edit_card_load', this.value),
-            unloadHandle: null,
+            internalValue: runHook('edit_card_load', _.clone(this.value)),
         };
     },
     components: {
@@ -88,11 +89,9 @@ export default {
         QuickModelSelector,
     },
     methods: {
-        unloadHandler () { return 'Really leave?'; },
         onSave () {
-            const newCard = runHook('edit_card_save', Object.assign({}, this.card));
-            this.$emit('save', newCard);
             this.$el.querySelectorAll('.editor-field')[0].focus();
+            this.$emit('save');
         },
         tagRenderer (tag) {
             if(tag === 'marked') return {
@@ -117,27 +116,38 @@ export default {
     },
     computed: {
         currentModel () {
-            return this.card.model;
+            return this.internalValue.model;
         },
     },
     watch: {
-        value (value) {
-            this.card = runHook('edit_card_load', value);
+        value: {
+            handler (value) {
+                this.internalValue = runHook('edit_card_load', _.clone(value));
+            },
+            deep: true,
+        },
+        internalValue: {
+            handler (value) {
+                const emitVal = runHook('edit_card_save', _.clone(value));
+                if(_.isEqual(emitVal, this.value)) return;
+                this.$emit('input', emitVal);
+            },
+            deep: true,
         },
         async currentModel (modelName, oldModelName) {
             // Model change
             if(!modelName) {
-                this.card.model = oldModelName;
+                this.internalValue.model = oldModelName;
                 return;
             }
 
             const model = await this.$ankiCall('model_get', { modelName });
             const fieldFormats = model.fieldFormats;
-            this.card.fieldFormats = fieldFormats;
-            const newFields = this.card.fields;
+            this.internalValue.fieldFormats = fieldFormats;
+            const newFields = _.clone(this.internalValue.fields);
             resize(newFields, fieldFormats.length, '');
-            this.card.fields = newFields;
-            this.card = runHook('edit_card_load', this.card);
+            this.internalValue.fields = newFields;
+            this.internalValue = runHook('edit_card_load', this.internalValue);
         },
     }
 };

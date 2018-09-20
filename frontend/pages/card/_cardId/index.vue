@@ -46,7 +46,8 @@ export default {
         };
     },
     methods: {
-        save (card) {
+        save () {
+            const card = this.card;
             ankiCall('card_update',  {
                 cardId: this.cardId,
                 deck: card.deck,

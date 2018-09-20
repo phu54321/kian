@@ -42,9 +42,8 @@ export default {
         },
     },
     methods: {
-        onNoteEdit (card) {
-            if(!card) return;
-
+        onNoteEdit () {
+            const card = this.card;
             this.$ankiCall('card_update', {
                 cardId: this.cardId,
                 deck: card.deck,
