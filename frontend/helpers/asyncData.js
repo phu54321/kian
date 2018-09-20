@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import ErrorDialog from '~/components/ErrorDialog';
+import ankiCall from '~/api/ankiCall';
 import Vue from 'vue';
 
 function componentFromRoute (route) {
@@ -51,6 +52,7 @@ function translateParamsToProps (to) {
 
 
 const baseThis = Object.freeze({
+    $ankiCall: ankiCall
 });
 
 Vue.mixin({

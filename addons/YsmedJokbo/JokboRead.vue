@@ -50,7 +50,6 @@ div
 import Jimp from 'jimp';
 import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
-import ankiCall from '~/api/ankiCall';
 import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
 
@@ -84,9 +83,8 @@ export default {
             updateCardIds: 0,
         };
     },
-
     async asyncData () {
-        const createdCards = await ankiCall('browser_query', {
+        const createdCards = await this.$ankiCall('browser_query', {
             query: '',
             sortBy: 'createdAt'
         });
@@ -102,7 +100,7 @@ export default {
     },
     watch: {
         async updateCardIds () {
-            const createdCards = await ankiCall('browser_query', {
+            const createdCards = await this.$ankiCall('browser_query', {
                 query: '',
                 sortBy: 'createdAt'
             });
@@ -186,7 +184,7 @@ export default {
                 uploadImageFromDataURI('image.jpg', a),
             ]);
 
-            await ankiCall('note_add', {
+            await this.$ankiCall('note_add', {
                 deck: this.deck,
                 model: 'Basic',
                 fields: [

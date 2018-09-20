@@ -15,6 +15,8 @@
 
 import Vue from 'vue';
 
+import './api/ankiCall';
+
 import './helpers/asyncData';
 import './helpers/asyncComputed';
 import './helpers/axios';

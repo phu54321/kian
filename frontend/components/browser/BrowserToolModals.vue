@@ -47,7 +47,6 @@ div
 import ListSelector from '../common/ListSelector';
 import TagEditor from '../common/TagEditor';
 import padLeft from 'pad-left';
-import ankiCall from '~/api/ankiCall';
 
 export default {
     props: ['selected'],
@@ -81,7 +80,7 @@ export default {
             return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
         },
         async changeDeck () {
-            await ankiCall('card_update_deck_batch', {
+            await this.$ankiCall('card_update_deck_batch', {
                 deck: this.deck,
                 cardIds: this.selected,
             });
@@ -89,7 +88,7 @@ export default {
             this.$emit('updateView');
         },
         async changeModel () {
-            await ankiCall('card_update_model_batch', {
+            await this.$ankiCall('card_update_model_batch', {
                 model: this.model,
                 cardIds: this.selected,
             });
@@ -97,7 +96,7 @@ export default {
             this.$emit('updateCardIds');
         },
         async addTags () {
-            await ankiCall('card_add_tag_batch', {
+            await this.$ankiCall('card_add_tag_batch', {
                 tags: this.tags,
                 cardIds: this.selected,
             });
@@ -105,7 +104,7 @@ export default {
             this.$emit('updateView');
         },
         async removeTags () {
-            await ankiCall('card_remove_tag_batch', {
+            await this.$ankiCall('card_remove_tag_batch', {
                 tags: this.tags,
                 cardIds: this.selected,
             });
@@ -113,14 +112,14 @@ export default {
             this.$emit('updateView');
         },
         async resetSched () {
-            await ankiCall('card_sched_reset', {
+            await this.$ankiCall('card_sched_reset', {
                 cardIds: this.selected,
             });
             this.$emit('updateView');
         },
         async changeDue () {
             const dueTimestamp = (this.due.getTime() / 1000) | 0;
-            await ankiCall('card_sched_reschedule', {
+            await this.$ankiCall('card_sched_reschedule', {
                 cardIds: this.selected,
                 minDue: dueTimestamp,
                 maxDue: dueTimestamp,
@@ -129,7 +128,7 @@ export default {
             this.$emit('updateView');
         },
         async deleteCards () {
-            await ankiCall('card_delete_batch', {
+            await this.$ankiCall('card_delete_batch', {
                 cardIds: this.selected,
             });
             this.$emit('updateCardIds');
