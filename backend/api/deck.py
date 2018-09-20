@@ -107,3 +107,9 @@ def getDeckInfo(msg):
                         'due': due
                     }
                 })
+
+
+@registerApi('deckname_from_did')
+def getDecknameFromDid(msg):
+    with Col() as col:
+        return emit.emitResult(col.decks.get(msg['did'], False)['name'])

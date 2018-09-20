@@ -5,10 +5,17 @@ from utils import (
     emit,
 )
 
+
 @registerApi('model_list')
 def getModelList(msg):
     with Col() as col:
         return emit.emitResult(col.models.allNames())
+
+
+@registerApi('modelname_from_mid')
+def getModelnameFromMid(msg):
+    with Col() as col:
+        return col.models.get(msg['mid'])
 
 
 @registerApi('model_get')

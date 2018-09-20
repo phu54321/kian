@@ -1,7 +1,6 @@
 from utils import (
     Col,
     registerApi,
-    typeCheck,
     emit,
 )
 
@@ -9,4 +8,8 @@ from utils import (
 @registerApi('config_get')
 def getConf(msg):
     with Col() as col:
-        return emit.emitResult(col.conf)
+        conf = col.conf
+        return emit.emitResult({
+            'currentModel': col.models.get(conf['curModel'])['name'],
+            'currentDeck': col.decks.get(conf['curDeck'])['name'],
+        })
