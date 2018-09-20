@@ -1,4 +1,5 @@
 import CodeMirror from 'codemirror';
+import Vue from 'vue';
 
 CodeMirror.commands.makeTable = function (cm) {
     const tableData = cm.getSelection();
@@ -9,11 +10,15 @@ CodeMirror.commands.makeTable = function (cm) {
     const rowCount = cells.length;
 
     if (!(rowCount && colCount)) {
-        alert('Select some text');
+        Vue.toasted.error('To make a table, you need to select some text.', {
+            icon: 'exclamation-triangle',
+        });
         return;
     }
     else if(rowCount === 1) {
-        alert('Header-only (single row) table not supported');
+        Vue.toasted.error('Header-only (single row) table not supported', {
+            icon: 'exclamation-triangle',
+        });
         return;
     }
 

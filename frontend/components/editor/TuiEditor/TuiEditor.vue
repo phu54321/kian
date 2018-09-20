@@ -49,6 +49,8 @@ import './addons/cloze';
 import './addons/textStyle';
 import './addons/table';
 
+import ankiCall from '~/api/ankiCall';
+
 import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
 import encodeMarkdown from './renderer/markdownRenderer';
@@ -60,7 +62,7 @@ function addImageBlobHook (blob, callback) {
     const filename = getRandomFilename(blob.name);
 
     getFileAsBase64(blob).then(datab64 => {
-        return this.$ankiCall('media_upload', {
+        return ankiCall('media_upload', {
             filename,
             datab64,
         });
