@@ -11,4 +11,5 @@ from . import (
     tags,
     sched,
     sync,
+    conf,
 )
