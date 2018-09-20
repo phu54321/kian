@@ -22,7 +22,6 @@ div
 <script>
 
 import $ from 'jquery';
-import ankiCall from '~/api/ankiCall';
 
 import './cloze';
 import './table';
@@ -81,7 +80,7 @@ export default {
                         const file = files[i];
                         const filename = getRandomFilename(file.name);
                         const datab64 = await getFileAsBase64(file);
-                        const webFilename = await ankiCall('media_upload', {
+                        const webFilename = await this.$ankiCall('media_upload', {
                             filename,
                             datab64,
                         });

@@ -21,19 +21,16 @@ div
 </template>
 
 <script>
-import ankiCall from '~/api/ankiCall';
-import asyncData from '~/utils/asyncData';
+
 import DeckTreeView from '~/components/dashboard/DeckTreeView';
 
 export default {
-    mixins: [
-        asyncData (async _props => {
-            const response = await ankiCall('dashboard_deck_tree');
-            return {
-                deckDueTree: response
-            };
-        })
-    ],
+    async asyncData () {
+        const response = await this.$ankiCall('dashboard_deck_tree');
+        return {
+            deckDueTree: response
+        };
+    },
     data () {
         return {
             deckDueTree: []

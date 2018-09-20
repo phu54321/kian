@@ -51,7 +51,6 @@ div
 <script>
 
 import ankiCall from '~/api/ankiCall';
-import asyncData from '~/utils/asyncData';
 import ErrorDialog from '~/components/ErrorDialog.vue';
 import ShadowDom from '~/components/ShadowDom';
 
@@ -72,10 +71,10 @@ async function getNextCard (deckName) {
 
 export default {
     props: ['deckName'],
-    mixins: [asyncData(async props => {
+    async asyncData(props) {
         const deckName = props.deckName;
         return getNextCard(deckName);
-    })],
+    },
     data () {
         return {
             card: {},

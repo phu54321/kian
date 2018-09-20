@@ -26,7 +26,6 @@ space-seperated-input(
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 
 export default {
@@ -45,7 +44,7 @@ export default {
             };
         },
         async fetchTags (tag) {
-            return ankiCall('tag_suggestions', {
+            return this.$ankiCall('tag_suggestions', {
                 query: tag
             });
         },

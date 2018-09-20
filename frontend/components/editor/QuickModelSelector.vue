@@ -34,9 +34,7 @@ div
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
-import asyncData from '~/utils/asyncData';
 import { fuzzyMatch } from '~/utils/utils';
 
 
@@ -51,11 +49,11 @@ export default {
             modelList: selectorList ? JSON.parse(selectorList) : []
         };
     },
-    mixins: [asyncData(async () => {
+    async asyncData() {
         return {
-            availableModels: await ankiCall('model_list'),
+            availableModels: await this.$ankiCall('model_list'),
         };
-    })],
+    },
     methods: {
         modelValidator (model) {
             return this.availableModels.indexOf(model) !== -1;
