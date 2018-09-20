@@ -72,9 +72,10 @@ function wrapString (tok) {
 
 export default {
     data () {
+        const initialQuery = this.$route.query.q || '';
         return {
-            queryString: [],
-            query: '',
+            queryString: initialQuery ? initialQuery.split(' ') : [],
+            query: initialQuery,
             sortBy: 'id',
             sortOrder: 'desc',
             updateCardIds: 0
@@ -83,6 +84,7 @@ export default {
     watch: {
         queryString: _.debounce(function () {
             this.query = this.queryString.join(' ');
+            this.$router.replace(`/browse?q=${encodeURIComponent(this.query)}`);
         }, 200)
     },
     asyncComputed: {
