@@ -16,5 +16,5 @@
 
 import Vue from 'vue';
 
-import VueCookie from 'vue-cookie';
-Vue.use(VueCookie);
+import VueLocalStorage from 'vue-localstorage';
+Vue.use(VueLocalStorage);

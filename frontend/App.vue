@@ -62,7 +62,7 @@ div.app-body
         router-view
 
     footer
-        cookie-law(theme="base", message='Kian uses cookies to ensure you get the best experience on our website.')
+        cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
 
 
 </template>

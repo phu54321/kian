@@ -21,7 +21,7 @@ import './helpers/asyncData';
 import './helpers/asyncComputed';
 import './helpers/axios';
 import './helpers/bootstrap-vue';
-import './helpers/cookie';
+import './helpers/localStorage';
 import './helpers/datepicker';
 import './helpers/fontawesome';
 import './helpers/hotkey';

@@ -156,7 +156,7 @@ export default {
 
             isRendering: false,
 
-            browserEditorHeight: (this.$cookie.get('browserEditorHeight') || 350) | 0,
+            browserEditorHeight: (this.$localStorage.get('browserEditorHeight') || 350) | 0,
             oldPageY: null,
         };
     },
@@ -379,7 +379,7 @@ export default {
             this.browserEditorHeight -= yMovement;
             if(this.browserEditorHeight < 100) this.browserEditorHeight = 100;
             else if(this.browserEditorHeight > 800) this.browserEditorHeight = 800;
-            this.$cookie.set('browserEditorHeight', this.browserEditorHeight);
+            this.$localStorage.set('browserEditorHeight', this.browserEditorHeight, { expires: '10Y'});
             this.oldPageY = ev.pageY;
         },
         onDragEnd () {
