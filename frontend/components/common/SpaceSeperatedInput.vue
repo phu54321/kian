@@ -16,7 +16,7 @@
 <template lang="pug">
 autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit='applyAutocomplete')
     .item-input
-        span.mr-2.item-existing(v-for='item in value', :key='item')
+        span.mr-2.item-existing(v-for='item in value', :key='item', @click='modifyItem(item)')
             colored-badge(:renderer='renderer', :item='item')
                 span(@click.stop='removeItemByName(item)')
                     icon.ml-1(name='times-circle', scale='.75')
