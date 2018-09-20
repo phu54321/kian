@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Hyun Woo Park
+    // Copyright (C) 2018 Hyun Woo Park
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -101,7 +101,6 @@ div.browser-view
 <script>
 
 import _ from 'lodash';
-import ankiCall from '~/api/ankiCall';
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
@@ -319,7 +318,7 @@ export default {
                 !cardCache[idx]
             ));
             if(renderRequests.length === 0) return;
-            const renderedRows = await ankiCall('browser_get_batch', {
+            const renderedRows = await this.$ankiCall('browser_get_batch', {
                 cardIds: renderRequests.map(idx => cardIds[idx])
             });
 
@@ -335,14 +334,14 @@ export default {
         },
 
         async markCards () {
-            await ankiCall('card_toggle_marked_batch', {
+            await this.$ankiCall('card_toggle_marked_batch', {
                 cardIds: this.selectedCardList
             });
             this.updateView++;
         },
 
         async suspendCards () {
-            await ankiCall('card_toggle_suspended_batch', {
+            await this.$ankiCall('card_toggle_suspended_batch', {
                 cardIds: this.selectedCardList
             });
             this.updateView++;

@@ -25,7 +25,6 @@ card-editor(
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
 import CardEditor from '../editor/CardEditor';
 import ErrorDialog from '../ErrorDialog';
 
@@ -37,7 +36,7 @@ export default {
     },
     asyncComputed: {
         card () {
-            return ankiCall('card_get', {
+            return this.$ankiCall('card_get', {
                 cardId: this.cardId
             });
         },
@@ -46,7 +45,7 @@ export default {
         onNoteEdit (card) {
             if(!card) return;
 
-            ankiCall('card_update', {
+            this.$ankiCall('card_update', {
                 cardId: this.cardId,
                 deck: card.deck,
                 model: card.model,

@@ -41,7 +41,6 @@ div
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
 import BrowserView from '~/components/browser/BrowserView';
 import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
 
@@ -89,7 +88,7 @@ export default {
     asyncComputed: {
         cardIds: {
             get () {
-                return ankiCall('browser_query', {
+                return this.$ankiCall('browser_query', {
                     query: this.query,
                     sortBy: this.sortBy,
                     sortOrder: this.sortOrder,
@@ -153,7 +152,7 @@ export default {
                     map(tag => `tag:${tag}`);
             }
             else if(model === 'deck') {
-                const deckList = await ankiCall('deck_list');
+                const deckList = await this.$ankiCall('deck_list');
                 return (
                     deckList.filter(deck => fuzzyMatch(body, deck))
                         .sort()
@@ -162,7 +161,7 @@ export default {
                 );
             }
             else if(model === 'model' || model === 'note') {
-                const modelList = await ankiCall('model_list');
+                const modelList = await this.$ankiCall('model_list');
                 return (
                     modelList.filter(model => fuzzyMatch(body, model))
                         .sort()
@@ -183,7 +182,7 @@ export default {
             return [];
         },
         async fetchTags (tag) {
-            return ankiCall('tag_suggestions', {
+            return this.$ankiCall('tag_suggestions', {
                 query: tag
             });
         }

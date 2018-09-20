@@ -28,8 +28,6 @@ div
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
-import asyncData from '~/utils/asyncData';
 import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
 import ErrorDialogVue from '~/components/ErrorDialog.vue';
@@ -55,18 +53,18 @@ export default {
             updateCardIds: 0,
         };
     },
-    mixins: [asyncData(async () => {
-        const createdCards = await ankiCall('browser_query', {
+    async asyncData () {
+        const createdCards = await this.$ankiCall('browser_query', {
             query: '',
             sortBy: 'createdAt'
         });
         return {
             addedCardIds: createdCards.slice(0, historyNum)
         };
-    })],
+    },
     watch: {
         async updateCardIds () {
-            const createdCards = await ankiCall('browser_query', {
+            const createdCards = await this.$ankiCall('browser_query', {
                 query: '',
                 sortBy: 'createdAt'
             });
@@ -76,7 +74,7 @@ export default {
     methods: {
         async save (card) {
             try {
-                const {noteId} = await ankiCall('note_add', {
+                const {noteId} = await this.$ankiCall('note_add', {
                     deck: card.deck,
                     model: card.model,
                     fields: card.fields,
@@ -91,7 +89,7 @@ export default {
                 });
 
                 // Add to history logs
-                const cardIds = await ankiCall('cid_from_nid', {noteId});
+                const cardIds = await this.$ankiCall('cid_from_nid', {noteId});
                 this.addedCardIds.splice(0, 0, ...cardIds);
                 this.addedCardIds = this.addedCardIds.slice(0, historyNum);
 

@@ -48,7 +48,6 @@ b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='o
 <script>
 
 
-import ankiCall from '~/api/ankiCall';
 import ErrorDialog from './ErrorDialog';
 
 export default {
@@ -99,7 +98,7 @@ export default {
             this.sendBytes = 0;
             this.recvBytes = 0;
 
-            ankiCall('sync', {
+            this.$ankiCall('sync', {
                 email: this.email,
                 password: this.password,
                 authKey: this.authKey,
@@ -111,7 +110,7 @@ export default {
             });
         },
         syncProcess () {
-            ankiCall('sync_status').then(msg => {
+            this.$ankiCall('sync_status').then(msg => {
                 for(let message of msg.messages) {
                     this.processSyncMessage(message[0], message[1]);
                 }
@@ -181,7 +180,7 @@ export default {
         },
         fullSyncOption (mode) {
             this.fullSyncAsked = false;
-            ankiCall('sync_fullsync', {mode});
+            this.$ankiCall('sync_fullsync', {mode});
         },
     },
 };
