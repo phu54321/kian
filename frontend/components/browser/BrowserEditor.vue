@@ -60,7 +60,7 @@ export default {
                 ErrorDialog.openErrorDialog(null, err.message);
             });
         },
-    }
+    },
 };
 
 </script>

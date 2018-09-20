@@ -107,6 +107,19 @@ import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
 import { clamp } from '~/utils/utils';
 
+function isDescendant (parent, child) {
+    if(!child) return false;
+
+    var node = child.parentNode;
+    while (node) {
+        if (node === parent) {
+            return true;
+        }
+        node = node.parentNode;
+    }
+    return false;
+}
+
 export default {
     mixins: [BrowserSelection],
     props: {
@@ -149,8 +162,10 @@ export default {
     created () {
         this.resetCardCache();
         window.addEventListener('scroll', this.onScroll);
+        window.addEventListener('click', this.clickBlurHandler, true);
     },
     destroyed () {
+        window.removeEventListener('click', this.clickBlurHandler);
         window.removeEventListener('scroll', this.onScroll);
     },
     watch: {
@@ -277,6 +292,12 @@ export default {
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
             this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
         }, 100),
+
+        clickBlurHandler (e) {
+            if(!isDescendant(this.$el, e.target)) {
+                this.selectAll(false);
+            }
+        },
 
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
