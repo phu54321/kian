@@ -78,12 +78,24 @@ import './css/kian.scss';
 
 import MainToolbar from './toolbar';
 
+import { mapActions } from 'vuex';
+
 export default {
     components: {
         ErrorDialog,
         HotkeyMap,
         CookieLaw,
         SyncDialog,
+    },
+
+    created () {
+        this.loadUserConfig();
+    },
+
+    methods: {
+        ...mapActions([
+            'loadUserConfig',
+        ]),
     },
 
     computed: {

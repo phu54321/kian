@@ -6,7 +6,7 @@ from utils import (
 )
 
 
-@registerApi('conf_get')
+@registerApi('config_get')
 def getConf(msg):
     with Col() as col:
         return emit.emitResult(col.conf)

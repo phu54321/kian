@@ -32,6 +32,8 @@ import VueRouter from 'vue-router';
 import Router from './router';
 Vue.use(VueRouter);
 
+import store from './store';
+
 window.onbeforeunload = function () {
     return 'Really refresh?';
 };
@@ -41,5 +43,6 @@ import App from './App';
 new Vue({
     el: '#app',
     render: h => h(App),
+    store,
     router: Router.createRouter(),
 });
