@@ -71,7 +71,7 @@ async function getNextCard (deckName) {
 
 export default {
     props: ['deckName'],
-    async asyncData(props) {
+    async asyncData (props) {
         const deckName = props.deckName;
         return getNextCard(deckName);
     },
