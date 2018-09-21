@@ -5,9 +5,6 @@ const webpack = require('webpack');
 
 module.exports = {
     outDir: 'dist/frontend',
-    presets: [
-        require('poi-preset-typescript')(),
-    ],
     staticFolder: 'public',
     html: {
         title: 'Kian',
@@ -17,18 +14,23 @@ module.exports = {
         'frontend/addons/staticServe.js',
         'poi.config.js',
     ],
-    configureWebpack (config, _context) {
+    configureWebpack (config) {
         config.externals = {
             jquery: 'jQuery',
             $: 'jQuery',
         };
         config.resolve = {
-            extensions: ['.js', '.vue', '.json'],
+            extensions: ['.js', '.ts', '.vue', '.json'],
             alias: {
                 '@': path.resolve(__dirname, 'frontend/'),
                 '~': path.resolve(__dirname, 'frontend/'),
             },
         };
+        config.module.rules.push({
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+        });
         config.node = {
             fs: 'empty'
         };

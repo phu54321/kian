@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import nanoid from 'nanoid';
-import ankiCall from '~/api/ankiCall';
+const nanoid = require('nanoid');
+const ankiCall = require('~/api/ankiCall').default;
 
 
-function base64ArrayBuffer (arrayBuffer) {
+function base64ArrayBuffer (arrayBuffer: any) {
     var base64    = '';
     var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
@@ -70,7 +70,7 @@ function base64ArrayBuffer (arrayBuffer) {
 }
 
 
-export function getFileAsBase64 (file) {
+export function getFileAsBase64 (file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         var reader = new FileReader();
         reader.readAsArrayBuffer(file);
@@ -83,14 +83,14 @@ export function getFileAsBase64 (file) {
     });
 }
 
-export function getRandomFilename (filename) {
+export function getRandomFilename (filename: string) {
     const lastDotIndex = filename.lastIndexOf('.');
     if(lastDotIndex !== -1) {
         return nanoid() + filename.substr(lastDotIndex);
     } else return filename;
 }
 
-export async function uploadImageFromDataURI (filename, datab64) {
+export async function uploadImageFromDataURI (filename: string, datab64: string) {
     filename = getRandomFilename(filename);
 
     return ankiCall('media_upload', {

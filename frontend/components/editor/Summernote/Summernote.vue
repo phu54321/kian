@@ -27,7 +27,7 @@ import './cloze';
 import './table';
 import './htmledit';
 import './disableUnwantedHotkeys';
-import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper.ts';
+import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
 const summernoteHotkeys = [
     ['Summernote - text styling', [
