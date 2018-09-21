@@ -30,9 +30,11 @@
 
 <script>
 
-import 'codemirror/lib/codemirror.css';
 import CodeMirror from 'codemirror';
+import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/edit/trailingspace';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/show-hint.css';
 
 import './addons/tui/fixOrderedListNumber';
 import './addons/tui/overlay';
@@ -49,7 +51,10 @@ import './addons/cloze';
 import './addons/textStyle';
 import './addons/table';
 
+import wautocompleter from './addons/wautocomplete';
+
 import ankiCall from '~/api/ankiCall';
+import _ from 'lodash';
 
 import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
@@ -132,6 +137,9 @@ export default {
             indentUnit: 4,
             lineWrapping: true,
             extraKeys,
+            hintOptions: {
+                hint: wautocompleter,
+            }
         });
 
         this.cm.$vnode = this;
@@ -164,6 +172,16 @@ export default {
                 }
             }
         });
+        this.cm.on('keyup', _.debounce((cm, event) => {
+            console.log(event.keyCode);
+            if (!cm.state.completionActive &&
+                event.keyCode !== 13 && // Enter
+                event.keyCode !== 9 && // Tab
+                event.keyCode !== 27  // ESC
+            ) {
+                cm.showHint();
+            }
+        }, 100));
         this.cm.on('change', this.onChange);
         this.onChange();
     },
