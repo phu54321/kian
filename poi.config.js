@@ -6,6 +6,10 @@ const webpack = require('webpack');
 module.exports = {
     outDir: 'dist/frontend',
     staticFolder: 'public',
+    plugins: [
+        require('@poi/plugin-typescript')(),
+        require('@poi/plugin-eslint')(),
+    ],
     html: {
         title: 'Kian',
         description: 'Spaced learning app'
@@ -26,11 +30,6 @@ module.exports = {
                 '~': path.resolve(__dirname, 'frontend/'),
             },
         };
-        config.module.rules.push({
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
-        });
         config.node = {
             fs: 'empty'
         };
