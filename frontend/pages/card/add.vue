@@ -34,7 +34,7 @@ import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
 import ErrorDialogVue from '~/components/ErrorDialog.vue';
 
-import { findCards } from '~/api';
+import { addNote, findCards } from '~/api';
 
 const historyNum = 50;
 
@@ -88,7 +88,7 @@ export default {
         async save () {
             try {
                 const card = this.card;
-                await this.$ankiCall('note_add', {
+                await addNote({
                     deck: card.deck,
                     model: card.model,
                     fields: card.fields,

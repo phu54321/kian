@@ -52,8 +52,7 @@ import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
 import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
-import { listDeck } from '~/api';
-import { findCards } from '~/api';
+import { listDeck, findCards, addNote } from '~/api';
 
 const URLObj = window.URL || window.webkitURL;
 
@@ -184,7 +183,7 @@ export default {
                 uploadImageFromDataURI('image.jpg', a),
             ]);
 
-            await this.$ankiCall('note_add', {
+            await addNote({
                 deck: this.deck,
                 model: 'Basic',
                 fields: [
