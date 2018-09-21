@@ -48,6 +48,13 @@ import ListSelector from '../common/ListSelector';
 import TagEditor from '../common/TagEditor';
 import padLeft from 'pad-left';
 import { listModel, listDeck } from '~/api';
+import {
+    updateCardDeckBatch,
+    updateCardModelBatch,
+    addCardTagBatch,
+    deleteCardTagBatch,
+    deleteCardBatch,
+} from '~/api';
 
 export default {
     props: ['selected'],
@@ -85,34 +92,22 @@ export default {
             return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
         },
         async changeDeck () {
-            await this.$ankiCall('card_update_deck_batch', {
-                deck: this.deck,
-                cardIds: this.selected,
-            });
+            await updateCardDeckBatch(this.selected, this.deck);
             this.deck = '';
             this.$emit('updateView');
         },
         async changeModel () {
-            await this.$ankiCall('card_update_model_batch', {
-                model: this.model,
-                cardIds: this.selected,
-            });
+            await updateCardModelBatch(this.selected, this.model);
             this.model = '';
             this.$emit('updateCardIds');
         },
         async addTags () {
-            await this.$ankiCall('card_add_tag_batch', {
-                tags: this.tags,
-                cardIds: this.selected,
-            });
+            await addCardTagBatch(this.selected, this.tags);
             this.tags = [];
             this.$emit('updateView');
         },
         async removeTags () {
-            await this.$ankiCall('card_remove_tag_batch', {
-                tags: this.tags,
-                cardIds: this.selected,
-            });
+            await deleteCardTagBatch(this.selected, this.tags);
             this.tags = [];
             this.$emit('updateView');
         },
@@ -133,9 +128,7 @@ export default {
             this.$emit('updateView');
         },
         async deleteCards () {
-            await this.$ankiCall('card_delete_batch', {
-                cardIds: this.selected,
-            });
+            await deleteCardBatch(this.selected);
             this.$emit('updateCardIds');
         },
     }
