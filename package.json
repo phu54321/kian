@@ -16,7 +16,7 @@
     "build:backend": "pyinstaller server.spec && shx mv dist/server/* dist && shx rm -r dist/server",
     "build:frontend": "poi build frontend/index.js",
     "lint": "npm-run-all lint:*",
-    "lint:frontend": "eslint frontend/**; eslint addons/**"
+    "lint:frontend": "eslint frontend/**; eslint addons/**; tslint --project tsconfig.json"
   },
   "husky": {
     "hooks": {

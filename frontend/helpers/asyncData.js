@@ -100,6 +100,6 @@ Vue.mixin({
         } catch (e) {
             ErrorDialog.openErrorDialog(null, e.message);
             next(false);
-        };
+        }
     },
 });

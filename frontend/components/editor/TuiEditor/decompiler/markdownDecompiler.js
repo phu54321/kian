@@ -41,7 +41,9 @@ function getMarkdownContent (domElement) {
             markdown: utf8.decode(base64.decode(markdownElements[0].innerHTML)),
             expectedHtmlCRC: markdownElements[0].getAttribute('hash'),
         };
-    } catch (e) {;}  // Error might occur during utf8.decode
+    } catch (e) {
+        // Error might occur during utf8.decode
+    }
 
     return {};
 }
