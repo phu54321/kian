@@ -554,8 +554,8 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
       while (len < 3 && stream.eat(ch)) len++
       var after = stream.peek() || " "
       // See http://spec.commonmark.org/0.27/#emphasis-and-strong-emphasis
-      var leftFlanking = !/\s/.test(after) && (!punctuation.test(after) || /\s/.test(before) || punctuation.test(before))
-      var rightFlanking = !/\s/.test(before) && (!punctuation.test(before) || /\s/.test(after) || punctuation.test(after))
+      var leftFlanking = true; // !/\s/.test(after) && (!punctuation.test(after) || /\s/.test(before) || punctuation.test(before))
+      var rightFlanking = true; // !/\s/.test(before) && (!punctuation.test(before) || /\s/.test(after) || punctuation.test(after))
       var setEm = null, setStrong = null
       if (len % 2) { // Em
         if (!state.em && leftFlanking && (ch === "*" || !rightFlanking || punctuation.test(before)))
