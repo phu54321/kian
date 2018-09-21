@@ -1,4 +1,4 @@
-import ankiCall from './ankiCall';
+import ankiCall from '../ankiCall';
 
 export async function listDeck () {
     return ankiCall('deck_list');

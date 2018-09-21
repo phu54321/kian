@@ -47,8 +47,7 @@ div
 import ListSelector from '../common/ListSelector';
 import TagEditor from '../common/TagEditor';
 import padLeft from 'pad-left';
-import { listModel } from '~/api/model';
-import { listDeck } from '~/api/deck';
+import { listModel, listDeck } from '~/api';
 
 export default {
     props: ['selected'],

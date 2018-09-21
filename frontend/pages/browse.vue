@@ -45,9 +45,9 @@ import BrowserView from '~/components/browser/BrowserView';
 import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
 
 import { fuzzyMatch } from '~/utils/utils';
-import { listModel } from '~/api/model';
-import { listDeck } from '~/api/deck';
-import { findCards } from '~/api/browser';
+import { listModel } from '~/api';
+import { listDeck } from '~/api';
+import { findCards } from '~/api';
 import _ from 'lodash';
 
 

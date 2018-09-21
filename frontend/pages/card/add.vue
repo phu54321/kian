@@ -34,7 +34,7 @@ import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
 import ErrorDialogVue from '~/components/ErrorDialog.vue';
 
-import { findCards } from '~/api/browser';
+import { findCards } from '~/api';
 
 const historyNum = 50;
 

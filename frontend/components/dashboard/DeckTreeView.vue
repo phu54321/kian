@@ -38,7 +38,7 @@
 
 <script>
 
-import { collapseDeck } from '~/api/deck';
+import { collapseDeck } from '~/api';
 
 export default {
     props: ['tree', 'indent'],
