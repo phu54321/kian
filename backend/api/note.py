@@ -91,7 +91,7 @@ def addNote(msg):
     })
     with Col() as col:
         model = col.models.byName(msg['model'])
-        did = col.decks.id(msg['deck'], create=True)
+        did = col.decks.byName(msg['deck'])
         fields = msg['fields']
         tags = msg['tags']
 

@@ -15,6 +15,17 @@ def listDeck(msg):
         return emit.emitResult(deckNames)
 
 
+@registerApi('deck_add')
+def addDeck(msg):
+    typeCheck(msg, {
+        'deckName': str
+    })
+    with Col() as col:
+        deckName = msg['deckName']
+        col.decks.id(deckName, create=True)
+        return emit.emitResult(True)
+
+
 @registerApi('dashboard_deck_tree')
 def listDeckDue(msg):
     with Col() as col:
