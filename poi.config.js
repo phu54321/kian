@@ -5,6 +5,9 @@ const webpack = require('webpack');
 
 module.exports = {
     outDir: 'dist/frontend',
+    presets: [
+        require('poi-preset-typescript')(),
+    ],
     staticFolder: 'public',
     html: {
         title: 'Kian',

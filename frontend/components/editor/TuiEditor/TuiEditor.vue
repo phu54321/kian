@@ -55,7 +55,7 @@ import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
 import encodeMarkdown from './renderer/markdownRenderer';
 import decodeMarkdown from './decompiler/markdownDecompiler';
-import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
+import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper.ts';
 
 
 function addImageBlobHook (blob, callback) {
