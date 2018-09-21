@@ -14,5 +14,12 @@
             "@/*": ["frontend/*"],
             "~/*": ["frontend/*"]
         },
-    }
+    },
+    "include": [
+        "frontend/**/*.ts",
+        "frontend/**/*.vue"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
 }

@@ -26,7 +26,6 @@ import './helpers/datepicker';
 import './helpers/fontawesome';
 import './helpers/hotkey';
 import './helpers/toasted';
-import './helpers/vselect';
 import './helpers/loadingOverlay';
 
 import './addons/install';
