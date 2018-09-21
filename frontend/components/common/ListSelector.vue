@@ -68,13 +68,17 @@ export default {
 
     methods: {
         isValidInput (v) {
-            if(this.taggable) return true;
+            if(this.taggable !== undefined) return true;
             else return this.options.indexOf(v) !== -1;
         },
-        onFocus (v) {
-            this.focused = v;
-            if(v) {
+        onFocus (focused) {
+            this.focused = focused;
+            if(focused) {
                 this.$refs.inputBox.select();
+            } else {
+                if(!this.isValidInput(this.internalValue)) {
+                    this.internalValue = this.value;
+                }
             }
         },
         onInput () {
