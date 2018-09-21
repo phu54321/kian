@@ -108,7 +108,11 @@ import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
 import { clamp } from '~/utils/utils';
 
-import { getCardsBrowserInfo } from '~/api';
+import {
+    getCardsBrowserInfo,
+    toggleCardMarkedBatch,
+    toggleCardSuspendedBatch
+} from '~/api';
 
 function isDescendant (parent, child) {
     if(!child) return false;
@@ -356,16 +360,12 @@ export default {
         },
 
         async markCards () {
-            await this.$ankiCall('card_toggle_marked_batch', {
-                cardIds: this.selectedCardList
-            });
+            await toggleCardMarkedBatch(this.selectedCardList);
             this.updateView++;
         },
 
         async suspendCards () {
-            await this.$ankiCall('card_toggle_suspended_batch', {
-                cardIds: this.selectedCardList
-            });
+            await toggleCardSuspendedBatch(this.selectedCardList);
             this.updateView++;
         },
 
