@@ -22,7 +22,7 @@ div
     list-selector(
         taggable,
         v-model='deck',
-        apiType='deck_list')
+        :optionsFunc='listDeck')
 
     input.mt-2(type="file", @change="onFileChange")
     b-alert.mt-2(show)
@@ -52,6 +52,7 @@ import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
 import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
+import { listDeck } from '~/api/deck';
 
 const URLObj = window.URL || window.webkitURL;
 
@@ -97,6 +98,7 @@ export default {
         qaFirst () {
             return this.qaPair[0];
         },
+        listDeck: () => listDeck,
     },
     watch: {
         async updateCardIds () {

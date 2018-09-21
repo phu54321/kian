@@ -27,7 +27,7 @@ b-form(@submit='onSave')
                     title='Change deck'
                     v-model='internalValue.deck',
                     :disabled='deckFixed',
-                    apiType='deck_list')
+                    :optionsFunc='listDeck')
 
         tr
             th Model
@@ -37,7 +37,7 @@ b-form(@submit='onSave')
                     v-hotkey="['ctrl+m']",
                     title='Change model',
                     v-model='internalValue.model',
-                    apiType='model_list')
+                    :optionsFunc='listModel')
                 quick-model-selector.mt-2(v-model='internalValue.model')
 
         template(v-for='(fFormat, index) in internalValue.fieldFormats', v-if='!fFormat.hidden')
@@ -64,7 +64,8 @@ import _ from 'lodash';
 import './editor.scss';
 import { runHook } from '~/utils/hookBase';
 
-import { getModel } from '~/api/model';
+import { listModel, getModel } from '~/api/model';
+import { listDeck } from '~/api/deck';
 
 function resize (arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
@@ -120,6 +121,8 @@ export default {
         currentModel () {
             return this.internalValue.model;
         },
+        listModel: () => listModel,
+        listDeck: () => listDeck,
     },
     watch: {
         value: {
