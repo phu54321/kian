@@ -7,7 +7,6 @@ def fuzzyMatch(needle, hasystack):
 
     try:
         idx = 0
-        print(needle, hasystack)
         for ch in needle:
             while True:
                 if hasystack[idx] == ch:

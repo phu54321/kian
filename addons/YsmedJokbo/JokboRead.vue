@@ -50,7 +50,7 @@ div
 import Jimp from 'jimp';
 import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
-import { uploadImageFromDataURI } from '~/utils/uploadHelper.ts';
+import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
 
 const URLObj = window.URL || window.webkitURL;
