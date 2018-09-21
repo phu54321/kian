@@ -12,4 +12,5 @@ from . import (
     sched,
     sync,
     conf,
+    autocomplete,
 )
