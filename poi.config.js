@@ -7,7 +7,9 @@ module.exports = {
     outDir: 'dist/frontend',
     staticFolder: 'public',
     plugins: [
-        require('@poi/plugin-eslint')(),
+        require('@poi/plugin-eslint')({
+            command: '*'
+        }),
     ],
     html: {
         title: 'Kian',
