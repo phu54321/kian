@@ -29,7 +29,7 @@ import { fuzzyMatch, focusNextElement } from '~/utils/utils';
 import AutocompleteBox from './AutocompleteBox';
 
 export default {
-    props: ['placeholder', 'value', 'apiType', 'disabled', 'taggable', 'focus'],
+    props: ['placeholder', 'value', 'optionsFunc', 'disabled', 'taggable', 'focus'],
     name: 'list-selector',
     components: {
         AutocompleteBox,
@@ -44,7 +44,7 @@ export default {
     },
 
     async asyncData (props) {
-        const options = await this.$ankiCall(props.apiType);
+        const options = await props.optionsFunc();
         options.sort();
         return {
             options
@@ -106,7 +106,7 @@ export default {
         options () {
             if(!this.value && this.options.length) {
                 this.$emit('input', this.options[0]); // Select first option by default
-            }   
+            }
         }
     }
 };

@@ -17,10 +17,10 @@
 
 div
     b-modal(id='browserChangeDeck', title='Change deck', lazy, @ok='changeDeck')
-        list-selector(taggable, focus, title='Deck name', v-model='deck', apiType='deck_list')
+        list-selector(taggable, focus, title='Deck name', v-model='deck', :optionsFunc='listDeck')
 
     b-modal(id='browserChangeModel', title='Change model', lazy, @ok='changeModel')
-        list-selector(focus, title='Model name', v-model='model', apiType='model_list')
+        list-selector(focus, title='Model name', v-model='model', :optionsFunc='listModel')
 
     b-modal(id='browserAddTags', title='Add tags', lazy, @ok='addTags')
         tag-editor(focus, v-model='tags')
@@ -47,6 +47,8 @@ div
 import ListSelector from '../common/ListSelector';
 import TagEditor from '../common/TagEditor';
 import padLeft from 'pad-left';
+import { listModel } from '~/api/model';
+import { listDeck } from '~/api/deck';
 
 export default {
     props: ['selected'],
@@ -62,6 +64,10 @@ export default {
             due: null,
             changeDueShow: false,
         };
+    },
+    computed: {
+        listModel: () => listModel,
+        listDeck: () => listDeck,
     },
     watch: {
         changeDueShow (v) {
