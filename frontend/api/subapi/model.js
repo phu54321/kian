@@ -1,4 +1,4 @@
-import ankiCall from './ankiCall';
+import ankiCall from '../ankiCall';
 
 let modelListCache = null;
 

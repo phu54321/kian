@@ -52,8 +52,8 @@ import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
 import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
-import { listDeck } from '~/api/deck';
-import { findCards } from '~/api/browser';
+import { listDeck } from '~/api';
+import { findCards } from '~/api';
 
 const URLObj = window.URL || window.webkitURL;
 

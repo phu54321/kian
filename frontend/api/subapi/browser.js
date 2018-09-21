@@ -1,4 +1,4 @@
-import ankiCall from './ankiCall';
+import ankiCall from '../ankiCall';
 
 export async function findCards (param) {
     const { query, sortBy, sortOrder } = param || {};

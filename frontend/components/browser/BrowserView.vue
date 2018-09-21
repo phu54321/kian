@@ -108,7 +108,7 @@ import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
 import { clamp } from '~/utils/utils';
 
-import { getCardsBrowserInfo } from '~/api/browser';
+import { getCardsBrowserInfo } from '~/api';
 
 function isDescendant (parent, child) {
     if(!child) return false;

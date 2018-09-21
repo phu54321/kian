@@ -36,7 +36,7 @@ div
 
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import { fuzzyMatch } from '~/utils/utils';
-import { listModel } from '~/api/model';
+import { listModel } from '~/api';
 
 export default {
     components: {

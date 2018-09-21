@@ -44,7 +44,7 @@ div
 
 <script>
 
-import { getDeckInfo } from '~/api/deck';
+import { getDeckInfo } from '~/api';
 
 export default {
     props: ['deckName'],

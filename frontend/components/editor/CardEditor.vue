@@ -64,8 +64,8 @@ import _ from 'lodash';
 import './editor.scss';
 import { runHook } from '~/utils/hookBase';
 
-import { listModel, getModel } from '~/api/model';
-import { listDeck } from '~/api/deck';
+import { listModel, getModel } from '~/api';
+import { listDeck } from '~/api';
 
 function resize (arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
