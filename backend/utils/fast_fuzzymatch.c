@@ -853,9 +853,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 #define __Pyx_PyObject_GetAttrStr(o,n) PyObject_GetAttr(o,n)
 #endif
 
-/* GetBuiltinName.proto */
-static PyObject *__Pyx_GetBuiltinName(PyObject *name);
-
 /* PyCFunctionFastCall.proto */
 #if CYTHON_FAST_PYCCALL
 static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
@@ -896,6 +893,26 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
 #endif
 
+/* ListCompAppend.proto */
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len)) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        Py_SIZE(list) = len+1;
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+#else
+#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
+#endif
+
+/* GetBuiltinName.proto */
+static PyObject *__Pyx_GetBuiltinName(PyObject *name);
+
 /* GetModuleGlobalName.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
 
@@ -916,6 +933,28 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
         __Pyx__ArgTypeTest(obj, type, name, exact))
 static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
 
 /* ListAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
@@ -963,6 +1002,62 @@ static CYTHON_INLINE PyObject* __Pyx_decode_bytes(
         PyBytes_AS_STRING(string), PyBytes_GET_SIZE(string),
         start, stop, encoding, errors, decode_func);
 }
+
+/* FetchCommonType.proto */
+static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
+
+/* CythonFunction.proto */
+#define __Pyx_CyFunction_USED 1
+#define __Pyx_CYFUNCTION_STATICMETHOD  0x01
+#define __Pyx_CYFUNCTION_CLASSMETHOD   0x02
+#define __Pyx_CYFUNCTION_CCLASS        0x04
+#define __Pyx_CyFunction_GetClosure(f)\
+    (((__pyx_CyFunctionObject *) (f))->func_closure)
+#define __Pyx_CyFunction_GetClassObj(f)\
+    (((__pyx_CyFunctionObject *) (f))->func_classobj)
+#define __Pyx_CyFunction_Defaults(type, f)\
+    ((type *)(((__pyx_CyFunctionObject *) (f))->defaults))
+#define __Pyx_CyFunction_SetDefaultsGetter(f, g)\
+    ((__pyx_CyFunctionObject *) (f))->defaults_getter = (g)
+typedef struct {
+    PyCFunctionObject func;
+#if PY_VERSION_HEX < 0x030500A0
+    PyObject *func_weakreflist;
+#endif
+    PyObject *func_dict;
+    PyObject *func_name;
+    PyObject *func_qualname;
+    PyObject *func_doc;
+    PyObject *func_globals;
+    PyObject *func_code;
+    PyObject *func_closure;
+    PyObject *func_classobj;
+    void *defaults;
+    int defaults_pyobjects;
+    int flags;
+    PyObject *defaults_tuple;
+    PyObject *defaults_kwdict;
+    PyObject *(*defaults_getter)(PyObject *);
+    PyObject *func_annotations;
+} __pyx_CyFunctionObject;
+static PyTypeObject *__pyx_CyFunctionType = 0;
+#define __Pyx_CyFunction_NewEx(ml, flags, qualname, self, module, globals, code)\
+    __Pyx_CyFunction_New(__pyx_CyFunctionType, ml, flags, qualname, self, module, globals, code)
+static PyObject *__Pyx_CyFunction_New(PyTypeObject *, PyMethodDef *ml,
+                                      int flags, PyObject* qualname,
+                                      PyObject *self,
+                                      PyObject *module, PyObject *globals,
+                                      PyObject* code);
+static CYTHON_INLINE void *__Pyx_CyFunction_InitDefaults(PyObject *m,
+                                                         size_t size,
+                                                         int pyobjects);
+static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsTuple(PyObject *m,
+                                                            PyObject *tuple);
+static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *m,
+                                                             PyObject *dict);
+static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *m,
+                                                              PyObject *dict);
+static int __pyx_CyFunction_init(void);
 
 /* IncludeStringH.proto */
 #include <string.h>
@@ -1030,6 +1125,9 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
 /* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+
+/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
@@ -1067,11 +1165,14 @@ extern int __pyx_module_is_main_utils__fast_fuzzymatch;
 int __pyx_module_is_main_utils__fast_fuzzymatch = 0;
 
 /* Implementation of 'utils.fast_fuzzymatch' */
-static PyObject *__pyx_builtin_map;
 static const char __pyx_k_l[] = "l";
-static const char __pyx_k_map[] = "map";
+static const char __pyx_k_r[] = "r";
+static const char __pyx_k_s[] = "s";
+static const char __pyx_k_key[] = "key";
 static const char __pyx_k_ret[] = "ret";
 static const char __pyx_k_main[] = "__main__";
+static const char __pyx_k_rank[] = "rank";
+static const char __pyx_k_sort[] = "sort";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_lower[] = "lower";
 static const char __pyx_k_utf_8[] = "utf-8";
@@ -1087,20 +1188,26 @@ static const char __pyx_k_fast_fuzzymatchBatch[] = "fast_fuzzymatchBatch";
 static const char __pyx_k_utils_fast_fuzzymatch[] = "utils.fast_fuzzymatch";
 static const char __pyx_k_preprocessedHaystackList[] = "preprocessedHaystackList";
 static const char __pyx_k_utils_fast_fuzzymatch_pyx[] = "utils\\fast_fuzzymatch.pyx";
+static const char __pyx_k_fast_fuzzymatchBatch_locals_lamb[] = "fast_fuzzymatchBatch.<locals>.<lambda>";
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_fast_fuzzymatchBatch;
+static PyObject *__pyx_n_s_fast_fuzzymatchBatch_locals_lamb;
 static PyObject *__pyx_n_s_haystack;
+static PyObject *__pyx_n_s_key;
 static PyObject *__pyx_n_s_l;
 static PyObject *__pyx_n_s_lower;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_map;
 static PyObject *__pyx_n_s_needle;
 static PyObject *__pyx_n_s_preprocess;
 static PyObject *__pyx_n_s_preprocessList;
 static PyObject *__pyx_n_s_preprocessedHaystackList;
 static PyObject *__pyx_n_s_preprocessedNeedle;
+static PyObject *__pyx_n_s_r;
+static PyObject *__pyx_n_s_rank;
 static PyObject *__pyx_n_s_ret;
+static PyObject *__pyx_n_s_s;
+static PyObject *__pyx_n_s_sort;
 static PyObject *__pyx_n_s_string;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_s_utf_8;
@@ -1108,6 +1215,7 @@ static PyObject *__pyx_n_s_utils_fast_fuzzymatch;
 static PyObject *__pyx_kp_s_utils_fast_fuzzymatch_pyx;
 static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_preprocess(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_string); /* proto */
 static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_2preprocessList(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_l); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_4fast_fuzzymatchBatch(CYTHON_UNUSED PyObject *__pyx_self, unsigned char *__pyx_v_preprocessedNeedle, PyObject *__pyx_v_preprocessedHaystackList); /* proto */
 static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_6fast_fuzzymatch(CYTHON_UNUSED PyObject *__pyx_self, unsigned char *__pyx_v_needle, unsigned char *__pyx_v_haystack); /* proto */
 static PyObject *__pyx_tuple_;
@@ -1212,7 +1320,7 @@ static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_preprocess(CYTHON_UNUSED PyOb
  * 
  * 
  * def preprocessList(l):             # <<<<<<<<<<<<<<
- *     return list(map(preprocess, l))
+ *     return [preprocess(s) for s in l]
  * 
  */
 
@@ -1231,45 +1339,128 @@ static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_3preprocessList(PyObject *__p
 }
 
 static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_2preprocessList(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_l) {
+  PyObject *__pyx_v_s = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  PyObject *(*__pyx_t_4)(PyObject *);
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("preprocessList", 0);
 
   /* "utils/fast_fuzzymatch.pyx":8
  * 
  * def preprocessList(l):
- *     return list(map(preprocess, l))             # <<<<<<<<<<<<<<
+ *     return [preprocess(s) for s in l]             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_preprocess); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_l);
-  __Pyx_GIVEREF(__pyx_v_l);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_l);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  if (likely(PyList_CheckExact(__pyx_v_l)) || PyTuple_CheckExact(__pyx_v_l)) {
+    __pyx_t_2 = __pyx_v_l; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
+    __pyx_t_4 = NULL;
+  } else {
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_l); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 8, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_4)) {
+      if (likely(PyList_CheckExact(__pyx_t_2))) {
+        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 8, __pyx_L1_error)
+        #else
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 8, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        #endif
+      } else {
+        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 8, __pyx_L1_error)
+        #else
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 8, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        #endif
+      }
+    } else {
+      __pyx_t_5 = __pyx_t_4(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 8, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_5);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_preprocess); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+      }
+    }
+    if (!__pyx_t_7) {
+      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_s); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 8, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+    } else {
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_6)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_7, __pyx_v_s};
+        __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 8, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_GOTREF(__pyx_t_5);
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_7, __pyx_v_s};
+        __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 8, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_GOTREF(__pyx_t_5);
+      } else
+      #endif
+      {
+        __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 8, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7); __pyx_t_7 = NULL;
+        __Pyx_INCREF(__pyx_v_s);
+        __Pyx_GIVEREF(__pyx_v_s);
+        PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_v_s);
+        __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_8, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 8, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      }
+    }
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
   goto __pyx_L0;
 
   /* "utils/fast_fuzzymatch.pyx":7
  * 
  * 
  * def preprocessList(l):             # <<<<<<<<<<<<<<
- *     return list(map(preprocess, l))
+ *     return [preprocess(s) for s in l]
  * 
  */
 
@@ -1277,9 +1468,14 @@ static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_2preprocessList(CYTHON_UNUSED
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("utils.fast_fuzzymatch.preprocessList", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_s);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -1360,9 +1556,69 @@ static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_5fast_fuzzymatchBatch(PyObjec
   return __pyx_r;
 }
 
+/* "utils/fast_fuzzymatch.pyx":24
+ *             ret.append([rank, haystack.decode('utf-8')])
+ * 
+ *     ret.sort(key=lambda x: -x[0])             # <<<<<<<<<<<<<<
+ *     return [r[1] for r in ret]
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_20fast_fuzzymatchBatch_lambda(PyObject *__pyx_self, PyObject *__pyx_v_x); /*proto*/
+static PyMethodDef __pyx_mdef_5utils_15fast_fuzzymatch_20fast_fuzzymatchBatch_lambda = {"lambda", (PyCFunction)__pyx_pw_5utils_15fast_fuzzymatch_20fast_fuzzymatchBatch_lambda, METH_O, 0};
+static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_20fast_fuzzymatchBatch_lambda(PyObject *__pyx_self, PyObject *__pyx_v_x) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("lambda (wrapper)", 0);
+  __pyx_r = __pyx_lambda_funcdef_lambda(__pyx_self, ((PyObject *)__pyx_v_x));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_lambda_funcdef_lambda(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("lambda", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_x, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyNumber_Negative(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("utils.fast_fuzzymatch.fast_fuzzymatchBatch.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "utils/fast_fuzzymatch.pyx":11
+ * 
+ * 
+ * def fast_fuzzymatchBatch(             # <<<<<<<<<<<<<<
+ *     const unsigned char[] preprocessedNeedle,
+ *     list preprocessedHaystackList
+ */
+
 static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_4fast_fuzzymatchBatch(CYTHON_UNUSED PyObject *__pyx_self, unsigned char *__pyx_v_preprocessedNeedle, PyObject *__pyx_v_preprocessedHaystackList) {
   PyObject *__pyx_v_ret = 0;
   PyObject *__pyx_v_haystack = 0;
+  int __pyx_v_rank;
+  PyObject *__pyx_v_r = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1370,7 +1626,9 @@ static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_4fast_fuzzymatchBatch(CYTHON_
   PyObject *__pyx_t_3 = NULL;
   unsigned char *__pyx_t_4;
   int __pyx_t_5;
-  int __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
   __Pyx_RefNannySetupContext("fast_fuzzymatchBatch", 0);
 
   /* "utils/fast_fuzzymatch.pyx":15
@@ -1378,97 +1636,156 @@ static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_4fast_fuzzymatchBatch(CYTHON_
  * ):
  *     cdef list ret = []             # <<<<<<<<<<<<<<
  *     cdef bytes haystack
- * 
+ *     cdef int rank
  */
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ret = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "utils/fast_fuzzymatch.pyx":18
- *     cdef bytes haystack
+  /* "utils/fast_fuzzymatch.pyx":19
+ *     cdef int rank
  * 
  *     for haystack in preprocessedHaystackList:             # <<<<<<<<<<<<<<
- *         if fast_fuzzymatch(preprocessedNeedle, haystack):
- *             ret.append(haystack.decode('utf-8'))
+ *         rank = fast_fuzzymatch(preprocessedNeedle, haystack)
+ *         if rank:
  */
   if (unlikely(__pyx_v_preprocessedHaystackList == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 18, __pyx_L1_error)
+    __PYX_ERR(0, 19, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_preprocessedHaystackList; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
   for (;;) {
     if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 18, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
-    if (!(likely(PyBytes_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 18, __pyx_L1_error)
+    if (!(likely(PyBytes_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 19, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_haystack, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
 
-    /* "utils/fast_fuzzymatch.pyx":19
+    /* "utils/fast_fuzzymatch.pyx":20
  * 
  *     for haystack in preprocessedHaystackList:
- *         if fast_fuzzymatch(preprocessedNeedle, haystack):             # <<<<<<<<<<<<<<
- *             ret.append(haystack.decode('utf-8'))
- *     return ret
+ *         rank = fast_fuzzymatch(preprocessedNeedle, haystack)             # <<<<<<<<<<<<<<
+ *         if rank:
+ *             ret.append([rank, haystack.decode('utf-8')])
  */
     if (unlikely(__pyx_v_haystack == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-      __PYX_ERR(0, 19, __pyx_L1_error)
+      __PYX_ERR(0, 20, __pyx_L1_error)
     }
-    __pyx_t_4 = __Pyx_PyBytes_AsWritableUString(__pyx_v_haystack); if (unlikely((!__pyx_t_4) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L1_error)
-    __pyx_t_5 = (__pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(__pyx_v_preprocessedNeedle, __pyx_t_4, 0) != 0);
+    __pyx_t_4 = __Pyx_PyBytes_AsWritableUString(__pyx_v_haystack); if (unlikely((!__pyx_t_4) && PyErr_Occurred())) __PYX_ERR(0, 20, __pyx_L1_error)
+    __pyx_v_rank = __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(__pyx_v_preprocessedNeedle, __pyx_t_4, 0);
+
+    /* "utils/fast_fuzzymatch.pyx":21
+ *     for haystack in preprocessedHaystackList:
+ *         rank = fast_fuzzymatch(preprocessedNeedle, haystack)
+ *         if rank:             # <<<<<<<<<<<<<<
+ *             ret.append([rank, haystack.decode('utf-8')])
+ * 
+ */
+    __pyx_t_5 = (__pyx_v_rank != 0);
     if (__pyx_t_5) {
 
-      /* "utils/fast_fuzzymatch.pyx":20
- *     for haystack in preprocessedHaystackList:
- *         if fast_fuzzymatch(preprocessedNeedle, haystack):
- *             ret.append(haystack.decode('utf-8'))             # <<<<<<<<<<<<<<
- *     return ret
+      /* "utils/fast_fuzzymatch.pyx":22
+ *         rank = fast_fuzzymatch(preprocessedNeedle, haystack)
+ *         if rank:
+ *             ret.append([rank, haystack.decode('utf-8')])             # <<<<<<<<<<<<<<
  * 
+ *     ret.sort(key=lambda x: -x[0])
  */
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_rank); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       if (unlikely(__pyx_v_haystack == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "decode");
-        __PYX_ERR(0, 20, __pyx_L1_error)
+        __PYX_ERR(0, 22, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_decode_bytes(__pyx_v_haystack, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_3); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 20, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_6 = __Pyx_decode_bytes(__pyx_v_haystack, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 22, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 22, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyList_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
+      __pyx_t_3 = 0;
+      __pyx_t_6 = 0;
+      __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_7); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 22, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "utils/fast_fuzzymatch.pyx":19
- * 
+      /* "utils/fast_fuzzymatch.pyx":21
  *     for haystack in preprocessedHaystackList:
- *         if fast_fuzzymatch(preprocessedNeedle, haystack):             # <<<<<<<<<<<<<<
- *             ret.append(haystack.decode('utf-8'))
- *     return ret
+ *         rank = fast_fuzzymatch(preprocessedNeedle, haystack)
+ *         if rank:             # <<<<<<<<<<<<<<
+ *             ret.append([rank, haystack.decode('utf-8')])
+ * 
  */
     }
 
-    /* "utils/fast_fuzzymatch.pyx":18
- *     cdef bytes haystack
+    /* "utils/fast_fuzzymatch.pyx":19
+ *     cdef int rank
  * 
  *     for haystack in preprocessedHaystackList:             # <<<<<<<<<<<<<<
- *         if fast_fuzzymatch(preprocessedNeedle, haystack):
- *             ret.append(haystack.decode('utf-8'))
+ *         rank = fast_fuzzymatch(preprocessedNeedle, haystack)
+ *         if rank:
  */
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "utils/fast_fuzzymatch.pyx":21
- *         if fast_fuzzymatch(preprocessedNeedle, haystack):
- *             ret.append(haystack.decode('utf-8'))
- *     return ret             # <<<<<<<<<<<<<<
+  /* "utils/fast_fuzzymatch.pyx":24
+ *             ret.append([rank, haystack.decode('utf-8')])
+ * 
+ *     ret.sort(key=lambda x: -x[0])             # <<<<<<<<<<<<<<
+ *     return [r[1] for r in ret]
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ret, __pyx_n_s_sort); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_6 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5utils_15fast_fuzzymatch_20fast_fuzzymatchBatch_lambda, 0, __pyx_n_s_fast_fuzzymatchBatch_locals_lamb, NULL, __pyx_n_s_utils_fast_fuzzymatch, __pyx_d, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_key, __pyx_t_6) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "utils/fast_fuzzymatch.pyx":25
+ * 
+ *     ret.sort(key=lambda x: -x[0])
+ *     return [r[1] for r in ret]             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_ret);
-  __pyx_r = __pyx_v_ret;
+  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = __pyx_v_ret; __Pyx_INCREF(__pyx_t_7); __pyx_t_2 = 0;
+  for (;;) {
+    if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_7)) break;
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 25, __pyx_L1_error)
+    #else
+    __pyx_t_1 = PySequence_ITEM(__pyx_t_7, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    #endif
+    __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_1);
+    __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_r, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 25, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_6;
+  __pyx_t_6 = 0;
   goto __pyx_L0;
 
   /* "utils/fast_fuzzymatch.pyx":11
@@ -1483,214 +1800,456 @@ static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_4fast_fuzzymatchBatch(CYTHON_
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("utils.fast_fuzzymatch.fast_fuzzymatchBatch", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ret);
   __Pyx_XDECREF(__pyx_v_haystack);
+  __Pyx_XDECREF(__pyx_v_r);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "utils/fast_fuzzymatch.pyx":26
+/* "utils/fast_fuzzymatch.pyx":30
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef bint fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):             # <<<<<<<<<<<<<<
- *     cdef int haystackIndex = len(haystack) - 1
- *     cdef int needleIndex = len(needle) - 1
+ * cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):             # <<<<<<<<<<<<<<
+ *     cdef int max_prioritized_char_dist = 3
+ *     cdef int max_prioritized_wordstart_dist = 4
  */
 
 static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_7fast_fuzzymatch(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx_v_needle, unsigned char *__pyx_v_haystack, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  int __pyx_v_max_prioritized_char_dist;
+  int __pyx_v_max_prioritized_wordstart_dist;
+  int __pyx_v_haystackLen;
+  int __pyx_v_needleLen;
   int __pyx_v_haystackIndex;
   int __pyx_v_needleIndex;
+  int __pyx_v_prevHaystackIndex;
+  int __pyx_v_chdist;
+  int __pyx_v_chd_mul;
+  int __pyx_v_wsd_mul;
+  int __pyx_v_rank;
   unsigned char __pyx_v_ch;
+  int __pyx_v_wsIndex;
+  int __pyx_v_wsDist;
+  unsigned char __pyx_v_wsi_ch;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   size_t __pyx_t_1;
   int __pyx_t_2;
+  int __pyx_t_3;
+  long __pyx_t_4;
+  long __pyx_t_5;
+  int __pyx_t_6;
   __Pyx_RefNannySetupContext("fast_fuzzymatch", 0);
 
-  /* "utils/fast_fuzzymatch.pyx":27
+  /* "utils/fast_fuzzymatch.pyx":31
  * @cython.wraparound(False)
- * cpdef bint fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):
- *     cdef int haystackIndex = len(haystack) - 1             # <<<<<<<<<<<<<<
- *     cdef int needleIndex = len(needle) - 1
- *     cdef unsigned char ch
+ * cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):
+ *     cdef int max_prioritized_char_dist = 3             # <<<<<<<<<<<<<<
+ *     cdef int max_prioritized_wordstart_dist = 4
+ * 
+ */
+  __pyx_v_max_prioritized_char_dist = 3;
+
+  /* "utils/fast_fuzzymatch.pyx":32
+ * cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):
+ *     cdef int max_prioritized_char_dist = 3
+ *     cdef int max_prioritized_wordstart_dist = 4             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int haystackLen = len(haystack)
+ */
+  __pyx_v_max_prioritized_wordstart_dist = 4;
+
+  /* "utils/fast_fuzzymatch.pyx":34
+ *     cdef int max_prioritized_wordstart_dist = 4
+ * 
+ *     cdef int haystackLen = len(haystack)             # <<<<<<<<<<<<<<
+ *     cdef int needleLen = len(needle)
+ *     cdef int haystackIndex = 0
  */
   __pyx_t_1 = strlen(((char const *)__pyx_v_haystack)); 
-  __pyx_v_haystackIndex = (__pyx_t_1 - 1);
+  __pyx_v_haystackLen = __pyx_t_1;
 
-  /* "utils/fast_fuzzymatch.pyx":28
- * cpdef bint fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):
- *     cdef int haystackIndex = len(haystack) - 1
- *     cdef int needleIndex = len(needle) - 1             # <<<<<<<<<<<<<<
- *     cdef unsigned char ch
+  /* "utils/fast_fuzzymatch.pyx":35
  * 
+ *     cdef int haystackLen = len(haystack)
+ *     cdef int needleLen = len(needle)             # <<<<<<<<<<<<<<
+ *     cdef int haystackIndex = 0
+ *     cdef int needleIndex = 0
  */
   __pyx_t_1 = strlen(((char const *)__pyx_v_needle)); 
-  __pyx_v_needleIndex = (__pyx_t_1 - 1);
+  __pyx_v_needleLen = __pyx_t_1;
 
-  /* "utils/fast_fuzzymatch.pyx":31
+  /* "utils/fast_fuzzymatch.pyx":36
+ *     cdef int haystackLen = len(haystack)
+ *     cdef int needleLen = len(needle)
+ *     cdef int haystackIndex = 0             # <<<<<<<<<<<<<<
+ *     cdef int needleIndex = 0
+ *     cdef int prevHaystackIndex
+ */
+  __pyx_v_haystackIndex = 0;
+
+  /* "utils/fast_fuzzymatch.pyx":37
+ *     cdef int needleLen = len(needle)
+ *     cdef int haystackIndex = 0
+ *     cdef int needleIndex = 0             # <<<<<<<<<<<<<<
+ *     cdef int prevHaystackIndex
+ * 
+ */
+  __pyx_v_needleIndex = 0;
+
+  /* "utils/fast_fuzzymatch.pyx":41
+ * 
+ *     cdef int chdist, chd_mul, wsd_mul
+ *     cdef int rank = 0             # <<<<<<<<<<<<<<
  *     cdef unsigned char ch
  * 
- *     while needleIndex >= 0:             # <<<<<<<<<<<<<<
- *         ch = needle[needleIndex]
- *         while True:
+ */
+  __pyx_v_rank = 0;
+
+  /* "utils/fast_fuzzymatch.pyx":46
+ *     cdef int wsIndex, wsDist
+ * 
+ *     while needleIndex < needleLen:             # <<<<<<<<<<<<<<
+ *         if haystackIndex == haystackLen:
+ *             return 0
  */
   while (1) {
-    __pyx_t_2 = ((__pyx_v_needleIndex >= 0) != 0);
+    __pyx_t_2 = ((__pyx_v_needleIndex < __pyx_v_needleLen) != 0);
     if (!__pyx_t_2) break;
 
-    /* "utils/fast_fuzzymatch.pyx":32
+    /* "utils/fast_fuzzymatch.pyx":47
  * 
- *     while needleIndex >= 0:
- *         ch = needle[needleIndex]             # <<<<<<<<<<<<<<
- *         while True:
- *             if haystack[haystackIndex] == ch:
- */
-    __pyx_v_ch = (__pyx_v_needle[__pyx_v_needleIndex]);
-
-    /* "utils/fast_fuzzymatch.pyx":33
- *     while needleIndex >= 0:
- *         ch = needle[needleIndex]
- *         while True:             # <<<<<<<<<<<<<<
- *             if haystack[haystackIndex] == ch:
- *                 break
- */
-    while (1) {
-
-      /* "utils/fast_fuzzymatch.pyx":34
- *         ch = needle[needleIndex]
- *         while True:
- *             if haystack[haystackIndex] == ch:             # <<<<<<<<<<<<<<
- *                 break
- *             haystackIndex -= 1
- */
-      __pyx_t_2 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) == __pyx_v_ch) != 0);
-      if (__pyx_t_2) {
-
-        /* "utils/fast_fuzzymatch.pyx":35
- *         while True:
- *             if haystack[haystackIndex] == ch:
- *                 break             # <<<<<<<<<<<<<<
- *             haystackIndex -= 1
- *             if haystackIndex == -1:
- */
-        goto __pyx_L6_break;
-
-        /* "utils/fast_fuzzymatch.pyx":34
- *         ch = needle[needleIndex]
- *         while True:
- *             if haystack[haystackIndex] == ch:             # <<<<<<<<<<<<<<
- *                 break
- *             haystackIndex -= 1
- */
-      }
-
-      /* "utils/fast_fuzzymatch.pyx":36
- *             if haystack[haystackIndex] == ch:
- *                 break
- *             haystackIndex -= 1             # <<<<<<<<<<<<<<
- *             if haystackIndex == -1:
- *                 return False
- */
-      __pyx_v_haystackIndex = (__pyx_v_haystackIndex - 1);
-
-      /* "utils/fast_fuzzymatch.pyx":37
- *                 break
- *             haystackIndex -= 1
- *             if haystackIndex == -1:             # <<<<<<<<<<<<<<
- *                 return False
- *         haystackIndex -= 1
- */
-      __pyx_t_2 = ((__pyx_v_haystackIndex == -1L) != 0);
-      if (__pyx_t_2) {
-
-        /* "utils/fast_fuzzymatch.pyx":38
- *             haystackIndex -= 1
- *             if haystackIndex == -1:
- *                 return False             # <<<<<<<<<<<<<<
- *         haystackIndex -= 1
- *         needleIndex -= 1
- */
-        __pyx_r = 0;
-        goto __pyx_L0;
-
-        /* "utils/fast_fuzzymatch.pyx":37
- *                 break
- *             haystackIndex -= 1
- *             if haystackIndex == -1:             # <<<<<<<<<<<<<<
- *                 return False
- *         haystackIndex -= 1
- */
-      }
-    }
-    __pyx_L6_break:;
-
-    /* "utils/fast_fuzzymatch.pyx":39
- *             if haystackIndex == -1:
- *                 return False
- *         haystackIndex -= 1             # <<<<<<<<<<<<<<
- *         needleIndex -= 1
- *         if haystackIndex == -1:
- */
-    __pyx_v_haystackIndex = (__pyx_v_haystackIndex - 1);
-
-    /* "utils/fast_fuzzymatch.pyx":40
- *                 return False
- *         haystackIndex -= 1
- *         needleIndex -= 1             # <<<<<<<<<<<<<<
- *         if haystackIndex == -1:
- *             return False
- */
-    __pyx_v_needleIndex = (__pyx_v_needleIndex - 1);
-
-    /* "utils/fast_fuzzymatch.pyx":41
- *         haystackIndex -= 1
- *         needleIndex -= 1
- *         if haystackIndex == -1:             # <<<<<<<<<<<<<<
- *             return False
+ *     while needleIndex < needleLen:
+ *         if haystackIndex == haystackLen:             # <<<<<<<<<<<<<<
+ *             return 0
  * 
  */
-    __pyx_t_2 = ((__pyx_v_haystackIndex == -1L) != 0);
+    __pyx_t_2 = ((__pyx_v_haystackIndex == __pyx_v_haystackLen) != 0);
     if (__pyx_t_2) {
 
-      /* "utils/fast_fuzzymatch.pyx":42
- *         needleIndex -= 1
- *         if haystackIndex == -1:
- *             return False             # <<<<<<<<<<<<<<
+      /* "utils/fast_fuzzymatch.pyx":48
+ *     while needleIndex < needleLen:
+ *         if haystackIndex == haystackLen:
+ *             return 0             # <<<<<<<<<<<<<<
  * 
- *     return True
+ *         ch = needle[needleIndex]
  */
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "utils/fast_fuzzymatch.pyx":41
- *         haystackIndex -= 1
- *         needleIndex -= 1
- *         if haystackIndex == -1:             # <<<<<<<<<<<<<<
- *             return False
+      /* "utils/fast_fuzzymatch.pyx":47
+ * 
+ *     while needleIndex < needleLen:
+ *         if haystackIndex == haystackLen:             # <<<<<<<<<<<<<<
+ *             return 0
  * 
  */
     }
+
+    /* "utils/fast_fuzzymatch.pyx":50
+ *             return 0
+ * 
+ *         ch = needle[needleIndex]             # <<<<<<<<<<<<<<
+ *         prevHaystackIndex = haystackIndex
+ * 
+ */
+    __pyx_v_ch = (__pyx_v_needle[__pyx_v_needleIndex]);
+
+    /* "utils/fast_fuzzymatch.pyx":51
+ * 
+ *         ch = needle[needleIndex]
+ *         prevHaystackIndex = haystackIndex             # <<<<<<<<<<<<<<
+ * 
+ *         while haystack[haystackIndex] != ch:
+ */
+    __pyx_v_prevHaystackIndex = __pyx_v_haystackIndex;
+
+    /* "utils/fast_fuzzymatch.pyx":53
+ *         prevHaystackIndex = haystackIndex
+ * 
+ *         while haystack[haystackIndex] != ch:             # <<<<<<<<<<<<<<
+ *             haystackIndex += 1
+ *             if haystackIndex == haystackLen:
+ */
+    while (1) {
+      __pyx_t_2 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) != __pyx_v_ch) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "utils/fast_fuzzymatch.pyx":54
+ * 
+ *         while haystack[haystackIndex] != ch:
+ *             haystackIndex += 1             # <<<<<<<<<<<<<<
+ *             if haystackIndex == haystackLen:
+ *                 return 0
+ */
+      __pyx_v_haystackIndex = (__pyx_v_haystackIndex + 1);
+
+      /* "utils/fast_fuzzymatch.pyx":55
+ *         while haystack[haystackIndex] != ch:
+ *             haystackIndex += 1
+ *             if haystackIndex == haystackLen:             # <<<<<<<<<<<<<<
+ *                 return 0
+ * 
+ */
+      __pyx_t_2 = ((__pyx_v_haystackIndex == __pyx_v_haystackLen) != 0);
+      if (__pyx_t_2) {
+
+        /* "utils/fast_fuzzymatch.pyx":56
+ *             haystackIndex += 1
+ *             if haystackIndex == haystackLen:
+ *                 return 0             # <<<<<<<<<<<<<<
+ * 
+ *         chdist = haystackIndex - prevHaystackIndex
+ */
+        __pyx_r = 0;
+        goto __pyx_L0;
+
+        /* "utils/fast_fuzzymatch.pyx":55
+ *         while haystack[haystackIndex] != ch:
+ *             haystackIndex += 1
+ *             if haystackIndex == haystackLen:             # <<<<<<<<<<<<<<
+ *                 return 0
+ * 
+ */
+      }
+    }
+
+    /* "utils/fast_fuzzymatch.pyx":58
+ *                 return 0
+ * 
+ *         chdist = haystackIndex - prevHaystackIndex             # <<<<<<<<<<<<<<
+ *         chd_mul = max(1, max_prioritized_char_dist - chdist)
+ * 
+ */
+    __pyx_v_chdist = (__pyx_v_haystackIndex - __pyx_v_prevHaystackIndex);
+
+    /* "utils/fast_fuzzymatch.pyx":59
+ * 
+ *         chdist = haystackIndex - prevHaystackIndex
+ *         chd_mul = max(1, max_prioritized_char_dist - chdist)             # <<<<<<<<<<<<<<
+ * 
+ *         wsIndex = haystackIndex
+ */
+    __pyx_t_3 = (__pyx_v_max_prioritized_char_dist - __pyx_v_chdist);
+    __pyx_t_4 = 1;
+    if (((__pyx_t_3 > __pyx_t_4) != 0)) {
+      __pyx_t_5 = __pyx_t_3;
+    } else {
+      __pyx_t_5 = __pyx_t_4;
+    }
+    __pyx_v_chd_mul = __pyx_t_5;
+
+    /* "utils/fast_fuzzymatch.pyx":61
+ *         chd_mul = max(1, max_prioritized_char_dist - chdist)
+ * 
+ *         wsIndex = haystackIndex             # <<<<<<<<<<<<<<
+ *         while wsIndex >= 0:
+ *             wsi_ch = haystack[wsIndex]
+ */
+    __pyx_v_wsIndex = __pyx_v_haystackIndex;
+
+    /* "utils/fast_fuzzymatch.pyx":62
+ * 
+ *         wsIndex = haystackIndex
+ *         while wsIndex >= 0:             # <<<<<<<<<<<<<<
+ *             wsi_ch = haystack[wsIndex]
+ *             if wsi_ch == 32:  # space
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_wsIndex >= 0) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "utils/fast_fuzzymatch.pyx":63
+ *         wsIndex = haystackIndex
+ *         while wsIndex >= 0:
+ *             wsi_ch = haystack[wsIndex]             # <<<<<<<<<<<<<<
+ *             if wsi_ch == 32:  # space
+ *                 wsIndex += 1
+ */
+      __pyx_v_wsi_ch = (__pyx_v_haystack[__pyx_v_wsIndex]);
+
+      /* "utils/fast_fuzzymatch.pyx":64
+ *         while wsIndex >= 0:
+ *             wsi_ch = haystack[wsIndex]
+ *             if wsi_ch == 32:  # space             # <<<<<<<<<<<<<<
+ *                 wsIndex += 1
+ *                 break
+ */
+      __pyx_t_2 = ((__pyx_v_wsi_ch == 32) != 0);
+      if (__pyx_t_2) {
+
+        /* "utils/fast_fuzzymatch.pyx":65
+ *             wsi_ch = haystack[wsIndex]
+ *             if wsi_ch == 32:  # space
+ *                 wsIndex += 1             # <<<<<<<<<<<<<<
+ *                 break
+ *             elif 97 <= wsi_ch <= 122:  # a-z
+ */
+        __pyx_v_wsIndex = (__pyx_v_wsIndex + 1);
+
+        /* "utils/fast_fuzzymatch.pyx":66
+ *             if wsi_ch == 32:  # space
+ *                 wsIndex += 1
+ *                 break             # <<<<<<<<<<<<<<
+ *             elif 97 <= wsi_ch <= 122:  # a-z
+ *                 break
+ */
+        goto __pyx_L10_break;
+
+        /* "utils/fast_fuzzymatch.pyx":64
+ *         while wsIndex >= 0:
+ *             wsi_ch = haystack[wsIndex]
+ *             if wsi_ch == 32:  # space             # <<<<<<<<<<<<<<
+ *                 wsIndex += 1
+ *                 break
+ */
+      }
+
+      /* "utils/fast_fuzzymatch.pyx":67
+ *                 wsIndex += 1
+ *                 break
+ *             elif 97 <= wsi_ch <= 122:  # a-z             # <<<<<<<<<<<<<<
+ *                 break
+ *             wsIndex -= 1
+ */
+      __pyx_t_2 = (97 <= __pyx_v_wsi_ch);
+      if (__pyx_t_2) {
+        __pyx_t_2 = (__pyx_v_wsi_ch <= 0x7A);
+      }
+      __pyx_t_6 = (__pyx_t_2 != 0);
+      if (__pyx_t_6) {
+
+        /* "utils/fast_fuzzymatch.pyx":68
+ *                 break
+ *             elif 97 <= wsi_ch <= 122:  # a-z
+ *                 break             # <<<<<<<<<<<<<<
+ *             wsIndex -= 1
+ * 
+ */
+        goto __pyx_L10_break;
+
+        /* "utils/fast_fuzzymatch.pyx":67
+ *                 wsIndex += 1
+ *                 break
+ *             elif 97 <= wsi_ch <= 122:  # a-z             # <<<<<<<<<<<<<<
+ *                 break
+ *             wsIndex -= 1
+ */
+      }
+
+      /* "utils/fast_fuzzymatch.pyx":69
+ *             elif 97 <= wsi_ch <= 122:  # a-z
+ *                 break
+ *             wsIndex -= 1             # <<<<<<<<<<<<<<
+ * 
+ *         wsDist = haystackIndex - wsIndex
+ */
+      __pyx_v_wsIndex = (__pyx_v_wsIndex - 1);
+    }
+    __pyx_L10_break:;
+
+    /* "utils/fast_fuzzymatch.pyx":71
+ *             wsIndex -= 1
+ * 
+ *         wsDist = haystackIndex - wsIndex             # <<<<<<<<<<<<<<
+ *         wsd_mul = max(1, max_prioritized_wordstart_dist - wsDist)
+ * 
+ */
+    __pyx_v_wsDist = (__pyx_v_haystackIndex - __pyx_v_wsIndex);
+
+    /* "utils/fast_fuzzymatch.pyx":72
+ * 
+ *         wsDist = haystackIndex - wsIndex
+ *         wsd_mul = max(1, max_prioritized_wordstart_dist - wsDist)             # <<<<<<<<<<<<<<
+ * 
+ *         rank += 100 * chd_mul * wsd_mul
+ */
+    __pyx_t_3 = (__pyx_v_max_prioritized_wordstart_dist - __pyx_v_wsDist);
+    __pyx_t_5 = 1;
+    if (((__pyx_t_3 > __pyx_t_5) != 0)) {
+      __pyx_t_4 = __pyx_t_3;
+    } else {
+      __pyx_t_4 = __pyx_t_5;
+    }
+    __pyx_v_wsd_mul = __pyx_t_4;
+
+    /* "utils/fast_fuzzymatch.pyx":74
+ *         wsd_mul = max(1, max_prioritized_wordstart_dist - wsDist)
+ * 
+ *         rank += 100 * chd_mul * wsd_mul             # <<<<<<<<<<<<<<
+ *         haystackIndex += 1
+ *         needleIndex += 1
+ */
+    __pyx_v_rank = (__pyx_v_rank + ((0x64 * __pyx_v_chd_mul) * __pyx_v_wsd_mul));
+
+    /* "utils/fast_fuzzymatch.pyx":75
+ * 
+ *         rank += 100 * chd_mul * wsd_mul
+ *         haystackIndex += 1             # <<<<<<<<<<<<<<
+ *         needleIndex += 1
+ * 
+ */
+    __pyx_v_haystackIndex = (__pyx_v_haystackIndex + 1);
+
+    /* "utils/fast_fuzzymatch.pyx":76
+ *         rank += 100 * chd_mul * wsd_mul
+ *         haystackIndex += 1
+ *         needleIndex += 1             # <<<<<<<<<<<<<<
+ * 
+ *     if haystackLen < 100:
+ */
+    __pyx_v_needleIndex = (__pyx_v_needleIndex + 1);
   }
 
-  /* "utils/fast_fuzzymatch.pyx":44
- *             return False
+  /* "utils/fast_fuzzymatch.pyx":78
+ *         needleIndex += 1
  * 
- *     return True             # <<<<<<<<<<<<<<
+ *     if haystackLen < 100:             # <<<<<<<<<<<<<<
+ *         rank += 100 - haystackLen
+ * 
  */
-  __pyx_r = 1;
+  __pyx_t_6 = ((__pyx_v_haystackLen < 0x64) != 0);
+  if (__pyx_t_6) {
+
+    /* "utils/fast_fuzzymatch.pyx":79
+ * 
+ *     if haystackLen < 100:
+ *         rank += 100 - haystackLen             # <<<<<<<<<<<<<<
+ * 
+ *     return rank
+ */
+    __pyx_v_rank = (__pyx_v_rank + (0x64 - __pyx_v_haystackLen));
+
+    /* "utils/fast_fuzzymatch.pyx":78
+ *         needleIndex += 1
+ * 
+ *     if haystackLen < 100:             # <<<<<<<<<<<<<<
+ *         rank += 100 - haystackLen
+ * 
+ */
+  }
+
+  /* "utils/fast_fuzzymatch.pyx":81
+ *         rank += 100 - haystackLen
+ * 
+ *     return rank             # <<<<<<<<<<<<<<
+ */
+  __pyx_r = __pyx_v_rank;
   goto __pyx_L0;
 
-  /* "utils/fast_fuzzymatch.pyx":26
+  /* "utils/fast_fuzzymatch.pyx":30
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * cpdef bint fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):             # <<<<<<<<<<<<<<
- *     cdef int haystackIndex = len(haystack) - 1
- *     cdef int needleIndex = len(needle) - 1
+ * cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] haystack):             # <<<<<<<<<<<<<<
+ *     cdef int max_prioritized_char_dist = 3
+ *     cdef int max_prioritized_wordstart_dist = 4
  */
 
   /* function exit code */
@@ -1730,11 +2289,11 @@ static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_7fast_fuzzymatch(PyObject *__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_haystack)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fast_fuzzymatch", 1, 2, 2, 1); __PYX_ERR(0, 26, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fast_fuzzymatch", 1, 2, 2, 1); __PYX_ERR(0, 30, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fast_fuzzymatch") < 0)) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fast_fuzzymatch") < 0)) __PYX_ERR(0, 30, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1742,12 +2301,12 @@ static PyObject *__pyx_pw_5utils_15fast_fuzzymatch_7fast_fuzzymatch(PyObject *__
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_needle = __Pyx_PyObject_AsWritableUString(values[0]); if (unlikely((!__pyx_v_needle) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
-    __pyx_v_haystack = __Pyx_PyObject_AsWritableUString(values[1]); if (unlikely((!__pyx_v_haystack) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
+    __pyx_v_needle = __Pyx_PyObject_AsWritableUString(values[0]); if (unlikely((!__pyx_v_needle) && PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L3_error)
+    __pyx_v_haystack = __Pyx_PyObject_AsWritableUString(values[1]); if (unlikely((!__pyx_v_haystack) && PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fast_fuzzymatch", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 26, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fast_fuzzymatch", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 30, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("utils.fast_fuzzymatch.fast_fuzzymatch", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1766,7 +2325,7 @@ static PyObject *__pyx_pf_5utils_15fast_fuzzymatch_6fast_fuzzymatch(CYTHON_UNUSE
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("fast_fuzzymatch", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(__pyx_v_needle, __pyx_v_haystack, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(__pyx_v_needle, __pyx_v_haystack, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1824,17 +2383,22 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_fast_fuzzymatchBatch, __pyx_k_fast_fuzzymatchBatch, sizeof(__pyx_k_fast_fuzzymatchBatch), 0, 0, 1, 1},
+  {&__pyx_n_s_fast_fuzzymatchBatch_locals_lamb, __pyx_k_fast_fuzzymatchBatch_locals_lamb, sizeof(__pyx_k_fast_fuzzymatchBatch_locals_lamb), 0, 0, 1, 1},
   {&__pyx_n_s_haystack, __pyx_k_haystack, sizeof(__pyx_k_haystack), 0, 0, 1, 1},
+  {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
   {&__pyx_n_s_l, __pyx_k_l, sizeof(__pyx_k_l), 0, 0, 1, 1},
   {&__pyx_n_s_lower, __pyx_k_lower, sizeof(__pyx_k_lower), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_map, __pyx_k_map, sizeof(__pyx_k_map), 0, 0, 1, 1},
   {&__pyx_n_s_needle, __pyx_k_needle, sizeof(__pyx_k_needle), 0, 0, 1, 1},
   {&__pyx_n_s_preprocess, __pyx_k_preprocess, sizeof(__pyx_k_preprocess), 0, 0, 1, 1},
   {&__pyx_n_s_preprocessList, __pyx_k_preprocessList, sizeof(__pyx_k_preprocessList), 0, 0, 1, 1},
   {&__pyx_n_s_preprocessedHaystackList, __pyx_k_preprocessedHaystackList, sizeof(__pyx_k_preprocessedHaystackList), 0, 0, 1, 1},
   {&__pyx_n_s_preprocessedNeedle, __pyx_k_preprocessedNeedle, sizeof(__pyx_k_preprocessedNeedle), 0, 0, 1, 1},
+  {&__pyx_n_s_r, __pyx_k_r, sizeof(__pyx_k_r), 0, 0, 1, 1},
+  {&__pyx_n_s_rank, __pyx_k_rank, sizeof(__pyx_k_rank), 0, 0, 1, 1},
   {&__pyx_n_s_ret, __pyx_k_ret, sizeof(__pyx_k_ret), 0, 0, 1, 1},
+  {&__pyx_n_s_s, __pyx_k_s, sizeof(__pyx_k_s), 0, 0, 1, 1},
+  {&__pyx_n_s_sort, __pyx_k_sort, sizeof(__pyx_k_sort), 0, 0, 1, 1},
   {&__pyx_n_s_string, __pyx_k_string, sizeof(__pyx_k_string), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_s_utf_8, __pyx_k_utf_8, sizeof(__pyx_k_utf_8), 0, 0, 1, 0},
@@ -1843,10 +2407,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 8, __pyx_L1_error)
   return 0;
-  __pyx_L1_error:;
-  return -1;
 }
 
 static int __Pyx_InitCachedConstants(void) {
@@ -1880,13 +2441,13 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  * def preprocessList(l):             # <<<<<<<<<<<<<<
- *     return list(map(preprocess, l))
+ *     return [preprocess(s) for s in l]
  * 
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_l); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(2, __pyx_n_s_l, __pyx_n_s_s); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_utils_fast_fuzzymatch_pyx, __pyx_n_s_preprocessList, 7, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_utils_fast_fuzzymatch_pyx, __pyx_n_s_preprocessList, 7, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 7, __pyx_L1_error)
 
   /* "utils/fast_fuzzymatch.pyx":11
  * 
@@ -1895,10 +2456,10 @@ static int __Pyx_InitCachedConstants(void) {
  *     const unsigned char[] preprocessedNeedle,
  *     list preprocessedHaystackList
  */
-  __pyx_tuple__6 = PyTuple_Pack(4, __pyx_n_s_preprocessedNeedle, __pyx_n_s_preprocessedHaystackList, __pyx_n_s_ret, __pyx_n_s_haystack); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(6, __pyx_n_s_preprocessedNeedle, __pyx_n_s_preprocessedHaystackList, __pyx_n_s_ret, __pyx_n_s_haystack, __pyx_n_s_rank, __pyx_n_s_r); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_utils_fast_fuzzymatch_pyx, __pyx_n_s_fast_fuzzymatchBatch, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_utils_fast_fuzzymatch_pyx, __pyx_n_s_fast_fuzzymatchBatch, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2166,7 +2727,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  * def preprocessList(l):             # <<<<<<<<<<<<<<
- *     return list(map(preprocess, l))
+ *     return [preprocess(s) for s in l]
  * 
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5utils_15fast_fuzzymatch_3preprocessList, NULL, __pyx_n_s_utils_fast_fuzzymatch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
@@ -2251,20 +2812,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
     return PyObject_GetAttr(obj, attr_name);
 }
 #endif
-
-/* GetBuiltinName */
-static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
-    PyObject* result = __Pyx_PyObject_GetAttrStr(__pyx_b, name);
-    if (unlikely(!result)) {
-        PyErr_Format(PyExc_NameError,
-#if PY_MAJOR_VERSION >= 3
-            "name '%U' is not defined", name);
-#else
-            "name '%.200s' is not defined", PyString_AS_STRING(name));
-#endif
-    }
-    return result;
-}
 
 /* PyCFunctionFastCall */
 #if CYTHON_FAST_PYCCALL
@@ -2510,6 +3057,20 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
 }
 #endif
 
+/* GetBuiltinName */
+  static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
+    PyObject* result = __Pyx_PyObject_GetAttrStr(__pyx_b, name);
+    if (unlikely(!result)) {
+        PyErr_Format(PyExc_NameError,
+#if PY_MAJOR_VERSION >= 3
+            "name '%U' is not defined", name);
+#else
+            "name '%.200s' is not defined", PyString_AS_STRING(name));
+#endif
+    }
+    return result;
+}
+
 /* GetModuleGlobalName */
   static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
     PyObject *result;
@@ -2700,6 +3261,93 @@ bad:
     return 0;
 }
 
+/* GetItemInt */
+      static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely((0 <= wrapped_i) & (wrapped_i < PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely((0 <= wrapped_i) & (wrapped_i < PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely((n >= 0) & (n < PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely((n >= 0) & (n < PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
 /* decode_c_bytes */
       static CYTHON_INLINE PyObject* __Pyx_decode_c_bytes(
          const char* cstring, Py_ssize_t length, Py_ssize_t start, Py_ssize_t stop,
@@ -2727,8 +3375,641 @@ bad:
     }
 }
 
+/* FetchCommonType */
+      static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
+    PyObject* fake_module;
+    PyTypeObject* cached_type = NULL;
+    fake_module = PyImport_AddModule((char*) "_cython_" CYTHON_ABI);
+    if (!fake_module) return NULL;
+    Py_INCREF(fake_module);
+    cached_type = (PyTypeObject*) PyObject_GetAttrString(fake_module, type->tp_name);
+    if (cached_type) {
+        if (!PyType_Check((PyObject*)cached_type)) {
+            PyErr_Format(PyExc_TypeError,
+                "Shared Cython type %.200s is not a type object",
+                type->tp_name);
+            goto bad;
+        }
+        if (cached_type->tp_basicsize != type->tp_basicsize) {
+            PyErr_Format(PyExc_TypeError,
+                "Shared Cython type %.200s has the wrong size, try recompiling",
+                type->tp_name);
+            goto bad;
+        }
+    } else {
+        if (!PyErr_ExceptionMatches(PyExc_AttributeError)) goto bad;
+        PyErr_Clear();
+        if (PyType_Ready(type) < 0) goto bad;
+        if (PyObject_SetAttrString(fake_module, type->tp_name, (PyObject*) type) < 0)
+            goto bad;
+        Py_INCREF(type);
+        cached_type = type;
+    }
+done:
+    Py_DECREF(fake_module);
+    return cached_type;
+bad:
+    Py_XDECREF(cached_type);
+    cached_type = NULL;
+    goto done;
+}
+
+/* CythonFunction */
+      #include <structmember.h>
+static PyObject *
+__Pyx_CyFunction_get_doc(__pyx_CyFunctionObject *op, CYTHON_UNUSED void *closure)
+{
+    if (unlikely(op->func_doc == NULL)) {
+        if (op->func.m_ml->ml_doc) {
+#if PY_MAJOR_VERSION >= 3
+            op->func_doc = PyUnicode_FromString(op->func.m_ml->ml_doc);
+#else
+            op->func_doc = PyString_FromString(op->func.m_ml->ml_doc);
+#endif
+            if (unlikely(op->func_doc == NULL))
+                return NULL;
+        } else {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+    Py_INCREF(op->func_doc);
+    return op->func_doc;
+}
+static int
+__Pyx_CyFunction_set_doc(__pyx_CyFunctionObject *op, PyObject *value)
+{
+    PyObject *tmp = op->func_doc;
+    if (value == NULL) {
+        value = Py_None;
+    }
+    Py_INCREF(value);
+    op->func_doc = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_name(__pyx_CyFunctionObject *op)
+{
+    if (unlikely(op->func_name == NULL)) {
+#if PY_MAJOR_VERSION >= 3
+        op->func_name = PyUnicode_InternFromString(op->func.m_ml->ml_name);
+#else
+        op->func_name = PyString_InternFromString(op->func.m_ml->ml_name);
+#endif
+        if (unlikely(op->func_name == NULL))
+            return NULL;
+    }
+    Py_INCREF(op->func_name);
+    return op->func_name;
+}
+static int
+__Pyx_CyFunction_set_name(__pyx_CyFunctionObject *op, PyObject *value)
+{
+    PyObject *tmp;
+#if PY_MAJOR_VERSION >= 3
+    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
+#else
+    if (unlikely(value == NULL || !PyString_Check(value))) {
+#endif
+        PyErr_SetString(PyExc_TypeError,
+                        "__name__ must be set to a string object");
+        return -1;
+    }
+    tmp = op->func_name;
+    Py_INCREF(value);
+    op->func_name = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_qualname(__pyx_CyFunctionObject *op)
+{
+    Py_INCREF(op->func_qualname);
+    return op->func_qualname;
+}
+static int
+__Pyx_CyFunction_set_qualname(__pyx_CyFunctionObject *op, PyObject *value)
+{
+    PyObject *tmp;
+#if PY_MAJOR_VERSION >= 3
+    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
+#else
+    if (unlikely(value == NULL || !PyString_Check(value))) {
+#endif
+        PyErr_SetString(PyExc_TypeError,
+                        "__qualname__ must be set to a string object");
+        return -1;
+    }
+    tmp = op->func_qualname;
+    Py_INCREF(value);
+    op->func_qualname = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_self(__pyx_CyFunctionObject *m, CYTHON_UNUSED void *closure)
+{
+    PyObject *self;
+    self = m->func_closure;
+    if (self == NULL)
+        self = Py_None;
+    Py_INCREF(self);
+    return self;
+}
+static PyObject *
+__Pyx_CyFunction_get_dict(__pyx_CyFunctionObject *op)
+{
+    if (unlikely(op->func_dict == NULL)) {
+        op->func_dict = PyDict_New();
+        if (unlikely(op->func_dict == NULL))
+            return NULL;
+    }
+    Py_INCREF(op->func_dict);
+    return op->func_dict;
+}
+static int
+__Pyx_CyFunction_set_dict(__pyx_CyFunctionObject *op, PyObject *value)
+{
+    PyObject *tmp;
+    if (unlikely(value == NULL)) {
+        PyErr_SetString(PyExc_TypeError,
+               "function's dictionary may not be deleted");
+        return -1;
+    }
+    if (unlikely(!PyDict_Check(value))) {
+        PyErr_SetString(PyExc_TypeError,
+               "setting function's dictionary to a non-dict");
+        return -1;
+    }
+    tmp = op->func_dict;
+    Py_INCREF(value);
+    op->func_dict = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_globals(__pyx_CyFunctionObject *op)
+{
+    Py_INCREF(op->func_globals);
+    return op->func_globals;
+}
+static PyObject *
+__Pyx_CyFunction_get_closure(CYTHON_UNUSED __pyx_CyFunctionObject *op)
+{
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+static PyObject *
+__Pyx_CyFunction_get_code(__pyx_CyFunctionObject *op)
+{
+    PyObject* result = (op->func_code) ? op->func_code : Py_None;
+    Py_INCREF(result);
+    return result;
+}
+static int
+__Pyx_CyFunction_init_defaults(__pyx_CyFunctionObject *op) {
+    int result = 0;
+    PyObject *res = op->defaults_getter((PyObject *) op);
+    if (unlikely(!res))
+        return -1;
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    op->defaults_tuple = PyTuple_GET_ITEM(res, 0);
+    Py_INCREF(op->defaults_tuple);
+    op->defaults_kwdict = PyTuple_GET_ITEM(res, 1);
+    Py_INCREF(op->defaults_kwdict);
+    #else
+    op->defaults_tuple = PySequence_ITEM(res, 0);
+    if (unlikely(!op->defaults_tuple)) result = -1;
+    else {
+        op->defaults_kwdict = PySequence_ITEM(res, 1);
+        if (unlikely(!op->defaults_kwdict)) result = -1;
+    }
+    #endif
+    Py_DECREF(res);
+    return result;
+}
+static int
+__Pyx_CyFunction_set_defaults(__pyx_CyFunctionObject *op, PyObject* value) {
+    PyObject* tmp;
+    if (!value) {
+        value = Py_None;
+    } else if (value != Py_None && !PyTuple_Check(value)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "__defaults__ must be set to a tuple object");
+        return -1;
+    }
+    Py_INCREF(value);
+    tmp = op->defaults_tuple;
+    op->defaults_tuple = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_defaults(__pyx_CyFunctionObject *op) {
+    PyObject* result = op->defaults_tuple;
+    if (unlikely(!result)) {
+        if (op->defaults_getter) {
+            if (__Pyx_CyFunction_init_defaults(op) < 0) return NULL;
+            result = op->defaults_tuple;
+        } else {
+            result = Py_None;
+        }
+    }
+    Py_INCREF(result);
+    return result;
+}
+static int
+__Pyx_CyFunction_set_kwdefaults(__pyx_CyFunctionObject *op, PyObject* value) {
+    PyObject* tmp;
+    if (!value) {
+        value = Py_None;
+    } else if (value != Py_None && !PyDict_Check(value)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "__kwdefaults__ must be set to a dict object");
+        return -1;
+    }
+    Py_INCREF(value);
+    tmp = op->defaults_kwdict;
+    op->defaults_kwdict = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_kwdefaults(__pyx_CyFunctionObject *op) {
+    PyObject* result = op->defaults_kwdict;
+    if (unlikely(!result)) {
+        if (op->defaults_getter) {
+            if (__Pyx_CyFunction_init_defaults(op) < 0) return NULL;
+            result = op->defaults_kwdict;
+        } else {
+            result = Py_None;
+        }
+    }
+    Py_INCREF(result);
+    return result;
+}
+static int
+__Pyx_CyFunction_set_annotations(__pyx_CyFunctionObject *op, PyObject* value) {
+    PyObject* tmp;
+    if (!value || value == Py_None) {
+        value = NULL;
+    } else if (!PyDict_Check(value)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "__annotations__ must be set to a dict object");
+        return -1;
+    }
+    Py_XINCREF(value);
+    tmp = op->func_annotations;
+    op->func_annotations = value;
+    Py_XDECREF(tmp);
+    return 0;
+}
+static PyObject *
+__Pyx_CyFunction_get_annotations(__pyx_CyFunctionObject *op) {
+    PyObject* result = op->func_annotations;
+    if (unlikely(!result)) {
+        result = PyDict_New();
+        if (unlikely(!result)) return NULL;
+        op->func_annotations = result;
+    }
+    Py_INCREF(result);
+    return result;
+}
+static PyGetSetDef __pyx_CyFunction_getsets[] = {
+    {(char *) "func_doc", (getter)__Pyx_CyFunction_get_doc, (setter)__Pyx_CyFunction_set_doc, 0, 0},
+    {(char *) "__doc__",  (getter)__Pyx_CyFunction_get_doc, (setter)__Pyx_CyFunction_set_doc, 0, 0},
+    {(char *) "func_name", (getter)__Pyx_CyFunction_get_name, (setter)__Pyx_CyFunction_set_name, 0, 0},
+    {(char *) "__name__", (getter)__Pyx_CyFunction_get_name, (setter)__Pyx_CyFunction_set_name, 0, 0},
+    {(char *) "__qualname__", (getter)__Pyx_CyFunction_get_qualname, (setter)__Pyx_CyFunction_set_qualname, 0, 0},
+    {(char *) "__self__", (getter)__Pyx_CyFunction_get_self, 0, 0, 0},
+    {(char *) "func_dict", (getter)__Pyx_CyFunction_get_dict, (setter)__Pyx_CyFunction_set_dict, 0, 0},
+    {(char *) "__dict__", (getter)__Pyx_CyFunction_get_dict, (setter)__Pyx_CyFunction_set_dict, 0, 0},
+    {(char *) "func_globals", (getter)__Pyx_CyFunction_get_globals, 0, 0, 0},
+    {(char *) "__globals__", (getter)__Pyx_CyFunction_get_globals, 0, 0, 0},
+    {(char *) "func_closure", (getter)__Pyx_CyFunction_get_closure, 0, 0, 0},
+    {(char *) "__closure__", (getter)__Pyx_CyFunction_get_closure, 0, 0, 0},
+    {(char *) "func_code", (getter)__Pyx_CyFunction_get_code, 0, 0, 0},
+    {(char *) "__code__", (getter)__Pyx_CyFunction_get_code, 0, 0, 0},
+    {(char *) "func_defaults", (getter)__Pyx_CyFunction_get_defaults, (setter)__Pyx_CyFunction_set_defaults, 0, 0},
+    {(char *) "__defaults__", (getter)__Pyx_CyFunction_get_defaults, (setter)__Pyx_CyFunction_set_defaults, 0, 0},
+    {(char *) "__kwdefaults__", (getter)__Pyx_CyFunction_get_kwdefaults, (setter)__Pyx_CyFunction_set_kwdefaults, 0, 0},
+    {(char *) "__annotations__", (getter)__Pyx_CyFunction_get_annotations, (setter)__Pyx_CyFunction_set_annotations, 0, 0},
+    {0, 0, 0, 0, 0}
+};
+static PyMemberDef __pyx_CyFunction_members[] = {
+    {(char *) "__module__", T_OBJECT, offsetof(PyCFunctionObject, m_module), PY_WRITE_RESTRICTED, 0},
+    {0, 0, 0,  0, 0}
+};
+static PyObject *
+__Pyx_CyFunction_reduce(__pyx_CyFunctionObject *m, CYTHON_UNUSED PyObject *args)
+{
+#if PY_MAJOR_VERSION >= 3
+    return PyUnicode_FromString(m->func.m_ml->ml_name);
+#else
+    return PyString_FromString(m->func.m_ml->ml_name);
+#endif
+}
+static PyMethodDef __pyx_CyFunction_methods[] = {
+    {"__reduce__", (PyCFunction)__Pyx_CyFunction_reduce, METH_VARARGS, 0},
+    {0, 0, 0, 0}
+};
+#if PY_VERSION_HEX < 0x030500A0
+#define __Pyx_CyFunction_weakreflist(cyfunc) ((cyfunc)->func_weakreflist)
+#else
+#define __Pyx_CyFunction_weakreflist(cyfunc) ((cyfunc)->func.m_weakreflist)
+#endif
+static PyObject *__Pyx_CyFunction_New(PyTypeObject *type, PyMethodDef *ml, int flags, PyObject* qualname,
+                                      PyObject *closure, PyObject *module, PyObject* globals, PyObject* code) {
+    __pyx_CyFunctionObject *op = PyObject_GC_New(__pyx_CyFunctionObject, type);
+    if (op == NULL)
+        return NULL;
+    op->flags = flags;
+    __Pyx_CyFunction_weakreflist(op) = NULL;
+    op->func.m_ml = ml;
+    op->func.m_self = (PyObject *) op;
+    Py_XINCREF(closure);
+    op->func_closure = closure;
+    Py_XINCREF(module);
+    op->func.m_module = module;
+    op->func_dict = NULL;
+    op->func_name = NULL;
+    Py_INCREF(qualname);
+    op->func_qualname = qualname;
+    op->func_doc = NULL;
+    op->func_classobj = NULL;
+    op->func_globals = globals;
+    Py_INCREF(op->func_globals);
+    Py_XINCREF(code);
+    op->func_code = code;
+    op->defaults_pyobjects = 0;
+    op->defaults = NULL;
+    op->defaults_tuple = NULL;
+    op->defaults_kwdict = NULL;
+    op->defaults_getter = NULL;
+    op->func_annotations = NULL;
+    PyObject_GC_Track(op);
+    return (PyObject *) op;
+}
+static int
+__Pyx_CyFunction_clear(__pyx_CyFunctionObject *m)
+{
+    Py_CLEAR(m->func_closure);
+    Py_CLEAR(m->func.m_module);
+    Py_CLEAR(m->func_dict);
+    Py_CLEAR(m->func_name);
+    Py_CLEAR(m->func_qualname);
+    Py_CLEAR(m->func_doc);
+    Py_CLEAR(m->func_globals);
+    Py_CLEAR(m->func_code);
+    Py_CLEAR(m->func_classobj);
+    Py_CLEAR(m->defaults_tuple);
+    Py_CLEAR(m->defaults_kwdict);
+    Py_CLEAR(m->func_annotations);
+    if (m->defaults) {
+        PyObject **pydefaults = __Pyx_CyFunction_Defaults(PyObject *, m);
+        int i;
+        for (i = 0; i < m->defaults_pyobjects; i++)
+            Py_XDECREF(pydefaults[i]);
+        PyObject_Free(m->defaults);
+        m->defaults = NULL;
+    }
+    return 0;
+}
+static void __Pyx__CyFunction_dealloc(__pyx_CyFunctionObject *m)
+{
+    if (__Pyx_CyFunction_weakreflist(m) != NULL)
+        PyObject_ClearWeakRefs((PyObject *) m);
+    __Pyx_CyFunction_clear(m);
+    PyObject_GC_Del(m);
+}
+static void __Pyx_CyFunction_dealloc(__pyx_CyFunctionObject *m)
+{
+    PyObject_GC_UnTrack(m);
+    __Pyx__CyFunction_dealloc(m);
+}
+static int __Pyx_CyFunction_traverse(__pyx_CyFunctionObject *m, visitproc visit, void *arg)
+{
+    Py_VISIT(m->func_closure);
+    Py_VISIT(m->func.m_module);
+    Py_VISIT(m->func_dict);
+    Py_VISIT(m->func_name);
+    Py_VISIT(m->func_qualname);
+    Py_VISIT(m->func_doc);
+    Py_VISIT(m->func_globals);
+    Py_VISIT(m->func_code);
+    Py_VISIT(m->func_classobj);
+    Py_VISIT(m->defaults_tuple);
+    Py_VISIT(m->defaults_kwdict);
+    if (m->defaults) {
+        PyObject **pydefaults = __Pyx_CyFunction_Defaults(PyObject *, m);
+        int i;
+        for (i = 0; i < m->defaults_pyobjects; i++)
+            Py_VISIT(pydefaults[i]);
+    }
+    return 0;
+}
+static PyObject *__Pyx_CyFunction_descr_get(PyObject *func, PyObject *obj, PyObject *type)
+{
+    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
+    if (m->flags & __Pyx_CYFUNCTION_STATICMETHOD) {
+        Py_INCREF(func);
+        return func;
+    }
+    if (m->flags & __Pyx_CYFUNCTION_CLASSMETHOD) {
+        if (type == NULL)
+            type = (PyObject *)(Py_TYPE(obj));
+        return __Pyx_PyMethod_New(func, type, (PyObject *)(Py_TYPE(type)));
+    }
+    if (obj == Py_None)
+        obj = NULL;
+    return __Pyx_PyMethod_New(func, obj, type);
+}
+static PyObject*
+__Pyx_CyFunction_repr(__pyx_CyFunctionObject *op)
+{
+#if PY_MAJOR_VERSION >= 3
+    return PyUnicode_FromFormat("<cyfunction %U at %p>",
+                                op->func_qualname, (void *)op);
+#else
+    return PyString_FromFormat("<cyfunction %s at %p>",
+                               PyString_AsString(op->func_qualname), (void *)op);
+#endif
+}
+static PyObject * __Pyx_CyFunction_CallMethod(PyObject *func, PyObject *self, PyObject *arg, PyObject *kw) {
+    PyCFunctionObject* f = (PyCFunctionObject*)func;
+    PyCFunction meth = f->m_ml->ml_meth;
+    Py_ssize_t size;
+    switch (f->m_ml->ml_flags & (METH_VARARGS | METH_KEYWORDS | METH_NOARGS | METH_O)) {
+    case METH_VARARGS:
+        if (likely(kw == NULL || PyDict_Size(kw) == 0))
+            return (*meth)(self, arg);
+        break;
+    case METH_VARARGS | METH_KEYWORDS:
+        return (*(PyCFunctionWithKeywords)meth)(self, arg, kw);
+    case METH_NOARGS:
+        if (likely(kw == NULL || PyDict_Size(kw) == 0)) {
+            size = PyTuple_GET_SIZE(arg);
+            if (likely(size == 0))
+                return (*meth)(self, NULL);
+            PyErr_Format(PyExc_TypeError,
+                "%.200s() takes no arguments (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                f->m_ml->ml_name, size);
+            return NULL;
+        }
+        break;
+    case METH_O:
+        if (likely(kw == NULL || PyDict_Size(kw) == 0)) {
+            size = PyTuple_GET_SIZE(arg);
+            if (likely(size == 1)) {
+                PyObject *result, *arg0;
+                #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+                arg0 = PyTuple_GET_ITEM(arg, 0);
+                #else
+                arg0 = PySequence_ITEM(arg, 0); if (unlikely(!arg0)) return NULL;
+                #endif
+                result = (*meth)(self, arg0);
+                #if !(CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS)
+                Py_DECREF(arg0);
+                #endif
+                return result;
+            }
+            PyErr_Format(PyExc_TypeError,
+                "%.200s() takes exactly one argument (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                f->m_ml->ml_name, size);
+            return NULL;
+        }
+        break;
+    default:
+        PyErr_SetString(PyExc_SystemError, "Bad call flags in "
+                        "__Pyx_CyFunction_Call. METH_OLDARGS is no "
+                        "longer supported!");
+        return NULL;
+    }
+    PyErr_Format(PyExc_TypeError, "%.200s() takes no keyword arguments",
+                 f->m_ml->ml_name);
+    return NULL;
+}
+static CYTHON_INLINE PyObject *__Pyx_CyFunction_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    return __Pyx_CyFunction_CallMethod(func, ((PyCFunctionObject*)func)->m_self, arg, kw);
+}
+static PyObject *__Pyx_CyFunction_CallAsMethod(PyObject *func, PyObject *args, PyObject *kw) {
+    PyObject *result;
+    __pyx_CyFunctionObject *cyfunc = (__pyx_CyFunctionObject *) func;
+    if ((cyfunc->flags & __Pyx_CYFUNCTION_CCLASS) && !(cyfunc->flags & __Pyx_CYFUNCTION_STATICMETHOD)) {
+        Py_ssize_t argc;
+        PyObject *new_args;
+        PyObject *self;
+        argc = PyTuple_GET_SIZE(args);
+        new_args = PyTuple_GetSlice(args, 1, argc);
+        if (unlikely(!new_args))
+            return NULL;
+        self = PyTuple_GetItem(args, 0);
+        if (unlikely(!self)) {
+            Py_DECREF(new_args);
+            return NULL;
+        }
+        result = __Pyx_CyFunction_CallMethod(func, self, new_args, kw);
+        Py_DECREF(new_args);
+    } else {
+        result = __Pyx_CyFunction_Call(func, args, kw);
+    }
+    return result;
+}
+static PyTypeObject __pyx_CyFunctionType_type = {
+    PyVarObject_HEAD_INIT(0, 0)
+    "cython_function_or_method",
+    sizeof(__pyx_CyFunctionObject),
+    0,
+    (destructor) __Pyx_CyFunction_dealloc,
+    0,
+    0,
+    0,
+#if PY_MAJOR_VERSION < 3
+    0,
+#else
+    0,
+#endif
+    (reprfunc) __Pyx_CyFunction_repr,
+    0,
+    0,
+    0,
+    0,
+    __Pyx_CyFunction_CallAsMethod,
+    0,
+    0,
+    0,
+    0,
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC,
+    0,
+    (traverseproc) __Pyx_CyFunction_traverse,
+    (inquiry) __Pyx_CyFunction_clear,
+    0,
+#if PY_VERSION_HEX < 0x030500A0
+    offsetof(__pyx_CyFunctionObject, func_weakreflist),
+#else
+    offsetof(PyCFunctionObject, m_weakreflist),
+#endif
+    0,
+    0,
+    __pyx_CyFunction_methods,
+    __pyx_CyFunction_members,
+    __pyx_CyFunction_getsets,
+    0,
+    0,
+    __Pyx_CyFunction_descr_get,
+    0,
+    offsetof(__pyx_CyFunctionObject, func_dict),
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+#if PY_VERSION_HEX >= 0x030400a1
+    0,
+#endif
+};
+static int __pyx_CyFunction_init(void) {
+    __pyx_CyFunctionType = __Pyx_FetchCommonType(&__pyx_CyFunctionType_type);
+    if (unlikely(__pyx_CyFunctionType == NULL)) {
+        return -1;
+    }
+    return 0;
+}
+static CYTHON_INLINE void *__Pyx_CyFunction_InitDefaults(PyObject *func, size_t size, int pyobjects) {
+    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
+    m->defaults = PyObject_Malloc(size);
+    if (unlikely(!m->defaults))
+        return PyErr_NoMemory();
+    memset(m->defaults, 0, size);
+    m->defaults_pyobjects = pyobjects;
+    return m->defaults;
+}
+static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsTuple(PyObject *func, PyObject *tuple) {
+    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
+    m->defaults_tuple = tuple;
+    Py_INCREF(tuple);
+}
+static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *func, PyObject *dict) {
+    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
+    m->defaults_kwdict = dict;
+    Py_INCREF(dict);
+}
+static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *func, PyObject *dict) {
+    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
+    m->func_annotations = dict;
+    Py_INCREF(dict);
+}
+
 /* PyErrFetchRestore */
-      #if CYTHON_FAST_THREAD_STATE
+          #if CYTHON_FAST_THREAD_STATE
 static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
     PyObject *tmp_type, *tmp_value, *tmp_tb;
     tmp_type = tstate->curexc_type;
@@ -2752,7 +4033,7 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #endif
 
 /* CLineInTraceback */
-      #ifndef CYTHON_CLINE_IN_TRACEBACK
+          #ifndef CYTHON_CLINE_IN_TRACEBACK
 static int __Pyx_CLineForTraceback(CYTHON_UNUSED PyThreadState *tstate, int c_line) {
     PyObject *use_cline;
     PyObject *ptype, *pvalue, *ptraceback;
@@ -2792,7 +4073,7 @@ static int __Pyx_CLineForTraceback(CYTHON_UNUSED PyThreadState *tstate, int c_li
 #endif
 
 /* CodeObjectCache */
-      static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
+          static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
     int start = 0, mid = 0, end = count - 1;
     if (end >= 0 && code_line > entries[end].code_line) {
         return count;
@@ -2872,7 +4153,7 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object) {
 }
 
 /* AddTraceback */
-      #include "compile.h"
+          #include "compile.h"
 #include "frameobject.h"
 #include "traceback.h"
 static PyCodeObject* __Pyx_CreateCodeObjectForTraceback(
@@ -2957,7 +4238,38 @@ bad:
 }
 
 /* CIntToPy */
-      static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+          static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+    const int neg_one = (int) -1, const_zero = (int) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+          static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
     if (is_unsigned) {
@@ -2988,7 +4300,7 @@ bad:
 }
 
 /* CIntFromPyVerify */
-      #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
+          #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
 #define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
@@ -3010,7 +4322,7 @@ bad:
     }
 
 /* CIntFromPy */
-      static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
+          static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -3199,7 +4511,7 @@ raise_neg_overflow:
 }
 
 /* CIntFromPy */
-      static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
+          static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -3388,7 +4700,7 @@ raise_neg_overflow:
 }
 
 /* FastTypeChecks */
-      #if CYTHON_COMPILING_IN_CPYTHON
+          #if CYTHON_COMPILING_IN_CPYTHON
 static int __Pyx_InBases(PyTypeObject *a, PyTypeObject *b) {
     while (a) {
         a = a->tp_base;
@@ -3488,7 +4800,7 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 #endif
 
 /* CheckBinaryVersion */
-      static int __Pyx_check_binary_version(void) {
+          static int __Pyx_check_binary_version(void) {
     char ctversion[4], rtversion[4];
     PyOS_snprintf(ctversion, 4, "%d.%d", PY_MAJOR_VERSION, PY_MINOR_VERSION);
     PyOS_snprintf(rtversion, 4, "%s", Py_GetVersion());
@@ -3504,7 +4816,7 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 }
 
 /* InitStrings */
-      static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {
+          static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {
     while (t->p) {
         #if PY_MAJOR_VERSION < 3
         if (t->is_unicode) {
