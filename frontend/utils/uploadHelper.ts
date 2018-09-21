@@ -16,21 +16,20 @@
 const nanoid = require('nanoid');
 const ankiCall = require('~/api/ankiCall').default;
 
+function base64ArrayBuffer(arrayBuffer: any) {
+    let base64    = '';
+    const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-function base64ArrayBuffer (arrayBuffer: any) {
-    var base64    = '';
-    var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const bytes         = new Uint8Array(arrayBuffer);
+    const byteLength    = bytes.byteLength;
+    const byteRemainder = byteLength % 3;
+    const mainLength    = byteLength - byteRemainder;
 
-    var bytes         = new Uint8Array(arrayBuffer);
-    var byteLength    = bytes.byteLength;
-    var byteRemainder = byteLength % 3;
-    var mainLength    = byteLength - byteRemainder;
-
-    var a, b, c, d;
-    var chunk;
+    let a, b, c, d;
+    let chunk;
 
     // Main loop deals with bytes in chunks of 3
-    for (var i = 0; i < mainLength; i = i + 3) {
+    for (let i = 0; i < mainLength; i = i + 3) {
         // Combine the three bytes into a single integer
         chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
 
@@ -69,28 +68,27 @@ function base64ArrayBuffer (arrayBuffer: any) {
     return base64;
 }
 
-
-export function getFileAsBase64 (file: File): Promise<string> {
+export function getFileAsBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.readAsArrayBuffer(file);
-        reader.onload = function () {
+        reader.onload = () => {
             resolve(base64ArrayBuffer(reader.result));
         };
-        reader.onerror = function (error) {
+        reader.onerror = (error) => {
             reject(error);
         };
     });
 }
 
-export function getRandomFilename (filename: string) {
+export function getRandomFilename(filename: string) {
     const lastDotIndex = filename.lastIndexOf('.');
-    if(lastDotIndex !== -1) {
+    if (lastDotIndex !== -1) {
         return nanoid() + filename.substr(lastDotIndex);
-    } else return filename;
+    } else { return filename; }
 }
 
-export async function uploadImageFromDataURI (filename: string, datab64: string) {
+export async function uploadImageFromDataURI(filename: string, datab64: string) {
     filename = getRandomFilename(filename);
 
     return ankiCall('media_upload', {

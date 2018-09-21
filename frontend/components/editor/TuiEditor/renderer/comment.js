@@ -112,10 +112,6 @@ function postProcess (state) {
     }
 }
 
-function commentRenderer (tokens, idx){
-    return tokens[idx];
-}
-
 module.exports = function (md) {
     md.inline.ruler.after('emphasis', 'kian_comment', tokenize);
     md.inline.ruler2.after('emphasis', 'kian_comment', postProcess);
