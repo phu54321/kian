@@ -13,28 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-const _voidElements = new Set([
+const voidElements = new Set([
     'area', 'base', 'basefont', 'bgsound', 'br', 'col',
     'command', 'embed', 'frame', 'hr', 'image', 'img', 'input', 'isindex',
     'keygen', 'link', 'menuitem', 'meta', 'nextid', 'param', 'source',
-    'track', 'wbr'
+    'track', 'wbr',
 ]);
 
-export function tokHtml (html) {
+export function tokHtml (html: string) {
     const PARSE_DATA = 0;
     const PARSE_TAG = 1;
     let mode = PARSE_DATA;
 
-    const dataCh = [];
-    const tagCh = [];
+    const dataCh: string[] = [];
+    const tagCh: string[] = [];
 
-    let chunks = [];
+    const chunks: string[][] = [];
 
     function emitData () {
         const data = dataCh.join('');
         dataCh.length = 0;
 
-        if(!data) return;
+        if (!data) return;
         chunks.push(['data', data]);
     }
 
@@ -47,39 +47,33 @@ export function tokHtml (html) {
 
         if (tagStartMatch) {
             // Void tags are treated as data
-            if (!_voidElements.has(tagStartMatch[1].toLowerCase())) {
+            if (!voidElements.has(tagStartMatch[1].toLowerCase())) {
                 chunks.push(['data', tag]);
-            }
-            else {
+            } else {
                 chunks.push(['tstart', tag, tagStartMatch[1].toLowerCase()]);
             }
-        }
-
-        else if(tagEndMatch) {
+        } else if (tagEndMatch) {
             chunks.push(['tend', tag, tagEndMatch[1].toLowerCase()]);
         }
     }
 
-    for(let i = 0 ; i < html.length ; i++) {
-        const ch = html[i];
-        if(mode === PARSE_DATA) {
-            if(ch === '<') {
+    for (const ch of html) {
+        if (mode === PARSE_DATA) {
+            if (ch === '<') {
                 mode = PARSE_TAG;
                 emitData();
                 tagCh.push('<');
-            }
-            else dataCh.push(ch);
-        }
-        else {
+            } else dataCh.push(ch);
+        } else {
             tagCh.push(ch);
-            if(ch === '>') {
+            if (ch === '>') {
                 mode = PARSE_DATA;
                 emitTag();
             }
         }
     }
 
-    if(mode === PARSE_DATA) emitData();
+    if (mode === PARSE_DATA) emitData();
     else emitTag();
 
     return chunks;

@@ -9,7 +9,9 @@
         "no-bitwise": false,
         "object-literal-sort-keys": false,
         "one-variable-per-declaration": false,
-        "no-var-requires": false
+        "no-var-requires": false,
+        "space-before-function-paren": true,
+        "curly": [true, "ignore-same-line"]
     },
     "rulesDirectory": []
 }

@@ -16,7 +16,7 @@
 const nanoid = require('nanoid');
 const ankiCall = require('~/api/ankiCall').default;
 
-function base64ArrayBuffer(arrayBuffer: any) {
+function base64ArrayBuffer (arrayBuffer: any) {
     let base64    = '';
     const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
@@ -68,7 +68,7 @@ function base64ArrayBuffer(arrayBuffer: any) {
     return base64;
 }
 
-export function getFileAsBase64(file: File): Promise<string> {
+export function getFileAsBase64 (file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsArrayBuffer(file);
@@ -81,14 +81,14 @@ export function getFileAsBase64(file: File): Promise<string> {
     });
 }
 
-export function getRandomFilename(filename: string) {
+export function getRandomFilename (filename: string) {
     const lastDotIndex = filename.lastIndexOf('.');
     if (lastDotIndex !== -1) {
         return nanoid() + filename.substr(lastDotIndex);
     } else { return filename; }
 }
 
-export async function uploadImageFromDataURI(filename: string, datab64: string) {
+export async function uploadImageFromDataURI (filename: string, datab64: string) {
     filename = getRandomFilename(filename);
 
     return ankiCall('media_upload', {

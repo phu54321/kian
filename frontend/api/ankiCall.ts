@@ -13,8 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import io from 'socket.io-client';
 import Vue from 'vue';
+
+const io = require('socket.io-client');
 
 const apiRoot = 'http://localhost:28735/';
 const socket = io(apiRoot);
@@ -26,28 +27,41 @@ function createSyncKey () {
     return `syncKey_${syncKeyHeader}_${lastSyncKey++}`;
 }
 
-const msgTable = {};
+interface IPromiseContent {
+    resolve: any;
+    reject: any;
+}
 
-socket.on('msg', response => {
-    const syncKey = response.syncKey;
-    const { resolve, reject } = msgTable[syncKey];
-    msgTable[syncKey] = undefined;
+interface IAnkiMessage {
+    apiType: string;
+    syncKey: string;
+    [x: string]: any;
+}
 
-    if(response.error) return reject(new Error(response.error.toString()));
+const callbackTable = new Map<string, IPromiseContent>();
+
+socket.on('msg', (response: IAnkiMessage) => {
+    const { syncKey } = response;
+    const callback = callbackTable.get(syncKey);
+    if (!callback) return;
+
+    const { resolve, reject } = callback;
+    callbackTable.delete(syncKey);
+
+    if (response.error) return reject(new Error(response.error.toString()));
     return resolve(response.result);
 });
 
-export default function ankiCall (apiType, data) {
+export default function ankiCall (apiType: string, data: any) {
     return new Promise((resolve, reject) => {
         const syncKey = createSyncKey();
-        msgTable[syncKey] = { resolve, reject };
+        callbackTable.set(syncKey, { resolve, reject });
         socket.emit('msg', {
             syncKey,
             apiType,
-            ...data
+            ...data,
         });
     });
 }
 
 Vue.prototype.$ankiCall = ankiCall;
-
