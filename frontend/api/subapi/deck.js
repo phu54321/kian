@@ -20,6 +20,7 @@ export async function addDeck (deckName) {
     await ankiCall('deck_add', {
         deckName
     });
+    deckList.push(deckName);
     return true;
 }
 
