@@ -49,7 +49,7 @@ def updateCard(msg):
     with Col() as col:
         card = col.getCard(msg['cardId'])
         note = col.getNote(card.nid)
-        newDeckId = col.decks.id(msg['deck'], create=True)
+        newDeckId = col.decks.byName(msg['deck'])
 
         fields = msg['fields']
         tags = msg['tags']
