@@ -98,7 +98,7 @@ export default {
     watch: {
         show () {
             const hotkeyMap = getHotkeyMap(this.lastActiveElement);
-            const hotkeyList = Object.keys(hotkeyMap).map(kString => Object.assign({kString}, hotkeyMap[kString]));
+            const hotkeyList = Object.keys(hotkeyMap).map(kString => Object.assign({ kString }, hotkeyMap[kString]));
             const hotkeyGroup = _.groupBy(hotkeyList, 'packName');
 
             this.items = sortObjectItemsByKey(hotkeyGroup)

@@ -21,7 +21,7 @@ const modelName = 'Cloze (overlapping)';
 export default {
     install () {
         addHook('edit_card_load', card => {
-            const {model, fields} = card;
+            const { model, fields } = card;
             if(model === modelName) {
                 card.fieldFormats = card.fieldFormats.map(fFormat => {
                     if(/Text(\d+)/.test(fFormat.name) || fFormat.name === 'Full') {
@@ -41,7 +41,7 @@ export default {
         });
 
         addHook('edit_card_save', card => {
-            const {model} = card;
+            const { model } = card;
             if(model === modelName) {
                 const fields = card.fields.slice();
                 const mainField = fields[0];

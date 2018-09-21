@@ -109,7 +109,7 @@ export default {
         qaFirst (v) {
             const [q, a] = v;
 
-            const {qImgCanvas, aImgCanvas} = this.$refs;
+            const { qImgCanvas, aImgCanvas } = this.$refs;
             qImgCanvas.width = q.width;
             qImgCanvas.height = q.height;
             qImgCanvas.getContext('2d').putImageData(q, 0, 0);
@@ -172,7 +172,7 @@ export default {
         },
 
         async acceptQAPair () {
-            const {qImgCanvas, aImgCanvas} = this.$refs;
+            const { qImgCanvas, aImgCanvas } = this.$refs;
             const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
             const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
             const page = this.qaFirst[2];

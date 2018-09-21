@@ -18,7 +18,7 @@ import ImageView from './ImageView';
 
 
 function isHorizontalLineWhite (view, y) {
-    const {data} = view;
+    const { data } = view;
     const dataIndexStart = view.dataIndex(0, y);
     const dataIndexEnd = view.dataIndex(view.w, y);
     for(let i = dataIndexStart ; i < dataIndexEnd ; i += 4) {
@@ -28,12 +28,12 @@ function isHorizontalLineWhite (view, y) {
 }
 
 function isVerticalLine (view, x) {
-    const {data, pitch} = view;
+    const { data, pitch } = view;
     const dataIndexStart = view.dataIndex(x, 0);
     const dataIndexEnd = view.dataIndex(x, view.h);
 
     const y0Color = data.readUInt32BE(dataIndexStart);
-    const {r, g, b} = Jimp.intToRGBA(y0Color);
+    const { r, g, b } = Jimp.intToRGBA(y0Color);
     if(r > 0x80 || g > 0x80 || b > 0x80) return false;
 
     for(let i = dataIndexStart + pitch ; i < dataIndexEnd ; i += pitch) {
@@ -48,7 +48,7 @@ export function parseQAPair (image) {
 
     // y-split things
     const view = new ImageView(image);
-    const {w: width, h: height} = view;
+    const { w: width, h: height } = view;
 
     // Split by white horizontal lines
     const isYLineWhite = [];

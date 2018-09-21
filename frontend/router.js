@@ -39,7 +39,7 @@ function propEnableRouteEntry (route) {
         }
         return typeCastedParams;
     };
-    return Object.assign({props: propsHandler}, route);
+    return Object.assign({ props: propsHandler }, route);
 }
 
 const propEnabledRoutes = routes.map(propEnableRouteEntry);

@@ -46,7 +46,7 @@ export default {
         }
     },
     mounted () {
-        this.shadowRoot = this.$el.attachShadow({mode: 'closed'});
+        this.shadowRoot = this.$el.attachShadow({ mode: 'closed' });
         this.fillHtml(this.html);
     },
     beforeDestroy () {

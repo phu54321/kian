@@ -40,7 +40,7 @@ class ImageView {
     }
 
     autocrop () {
-        const {data, pitch, w, h} = this;
+        const { data, pitch, w, h } = this;
 
         let cropY0 = 0;
         while(cropY0 < h) {

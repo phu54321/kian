@@ -93,7 +93,7 @@ function makeClozeCompatiable (html) {
 export default {
     install () {        
         addHook('edit_card_load', card => {
-            const {model, fields} = card;
+            const { model, fields } = card;
             if(model === modelName) {
                 card.fields = fields.map(stripClozeHelper);
             }
@@ -101,7 +101,7 @@ export default {
         });
 
         addHook('edit_card_save', card => {
-            const {model, fields} = card;
+            const { model, fields } = card;
             if(model === modelName) {
                 card.fields = fields.map(
                     field => makeClozeCompatiable(stripClozeHelper(field))

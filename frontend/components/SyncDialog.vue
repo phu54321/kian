@@ -180,7 +180,7 @@ export default {
         },
         fullSyncOption (mode) {
             this.fullSyncAsked = false;
-            this.$ankiCall('sync_fullsync', {mode});
+            this.$ankiCall('sync_fullsync', { mode });
         },
     },
 };

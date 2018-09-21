@@ -59,7 +59,7 @@ export default {
         },
 
         onSelectSequential (index) {
-            const {lastSelectedIndex} = this;
+            const { lastSelectedIndex } = this;
             if(lastSelectedIndex === -1) return this.selectCardIndexOnly(index);
             else {
                 if(lastSelectedIndex < index) {
