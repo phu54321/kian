@@ -22,10 +22,10 @@ b-form(@submit='save')
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
 import CardEditor from '~/components/editor/CardEditor';
 
+import { getCard, updateCard } from '~/api';
 
 export default {
     props: {
@@ -48,10 +48,8 @@ export default {
     methods: {
         save () {
             const card = this.card;
-            ankiCall('card_update',  {
-                cardId: this.cardId,
+            updateCard(this.cardId, {
                 deck: card.deck,
-                model: card.model,
                 fields: card.fields,
                 tags: card.tags,
             }).then(() => {
@@ -63,9 +61,7 @@ export default {
     },
     async asyncData (props) {
         const cardId = props.cardId;
-        const card = await ankiCall('card_get', {
-            cardId
-        });
+        const card = await getCard(cardId);
         return {
             card: {
                 model: card.model,

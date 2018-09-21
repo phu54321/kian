@@ -27,6 +27,7 @@ card-editor(
 
 import CardEditor from '../editor/CardEditor';
 import ErrorDialog from '../ErrorDialog';
+import { getCard, updateCard } from '~/api';
 
 export default {
     props: ['cardId'],
@@ -48,28 +49,22 @@ export default {
     },
     async asyncData (props) {
         return {
-            card: await this.$ankiCall('card_get', {
-                cardId: props.cardId
-            })
+            card: await getCard(props.cardId),
         };
     },
     watch: {
         async cardId (value) {
             await this.onNoteEdit(true);
             this.$emit('updateView');
-            this.card = await this.$ankiCall('card_get', {
-                cardId: value
-            });
+            this.card = await getCard(value);
         }
     },
     methods: {
         async onNoteEdit (silent) {
             try {
                 const card = this.card;
-                await this.$ankiCall('card_update', {
-                    cardId: card.id,
+                await updateCard(card.id, {
                     deck: card.deck,
-                    model: card.model,
                     fields: card.fields,
                     tags: card.tags,
                 });
