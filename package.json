@@ -7,6 +7,7 @@
   "author": "phu54321 <phu54321@naver.com>",
   "license": "AGPL-3.0",
   "scripts": {
+    "audit": "npm-audit",
     "start": "yarn dev",
     "dev": "npm-run-all --parallel dev:*",
     "dev:frontend": "poi frontend/index.js",
@@ -24,6 +25,7 @@
     }
   },
   "dependencies": {
+    "@babel/core": "^7.1.0",
     "@fortawesome/fontawesome-free": "^5.2.0",
     "@poi/plugin-eslint": "^10.0.2",
     "axios": "^0.18.0",
@@ -91,5 +93,10 @@
       "backend/"
     ],
     "delay": "500"
+  },
+  "devDependencies": {
+    "jquery": "^3.3.1",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.19.1"
   }
 }
