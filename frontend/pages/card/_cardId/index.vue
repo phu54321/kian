@@ -61,7 +61,7 @@ export default {
             });
         }
     },
-    async asyncData(props) {
+    async asyncData (props) {
         const cardId = props.cardId;
         const card = await ankiCall('card_get', {
             cardId

@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
         // this aligns with Vue's browser support
-        "target": "es2015",
+        "target": "esnext",
         // this enables stricter inference for data properties on `this`
         "strict": true,
         // if using webpack 2+ or rollup, to leverage tree shaking:
-        "module": "es2015",
+        "module": "esnext",
         "moduleResolution": "node",
+        "esModuleInterop": true,
         "sourceMap": true,
         "baseUrl": ".",
         "paths": {

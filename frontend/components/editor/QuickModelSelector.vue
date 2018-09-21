@@ -49,7 +49,7 @@ export default {
             modelList: selectorList ? JSON.parse(selectorList) : []
         };
     },
-    async asyncData() {
+    async asyncData () {
         return {
             availableModels: await this.$ankiCall('model_list'),
         };
