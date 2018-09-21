@@ -34,6 +34,7 @@ import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
 import ErrorDialogVue from '~/components/ErrorDialog.vue';
 
+import { findCards } from '~/api/browser';
 
 const historyNum = 50;
 
@@ -56,7 +57,7 @@ export default {
         };
     },
     async asyncData () {
-        const createdCards = await this.$ankiCall('browser_query', {
+        const createdCards = await findCards({
             query: '',
             sortBy: 'createdAt'
         });
@@ -71,7 +72,7 @@ export default {
     },
     watch: {
         async updateCardIds () {
-            const createdCards = await this.$ankiCall('browser_query', {
+            const createdCards = await findCards({
                 query: '',
                 sortBy: 'createdAt'
             });
