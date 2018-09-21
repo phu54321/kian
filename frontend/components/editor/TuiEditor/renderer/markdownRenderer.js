@@ -5,7 +5,12 @@ import utf8 from 'utf8';
 
 const encoderDom = document.createElement('div');
 
-const md = new MarkdownIt({ html: true, linkify: true, });
+const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    breaks: true,
+    typographer: true,
+});
 md.use(require('markdown-it-katex'), { throwOnError: false, });
 md.use(require('markdown-it-underline'));
 md.use(require('./comment'));
@@ -25,6 +30,7 @@ export default function encodeMarkdown (markdown) {
     const htmlHash = crc32.str(html.trim());
     const additionalHtml = `
         <link rel="stylesheet" type="text/css" href="_kian/katex/katex.min.css">
+        <link rel="stylesheet" type="text/css" href="_kian/_github_markdown.css">
     `;
-    return `<script class='tui-md-b64' type='text/markdown' hash='${htmlHash}'>${base64.encode(utf8.encode(markdown))}</sc` + `ript>${additionalHtml}<div class='tui-html'>${html}</div>`;
+    return `<script class='tui-md-b64' type='text/markdown' hash='${htmlHash}'>${base64.encode(utf8.encode(markdown))}</sc` + `ript>${additionalHtml}<div class='markdown-body tui-html'>${html}</div>`;
 }

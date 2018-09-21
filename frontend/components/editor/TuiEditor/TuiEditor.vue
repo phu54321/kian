@@ -24,7 +24,7 @@
     .codemirror-editor(ref='mdEdit')
     .preview
         .preview-body
-            .userContent(v-html='strippedHtml')
+            .userContent.markdown-body(v-html='strippedHtml')
 
 </template>
 
