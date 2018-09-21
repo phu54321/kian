@@ -87,7 +87,7 @@ export default {
         async save () {
             try {
                 const card = this.card;
-                const {noteId} = await this.$ankiCall('note_add', {
+                await this.$ankiCall('note_add', {
                     deck: card.deck,
                     model: card.model,
                     fields: card.fields,
@@ -102,9 +102,7 @@ export default {
                 });
 
                 // Add to history logs
-                const cardIds = await this.$ankiCall('cid_from_nid', {noteId});
-                this.addedCardIds.splice(0, 0, ...cardIds);
-                this.addedCardIds = this.addedCardIds.slice(0, historyNum);
+                this.updateCardIds++;
 
                 this.$toasted.show('Note added', {
                     icon: 'plus-square',
