@@ -46,6 +46,7 @@ import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
 
 import { fuzzyMatch } from '~/utils/utils';
 import { listModel } from '~/api/model';
+import { listDeck } from '~/api/deck';
 import _ from 'lodash';
 
 
@@ -155,7 +156,7 @@ export default {
                     map(tag => `tag:${tag}`);
             }
             else if(model === 'deck') {
-                const deckList = await this.$ankiCall('deck_list');
+                const deckList = await listDeck();
                 return (
                     deckList.filter(deck => fuzzyMatch(body, deck))
                         .sort()

@@ -38,15 +38,17 @@
 
 <script>
 
+import { collapseDeck } from '~/api/deck';
+
 export default {
     props: ['tree', 'indent'],
     methods: {
         toggleDeckCollapse (deck) {
             const newCollapsed = !deck.collapsed;
-            this.$ankiCall('deck_collapse', {
-                deckName: deck.fullname,
-                collapse: !newCollapsed,
-            }).then(() => {
+            collapseDeck(
+                deck.fullname,
+                !deck.collapsed
+            ).then(() => {
                 deck.collapsed = newCollapsed;
             });
         }

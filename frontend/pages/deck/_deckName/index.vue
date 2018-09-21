@@ -44,10 +44,12 @@ div
 
 <script>
 
+import { getDeckInfo } from '~/api/deck';
+
 export default {
     props: ['deckName'],
     async asyncData (props) {
-        return this.$ankiCall('deck_info', { deckName: props.deckName });
+        return getDeckInfo(props.deckName);
     },
     data () {
         return {
