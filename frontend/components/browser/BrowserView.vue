@@ -108,6 +108,8 @@ import fieldFormatter from './fieldFormatter';
 import BrowserSelection from './BrowserSelection';
 import { clamp } from '~/utils/utils';
 
+import { getCardsBrowserInfo } from '~/api/browser';
+
 function isDescendant (parent, child) {
     if(!child) return false;
 
@@ -340,9 +342,7 @@ export default {
                 !cardCache[idx]
             ));
             if(renderRequests.length === 0) return;
-            const renderedRows = await this.$ankiCall('browser_get_batch', {
-                cardIds: renderRequests.map(idx => cardIds[idx])
-            });
+            const renderedRows = await getCardsBrowserInfo(renderRequests.map(idx => cardIds[idx]));
 
             // cardCache is just a cache, so it doesn't need to be reactive
             // so we just use plain assignment instead of using this.$set

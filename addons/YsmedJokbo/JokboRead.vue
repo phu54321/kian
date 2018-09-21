@@ -53,6 +53,7 @@ import ListSelector from '~/components//common/ListSelector';
 import { uploadImageFromDataURI } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
 import { listDeck } from '~/api/deck';
+import { findCards } from '~/api/browser';
 
 const URLObj = window.URL || window.webkitURL;
 
@@ -85,10 +86,7 @@ export default {
         };
     },
     async asyncData () {
-        const createdCards = await this.$ankiCall('browser_query', {
-            query: '',
-            sortBy: 'createdAt'
-        });
+        const createdCards = await findCards();
         return {
             addedCardIds: createdCards.slice(0, 20)
         };
@@ -102,7 +100,7 @@ export default {
     },
     watch: {
         async updateCardIds () {
-            const createdCards = await this.$ankiCall('browser_query', {
+            const createdCards = await findCards({
                 query: '',
                 sortBy: 'createdAt'
             });

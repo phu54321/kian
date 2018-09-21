@@ -47,6 +47,7 @@ import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
 import { fuzzyMatch } from '~/utils/utils';
 import { listModel } from '~/api/model';
 import { listDeck } from '~/api/deck';
+import { findCards } from '~/api/browser';
 import _ from 'lodash';
 
 
@@ -92,7 +93,7 @@ export default {
     asyncComputed: {
         cardIds: {
             get () {
-                return this.$ankiCall('browser_query', {
+                return findCards({
                     query: this.query,
                     sortBy: this.sortBy,
                     sortOrder: this.sortOrder,
