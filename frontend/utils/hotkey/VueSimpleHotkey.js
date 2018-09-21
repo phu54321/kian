@@ -77,7 +77,7 @@ function resolveHotkey (kString, activeElement) {
     let matchedElementIndex = parentsFromActiveElement.length;
 
     for(const handler of handlerList) {
-        const {targetEl, } = handler;
+        const { targetEl, } = handler;
         let maxHotkeyDepth = handler.maxHotkeyDepth || 10000;
 
         for(let el = targetEl ; el ; el = el.parentElement) {

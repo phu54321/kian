@@ -190,8 +190,8 @@ export default {
     asyncComputed: {
         displayCommands: {
             async get () {
-                const {frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex} = this;
-                if(cardIds.length === 0) return [{type: 'noCards'}];
+                const { frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex } = this;
+                if(cardIds.length === 0) return [{ type: 'noCards' }];
 
                 // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
                 // after a rendering session completes.
@@ -235,7 +235,7 @@ export default {
                         list.push(entry);
                     }
                     return list;
-                }, [{ type: 'space', length: 0}]);
+                }, [{ type: 'space', length: 0 }]);
 
                 const firstCommand = compressedRenderCommands[0];
                 if(firstCommand.type === 'space' && firstCommand.length === 0) {
@@ -287,7 +287,7 @@ export default {
         onScroll: _.throttle(function () {
             if(!this.$refs.mainTable) return;
 
-            const {top} = this.$refs.mainTable.getBoundingClientRect();
+            const { top } = this.$refs.mainTable.getBoundingClientRect();
             const viewportHeight = document.documentElement.clientHeight;
             const PADDING = 100;
             this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
@@ -334,7 +334,7 @@ export default {
         },
 
         async ensureCardRendered (cardIndexes) {
-            const {frozenCardIds: cardIds, cardCache} = this;
+            const { frozenCardIds: cardIds, cardCache } = this;
             const renderRequests = cardIndexes.filter(idx => (
                 0 <= idx && idx < cardIds.length &&
                 !cardCache[idx]
@@ -379,7 +379,7 @@ export default {
             this.browserEditorHeight -= yMovement;
             if(this.browserEditorHeight < 100) this.browserEditorHeight = 100;
             else if(this.browserEditorHeight > 800) this.browserEditorHeight = 800;
-            this.$localStorage.set('browserEditorHeight', this.browserEditorHeight, { expires: '10Y'});
+            this.$localStorage.set('browserEditorHeight', this.browserEditorHeight, { expires: '10Y' });
             this.oldPageY = ev.pageY;
         },
         onDragEnd () {

@@ -64,6 +64,8 @@ import _ from 'lodash';
 import './editor.scss';
 import { runHook } from '~/utils/hookBase';
 
+import { getModel } from '~/api/model';
+
 function resize (arr, size, defval) {
     while (arr.length > size) { arr.pop(); }
     while (arr.length < size) { arr.push(defval); }
@@ -109,7 +111,7 @@ export default {
         modelData: {
             get () {
                 if (!this.currentModel) return {};
-                return this.$ankiCall('model_get', {modelName: this.currentModel});
+                return getModel(this.currentModel);
             },
             default: {},
         }
@@ -141,7 +143,7 @@ export default {
                 return;
             }
 
-            const model = await this.$ankiCall('model_get', { modelName });
+            const model = await getModel(modelName);
             const fieldFormats = model.fieldFormats;
             this.internalValue.fieldFormats = fieldFormats;
             const newFields = _.clone(this.internalValue.fields);

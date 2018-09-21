@@ -26,7 +26,7 @@ export function clickVNode (vnode) {
     }
 
     const $el = $(el);
-    const {left, top} = $el.offset();
+    const { left, top } = $el.offset();
     const width = $el.width();
     const height = $el.height();
     let targetEl = document.elementFromPoint(left + width / 2, top + height / 2);

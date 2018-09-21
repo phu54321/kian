@@ -55,7 +55,7 @@ import ErrorDialog from '~/components/ErrorDialog.vue';
 import ShadowDom from '~/components/ShadowDom';
 
 async function getNextCard (deckName) {
-    const msg = await ankiCall('reviewer_next_card', {deckName});
+    const msg = await ankiCall('reviewer_next_card', { deckName });
     return {
         remaining: msg.remaining,
         card: {

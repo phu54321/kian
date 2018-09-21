@@ -36,7 +36,7 @@ div
 
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 import { fuzzyMatch } from '~/utils/utils';
-
+import { listModel } from '~/api/model';
 
 export default {
     components: {
@@ -51,7 +51,7 @@ export default {
     },
     async asyncData () {
         return {
-            availableModels: await this.$ankiCall('model_list'),
+            availableModels: await listModel()
         };
     },
     methods: {

@@ -30,7 +30,7 @@ module.exports = function (app) {
         const { staticFiles } = require(path.join(addonDir, 'addonConfig.js'));
         if(!staticFiles) return;
 
-        for(const {src, servePath} of staticFiles) {
+        for(const { src, servePath } of staticFiles) {
             const staticPath = path.join(addonDir, src);
             app.use(servePath, express.static(staticPath));
         }

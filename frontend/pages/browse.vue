@@ -45,6 +45,7 @@ import BrowserView from '~/components/browser/BrowserView';
 import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput';
 
 import { fuzzyMatch } from '~/utils/utils';
+import { listModel } from '~/api/model';
 import _ from 'lodash';
 
 
@@ -163,7 +164,7 @@ export default {
                 );
             }
             else if(model === 'model' || model === 'note') {
-                const modelList = await this.$ankiCall('model_list');
+                const modelList = await listModel();
                 return (
                     modelList.filter(model => fuzzyMatch(body, model))
                         .sort()
