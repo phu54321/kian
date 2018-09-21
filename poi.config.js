@@ -7,7 +7,6 @@ module.exports = {
     outDir: 'dist/frontend',
     staticFolder: 'public',
     plugins: [
-        require('@poi/plugin-typescript')(),
         require('@poi/plugin-eslint')(),
     ],
     html: {

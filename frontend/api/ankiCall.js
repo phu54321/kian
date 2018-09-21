@@ -27,20 +27,9 @@ function createSyncKey () {
     return `syncKey_${syncKeyHeader}_${lastSyncKey++}`;
 }
 
-interface IPromiseContent {
-    resolve: any;
-    reject: any;
-}
+const callbackTable = new Map();
 
-interface IAnkiMessage {
-    apiType: string;
-    syncKey: string;
-    [x: string]: any;
-}
-
-const callbackTable = new Map<string, IPromiseContent>();
-
-socket.on('msg', (response: IAnkiMessage) => {
+socket.on('msg', (response) => {
     const { syncKey } = response;
     const callback = callbackTable.get(syncKey);
     if (!callback) return;
@@ -52,7 +41,7 @@ socket.on('msg', (response: IAnkiMessage) => {
     return resolve(response.result);
 });
 
-export default function ankiCall (apiType: string, data: any) {
+export default function ankiCall (apiType, data) {
     return new Promise((resolve, reject) => {
         const syncKey = createSyncKey();
         callbackTable.set(syncKey, { resolve, reject });
