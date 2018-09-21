@@ -5,6 +5,7 @@ from utils import (
     emit,
 )
 
+from .autocomplete import updateWordset
 
 def getNidSet(col, cids):
     nidSet = set()
@@ -62,4 +63,7 @@ def updateCard(msg):
 
         card.did = newDeckId
         card.flush()
+
+        updateWordset(col)
+
         return emit.emitResult(True)

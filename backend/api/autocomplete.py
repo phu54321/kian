@@ -12,40 +12,37 @@ from utils.fast_fuzzymatch import (
 )
 
 import re
-import time
 
-wordset = None
+wordSet = None
 wsdict = {}
 alphaNumeric = re.compile("[a-zA-Z][a-zA-Z0-9]{4,}")
 
 
-def getWordset(col):
+def updateWordset(col):
     """ Initialize wordSet from preexisting collections """
-    global wordset, wsdict, alphaNumeric
-    wordset = set()
+    global wordSet, wsdict, alphaNumeric
+    wordSet = set()
 
     for (fld,) in col.db.execute("select flds from notes"):
         try:
-            wordset.update(wsdict[fld])
+            wordSet.update(wsdict[fld])
         except KeyError:
             words = [w.lower() for w in alphaNumeric.findall(fld)]
             wsdict[fld] = words
-            wordset.update(words)
+            wordSet.update(words)
 
-    wordset = preprocessList(wordset)
+    wordSet = preprocessList(wordSet)
 
 
+# Initial update
 with Col() as col:
-    getWordset(col)
-    print(len(wordset))
-    start = time.time()
-    print(fast_fuzzymatchBatch(preprocess('test'), wordset))
-    print(time.time() - start)
+    updateWordset(col)
 
 
-@registerApi('word_autocmplete')
+@registerApi('get_word_autocomplete')
 def listDeck(msg):
-    with Col() as col:
-        deckNames = [d['name'] for d in col.decks.all()]
-        deckNames.sort()
-        return emit.emitResult(deckNames)
+    typeCheck(msg, {
+        'query': str
+    })
+    matches = fast_fuzzymatchBatch(preprocess(msg['query']), wordSet)
+    return emit.emitResult(matches)

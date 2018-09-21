@@ -10,6 +10,8 @@ from utils import (
 from anki.notes import Note
 from anki.utils import _, htmlToTextLine
 
+from .autocomplete import updateWordset
+
 
 @registerApi('note_get')
 def getNote(msg):
@@ -50,6 +52,9 @@ def updateNote(msg):
         note.fields[:] = fields
         note.tags = tags
         note.flush()
+
+        updateWordset(col)
+
         return emit.emitResult(True)
 
 
@@ -121,6 +126,8 @@ def addNote(msg):
 
         model['did'] = did
         cardNum = col.addNote(note)
+
+        updateWordset(col)
 
         return emit.emitResult({
             'noteId': note.id,

@@ -96,6 +96,8 @@ export default {
                     items.pop();
                     this.$emit('input', items);
                 }
+            } else if (e.keyCode === 13) {  // enter
+                this.emitItem(true);
             }
         },
         removeItemByName (name) {
