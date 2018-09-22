@@ -12,10 +12,23 @@ from utils.fast_fuzzymatch import (
 )
 
 import re
+import time
 
 wordSet = None
 wsdict = {}
-alphaNumeric = re.compile("[a-zA-Z][a-zA-Z0-9]{4,}")
+
+
+def alphaNumeric(n):
+    return re.compile(r"[a-zA-Z][a-zA-Z0-9]*(?: [a-zA-Z][a-zA-Z0-9]*){%d}" % n)
+
+
+regexes = [
+    alphaNumeric(1),
+    alphaNumeric(2),
+    alphaNumeric(3),
+    alphaNumeric(4),
+    alphaNumeric(5),
+]
 
 
 def updateWordset(col):
@@ -23,15 +36,23 @@ def updateWordset(col):
     global wordSet, wsdict, alphaNumeric
     wordSet = set()
 
+    startTime = time.time()
+
     for (fld,) in col.db.execute("select flds from notes"):
         try:
             wordSet.update(wsdict[fld])
         except KeyError:
-            words = [w.lower() for w in alphaNumeric.findall(fld)]
+            words = []
+            for r in regexes:
+                words.extend([
+                    w.lower() for w in r.findall(fld) if len(w) >= 4])
+            words = set(words)
             wsdict[fld] = words
             wordSet.update(words)
 
     wordSet = preprocessList(wordSet)
+    print('[updateWordset] Collected %d words in %.2fs' %
+          (len(wordSet), time.time() - startTime))
 
 
 # Initial update

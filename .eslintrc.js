@@ -41,6 +41,7 @@ module.exports = {
             "error",
             { "checkLoops": false }
         ],
-        "object-curly-spacing": ["error", "always"]
+        "object-curly-spacing": ["error", "always"],
+        "no-console": "off"
     }
 };
