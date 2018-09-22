@@ -51,9 +51,20 @@ div.browser-view
                                 | &nbsp;Oops, no cards :(
                             p Try different query instead.
 
-    .editor-spacer(v-if='selectedCardId !== -1', :style='{height: browserEditorHeight + "px"}')
-    .editor-row(v-if='selectedCardId !== -1', :style='{height: browserEditorHeight + "px"}')
-        .drag-handle(@mousedown='onDragStart')
+    .editor-spacer(
+        v-if='selectedCardId !== -1',
+        :style='{height: browserEditorHeight + "px"}'
+    )
+    .editor-row(
+        v-if='selectedCardId !== -1',
+        :style='{height: browserEditorHeight + "px"}',
+        :class='{fullscreen: editorFullscreen}'
+    )
+        .drag-handle(
+            @mousedown='onDragStart',
+            @dblclick='toggleEditorFullscreen',
+            @click='editorFullscreen && toggleEditorFullscreen()'
+        )
         .editor-div
             browser-editor(
                 :cardId='selectedCardId',
@@ -164,6 +175,7 @@ export default {
 
             browserEditorHeight: (this.$localStorage.get('browserEditorHeight') || 350) | 0,
             oldPageY: null,
+            editorFullscreen: false,
         };
     },
     created () {
@@ -385,7 +397,11 @@ export default {
         onDragEnd () {
             document.removeEventListener('mousemove', this.onDragMove, false);
             document.removeEventListener('mouseup', this. onDragEnd, false);
-        }
+        },
+
+        toggleEditorFullscreen () {
+            this.editorFullscreen = !this.editorFullscreen;
+        },
     }
 };
 
@@ -460,6 +476,22 @@ $color-row-selected: #afe2c480;
             padding: 40px;
             background-color: white;
             overflow-y: auto;
+        }
+
+        &.fullscreen {
+            top: 0;
+            height: auto !important;
+            z-index: 10000;
+
+            .drag-handle:before {
+                display: block;
+                content: 'Exit fullscreen';
+                background-color: #ddd;
+                padding: .5em;
+                text-align: center;
+                font-weight: bold;
+                cursor: pointer;
+            }
         }
     }
 
