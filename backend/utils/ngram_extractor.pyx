@@ -22,7 +22,7 @@ def ngramExtract(str string):
         ch = p[0]
         if ord('a') <= ch <= ord('z') or ord('0') <= ch <= ord('9'):
             inSegment = True
-        elif ch == ord(' ') and inSegment:
+        elif inSegment:
             inSegment = False
 
             for ngramIndex in range(ngramSegmentCount):
@@ -32,12 +32,16 @@ def ngramExtract(str string):
                         ngramStartPointer[ngramIndex][:ngramLength]
                     )
 
-            if ngramSegmentCount == 10:
-                for i in range(1, 10):
-                    ngramStartPointer[i - 1] = ngramStartPointer[i]
-            if ngramSegmentCount < 10:
-                ngramStartPointer[ngramSegmentCount] = p + 1
-                ngramSegmentCount += 1
+            if ch == ord(' '):
+                if ngramSegmentCount == 10:
+                    for i in range(1, 10):
+                        ngramStartPointer[i - 1] = ngramStartPointer[i]
+                if ngramSegmentCount < 10:
+                    ngramStartPointer[ngramSegmentCount] = p + 1
+                    ngramSegmentCount += 1
+            else:
+                ngramSegmentCount = 1
+                ngramStartPointer[0] = p + 1
 
         else:
             ngramSegmentCount = 1
@@ -52,4 +56,3 @@ def ngramExtract(str string):
         ret.append(ngramStartPointer[ngramIndex][:ngramLength])
 
     return ret
-
