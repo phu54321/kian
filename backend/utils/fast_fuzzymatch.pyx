@@ -54,6 +54,8 @@ cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] ha
         prevHaystackIndex = haystackIndex
 
         while haystack[haystackIndex] != ch:
+            if ch != ord(' ') and haystack[haystackIndex] == ord(' '):
+                return 0
             haystackIndex += 1
             if haystackIndex == haystackLen:
                 return 0
@@ -77,6 +79,11 @@ cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] ha
         rank += 100 * chd_mul * wsd_mul
         haystackIndex += 1
         needleIndex += 1
+
+    while haystackIndex < haystackLen:
+        if haystack[haystackIndex] == ord(' '):
+            return 0
+        haystackIndex += 1
 
     if haystackLen < 100:
         rank += 100 - haystackLen
