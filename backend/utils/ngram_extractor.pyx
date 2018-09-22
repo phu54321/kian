@@ -39,7 +39,6 @@ def ngramExtract(str string):
                 if ngramLength >= 4:
                     ret.append(
                         ngramStartPointer[ngramIndex][:ngramLength]
-                            .decode('utf-8')
                     )
 
             if ngramSegmentCount == 10:
@@ -59,7 +58,7 @@ def ngramExtract(str string):
 
     for ngramIndex in range(ngramSegmentCount):
         ngramLength = p - ngramStartPointer[ngramIndex]
-        ret.append(ngramStartPointer[ngramIndex][:ngramLength].decode('utf-8'))
+        ret.append(ngramStartPointer[ngramIndex][:ngramLength])
 
     return ret
 

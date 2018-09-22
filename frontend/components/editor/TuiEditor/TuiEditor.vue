@@ -173,7 +173,6 @@ export default {
             }
         });
         this.cm.on('keyup', _.debounce((cm, event) => {
-            console.log(event.keyCode);
             if (!cm.state.completionActive &&
                 event.keyCode !== 13 && // Enter
                 event.keyCode !== 9 && // Tab
