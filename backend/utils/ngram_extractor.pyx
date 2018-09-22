@@ -17,15 +17,6 @@ def ngramExtract(str string):
     cdef int i
 
     ngramStartPointer[0] = p
-    ngramStartPointer[1] = p
-    ngramStartPointer[2] = p
-    ngramStartPointer[3] = p
-    ngramStartPointer[4] = p
-    ngramStartPointer[5] = p
-    ngramStartPointer[6] = p
-    ngramStartPointer[7] = p
-    ngramStartPointer[8] = p
-    ngramStartPointer[9] = p
 
     while p < end:
         ch = p[0]

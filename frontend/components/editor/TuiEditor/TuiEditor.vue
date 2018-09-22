@@ -54,7 +54,6 @@ import './addons/table';
 import wautocompleter from './addons/wautocomplete';
 
 import ankiCall from '~/api/ankiCall';
-import _ from 'lodash';
 
 import ErrorDialog from '~/components/ErrorDialog';
 import ShadowDom from '~/components/ShadowDom';
@@ -172,7 +171,7 @@ export default {
                 }
             }
         });
-        this.cm.on('keyup', _.debounce((cm, event) => {
+        this.cm.on('keyup', (cm, event) => {
             if (!cm.state.completionActive &&
                 event.keyCode !== 13 && // Enter
                 event.keyCode !== 9 && // Tab
@@ -180,7 +179,7 @@ export default {
             ) {
                 cm.showHint();
             }
-        }, 100));
+        });
         this.cm.on('change', this.onChange);
         this.onChange();
     },
