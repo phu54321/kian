@@ -138,6 +138,7 @@ export default {
             extraKeys,
             hintOptions: {
                 hint: wautocompleter,
+                completeSingle: false,
             }
         });
 
