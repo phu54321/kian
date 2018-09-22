@@ -933,26 +933,6 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
-/* decode_c_string_utf16.proto */
-static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16(const char *s, Py_ssize_t size, const char *errors) {
-    int byteorder = 0;
-    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
-}
-static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16LE(const char *s, Py_ssize_t size, const char *errors) {
-    int byteorder = -1;
-    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
-}
-static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16BE(const char *s, Py_ssize_t size, const char *errors) {
-    int byteorder = 1;
-    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
-}
-
-/* decode_c_string.proto */
-static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
-         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
-         const char* encoding, const char* errors,
-         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors));
-
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1459,14 +1439,14 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
         __pyx_t_5 = ((__pyx_v_ngramLength >= 4) != 0);
         if (__pyx_t_5) {
 
-          /* "utils/ngram_extractor.pyx":42
+          /* "utils/ngram_extractor.pyx":41
+ *                 if ngramLength >= 4:
  *                     ret.append(
- *                         ngramStartPointer[ngramIndex][:ngramLength]
- *                             .decode('utf-8')             # <<<<<<<<<<<<<<
+ *                         ngramStartPointer[ngramIndex][:ngramLength]             # <<<<<<<<<<<<<<
  *                     )
  * 
  */
-          __pyx_t_1 = __Pyx_decode_c_string(((char const *)(__pyx_v_ngramStartPointer[__pyx_v_ngramIndex])), 0, __pyx_v_ngramLength, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyBytes_FromStringAndSize(((const char*)(__pyx_v_ngramStartPointer[__pyx_v_ngramIndex])) + 0, __pyx_v_ngramLength - 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
 
           /* "utils/ngram_extractor.pyx":40
@@ -1474,7 +1454,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  *                 if ngramLength >= 4:
  *                     ret.append(             # <<<<<<<<<<<<<<
  *                         ngramStartPointer[ngramIndex][:ngramLength]
- *                             .decode('utf-8')
+ *                     )
  */
           __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 40, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1489,7 +1469,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
         }
       }
 
-      /* "utils/ngram_extractor.pyx":45
+      /* "utils/ngram_extractor.pyx":44
  *                     )
  * 
  *             if ngramSegmentCount == 10:             # <<<<<<<<<<<<<<
@@ -1499,7 +1479,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
       __pyx_t_5 = ((__pyx_v_ngramSegmentCount == 10) != 0);
       if (__pyx_t_5) {
 
-        /* "utils/ngram_extractor.pyx":46
+        /* "utils/ngram_extractor.pyx":45
  * 
  *             if ngramSegmentCount == 10:
  *                 for i in range(1, 10):             # <<<<<<<<<<<<<<
@@ -1509,7 +1489,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
         for (__pyx_t_8 = 1; __pyx_t_8 < 10; __pyx_t_8+=1) {
           __pyx_v_i = __pyx_t_8;
 
-          /* "utils/ngram_extractor.pyx":47
+          /* "utils/ngram_extractor.pyx":46
  *             if ngramSegmentCount == 10:
  *                 for i in range(1, 10):
  *                     ngramStartPointer[i - 1] = ngramStartPointer[i]             # <<<<<<<<<<<<<<
@@ -1519,7 +1499,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
           (__pyx_v_ngramStartPointer[(__pyx_v_i - 1)]) = (__pyx_v_ngramStartPointer[__pyx_v_i]);
         }
 
-        /* "utils/ngram_extractor.pyx":45
+        /* "utils/ngram_extractor.pyx":44
  *                     )
  * 
  *             if ngramSegmentCount == 10:             # <<<<<<<<<<<<<<
@@ -1528,7 +1508,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
       }
 
-      /* "utils/ngram_extractor.pyx":48
+      /* "utils/ngram_extractor.pyx":47
  *                 for i in range(1, 10):
  *                     ngramStartPointer[i - 1] = ngramStartPointer[i]
  *             if ngramSegmentCount < 10:             # <<<<<<<<<<<<<<
@@ -1538,7 +1518,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
       __pyx_t_5 = ((__pyx_v_ngramSegmentCount < 10) != 0);
       if (__pyx_t_5) {
 
-        /* "utils/ngram_extractor.pyx":49
+        /* "utils/ngram_extractor.pyx":48
  *                     ngramStartPointer[i - 1] = ngramStartPointer[i]
  *             if ngramSegmentCount < 10:
  *                 ngramStartPointer[ngramSegmentCount] = p + 1             # <<<<<<<<<<<<<<
@@ -1547,7 +1527,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
         (__pyx_v_ngramStartPointer[__pyx_v_ngramSegmentCount]) = (__pyx_v_p + 1);
 
-        /* "utils/ngram_extractor.pyx":50
+        /* "utils/ngram_extractor.pyx":49
  *             if ngramSegmentCount < 10:
  *                 ngramStartPointer[ngramSegmentCount] = p + 1
  *                 ngramSegmentCount += 1             # <<<<<<<<<<<<<<
@@ -1556,7 +1536,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
         __pyx_v_ngramSegmentCount = (__pyx_v_ngramSegmentCount + 1);
 
-        /* "utils/ngram_extractor.pyx":48
+        /* "utils/ngram_extractor.pyx":47
  *                 for i in range(1, 10):
  *                     ngramStartPointer[i - 1] = ngramStartPointer[i]
  *             if ngramSegmentCount < 10:             # <<<<<<<<<<<<<<
@@ -1575,7 +1555,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
       goto __pyx_L5;
     }
 
-    /* "utils/ngram_extractor.pyx":53
+    /* "utils/ngram_extractor.pyx":52
  * 
  *         else:
  *             ngramSegmentCount = 1             # <<<<<<<<<<<<<<
@@ -1585,7 +1565,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
     /*else*/ {
       __pyx_v_ngramSegmentCount = 1;
 
-      /* "utils/ngram_extractor.pyx":54
+      /* "utils/ngram_extractor.pyx":53
  *         else:
  *             ngramSegmentCount = 1
  *             ngramStartPointer[0] = p + 1             # <<<<<<<<<<<<<<
@@ -1596,7 +1576,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
     }
     __pyx_L5:;
 
-    /* "utils/ngram_extractor.pyx":56
+    /* "utils/ngram_extractor.pyx":55
  *             ngramStartPointer[0] = p + 1
  * 
  *         p += 1             # <<<<<<<<<<<<<<
@@ -1606,7 +1586,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
     __pyx_v_p = (__pyx_v_p + 1);
   }
 
-  /* "utils/ngram_extractor.pyx":58
+  /* "utils/ngram_extractor.pyx":57
  *         p += 1
  * 
  *     inSegment = False             # <<<<<<<<<<<<<<
@@ -1615,42 +1595,42 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
   __pyx_v_inSegment = 0;
 
-  /* "utils/ngram_extractor.pyx":60
+  /* "utils/ngram_extractor.pyx":59
  *     inSegment = False
  * 
  *     for ngramIndex in range(ngramSegmentCount):             # <<<<<<<<<<<<<<
  *         ngramLength = p - ngramStartPointer[ngramIndex]
- *         ret.append(ngramStartPointer[ngramIndex][:ngramLength].decode('utf-8'))
+ *         ret.append(ngramStartPointer[ngramIndex][:ngramLength])
  */
   __pyx_t_8 = __pyx_v_ngramSegmentCount;
   __pyx_t_9 = __pyx_t_8;
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
     __pyx_v_ngramIndex = __pyx_t_10;
 
-    /* "utils/ngram_extractor.pyx":61
+    /* "utils/ngram_extractor.pyx":60
  * 
  *     for ngramIndex in range(ngramSegmentCount):
  *         ngramLength = p - ngramStartPointer[ngramIndex]             # <<<<<<<<<<<<<<
- *         ret.append(ngramStartPointer[ngramIndex][:ngramLength].decode('utf-8'))
+ *         ret.append(ngramStartPointer[ngramIndex][:ngramLength])
  * 
  */
     __pyx_v_ngramLength = (__pyx_v_p - (__pyx_v_ngramStartPointer[__pyx_v_ngramIndex]));
 
-    /* "utils/ngram_extractor.pyx":62
+    /* "utils/ngram_extractor.pyx":61
  *     for ngramIndex in range(ngramSegmentCount):
  *         ngramLength = p - ngramStartPointer[ngramIndex]
- *         ret.append(ngramStartPointer[ngramIndex][:ngramLength].decode('utf-8'))             # <<<<<<<<<<<<<<
+ *         ret.append(ngramStartPointer[ngramIndex][:ngramLength])             # <<<<<<<<<<<<<<
  * 
  *     return ret
  */
-    __pyx_t_1 = __Pyx_decode_c_string(((char const *)(__pyx_v_ngramStartPointer[__pyx_v_ngramIndex])), 0, __pyx_v_ngramLength, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyBytes_FromStringAndSize(((const char*)(__pyx_v_ngramStartPointer[__pyx_v_ngramIndex])) + 0, __pyx_v_ngramLength - 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 62, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "utils/ngram_extractor.pyx":64
- *         ret.append(ngramStartPointer[ngramIndex][:ngramLength].decode('utf-8'))
+  /* "utils/ngram_extractor.pyx":63
+ *         ret.append(ngramStartPointer[ngramIndex][:ngramLength])
  * 
  *     return ret             # <<<<<<<<<<<<<<
  * 
@@ -2199,39 +2179,6 @@ static PyObject* __Pyx__CallUnboundCMethod0(__Pyx_CachedCFunction* cfunc, PyObje
     Py_DECREF(args);
 bad:
     return result;
-}
-
-/* decode_c_string */
-static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
-         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
-         const char* encoding, const char* errors,
-         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors)) {
-    Py_ssize_t length;
-    if (unlikely((start < 0) | (stop < 0))) {
-        size_t slen = strlen(cstring);
-        if (unlikely(slen > (size_t) PY_SSIZE_T_MAX)) {
-            PyErr_SetString(PyExc_OverflowError,
-                            "c-string too long to convert to Python");
-            return NULL;
-        }
-        length = (Py_ssize_t) slen;
-        if (start < 0) {
-            start += length;
-            if (start < 0)
-                start = 0;
-        }
-        if (stop < 0)
-            stop += length;
-    }
-    length = stop - start;
-    if (unlikely(length <= 0))
-        return PyUnicode_FromUnicode(NULL, 0);
-    cstring += start;
-    if (decode_func) {
-        return decode_func(cstring, length, errors);
-    } else {
-        return PyUnicode_Decode(cstring, length, encoding, errors);
-    }
 }
 
 /* PyErrFetchRestore */

@@ -35,7 +35,7 @@ def updateWordset(col):
             wsdict[fld] = words
             wordSet.update(words)
 
-    wordSet = preprocessList(wordSet)
+    wordSet = list(wordSet)
     print('[updateWordset] Collected %d words in %.2fs' %
           (len(wordSet), time.time() - startTime))
 
