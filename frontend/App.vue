@@ -20,7 +20,7 @@ div.app-body
     hotkey-map
 
     header
-        b-navbar(fixed='top', toggleable='sm', variant='dark', type='dark')
+        b-navbar(toggleable='sm', variant='dark', type='dark')
             b-container
                 b-navbar-brand(href='#', to='/')
                     img.mr-1.logo(src='logo.svg')

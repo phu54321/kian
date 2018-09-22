@@ -1,8 +1,6 @@
 @import "sched.scss";
 @import "reviewer.scss";
 
-$main_top: 5em;
-
 body {
     font-family: "Noto Sans", "Noto Sans CJK KR", -apple-system,
         Helvetica, Arial, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -14,7 +12,7 @@ html, body, .app-body {
 
 .app-container {
     position: relative;
-    top: $main_top;
+    margin-top: 2em;
 }
 
 .invisible {

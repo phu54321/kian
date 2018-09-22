@@ -63,7 +63,8 @@ div.browser-view
         .drag-handle(
             @mousedown='onDragStart',
             @dblclick='toggleEditorFullscreen',
-            @click='editorFullscreen && toggleEditorFullscreen()'
+            @click='editorFullscreen && toggleEditorFullscreen()',
+            title='Double click to toggle fullscreen'
         )
         .editor-div
             browser-editor(
@@ -481,7 +482,6 @@ $color-row-selected: #afe2c480;
         &.fullscreen {
             top: 0;
             height: auto !important;
-            z-index: 10000;
 
             .drag-handle:before {
                 display: block;
