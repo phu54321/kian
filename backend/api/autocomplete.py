@@ -11,24 +11,12 @@ from utils.fast_fuzzymatch import (
     fast_fuzzymatchBatch,
 )
 
-import re
+from utils.ngram_extractor import ngramExtract
+
 import time
 
 wordSet = None
 wsdict = {}
-
-
-def alphaNumeric(n):
-    return re.compile(r"[a-zA-Z][a-zA-Z0-9]*(?: [a-zA-Z][a-zA-Z0-9]*){%d}" % n)
-
-
-regexes = [
-    alphaNumeric(1),
-    alphaNumeric(2),
-    alphaNumeric(3),
-    alphaNumeric(4),
-    alphaNumeric(5),
-]
 
 
 def updateWordset(col):
@@ -42,10 +30,7 @@ def updateWordset(col):
         try:
             wordSet.update(wsdict[fld])
         except KeyError:
-            words = []
-            for r in regexes:
-                words.extend([
-                    w.lower() for w in r.findall(fld) if len(w) >= 4])
+            words = ngramExtract(fld)
             words = set(words)
             wsdict[fld] = words
             wordSet.update(words)
