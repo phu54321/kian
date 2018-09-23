@@ -1,3 +1,5 @@
+// @flow
+
 // Copyright (C) 2018 Hyun Woo Park
 //
 // This program is free software: you can redistribute it and/or modify
@@ -41,8 +43,8 @@ socket.on('msg', (response) => {
     return resolve(response.result);
 });
 
-export default function ankiCall (apiType, data) {
-    return new Promise((resolve, reject) => {
+export default function ankiCall (apiType: string, data: any) {
+    return new Promise<any>((resolve, reject) => {
         const syncKey = createSyncKey();
         callbackTable.set(syncKey, { resolve, reject });
         socket.emit('msg', {

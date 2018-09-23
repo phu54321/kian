@@ -13,9 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// @flow
+
 const hookMap = new Map();
 
-export function addHook (hookID, handler) {
+export function addHook (hookID: string, handler: (mixed) => mixed) {
     let handlerList = hookMap.get(hookID);
     if (!handlerList) {
         handlerList = [];

@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const VueAutoRoutingPlugin = require('vue-auto-routing/lib/webpack-plugin');
 const webpack = require('webpack');
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { yar } = require('webpack-bundle-analyzer');
 
 module.exports = {
     outDir: 'dist/frontend',
