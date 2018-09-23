@@ -1,4 +1,4 @@
-import Jimp from 'jimp';
+import Jimp from 'jimp/es';
 
 class ImageView {
     constructor (img, cropArea) {

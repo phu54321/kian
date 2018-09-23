@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const VueAutoRoutingPlugin = require('vue-auto-routing/lib/webpack-plugin');
 const webpack = require('webpack');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
     outDir: 'dist/frontend',
@@ -37,18 +38,21 @@ module.exports = {
         config.node = {
             fs: 'empty'
         };
-        config.plugins.push(new VueAutoRoutingPlugin({
-            pages: 'frontend/pages',
-            importPrefix: '@/pages/'
-        }));
-        config.plugins.push(new webpack.DefinePlugin({
-            'process.browser': 'true'
-        }));
+        config.plugins.push(
+            new VueAutoRoutingPlugin({
+                pages: 'frontend/pages',
+                importPrefix: '@/pages/',
+            }),
+            new webpack.DefinePlugin({
+                'process.browser': 'true'
+            }),
+            // new BundleAnalyzerPlugin()
+        );
     },
     devServer: {
         after (app) {
             const addonStaticServe = require('./frontend/addons/staticServe');
-            app.use(express.static('backend/testdata/collection.media', { maxAge: '30d' }));
+            app.use(express.static(',ckend/testdata/collection.media', { maxAge: '30d' }));
             app.use(express.static('frontend/public'));
             addonStaticServe(app);
         }

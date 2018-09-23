@@ -87,7 +87,7 @@ export default {
         },
         detectLongCtrlPress_keyup (event) {
             if ((
-                event.type === 'blur' || 
+                event.type === 'blur' ||
                 (event.type === 'keyup' && event.keyCode === 17)
             ) && this.openHotkeyMapTimer) {
                 window.clearTimeout(this.openHotkeyMapTimer);
