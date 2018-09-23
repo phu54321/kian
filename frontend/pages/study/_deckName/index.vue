@@ -16,7 +16,7 @@
 <template lang="pug">
 
 .study-main
-    input(type='hidden', :value='card.id')
+    input(type='hidden', v-if='card', :value='card.id')
     .study-header
         span Deck: {{deckName}}
         span.text-secondary.ml-3 (
@@ -34,7 +34,8 @@
             span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
                 icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
-    .study-body.mb-2.mt-2(v-if='!flipped')
+    .study-body(v-if='!card')
+    .study-body.mb-2.mt-2(v-else-if='!flipped')
             html-iframe(:html="card.front")
     .study-body.mb-2.mt-2(v-else)
             html-iframe(:html="card.back")
@@ -96,7 +97,7 @@ export default {
     },
     data () {
         return {
-            card: {},
+            card: null,
             flipped: false,
             ansButtonCount: 0,
             note: null,

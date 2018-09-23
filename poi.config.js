@@ -8,7 +8,10 @@ module.exports = {
     staticFolder: 'public',
     plugins: [
         require('@poi/plugin-eslint')({
-            command: '*'
+            command: '*',
+            loaderOptions: {
+                configFile: 'dev.eslintrc.js',
+            }
         }),
     ],
     html: {

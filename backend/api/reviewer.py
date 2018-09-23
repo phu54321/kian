@@ -15,6 +15,7 @@ prevDeckName = None
 def resetReviewer(msg):
     with Col() as col:
         col.reset()
+        return emit.emitResult(None)
 
 
 @registerApi('reviewer_next_card')
