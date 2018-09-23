@@ -20,8 +20,9 @@
     .study-header
         span Deck: {{deckName}}
         span.text-secondary.ml-3 (
-            | Elapsed {{formatTime(elapsedTime)}}
-            | Remaining {{formatTime(remainingTime)}}
+            | Elapsed {{formatTime(elapsedTime)}},
+            | Remaining {{formatTime(remainingTime)}},
+            | Total {{formatTime(elapsedTime + remainingTime)}}
             | )
         .float-right
             .remaining.mr-3
@@ -33,6 +34,8 @@
                 icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
             span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
                 icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
+
+        b-progress.mt-1(:value='currentProgress', :max='1', height='3px')
 
     .study-body(v-if='!card')
     .study-body.mb-2.mt-2(v-else-if='!flipped')
@@ -212,7 +215,6 @@ export default {
         position: relative;
         /deep/ iframe {
             height: 100%;
-            border-top: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
         }
     }
