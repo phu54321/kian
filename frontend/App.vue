@@ -58,8 +58,8 @@ div.app-main
                             icon(name='chart-bar')
                             span.d-sm-none.ml-2 Statistics
 
-    .app-container
-        b-container
+    .app-body
+        b-container.app-container
             router-view
 
     footer.app-footer
