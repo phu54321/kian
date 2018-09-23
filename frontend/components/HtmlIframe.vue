@@ -25,6 +25,17 @@ const template = `
     <head>
         <title>Inframe html</title>
         <style>img { max-width: 95%; max-height: 95%; }</style>
+        <script>
+
+function eventPassThrough(e) {
+    const newEvent = new e.constructor(e.type, e);
+    parent.document.body.dispatchEvent(newEvent);
+}
+
+window.addEventListener('keydown', eventPassThrough);
+
+
+        </scr` + `ipt>
     <head>
         <body>
             {{content}}
