@@ -22,11 +22,15 @@ html, body {
         flex: 0;
     }
 
-    .app-container {
+    .app-body {
         position: relative;
         overflow: auto;
         padding-top: 1.5em;
         flex: 1;
+
+        .app-container {
+            height: 100%;
+        }
     }
 }
 

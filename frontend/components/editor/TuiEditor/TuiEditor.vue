@@ -56,7 +56,6 @@ import wautocompleter from './addons/wautocomplete';
 import ankiCall from '~/api/ankiCall';
 
 import ErrorDialog from '~/components/ErrorDialog';
-import ShadowDom from '~/components/ShadowDom';
 import encodeMarkdown from './renderer/markdownRenderer';
 import decodeMarkdown from './decompiler/markdownDecompiler';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
@@ -121,10 +120,6 @@ export default {
             openPreview: false,
             focused: false,
         };
-    },
-
-    components: {
-        ShadowDom
     },
 
     mounted () {

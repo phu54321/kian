@@ -15,36 +15,39 @@
 
 <template lang="pug">
 
-div
+.study-main
     input(type='hidden', :value='card.id')
-    span.text-secondary Deck: {{deckName}}
-    div.float-right
-        .remaining.mr-3
-            span.newCount.ml-2 {{remaining.new}}
-            span.lrnCount.ml-2 {{remaining.lrn}}
-            span.revCount.ml-2 {{remaining.rev}}
+    .study-header
+        span.text-secondary Deck: {{deckName}}
+        .float-right
+            .remaining.mr-3
+                span.newCount.ml-2 {{remaining.new}}
+                span.lrnCount.ml-2 {{remaining.lrn}}
+                span.revCount.ml-2 {{remaining.rev}}
 
-        span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
-            icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
-        span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
-            icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
+            span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
+                icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
+            span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
+                icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
-    p.text-center
-        template(v-if='!flipped')
-            .mb-4
-                shadow-dom.front.card(:html="card.front")
-            b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
+    .study-body.mb-2.mt-2.front(v-if='!flipped')
+            html-iframe(:html="card.front", key='front')
+    .study-body.mb-2.mt-2.back(v-else)
+            html-iframe(:html="card.back", key='back')
 
-        template(v-else)
-            .mb-4
-                shadow-dom.back.card(:html="card.back")
-            b-button.mr-2(
-                v-for='(button, index) in answerButtons',
-                :key='button'
-                v-hotkey='(button === "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
-                @click='answerCard(index + 1)',
-                size='sm',
-                :variant='`outline-${answerButtonColor(button)}`') {{button}}
+    .study-footer
+        p.text-center
+            template(v-if='!flipped')
+                b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
+
+            template(v-else)
+                b-button.mr-2(
+                    v-for='(button, index) in answerButtons',
+                    :key='button'
+                    v-hotkey='(button === "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
+                    @click='answerCard(index + 1)',
+                    size='sm',
+                    :variant='`outline-${answerButtonColor(button)}`') {{button}}
 
 </template>
 
@@ -52,7 +55,7 @@ div
 
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog.vue';
-import ShadowDom from '~/components/ShadowDom';
+import HtmlIframe from '~/components/HtmlIframe';
 
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', { deckName });
@@ -88,7 +91,7 @@ export default {
             },
         };
     },
-    components: { ShadowDom },
+    components: { HtmlIframe },
     methods: {
         loadCard () {
             return ankiCall('reviewer_next_card', {
@@ -148,6 +151,28 @@ export default {
     font-size: 1.1em;
     line-height: 1.1em;
     transform: translate(0, .15em);
+}
+
+.study-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .study-header {
+        flex: 0;
+    }
+    .study-body {
+        flex: 1;
+        position: relative;
+        iframe {
+            height: 100%;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+    }
+    .study-footer {
+        flex: 0;
+    }
 }
 
 </style>
