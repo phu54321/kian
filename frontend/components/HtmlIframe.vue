@@ -14,7 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-    iframe(ref='iframe', :srcdoc='computedHtml')
+.iframe-container
+    iframe(
+        :style='{display: (currentIframe == 1) ? "block" : "none"}',
+        ref='iframe1', :srcdoc='html1', @load='onLoad(1)')
+    iframe(
+        :style='{display: (currentIframe == 2) ? "block" : "none"}',
+        ref='iframe2', :srcdoc='html2', @load='onLoad(2)')
 </template>
 
 <script>
@@ -44,23 +50,52 @@ window.addEventListener('keydown', eventPassThrough);
 </html>
 `;
 
+function renderTemplate (html) {
+    return template.replace('{{content}}', html);
+}
+
 export default {
     props: ['html'],
-    computed: {
-        computedHtml () {
-            return template.replace('{{content}}', this.html);
+    data () {
+        return {
+            currentIframe: 1,
+            html1: renderTemplate(this.html),
+            html2: '',
+        };
+    },
+    watch: {
+        html (v) {
+            if(this.currentIframe === 1) {
+                this.html2 = renderTemplate(v);
+            } else {
+                this.html1 = renderTemplate(v);
+            }
         }
     },
+    methods: {
+        onLoad (iframeIndex) {
+            const thisIframe = (iframeIndex === 1) ? this.$refs.iframe1 : this.$refs.iframe2;
+            if(thisIframe.srcdoc === '') return;
+
+            this.currentIframe = iframeIndex;
+        }
+    }
 };
 
 </script>
 
 <style scoped lang=scss>
 
-iframe {
-    display: block;
+.iframe-container {
     width: 100%;
-    border: none;
+    height: 100%;
+
+    iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
 }
 
 </style>
