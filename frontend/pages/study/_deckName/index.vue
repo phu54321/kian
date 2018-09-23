@@ -19,7 +19,7 @@
     input(type='hidden', :value='card.id')
     .study-header
         span Deck: {{deckName}}
-        span.text-secondary.ml-3 (Elased {{elapsedTime}})
+        span.text-secondary.ml-3 (Elapsed {{formatTime(elapsedTime)}})
         .float-right
             .remaining.mr-3
                 span.newCount.ml-2 {{remaining.new}}
@@ -57,6 +57,8 @@
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog.vue';
 import HtmlIframe from '~/components/HtmlIframe';
+import { formatTime } from '~/utils/utils';
+
 
 async function getNextCard (deckName) {
     const msg = await ankiCall('reviewer_next_card', { deckName });
@@ -147,6 +149,7 @@ export default {
                 Easy: 'primary',
             }[type];
         },
+        formatTime,
     },
     computed: {
         elapsedTime () {

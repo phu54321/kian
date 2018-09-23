@@ -13,8 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import padLeft from 'pad-left';
 import textVersion from 'textversionjs';
+import { formatDate } from '~/utils/utils';
+
 
 export default {
     textVersionJs (text) {
@@ -30,10 +31,7 @@ export default {
     timeToText (timestamp) {
         if (typeof timestamp === 'string') return timestamp;
         const date = new Date(timestamp * 1000);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
+        return formatDate(date);
     },
     concatTags (tags) {
         return tags.join(', ');

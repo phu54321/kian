@@ -1,5 +1,6 @@
 import fuzzysearch from 'fuzzysearch';
 import Hangul from 'hangul-js';
+import padLeft from 'pad-left';
 
 export function clamp (x, min, max) {
     if (x < min) x = min;
@@ -34,4 +35,16 @@ export function focusNextElement () {
         const index = focussable.indexOf(activeElement);
         focussable[index + 1].focus();
     }
+}
+
+export function formatDate (date) {
+    if (date === null) return '';
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
+}
+
+export function formatTime (second) {
+    return `${(second / 60).toFixed(1)}m`;
 }
