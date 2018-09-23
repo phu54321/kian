@@ -1,4 +1,9 @@
+const path = require('path');
+
 module.exports = {
+    "plugins": [
+        "flowtype",
+    ],
     "env": {
         "browser": true,
         "commonjs": true,
@@ -9,9 +14,11 @@ module.exports = {
     "extends": [
         "es2015",
         "eslint:recommended",
-        'plugin:vue/essential'
+        "plugin:flowtype/recommended",
+        'plugin:vue/essential',
     ],
     "parserOptions": {
+        "parser": "babel-eslint",
         "ecmaVersion": 2017,
         "sourceType": "module"
     },
@@ -45,6 +52,6 @@ module.exports = {
         "keyword-spacing": ["error", {
             "before": true,
             "after": true,
-        }]
+        }],
     }
 };
