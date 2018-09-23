@@ -28,10 +28,19 @@
 const template = `
 <!doctype html>
 <html>
-    <head>
-        <title>Inframe html</title>
-        <style>img { max-width: 95%; max-height: 95%; }</style>
-        <script>
+<head>
+<title>Inframe html</title>
+<style>
+img {
+    max-width: 95%;
+}
+body {
+    font-family: "Noto Sans", "Noto Sans CJK KR", -apple-system,
+        Helvetica, Arial, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+</style>
+
+<script>
 
 function eventPassThrough(e) {
     const newEvent = new e.constructor(e.type, e);
@@ -40,13 +49,12 @@ function eventPassThrough(e) {
 
 window.addEventListener('keydown', eventPassThrough);
 
-
-        </scr` + `ipt>
-    <head>
-        <body>
-            {{content}}
-        </body>
-    </head>
+</scr` + `ipt>
+<head>
+<body>
+{{content}}
+</body>
+</head>
 </html>
 `;
 
