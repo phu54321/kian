@@ -11,6 +11,12 @@ cardDict = {}
 prevDeckName = None
 
 
+@registerApi('reviewer_reset')
+def resetReviewer(msg):
+    with Col() as col:
+        col.reset()
+
+
 @registerApi('reviewer_next_card')
 def getNextScheduledCard(msg):
     """Fetch next scheduled card"""
