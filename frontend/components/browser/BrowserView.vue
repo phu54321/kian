@@ -114,6 +114,8 @@ div.browser-view
 <script>
 
 import _ from 'lodash';
+import $ from 'jquery';
+
 import BrowserEditor from './BrowserEditor';
 import BrowserToolModals from './BrowserToolModals';
 import fieldFormatter from './fieldFormatter';
@@ -181,12 +183,12 @@ export default {
     },
     created () {
         this.resetCardCache();
-        window.addEventListener('scroll', this.onScroll);
+        $('.app-container').on('scroll', this.onScroll);
         window.addEventListener('click', this.clickBlurHandler, true);
     },
     destroyed () {
         window.removeEventListener('click', this.clickBlurHandler);
-        window.removeEventListener('scroll', this.onScroll);
+        $('.app-container').off('scroll', this.onScroll);
     },
     watch: {
         cardIds () {
