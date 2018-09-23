@@ -47,7 +47,7 @@ div
 
 <script>
 
-import Jimp from 'jimp';
+import Jimp from 'jimp/es';
 import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
 import { uploadImageFromDataURI } from '~/utils/uploadHelper';
