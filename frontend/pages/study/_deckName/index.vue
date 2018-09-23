@@ -30,10 +30,10 @@
             span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
                 icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
-    .study-body.mb-2.mt-2.front(v-if='!flipped')
-            html-iframe(:html="card.front", key='front')
-    .study-body.mb-2.mt-2.back(v-else)
-            html-iframe(:html="card.back", key='back')
+    .study-body.mb-2.mt-2(v-if='!flipped')
+            html-iframe(:html="card.front")
+    .study-body.mb-2.mt-2(v-else)
+            html-iframe(:html="card.back")
 
     .study-footer
         p.text-center
