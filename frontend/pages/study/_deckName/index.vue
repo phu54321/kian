@@ -19,7 +19,10 @@
     input(type='hidden', :value='card.id')
     .study-header
         span Deck: {{deckName}}
-        span.text-secondary.ml-3 (Elapsed {{formatTime(elapsedTime)}})
+        span.text-secondary.ml-3 (
+            | Elapsed {{formatTime(elapsedTime)}}
+            | Remaining {{formatTime(remainingTime)}}
+            | )
         .float-right
             .remaining.mr-3
                 span.newCount.ml-2 {{remaining.new}}
@@ -58,6 +61,7 @@ import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog.vue';
 import HtmlIframe from '~/components/HtmlIframe';
 import { formatTime } from '~/utils/utils';
+import ExponentialSmoother from './exponentialSmoother';
 
 
 async function getNextCard (deckName) {
@@ -75,11 +79,16 @@ async function getNextCard (deckName) {
     };
 }
 
+function remainingToProgress ({ new: newCnt, lrn, rev }) {
+    return newCnt * 2 + lrn + rev;
+}
+
+
 export default {
     props: ['deckName'],
     async asyncData (props) {
         const deckName = props.deckName;
-        const initialData = getNextCard(deckName);
+        const initialData = await getNextCard(deckName);
         return {
             ...initialData,
             initialRemaining: Object.assign({}, initialData.remaining),
@@ -100,6 +109,7 @@ export default {
             startTime: (new Date()).getTime() / 1000,
             currentTime: null,
             currentTimeUpdater: null,
+            progressTracker: new ExponentialSmoother(),
         };
     },
     created () {
@@ -134,9 +144,11 @@ export default {
                 cardId: this.card.id,
                 ease: ease
             }).then(() => {
+                this.progressTracker.update(this.currentProgress);
                 return getNextCard(this.deckName);
             }).then(card => {
                 Object.assign(this.$data, card);
+                this.remaining = this.remaining;
             }).catch(err => {
                 ErrorDialog.openErrorDialog(err.message);
             });
@@ -154,6 +166,15 @@ export default {
     computed: {
         elapsedTime () {
             return this.currentTime - this.startTime;
+        },
+        remainingTime () {
+            return (1 - this.currentProgress) / this.progressTracker.slope;
+        },
+        currentProgress () {
+            if (!this.initialRemaining) return 0;
+            const total = remainingToProgress(this.initialRemaining);
+            const current = remainingToProgress(this.remaining);
+            return 1 - (current / total);
         },
         answerButtons () {
             return {
