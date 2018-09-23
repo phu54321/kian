@@ -46,8 +46,9 @@ div
 
 import ListSelector from '../common/ListSelector';
 import TagEditor from '../common/TagEditor';
-import padLeft from 'pad-left';
 import { listModel, listDeck } from '~/api';
+import { formatDate } from '~/utils/utils';
+
 import {
     updateCardDeckBatch,
     updateCardModelBatch,
@@ -84,13 +85,7 @@ export default {
         },
     },
     methods: {
-        formatDate (date) {
-            if (date === null) return '';
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`;
-        },
+        formatDate,
         async changeDeck () {
             await updateCardDeckBatch(this.selected, this.deck);
             this.deck = '';
