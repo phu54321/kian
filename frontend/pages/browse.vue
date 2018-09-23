@@ -245,7 +245,7 @@ function queryValidator (chunk) {
 .queryBox {
     position: sticky;
     padding: .1px 0;
-    top: 56px;
+    top: 0;
     background-color: #fff;
     z-index: 2;
 

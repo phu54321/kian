@@ -14,12 +14,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-div.app-body
+div.app-main
     error-dialog
     sync-dialog
     hotkey-map
 
-    header
+    header.app-header
         b-navbar(toggleable='sm', variant='dark', type='dark')
             b-container
                 b-navbar-brand(href='#', to='/')
@@ -58,10 +58,11 @@ div.app-body
                             icon(name='chart-bar')
                             span.d-sm-none.ml-2 Statistics
 
-    b-container.app-container
-        router-view
+    .app-container
+        b-container
+            router-view
 
-    footer
+    footer.app-footer
         cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
 
 
