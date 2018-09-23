@@ -18,7 +18,8 @@
 .study-main
     input(type='hidden', :value='card.id')
     .study-header
-        span.text-secondary Deck: {{deckName}}
+        span Deck: {{deckName}}
+        span.text-secondary.ml-3 (Elased {{elapsedTime}})
         .float-right
             .remaining.mr-3
                 span.newCount.ml-2 {{remaining.new}}
@@ -76,7 +77,11 @@ export default {
     props: ['deckName'],
     async asyncData (props) {
         const deckName = props.deckName;
-        return getNextCard(deckName);
+        const initialData = getNextCard(deckName);
+        return {
+            ...initialData,
+            initialRemaining: Object.assign({}, initialData.remaining),
+        };
     },
     data () {
         return {
@@ -89,7 +94,20 @@ export default {
                 lrn: 0,
                 rev: 0,
             },
+            initialRemaining: null,
+            startTime: (new Date()).getTime() / 1000,
+            currentTime: null,
+            currentTimeUpdater: null,
         };
+    },
+    created () {
+        this.currentTime = (new Date()).getTime() / 1000;
+        this.currentTimeUpdater = window.setInterval(() => {
+            this.currentTime = (new Date()).getTime() / 1000;
+        }, 1000);
+    },
+    destroyed () {
+        window.clearInterval(this.currentTimeUpdater);
     },
     components: { HtmlIframe },
     methods: {
@@ -131,6 +149,9 @@ export default {
         },
     },
     computed: {
+        elapsedTime () {
+            return this.currentTime - this.startTime;
+        },
         answerButtons () {
             return {
                 2: ['Again', 'Good'],
@@ -139,7 +160,6 @@ export default {
             }[this.ansButtonCount];
         },
     },
-    name: 'deck-view',
 };
 
 </script>
