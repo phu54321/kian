@@ -21,6 +21,7 @@ def resetScheduling(msg):
         checkpoint(col, "Reset scheduling and learning on selected cards")
         col.sched.resetCards(cids)
         col.sched.removeLrn(cids)
+        col.reset()
         return emit.emitResult(True)
 
 

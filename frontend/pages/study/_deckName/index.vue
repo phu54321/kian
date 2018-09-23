@@ -112,14 +112,15 @@ export default {
             progressTracker: new ExponentialSmoother(),
         };
     },
-    created () {
+    mounted () {
         this.currentTime = (new Date()).getTime() / 1000;
         this.currentTimeUpdater = window.setInterval(() => {
             this.currentTime = (new Date()).getTime() / 1000;
         }, 1000);
     },
-    destroyed () {
+    beforeDestroy () {
         window.clearInterval(this.currentTimeUpdater);
+        this.$ankiCall('reviewer_reset');
     },
     components: { HtmlIframe },
     methods: {
