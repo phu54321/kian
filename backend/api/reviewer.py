@@ -8,11 +8,14 @@ import logging
 
 
 cardDict = {}
+prevDeckName = None
 
 
 @registerApi('reviewer_next_card')
 def getNextScheduledCard(msg):
     """Fetch next scheduled card"""
+
+    global prevDeckName
 
     typeCheck(msg, {
         'deckName': str,
@@ -22,7 +25,10 @@ def getNextScheduledCard(msg):
         deckName = msg['deckName']
         deck = col.decks.byName(deckName)
         col.decks.select(deck['id'])
-        col.reset()
+
+        if prevDeckName != deckName:
+            col.reset()
+        prevDeckName = deckName
 
         card = col.sched.getCard()
         if card is None:
