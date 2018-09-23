@@ -68,7 +68,7 @@ export default {
                     fields: card.fields,
                     tags: card.tags,
                 });
-                if(silent) return;
+                if (silent) return;
 
                 this.$toasted.show('Edit saved', {
                     icon: 'save',

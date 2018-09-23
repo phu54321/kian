@@ -15,7 +15,7 @@ CodeMirror.commands.makeTable = function (cm) {
         });
         return;
     }
-    else if(rowCount === 1) {
+    else if (rowCount === 1) {
         Vue.toasted.error('Header-only (single row) table not supported', {
             icon: 'exclamation-triangle',
         });
@@ -25,7 +25,7 @@ CodeMirror.commands.makeTable = function (cm) {
     const output = [];
     for (let y = 0 ; y < rowCount ; y++) {
         const row = cells[y];
-        while(row.length < colCount) row.push('');
+        while (row.length < colCount) row.push('');
         output.push('|');
         for (let x = 0 ; x < colCount ; x++) {
             output.push(' ');
@@ -33,7 +33,7 @@ CodeMirror.commands.makeTable = function (cm) {
             output.push(' |');
         }
         output.push('\n');
-        if(y === 0) {
+        if (y === 0) {
             output.push('|' + ' -- |'.repeat(colCount) + '\n');
         }
     }

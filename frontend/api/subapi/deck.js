@@ -3,7 +3,7 @@ import ankiCall from '../ankiCall';
 let deckList = null;
 
 export async function listDeck () {
-    if(!deckList) {
+    if (!deckList) {
         deckList = await ankiCall('deck_list');
     }
     return deckList;
@@ -15,7 +15,7 @@ export async function hasDeck (deckName) {
 }
 
 export async function addDeck (deckName) {
-    if(await hasDeck(deckName)) return false;
+    if (await hasDeck(deckName)) return false;
 
     await ankiCall('deck_add', {
         deckName

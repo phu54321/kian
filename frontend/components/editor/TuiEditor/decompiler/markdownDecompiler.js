@@ -30,14 +30,14 @@ function getMarkdownContent (domElement) {
     let markdownElements;
 
     markdownElements = domElement.getElementsByClassName('tui-md');
-    if(markdownElements.length === 1) return {
+    if (markdownElements.length === 1) return {
         markdown: markdownElements[0].innerHTML,
         expectedHtmlCRC: markdownElements[0].getAttribute('hash'),
     };
 
     try {
         markdownElements = domElement.getElementsByClassName('tui-md-b64');
-        if(markdownElements.length === 1) return {
+        if (markdownElements.length === 1) return {
             markdown: utf8.decode(base64.decode(markdownElements[0].innerHTML)),
             expectedHtmlCRC: markdownElements[0].getAttribute('hash'),
         };
@@ -49,20 +49,20 @@ function getMarkdownContent (domElement) {
 }
 
 export default function decodeMarkdown (html) {
-    if(!html) return '';
+    if (!html) return '';
 
     const parser = new DOMParser();
     const domElement = parser.parseFromString(html, 'text/html');
     
     const { markdown, expectedHtmlCRC } = getMarkdownContent(domElement);
-    if(!markdown) return null;
+    if (!markdown) return null;
 
     const htmlElement = domElement.getElementsByClassName('tui-html');
-    if(htmlElement.length !== 1) return null;
+    if (htmlElement.length !== 1) return null;
     const renderedHtml = htmlElement[0].innerHTML;
     const htmlCRC = crc32.str(renderedHtml.trim());
 
-    if(htmlCRC.toString() !== expectedHtmlCRC) return null;
+    if (htmlCRC.toString() !== expectedHtmlCRC) return null;
 
     return markdown;
 }

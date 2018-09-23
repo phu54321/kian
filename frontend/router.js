@@ -30,9 +30,9 @@ function propEnableRouteEntry (route) {
         const component = route.matched[route.matched.length - 1].components.default;
         const props = component.props;
         const typeCastedParams = Object.assign({}, route.params);
-        if(props) {
+        if (props) {
             Object.keys(props).forEach(k => {
-                if(typeCastedParams[k] === undefined) return;
+                if (typeCastedParams[k] === undefined) return;
                 const propType = props[k].type || (x => x);
                 typeCastedParams[k] = propType(typeCastedParams[k]);
             });

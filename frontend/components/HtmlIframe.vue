@@ -65,7 +65,7 @@ export default {
     },
     watch: {
         html (v) {
-            if(this.currentIframe === 1) {
+            if (this.currentIframe === 1) {
                 this.html2 = renderTemplate(v);
             } else {
                 this.html1 = renderTemplate(v);
@@ -75,7 +75,7 @@ export default {
     methods: {
         onLoad (iframeIndex) {
             const thisIframe = (iframeIndex === 1) ? this.$refs.iframe1 : this.$refs.iframe2;
-            if(thisIframe.srcdoc === '') return;
+            if (thisIframe.srcdoc === '') return;
 
             this.currentIframe = iframeIndex;
         }

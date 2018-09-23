@@ -20,22 +20,22 @@ import { clickVNode } from './clickElement';
 const hotkeyHandlersMap = new Map();
 
 function getActiveElement (el) {
-    if(el === undefined) el = document.activeElement;
-    if(el) return el;
+    if (el === undefined) el = document.activeElement;
+    if (el) return el;
 
     const modalDialogs = document.querySelectorAll('.modal.show');
-    if(modalDialogs.length === 1) return modalDialogs[0];
+    if (modalDialogs.length === 1) return modalDialogs[0];
 
     return document.body;
 }
 
 function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth, packName) {
-    if(!hotkeyHandlersMap.has(kString)) {
+    if (!hotkeyHandlersMap.has(kString)) {
         hotkeyHandlersMap.set(kString, []);
         $(document).bind('keydown', kString, (e) => {
             const activeElement = getActiveElement(e.target);
             const matchedHandler = resolveHotkey(kString, activeElement);
-            if(matchedHandler) {
+            if (matchedHandler) {
                 e.stopPropagation();
                 e.preventDefault();
                 return clickVNode(matchedHandler.vnode);
@@ -58,37 +58,37 @@ function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth, packName) {
 }
 
 function removeHotkeyFromMap (kString, targetEl) {
-    if(!hotkeyHandlersMap.has(kString)) return;
+    if (!hotkeyHandlersMap.has(kString)) return;
     const handlerList = hotkeyHandlersMap.get(kString);
     const index = handlerList.findIndex((e) => e.targetEl === targetEl);
-    if(index === -1) return;
+    if (index === -1) return;
     handlerList.splice(index, 1);
 }
 
 function resolveHotkey (kString, activeElement) {
     const parentsFromActiveElement = [];
-    for(let el = activeElement; el ; el = el.parentElement) {
+    for (let el = activeElement; el ; el = el.parentElement) {
         parentsFromActiveElement.push(el);
-        if(el.classList.contains('modal') && el.classList.contains('show')) break;
+        if (el.classList.contains('modal') && el.classList.contains('show')) break;
     }
 
     const handlerList = hotkeyHandlersMap.get(kString);
     let matchedHandler = null;
     let matchedElementIndex = parentsFromActiveElement.length;
 
-    for(const handler of handlerList) {
+    for (const handler of handlerList) {
         const { targetEl, } = handler;
         let maxHotkeyDepth = handler.maxHotkeyDepth || 10000;
 
-        for(let el = targetEl ; el ; el = el.parentElement) {
+        for (let el = targetEl ; el ; el = el.parentElement) {
             const elIndex = parentsFromActiveElement.indexOf(el);
-            if(elIndex !== -1 && elIndex <= matchedElementIndex) {
-                if(elIndex === matchedElementIndex) matchedHandler = null;
+            if (elIndex !== -1 && elIndex <= matchedElementIndex) {
+                if (elIndex === matchedElementIndex) matchedHandler = null;
                 else matchedHandler = handler;
                 matchedElementIndex = elIndex;
                 break;
             }
-            if(--maxHotkeyDepth === 0) break;
+            if (--maxHotkeyDepth === 0) break;
         }
     }
 
@@ -99,9 +99,9 @@ export function getHotkeyMap (el) {
     const ret = {};
 
     el = getActiveElement(el);
-    for(const kString of hotkeyHandlersMap.keys()) {
+    for (const kString of hotkeyHandlersMap.keys()) {
         const handler = resolveHotkey(kString, el);
-        if(handler) {
+        if (handler) {
             ret[kString] = handler;
         }
     }
@@ -118,7 +118,7 @@ function registerHotkey (el, binding, vnode) {
     const title = props.title || $(el).text() || '(untitled hotkey)';
     const packName = props.packName || props['pack-name'] || 'Hotkeys';
 
-    for(let kString of hotkeyString) {
+    for (let kString of hotkeyString) {
         addHotkeyToMap(kString, vnode, title, binding.arg | 0, packName);
     }
 
@@ -127,7 +127,7 @@ function registerHotkey (el, binding, vnode) {
 
 function unregisterHotkey (el) {
     const hotkeyString = el.dataset.hotkeyString.split('|');
-    for(let kString of hotkeyString) {
+    for (let kString of hotkeyString) {
         removeHotkeyFromMap(kString, el);
     }
 }

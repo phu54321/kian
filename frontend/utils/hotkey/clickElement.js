@@ -18,9 +18,9 @@ const vnodeNameRules = {
 export function clickVNode (vnode) {
     const el = vnode.elm;
 
-    if(vnode.componentOptions) {
+    if (vnode.componentOptions) {
         const vnodeName = vnode.componentOptions.tag;
-        if(vnodeNameRules[vnodeName]) {
+        if (vnodeNameRules[vnodeName]) {
             return vnodeNameRules[vnodeName](vnode.context.$children[0]);
         }
     }
@@ -31,7 +31,7 @@ export function clickVNode (vnode) {
     const height = $el.height();
     let targetEl = document.elementFromPoint(left + width / 2, top + height / 2);
 
-    while(targetEl !== null) {
+    while (targetEl !== null) {
         const $target = $(targetEl);
         Object.keys(classRules).forEach(cls => {
             if ($target.hasClass(cls)) {
@@ -42,12 +42,12 @@ export function clickVNode (vnode) {
 
         const targetTagName = targetEl.tagName.toLowerCase();
         const nameRule = tagNameRules[targetTagName];
-        if(nameRule) {
+        if (nameRule) {
             nameRule(targetEl);
             return;
         }
 
-        if(targetEl === el) break;
+        if (targetEl === el) break;
         targetEl = targetEl.parentElement;
     }
 

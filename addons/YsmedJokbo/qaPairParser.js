@@ -21,8 +21,8 @@ function isHorizontalLineWhite (view, y) {
     const { data } = view;
     const dataIndexStart = view.dataIndex(0, y);
     const dataIndexEnd = view.dataIndex(view.w, y);
-    for(let i = dataIndexStart ; i < dataIndexEnd ; i += 4) {
-        if(data.readUInt32BE(i) !== 0xFFFFFFFF) return false;
+    for (let i = dataIndexStart ; i < dataIndexEnd ; i += 4) {
+        if (data.readUInt32BE(i) !== 0xFFFFFFFF) return false;
     }
     return true;
 }
@@ -34,10 +34,10 @@ function isVerticalLine (view, x) {
 
     const y0Color = data.readUInt32BE(dataIndexStart);
     const { r, g, b } = Jimp.intToRGBA(y0Color);
-    if(r > 0x80 || g > 0x80 || b > 0x80) return false;
+    if (r > 0x80 || g > 0x80 || b > 0x80) return false;
 
-    for(let i = dataIndexStart + pitch ; i < dataIndexEnd ; i += pitch) {
-        if(data.readUInt32BE(i) !== y0Color) return false;
+    for (let i = dataIndexStart + pitch ; i < dataIndexEnd ; i += pitch) {
+        if (data.readUInt32BE(i) !== y0Color) return false;
     }
     return true;
 }
@@ -52,15 +52,15 @@ export function parseQAPair (image) {
 
     // Split by white horizontal lines
     const isYLineWhite = [];
-    for(let y = 0 ; y < view.h ; y++) {
+    for (let y = 0 ; y < view.h ; y++) {
         isYLineWhite.push(isHorizontalLineWhite(view, y));
     }
 
     const imgBlockYRange = [];
     let lastY = -1;
-    for(let y = 0 ; y < height ; y++) {
-        if(!isYLineWhite[y] && lastY === -1) lastY = y;
-        else if(isYLineWhite[y] && lastY !== -1) {
+    for (let y = 0 ; y < height ; y++) {
+        if (!isYLineWhite[y] && lastY === -1) lastY = y;
+        else if (isYLineWhite[y] && lastY !== -1) {
             imgBlockYRange.push([lastY, y + 1]);
             lastY = -1;
         }
@@ -69,7 +69,7 @@ export function parseQAPair (image) {
     const XPADDING = 3, YPADDING = 3;
     imgBlockYRange.forEach(([y0, y1]) => {
         const cropHeight = y1 - y0 - 2 * YPADDING;
-        if(cropHeight <= 0) return;
+        if (cropHeight <= 0) return;
 
         const cropped = view.crop(0, y0 + YPADDING, width, cropHeight);
 
@@ -81,13 +81,13 @@ export function parseQAPair (image) {
 
 
         let minLineX = -1;
-        for(let x = 0 ; x < croppedWidth ; x++) {
-            if(isVerticalLine(cropped, x)) {
-                if(minLineX !== -1 && minLineX !== x - 1) return;
+        for (let x = 0 ; x < croppedWidth ; x++) {
+            if (isVerticalLine(cropped, x)) {
+                if (minLineX !== -1 && minLineX !== x - 1) return;
                 minLineX = x;
             }
         }
-        if(minLineX === -1) return;  // No vertical line
+        if (minLineX === -1) return;  // No vertical line
 
         const questionImg = cropped
             .crop(0, 0, minLineX - XPADDING, croppedHeight)
@@ -99,7 +99,7 @@ export function parseQAPair (image) {
             .toJimpWithPad(20);
 
         // Ignore some too-small-for-qapair images
-        if(questionImg.bitmap.height < 60 && answerImg.bitmap.height < 60) {
+        if (questionImg.bitmap.height < 60 && answerImg.bitmap.height < 60) {
             return;
         }
         qaPair.push([questionImg, answerImg]);

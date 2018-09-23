@@ -97,7 +97,7 @@ export default {
 
                 // Clean non-sticky forms
                 card.fieldFormats.forEach((fFormat, index) => {
-                    if(!fFormat.sticky) {
+                    if (!fFormat.sticky) {
                         card.fields.splice(index, 1, '');
                     }
                 });
@@ -108,7 +108,7 @@ export default {
                 this.$toasted.show('Note added', {
                     icon: 'plus-square',
                 });
-            } catch(e) {
+            } catch (e) {
                 ErrorDialogVue.openErrorDialog('Error on adding notes', e.message);
             }
         }

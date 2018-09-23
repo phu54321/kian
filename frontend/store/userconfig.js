@@ -8,7 +8,7 @@ const state = {
 const actions = {
     async loadUserConfig ({ commit, state }) {
         // Config already loaded. Use cached value
-        if(state.loaded) return;
+        if (state.loaded) return;
 
         commit('userconfig_loading');
         const config = await ankiCall('config_get');

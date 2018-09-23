@@ -6,7 +6,7 @@ class ImageView {
         this.data = img.bitmap.data;
         this.pitch = img.bitmap.width * 4;
 
-        if(cropArea) {
+        if (cropArea) {
             this.x0 = cropArea.x;
             this.y0 = cropArea.y;
             this.w = cropArea.w;
@@ -28,8 +28,8 @@ class ImageView {
     }
 
     crop (x, y, w, h) {
-        if(w < 0) w = 0;
-        if(h < 0) h = 0;
+        if (w < 0) w = 0;
+        if (h < 0) h = 0;
 
         return new ImageView(this.img, {
             x: this.x0 + x,
@@ -43,62 +43,62 @@ class ImageView {
         const { data, pitch, w, h } = this;
 
         let cropY0 = 0;
-        while(cropY0 < h) {
+        while (cropY0 < h) {
             let lb = false;
             const maxIndex = this.dataIndex(w, cropY0);
-            for(let index = this.dataIndex(0, cropY0) ; index < maxIndex ; index += 4) {
-                if(data.readUInt32BE(index) !== 0xFFFFFFFF) {
+            for (let index = this.dataIndex(0, cropY0) ; index < maxIndex ; index += 4) {
+                if (data.readUInt32BE(index) !== 0xFFFFFFFF) {
                     lb = true;
                     break;
                 }
             }
-            if(lb) break;
+            if (lb) break;
             cropY0++;
         }
 
         let cropY1 = h - 1;
-        while(cropY1 >= 0) {
+        while (cropY1 >= 0) {
             let lb = false;
             const maxIndex = this.dataIndex(w, cropY1);
-            for(let index = this.dataIndex(0, cropY1) ; index < maxIndex ; index += 4) {
-                if(data.readUInt32BE(index) !== 0xFFFFFFFF) {
+            for (let index = this.dataIndex(0, cropY1) ; index < maxIndex ; index += 4) {
+                if (data.readUInt32BE(index) !== 0xFFFFFFFF) {
                     lb = true;
                     break;
                 }
             }
-            if(lb) break;
+            if (lb) break;
             cropY1--;
         }
-        if(cropY1 < cropY0) cropY1 = cropY0 - 1;
+        if (cropY1 < cropY0) cropY1 = cropY0 - 1;
 
         let cropX0 = 0;
-        while(cropX0 < w) {
+        while (cropX0 < w) {
             let lb = false;
             const maxIndex = this.dataIndex(cropX0, h);
-            for(let index = this.dataIndex(cropX0, 0) ; index < maxIndex ; index += pitch) {
-                if(data.readUInt32BE(index) !== 0xFFFFFFFF) {
+            for (let index = this.dataIndex(cropX0, 0) ; index < maxIndex ; index += pitch) {
+                if (data.readUInt32BE(index) !== 0xFFFFFFFF) {
                     lb = true;
                     break;
                 }
             }
-            if(lb) break;
+            if (lb) break;
             cropX0++;
         }
 
         let cropX1 = w - 1;
-        while(cropX1 >= 0) {
+        while (cropX1 >= 0) {
             let lb = false;
             const maxIndex = this.dataIndex(cropX1, h);
-            for(let index = this.dataIndex(cropX1, 0) ; index < maxIndex ; index += pitch) {
-                if(data.readUInt32BE(index) !== 0xFFFFFFFF) {
+            for (let index = this.dataIndex(cropX1, 0) ; index < maxIndex ; index += pitch) {
+                if (data.readUInt32BE(index) !== 0xFFFFFFFF) {
                     lb = true;
                     break;
                 }
             }
-            if(lb) break;
+            if (lb) break;
             cropX1--;
         }
-        if(cropX1 < cropX0) cropX1 = cropX0 - 1;
+        if (cropX1 < cropX0) cropX1 = cropX0 - 1;
 
         return this.crop(
             cropX0,
@@ -126,7 +126,7 @@ class ImageView {
         let dstIndex = padding * 4 + padding * dstPitch;
         const copyLength = w * 4;
 
-        for(let y = 0 ; y < h ; y++) {
+        for (let y = 0 ; y < h ; y++) {
             srcData.copy(outData, dstIndex, srcIndex, srcIndex + copyLength);
             srcIndex += srcPitch;
             dstIndex += dstPitch;

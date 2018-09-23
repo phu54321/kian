@@ -16,7 +16,7 @@ md.use(require('markdown-it-underline'));
 md.use(require('./comment'));
 
 export default function encodeMarkdown (markdown) {
-    if(markdown === '') return '';
+    if (markdown === '') return '';
 
     let html = md.render(markdown);
 

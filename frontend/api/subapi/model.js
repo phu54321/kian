@@ -10,7 +10,7 @@ export const getModel = LRUCached(async function (modelName) {
 }, 5);
 
 export async function listModel () {
-    if(!modelListCache) {
+    if (!modelListCache) {
         modelListCache = await ankiCall('model_list');
     }
     return modelListCache;

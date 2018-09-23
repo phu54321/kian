@@ -53,23 +53,23 @@ import _ from 'lodash';
 
 function parseQueryToken (tok) {
     const pos = tok.indexOf(':');
-    if(pos === -1) return { model: null, body: tok };
+    if (pos === -1) return { model: null, body: tok };
     const model = tok.substr(0, pos);
     let body = tok.substr(pos + 1);
 
-    if(body.startsWith('"')) {
+    if (body.startsWith('"')) {
         body = body.substr(1);
-        if(body.endsWith('"')) body = body.substr(0, body.length - 1);
+        if (body.endsWith('"')) body = body.substr(0, body.length - 1);
     }
-    else if(body.startsWith('\'')) {
+    else if (body.startsWith('\'')) {
         body = body.substr(1);
-        if(body.endsWith('\'')) body = body.substr(0, body.length - 1);
+        if (body.endsWith('\'')) body = body.substr(0, body.length - 1);
     }
     return { model, body };
 }
 
 function wrapString (tok) {
-    if(tok.indexOf(' ') === -1 && tok.indexOf(':') === -1) return tok;
+    if (tok.indexOf(' ') === -1 && tok.indexOf(':') === -1) return tok;
     else return `"${tok}"`;
 }
 
@@ -111,7 +111,7 @@ export default {
     methods: {
         queryValidator,
         queryRenderer (chunk) {
-            if(chunk.startsWith('-')) {
+            if (chunk.startsWith('-')) {
                 return {
                     variant: 'danger',
                     title: chunk
@@ -119,25 +119,25 @@ export default {
             }
 
             const { model, body } = parseQueryToken(chunk);
-            if(model === 'tag') {
+            if (model === 'tag') {
                 return {
                     variant: 'info',
                     title: `Tag: ${body}`,
                 };
             }
-            if(model === 'deck') {
+            if (model === 'deck') {
                 return {
                     color: '#4caf50',
                     title: `Deck: ${body}`,
                 };
             }
-            if(model === 'note' || model === 'mid') {
+            if (model === 'note' || model === 'mid') {
                 return {
                     color: '#f3801c',
                     title: `Model: ${body}`,
                 };
             }
-            if(model === 'is') {
+            if (model === 'is') {
                 return {
                     color: '#9c27b0',
                     title: `Is: ${body}`,
@@ -145,18 +145,18 @@ export default {
             }
         },
         async querySuggestion (chunk) {
-            if(chunk.startsWith('-')) {
+            if (chunk.startsWith('-')) {
                 return (await this.querySuggestion(chunk.slice(1))).map(x => `-${x}`);
             }
 
             const { model, body } = parseQueryToken(chunk);
-            if(model === 'tag') {
+            if (model === 'tag') {
                 const tagList = await this.fetchTags(chunk.substring(4));
                 return tagList.
                     filter(tag => fuzzyMatch(body, tag)).
                     map(tag => `tag:${tag}`);
             }
-            else if(model === 'deck') {
+            else if (model === 'deck') {
                 const deckList = await listDeck();
                 return (
                     deckList.filter(deck => fuzzyMatch(body, deck))
@@ -165,7 +165,7 @@ export default {
                         .map(deck => `deck:${deck}`)
                 );
             }
-            else if(model === 'model' || model === 'note') {
+            else if (model === 'model' || model === 'note') {
                 const modelList = await listModel();
                 return (
                     modelList.filter(model => fuzzyMatch(body, model))
@@ -174,7 +174,7 @@ export default {
                         .map(model => `note:${model}`)
                 );
             }
-            else if(model === 'is') {
+            else if (model === 'is') {
                 return [
                     'is:due',
                     'is:new',
@@ -203,34 +203,34 @@ function queryValidator (chunk) {
     // From anki/find.py
     let inQuote = false;
     let token = '';
-    for(let i = 0 ; i < chunk.length ; i++) {
+    for (let i = 0 ; i < chunk.length ; i++) {
         const c = chunk[i];
-        if(c === '"' || c === '\'') {
+        if (c === '"' || c === '\'') {
             if (inQuote) {
                 if (c === inQuote) inQuote = false;
                 else token += c;
             }
             else if (token) {
-                if(token.endsWith(':')) inQuote = c;
+                if (token.endsWith(':')) inQuote = c;
                 else token += c;
             }
             else inQuote = c;
         }
-        else if(c === ' ' || c === '\u3000') {
+        else if (c === ' ' || c === '\u3000') {
             if (inQuote) token += c;
-            else if(token) {
+            else if (token) {
                 token = '';
             }
         }
-        else if(c === '(' || c === ')') {
+        else if (c === '(' || c === ')') {
             if (inQuote) token += c;
             else {
-                if(c === ')' && token) {
+                if (c === ')' && token) {
                     token = '';
                 }
             }
         }
-        else if(c === '-') {
+        else if (c === '-') {
             if (token) token += c;
         }
         else token += c;

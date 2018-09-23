@@ -12,7 +12,7 @@ CodeMirror.commands.cloze = function (cm) {
     cm.replaceSelections(replacements);
 
     cm.setSelections(cm.listSelections().map((sel, index) => {
-        if(!selections[index]) {
+        if (!selections[index]) {
             sel.head.ch -= 2;
             sel.anchor.ch -= 2;
         }
@@ -20,7 +20,7 @@ CodeMirror.commands.cloze = function (cm) {
     }));
 
     const $vnode = cm.$vnode;
-    if($vnode.modelData.type !== 'cloze') {
+    if ($vnode.modelData.type !== 'cloze') {
         $vnode.$toasted.info('You should only add clozes to cloze note types.', {
             icon: 'exclamation-triangle',
         });
@@ -34,7 +34,7 @@ CodeMirror.commands.clozeSame = function (cm) {
     cm.replaceSelections(replacements);
 
     cm.setSelections(cm.listSelections().map((sel, index) => {
-        if(!selections[index]) {
+        if (!selections[index]) {
             sel.head.ch -= 2;
             sel.anchor.ch -= 2;
         }
@@ -42,7 +42,7 @@ CodeMirror.commands.clozeSame = function (cm) {
     }));
 
     const $vnode = cm.$vnode;
-    if($vnode.modelData.type !== 'cloze') {
+    if ($vnode.modelData.type !== 'cloze') {
         $vnode.$toasted.show('You should only add clozes to cloze note types.', {
             icon: 'exclamation-triangle',
         });

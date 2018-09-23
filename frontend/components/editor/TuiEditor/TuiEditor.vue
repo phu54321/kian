@@ -185,7 +185,7 @@ export default {
             return decodeMarkdown(this.value) || '';
         },
         strippedHtml () {
-            if(this.value === '') return '';
+            if (this.value === '') return '';
             const parser = new DOMParser();
             const domElement = parser.parseFromString(this.value, 'text/html');
             return domElement.getElementsByClassName('tui-html')[0].innerHTML;
@@ -199,7 +199,7 @@ export default {
         value (newHtml) {
             const markdown = this.cm.getValue();
             const newMarkdown = decodeMarkdown(newHtml) || '';
-            if(newMarkdown !== markdown) this.cm.setValue(newMarkdown);
+            if (newMarkdown !== markdown) this.cm.setValue(newMarkdown);
         },
     },
 

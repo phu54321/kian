@@ -30,22 +30,22 @@ function translateParamsToProps (to) {
     const lastRoute = routeMatches[routeMatches.length - 1];
     const routeProps = lastRoute.props.default;
 
-    if(routeProps === true) {
+    if (routeProps === true) {
         const targetProps = lastRoute.components.default.props;
         const props = {};
 
         // Match types to target component's typing system, if possible.
-        if(targetProps) {
+        if (targetProps) {
             Object.keys(targetProps).forEach(propName => {
                 const targetProp = targetProps[propName];
                 const targetPropType = targetProp.type;
-                if(targetPropType === null) props[propName] = params[propName];
+                if (targetPropType === null) props[propName] = params[propName];
                 else props[propName] = targetPropType(params[propName]);
             });
         }
         return props;
     }
-    else if(typeof routeProps === 'function') {
+    else if (typeof routeProps === 'function') {
         return routeProps(to);
     }
 }
@@ -59,10 +59,10 @@ Vue.mixin({
     props: ['$asyncDataTrap'],
     created () {
         const vnode = this.$vnode;
-        if(!vnode) return;
+        if (!vnode) return;
 
         const component = vnode.componentOptions.Ctor.extendOptions;
-        if(!component.asyncData) return;
+        if (!component.asyncData) return;
 
         if (this.$route.params.$asyncDataTrap) {
             this.$route.params.$asyncDataTrap = false;
@@ -74,7 +74,7 @@ Vue.mixin({
     },
     async beforeRouteEnter (to, from, next) {
         const component = componentFromRoute(to);
-        if(!component.asyncData) return next();
+        if (!component.asyncData) return next();
 
         const toProps = translateParamsToProps(to);
         try {
@@ -83,13 +83,13 @@ Vue.mixin({
             next(vm => {
                 Object.assign(vm.$data, data);
             });
-        } catch(e) {
+        } catch (e) {
             ErrorDialog.openErrorDialog(null, e.message);
             next(false);
         }
     },
     async beforeRouteUpdate (to, from, next) {
-        if(!this.asyncData) return next();
+        if (!this.asyncData) return next();
 
         const toProps = translateParamsToProps(to);
 

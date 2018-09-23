@@ -77,7 +77,7 @@ export default {
     },
     watch: {
         changeDueShow (v) {
-            if(v) {
+            if (v) {
                 const today = new Date();
                 this.due = today;
             }
@@ -85,7 +85,7 @@ export default {
     },
     methods: {
         formatDate (date) {
-            if(date === null) return '';
+            if (date === null) return '';
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
             const day = date.getDate();
