@@ -164,7 +164,7 @@ export default {
     .study-body {
         flex: 1;
         position: relative;
-        iframe {
+        /deep/ iframe {
             height: 100%;
             border-top: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
