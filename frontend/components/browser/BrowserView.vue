@@ -415,7 +415,7 @@ export default {
 $color-row-hovered: #eee;
 $color-row-marked: #fdd8d8;
 $color-row-suspended: #fffc9f;
-$color-row-selected: #afe2c480;
+$color-row-selected: rgba(175, 226, 196, .5);
 
 .browser-view {
     position: relative;
