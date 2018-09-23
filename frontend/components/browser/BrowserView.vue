@@ -129,7 +129,7 @@ import {
 } from '~/api';
 
 function isDescendant (parent, child) {
-    if(!child) return false;
+    if (!child) return false;
 
     var node = child.parentNode;
     while (node) {
@@ -199,7 +199,7 @@ export default {
             this.resetCardCache();
         },
         visibleRangeWatcher () {
-            if(!this.isRendering) {
+            if (!this.isRendering) {
                 this.renderRangeBegin = clamp(this.visibleMinIndex, 0, this.frozenCardIds.length);
                 this.renderRangeEnd = clamp(this.visibleMaxIndex, 0, this.frozenCardIds.length);
             }
@@ -212,14 +212,14 @@ export default {
         displayCommands: {
             async get () {
                 const { frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex } = this;
-                if(cardIds.length === 0) return [{ type: 'noCards' }];
+                if (cardIds.length === 0) return [{ type: 'noCards' }];
 
                 // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
                 // after a rendering session completes.
                 this.isRendering = true;
 
                 const renderIndexes = _.range(renderRangeBegin, renderRangeEnd);
-                if(selectedCardIndex !== -1) renderIndexes.push(selectedCardIndex);
+                if (selectedCardIndex !== -1) renderIndexes.push(selectedCardIndex);
                 await this.ensureCardRendered(renderIndexes);
 
                 // Build basic render commands
@@ -240,14 +240,14 @@ export default {
                 };
 
                 _.range(renderRangeBegin, renderRangeEnd).forEach(i => addIndexToRenderCommand(i));
-                if(selectedCardIndex !== -1) addIndexToRenderCommand(selectedCardIndex);
+                if (selectedCardIndex !== -1) addIndexToRenderCommand(selectedCardIndex);
 
                 // Nulls → space entry
                 const compressedRenderCommands = renderCommands.reduce((list, entry) => {
                     const lastEntry = list[list.length - 1];
-                    if(lastEntry.type === 'space' && entry === null) {
+                    if (lastEntry.type === 'space' && entry === null) {
                         lastEntry.length++;
-                    } else if(entry === null) {  // null → space element
+                    } else if (entry === null) {  // null → space element
                         list.push({
                             type: 'space',
                             length: 1
@@ -259,7 +259,7 @@ export default {
                 }, [{ type: 'space', length: 0 }]);
 
                 const firstCommand = compressedRenderCommands[0];
-                if(firstCommand.type === 'space' && firstCommand.length === 0) {
+                if (firstCommand.type === 'space' && firstCommand.length === 0) {
                     compressedRenderCommands.splice(0, 1);
                 }
 
@@ -306,7 +306,7 @@ export default {
     },
     methods: {
         onScroll: _.throttle(function () {
-            if(!this.$refs.mainTable) return;
+            if (!this.$refs.mainTable) return;
 
             const { top } = this.$refs.mainTable.getBoundingClientRect();
             const viewportHeight = document.documentElement.clientHeight;
@@ -316,14 +316,14 @@ export default {
         }, 100),
 
         clickBlurHandler (e) {
-            if(!isDescendant(this.$el, e.target)) {
+            if (!isDescendant(this.$el, e.target)) {
                 this.selectAll(false);
             }
         },
 
         issueSortBy (sortField) {
             let { sortBy, sortOrder } = this;
-            if(sortBy === sortField) {
+            if (sortBy === sortField) {
                 sortOrder = {
                     desc: 'asc',
                     asc: 'desc'
@@ -346,7 +346,7 @@ export default {
         },
 
         getFormatter (formatter) {
-            if(formatter) return fieldFormatter[formatter];
+            if (formatter) return fieldFormatter[formatter];
             else return (x) => x;
         },
 
@@ -360,7 +360,7 @@ export default {
                 0 <= idx && idx < cardIds.length &&
                 !cardCache[idx]
             ));
-            if(renderRequests.length === 0) return;
+            if (renderRequests.length === 0) return;
             const renderedRows = await getCardsBrowserInfo(renderRequests.map(idx => cardIds[idx]));
 
             // cardCache is just a cache, so it doesn't need to be reactive
@@ -392,8 +392,8 @@ export default {
         onDragMove (ev) {
             const yMovement = ev.pageY - this.oldPageY;
             this.browserEditorHeight -= yMovement;
-            if(this.browserEditorHeight < 100) this.browserEditorHeight = 100;
-            else if(this.browserEditorHeight > 800) this.browserEditorHeight = 800;
+            if (this.browserEditorHeight < 100) this.browserEditorHeight = 100;
+            else if (this.browserEditorHeight > 800) this.browserEditorHeight = 800;
             this.$localStorage.set('browserEditorHeight', this.browserEditorHeight, { expires: '10Y' });
             this.oldPageY = ev.pageY;
         },

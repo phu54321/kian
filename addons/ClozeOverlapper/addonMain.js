@@ -22,9 +22,9 @@ export default {
     install () {
         addHook('edit_card_load', card => {
             const { model, fields } = card;
-            if(model === modelName) {
+            if (model === modelName) {
                 card.fieldFormats = card.fieldFormats.map(fFormat => {
-                    if(/Text(\d+)/.test(fFormat.name) || fFormat.name === 'Full') {
+                    if (/Text(\d+)/.test(fFormat.name) || fFormat.name === 'Full') {
                         fFormat.hidden = true;
                     }
                     return fFormat;
@@ -42,13 +42,13 @@ export default {
 
         addHook('edit_card_save', card => {
             const { model } = card;
-            if(model === modelName) {
+            if (model === modelName) {
                 const fields = card.fields.slice();
                 const mainField = fields[0];
 
-                for(let i = 0 ; i < fields.length ; i++) {
+                for (let i = 0 ; i < fields.length ; i++) {
                     const fFormat = card.fieldFormats[i];
-                    if(/Text(\d+)/.test(fFormat.name)) {
+                    if (/Text(\d+)/.test(fFormat.name)) {
                         const thisFieldIndex = fFormat.name.slice(4) | 0;
                         let hasMatchingField = false;
 
@@ -60,11 +60,11 @@ export default {
                                     hasMatchingField = true;
                                     return matches[0];
                                 }
-                                else if(clozeIdx === thisFieldIndex - 1) return matches[2];
+                                else if (clozeIdx === thisFieldIndex - 1) return matches[2];
                                 else return matches[3] ? matches[4] : '...';
                             }
                         );
-                        if(!hasMatchingField) fields[i] = '';
+                        if (!hasMatchingField) fields[i] = '';
                     }
                 }
 

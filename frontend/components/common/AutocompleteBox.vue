@@ -51,15 +51,15 @@ export default {
     },
     mounted () {
         $(this.$el).on('keydown', 'input', (e) => {
-            if(e.keyCode === 38) {  // Up arrow key
+            if (e.keyCode === 38) {  // Up arrow key
                 this.selected = Math.max(0, this.selected - 1);
                 e.preventDefault();
             } else if (e.keyCode === 40) {  // Down arrow key
                 this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
                 e.preventDefault();
             } else if (e.keyCode === 9) { // Tab
-                if(this.suggestions.length > 0) {
-                    if(this.selected === -1) this.applyAutocomplete(0);
+                if (this.suggestions.length > 0) {
+                    if (this.selected === -1) this.applyAutocomplete(0);
                     else this.applyAutocomplete(this.selected);
                     e.preventDefault();
                     e.stopPropagation();
@@ -92,7 +92,7 @@ export default {
             this.selected = -1;
         },
         selected () {
-            if(this.selected === -1 || this.suggestions.length === 0) return;
+            if (this.selected === -1 || this.suggestions.length === 0) return;
 
             const $parentDiv = $(this.$el).find('.autocomplete-box');
             const $innerListItem = $($(this.$el).find('.autocomplete-entry')[this.selected]);

@@ -139,7 +139,7 @@ export default {
                 const context = canvas.getContext('2d');
 
                 const pageNum = pdf.numPages;
-                for(let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {
+                for (let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {
                     const page = await pdf.getPage(pageIndex);
                     const scale = 1.5;
                     const viewport = page.getViewport(scale);

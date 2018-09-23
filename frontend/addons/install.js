@@ -17,9 +17,9 @@
 // context to get all addons.
 
 const addonMainContext = require.context('../../addons/', true, /addonMain.js$/);
-for(const addonName of addonMainContext.keys()) {
+for (const addonName of addonMainContext.keys()) {
     const addonMain = addonMainContext(addonName).default;
-    if(addonMain && addonMain.install) addonMain.install();
+    if (addonMain && addonMain.install) addonMain.install();
     else {
         // eslint-disable-next-line no-console
         console.error(`Addon ${addonName} don't have install() method.`);

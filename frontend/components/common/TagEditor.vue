@@ -38,7 +38,7 @@ export default {
     },
     methods: {
         tagRenderer (tag) {
-            if(tag === 'marked') return {
+            if (tag === 'marked') return {
                 variant: 'danger',
                 title: tag
             };

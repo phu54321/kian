@@ -66,27 +66,27 @@ export default {
     methods: {
         toggleShow () {
             // If there are any model visible, then quit.
-            if(document.querySelectorAll('.modal.show').length > 0) return;
+            if (document.querySelectorAll('.modal.show').length > 0) return;
             this.lastActiveElement = document.activeElement;
             this.show = true;
         },
         detectLongCtrlPress_keydown (event) {
             if (event.keyCode === 17) {
-                if(this.openHotkeyMapTimer === null) {  // Ctrl on Win/Linux, Cmd on macOS
+                if (this.openHotkeyMapTimer === null) {  // Ctrl on Win/Linux, Cmd on macOS
                     this.openHotkeyMapTimer = window.setTimeout(() => {
                         this.toggleShow();
                         window.clearTimeout(this.openHotkeyMapTimer);
                         this.openHotkeyMapTimer = null;
                     }, 1300);
                 }
-            } else if(this.openHotkeyMapTimer) {
+            } else if (this.openHotkeyMapTimer) {
                 //  Ignore if other keys are pressed
                 window.clearTimeout(this.openHotkeyMapTimer);
                 this.openHotkeyMapTimer = null;
             }
         },
         detectLongCtrlPress_keyup (event) {
-            if((
+            if ((
                 event.type === 'blur' || 
                 (event.type === 'keyup' && event.keyCode === 17)
             ) && this.openHotkeyMapTimer) {

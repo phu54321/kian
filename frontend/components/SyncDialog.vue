@@ -70,13 +70,13 @@ export default {
     },
     updated () {
         const container = this.$refs.messageContainer;
-        if(container) container.scrollTop = container.scrollHeight;
+        if (container) container.scrollTop = container.scrollHeight;
     },
     methods: {
         formatBytes (bytes) {
-            if(bytes >= 1024 * 1024) {
+            if (bytes >= 1024 * 1024) {
                 return (bytes / 1024 / 1024).toFixed(1) + 'MB';
-            } else if(bytes >= 1024) {
+            } else if (bytes >= 1024) {
                 return (bytes / 1024).toFixed(1) + 'KB';
             } else {
                 return bytes + 'B';
@@ -85,7 +85,7 @@ export default {
         onShow () {
             this.syncMessages = [];
             this.authKey = this.$localStorage.get('syncKey');
-            if(this.authKey) {
+            if (this.authKey) {
                 this.email = this.password = '';
                 this.startSync();
             }
@@ -111,11 +111,11 @@ export default {
         },
         syncProcess () {
             this.$ankiCall('sync_status').then(msg => {
-                for(let message of msg.messages) {
+                for (let message of msg.messages) {
                     this.processSyncMessage(message[0], message[1]);
                 }
 
-                if(msg.completed) {
+                if (msg.completed) {
                     this.syncTimeout = null;
                     this.show = false;
                     window.onbeforeunload = undefined;
@@ -130,19 +130,19 @@ export default {
             if (cmd === 'badAuth') {
                 ErrorDialog.openErrorDialog('Sync failed', 'Invalid AnkiWeb ID/Password');
                 this.$localStorage.delete('syncKey');
-            } else if(cmd === 'newKey') {
+            } else if (cmd === 'newKey') {
                 this.$localStorage.set('syncKey', arg);
-            } else if(cmd === 'offline') {
+            } else if (cmd === 'offline') {
                 this.$toasted.show('Internet offline');
-            } else if(cmd === 'upbad') {
+            } else if (cmd === 'upbad') {
                 this.syncMessages.push('Uploading failed.');
-            } else if(cmd === 'send') {
+            } else if (cmd === 'send') {
                 this.sendBytes = arg;
-            } else if(cmd === 'recv') {
+            } else if (cmd === 'recv') {
                 this.recvBytes = arg;
-            } else if(cmd === 'sync') {
+            } else if (cmd === 'sync') {
                 const type = arg[0];
-                switch(type) {
+                switch (type) {
                 case 'login':
                     this.syncMessages.push('Logon to AnkiWeb');
                     break;
@@ -162,17 +162,17 @@ export default {
                     this.$toasted.show('Deck upgrade required. Please visit AnkiWeb.');
                     break;
                 }
-            } else if(cmd === 'syncMsg') {
+            } else if (cmd === 'syncMsg') {
                 this.syncMessages.push(arg);
-            } else if(cmd === 'error') {
+            } else if (cmd === 'error') {
                 ErrorDialog.openErrorDialog('Sync failed', arg);
-            } else if(cmd === 'clockOff') {
+            } else if (cmd === 'clockOff') {
                 ErrorDialog.openErrorDialog('Sync failed', 'Check again your computer\'s clock.');
-            } else if(cmd === 'checkFailed') {
+            } else if (cmd === 'checkFailed') {
                 ErrorDialog.openErrorDialog('Sync failed', 'Database check failed.');
-            } else if(cmd === 'noChanges') {
+            } else if (cmd === 'noChanges') {
                 this.syncMessages.push('No database changes');
-            } else if(cmd === 'noMediaChanges') {
+            } else if (cmd === 'noMediaChanges') {
                 this.syncMessages.push('No media changes');
             } else if (cmd === 'fullSync') {
                 this.fullSyncAsked = true;

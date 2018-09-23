@@ -155,7 +155,7 @@ import $ from 'jquery';
                 ($.hotkeys.options.filterTextInputs && $.inArray(event.target.type, $.hotkeys.textAcceptingInputTypes) > -1))
             ) {
                 const splitKeys = keys[0].split('+');
-                if(!(
+                if (!(
                     (splitKeys.length === 1 && splitKeys[0] === 'esc') ||
                     splitKeys.indexOf('ctrl') !== -1 ||
                     splitKeys.indexOf('meta') !== -1 ||

@@ -54,7 +54,7 @@ addFunctions({
             outHtml.push('<table>');
             for (let y = 0 ; y < rowCount ; y++) {
                 const row = cells[y];
-                while(row.length < colCount) row.push('');
+                while (row.length < colCount) row.push('');
                 outHtml.push('<tr>');
                 for (let x = 0 ; x < colCount ; x++) {
                     outHtml.push('<td>');

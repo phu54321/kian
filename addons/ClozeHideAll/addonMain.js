@@ -35,12 +35,12 @@ function wrapClozeTag (s, clozeId) {
 
     let chunks = tokHtml(s);
 
-    while(true) {
+    while (true) {
         let hasReduction = false;
-        if(chunks.length >= 3) {
+        if (chunks.length >= 3) {
             let i = 2;
             const newChunks = [];
-            while(i < chunks.length) {
+            while (i < chunks.length) {
                 if (
                     chunks[i - 2][0] === 'tstart' &&
                     chunks[i - 1][0] === 'data' &&
@@ -62,7 +62,7 @@ function wrapClozeTag (s, clozeId) {
             chunks = newChunks;
         }
 
-        if(!hasReduction) break;
+        if (!hasReduction) break;
     }
 
     output.push(...chunks.map(
@@ -94,7 +94,7 @@ export default {
     install () {        
         addHook('edit_card_load', card => {
             const { model, fields } = card;
-            if(model === modelName) {
+            if (model === modelName) {
                 card.fields = fields.map(stripClozeHelper);
             }
             return card;
@@ -102,7 +102,7 @@ export default {
 
         addHook('edit_card_save', card => {
             const { model, fields } = card;
-            if(model === modelName) {
+            if (model === modelName) {
                 card.fields = fields.map(
                     field => makeClozeCompatiable(stripClozeHelper(field))
                 );

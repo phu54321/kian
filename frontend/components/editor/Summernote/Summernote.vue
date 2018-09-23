@@ -60,7 +60,7 @@ export default {
     watch: {
         value (val) {
             const oldVal = $(this.$refs.noteDiv).summernote('code');
-            if(oldVal !== val) {
+            if (oldVal !== val) {
                 $(this.$refs.noteDiv).summernote('code', val);
             }
         }
@@ -76,7 +76,7 @@ export default {
                     this.$emit('input', $(this.$refs.noteDiv).summernote('code'));
                 },
                 async onImageUpload (files) {
-                    for(let i = 0 ; i < files.length ; i++) {
+                    for (let i = 0 ; i < files.length ; i++) {
                         const file = files[i];
                         const filename = getRandomFilename(file.name);
                         const datab64 = await getFileAsBase64(file);

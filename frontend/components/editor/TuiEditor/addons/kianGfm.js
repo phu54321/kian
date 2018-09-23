@@ -14,9 +14,9 @@ const clozeHighlighter = {
         };
     },
     token (stream, state) {
-        switch(state.mode) {
+        switch (state.mode) {
         case clozeState.STATE_TEXT:
-            if(stream.match(/\{\{c(\d+)::/)) {
+            if (stream.match(/\{\{c(\d+)::/)) {
                 state.mode = clozeState.STATE_CLOZE_TEXT;
                 return 'cloze-header';
             }
@@ -26,11 +26,11 @@ const clozeHighlighter = {
             }
 
         case clozeState.STATE_CLOZE_TEXT:
-            if(stream.match('::')) {
+            if (stream.match('::')) {
                 state.mode = clozeState.STATE_CLOZE_HINT;
                 return 'cloze-hint-separator';
             }
-            else if(stream.match('}}')) {
+            else if (stream.match('}}')) {
                 state.mode = clozeState.STATE_TEXT;
                 return 'cloze-footer';
             }
@@ -40,7 +40,7 @@ const clozeHighlighter = {
             }
 
         case clozeState.STATE_CLOZE_HINT:
-            if(stream.match('}}')) {
+            if (stream.match('}}')) {
                 state.mode = clozeState.STATE_TEXT;
                 return 'cloze-footer';
             }
@@ -66,9 +66,9 @@ function getBlockHighlighter (blockDelim, style) {
             };
         },
         token (stream, state) {
-            switch(state.mode) {
+            switch (state.mode) {
             case stateEnum.STATE_TEXT:
-                if(!stream.match(blockDelim + delimiterCh, false) && stream.match(blockDelim)) {
+                if (!stream.match(blockDelim + delimiterCh, false) && stream.match(blockDelim)) {
                     state.mode = stateEnum.STATE_BLOCK;
                     return style;
                 }
@@ -78,7 +78,7 @@ function getBlockHighlighter (blockDelim, style) {
                 }
 
             case stateEnum.STATE_BLOCK:
-                if(!stream.match(blockDelim + delimiterCh, false) && stream.match(blockDelim)) {
+                if (!stream.match(blockDelim + delimiterCh, false) && stream.match(blockDelim)) {
                     state.mode = stateEnum.STATE_TEXT;
                     return style;
                 }

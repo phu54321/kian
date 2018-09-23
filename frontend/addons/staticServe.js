@@ -24,13 +24,13 @@ module.exports = function (app) {
     const addonListDir = path.resolve(__dirname, '../../addons');
 
     fs.readdirSync(addonListDir).forEach(addonName => {
-        if(addonName.startsWith('.')) return;
+        if (addonName.startsWith('.')) return;
 
         const addonDir = path.join(addonListDir, addonName);
         const { staticFiles } = require(path.join(addonDir, 'addonConfig.js'));
-        if(!staticFiles) return;
+        if (!staticFiles) return;
 
-        for(const { src, servePath } of staticFiles) {
+        for (const { src, servePath } of staticFiles) {
             const staticPath = path.join(addonDir, src);
             app.use(servePath, express.static(staticPath));
         }

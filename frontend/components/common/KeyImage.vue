@@ -64,7 +64,7 @@ export default {
                 .map(x => x.trim());
             function hasSpecialKey (x) {
                 const index = splitKey.indexOf(x);
-                if(index !== -1) {
+                if (index !== -1) {
                     splitKey.splice(index, 1);
                     return true;
                 } else return false;
@@ -72,7 +72,7 @@ export default {
             const hasCtrl = hasSpecialKey('CTRL');
             const hasAlt = hasSpecialKey('ALT');
             const hasShift = hasSpecialKey('SHIFT');
-            if(splitKey.length >= 2) return [{}, this.keys];  // Not renderable
+            if (splitKey.length >= 2) return [{}, this.keys];  // Not renderable
             const mainKey = splitKey.length === 1 ? splitKey[0] : '';
             return [
                 { hasCtrl, hasAlt, hasShift },

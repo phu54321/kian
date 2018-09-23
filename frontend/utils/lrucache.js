@@ -7,7 +7,7 @@ export default function LRUCached (fn, capacity) {
     const callable = (function () {
         const args = Array.from(arguments);
         const hashVal = ObjectHash(args);
-        if(cache.has(hashVal)) {
+        if (cache.has(hashVal)) {
             return cache.get(hashVal);
         }
         const result = fn.call(this, ...args);

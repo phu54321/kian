@@ -97,7 +97,7 @@ export default {
             this.$emit('save');
         },
         tagRenderer (tag) {
-            if(tag === 'marked') return {
+            if (tag === 'marked') return {
                 variant: 'danger',
                 title: tag
             };
@@ -134,14 +134,14 @@ export default {
         internalValue: {
             handler (value) {
                 const emitVal = runHook('edit_card_save', _.clone(value));
-                if(_.isEqual(emitVal, this.value)) return;
+                if (_.isEqual(emitVal, this.value)) return;
                 this.$emit('input', emitVal);
             },
             deep: true,
         },
         async currentModel (modelName, oldModelName) {
             // Model change
-            if(!modelName) {
+            if (!modelName) {
                 this.internalValue.model = oldModelName;
                 return;
             }

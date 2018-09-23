@@ -52,7 +52,7 @@ export default {
     },
 
     mounted () {
-        if(this.focus !== undefined) {
+        if (this.focus !== undefined) {
             window.setTimeout(() => {
                 this.$refs.inputBox.focus();
                 this.$refs.inputBox.select();
@@ -68,15 +68,15 @@ export default {
 
     methods: {
         isValidInput (v) {
-            if(this.taggable !== undefined) return true;
+            if (this.taggable !== undefined) return true;
             else return this.options.indexOf(v) !== -1;
         },
         onFocus (focused) {
             this.focused = focused;
-            if(focused) {
+            if (focused) {
                 this.$refs.inputBox.select();
             } else {
-                if(!this.isValidInput(this.internalValue)) {
+                if (!this.isValidInput(this.internalValue)) {
                     this.internalValue = this.value;
                 }
             }
@@ -85,7 +85,7 @@ export default {
             this.internalValue = this.$refs.inputBox.value;
         },
         onKeyDown (e) {
-            if(e.keyCode === 27) {  // ESC
+            if (e.keyCode === 27) {  // ESC
                 this.$refs.inputBox.blur();
                 e.stopPropagation();
                 e.preventDefault();
@@ -108,7 +108,7 @@ export default {
             }
         },
         options () {
-            if(!this.value && this.options.length) {
+            if (!this.value && this.options.length) {
                 this.$emit('input', this.options[0]); // Select first option by default
             }
         }
