@@ -34,9 +34,10 @@ autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit=
 
 <script>
 
-import { KEY_MAP } from '../../utils/keycode';
 import AutocompleteBox from './AutocompleteBox';
 import ColoredBadge from './ColoredBadge';
+import { KEY_MAP } from '~/utils/keycode';
+import { focusNextElement } from '~/utils/utils';
 
 export default {
     props: {
@@ -97,6 +98,9 @@ export default {
                     this.$emit('input', items);
                 }
             } else if (e.keyCode === 13) {  // enter
+                if (this.buildingItem === '') {
+                    return focusNextElement();
+                }
                 this.emitItem(true);
             }
         },

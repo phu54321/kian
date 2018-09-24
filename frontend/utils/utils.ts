@@ -20,21 +20,19 @@ export function fuzzyMatch (needle: string, haystack: string) {
 }
 
 export function focusNextElement () {
-    const focussableElements = `
-        a:not([disabled]),
-        button:not([disabled]),
-        input[type=text]:not([disabled]),
-        [tabindex]:not([disabled]):not([tabindex="-1"])
-    `;
-    const activeElement = (document.activeElement as HTMLFormElement);
-    if (activeElement && activeElement.form) {
-        const focussable = Array.prototype.filter.call(activeElement.form.querySelectorAll(focussableElements),
-            (element: HTMLElement) => {
-                return element.offsetWidth > 0 || element.offsetHeight > 0 || element === activeElement;
-            });
-        const index = focussable.indexOf(activeElement);
-        focussable[index + 1].focus();
-    }
+    const focussableElements = (
+        'a:not([disabled]),' +
+        'button:not([disabled]),' +
+        'input[type=text]:not([disabled]),' +
+        '[tabindex]:not([disabled]):not([tabindex="-1"])'
+    );
+    const activeElement = document.activeElement;
+    const focusable = Array.prototype.filter.call(document.body.querySelectorAll(focussableElements),
+        (element: HTMLElement) => {
+            return element.offsetWidth > 0 || element.offsetHeight > 0 || element === activeElement;
+        });
+    const index = activeElement ? focusable.indexOf(activeElement) : -1;
+    if (index + 1 < focusable.length) focusable[index + 1].focus();
 }
 
 export function formatDate (date: Date) {
