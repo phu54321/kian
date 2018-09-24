@@ -45,7 +45,7 @@ socket.on('msg', (response: IResponse) => {
     return resolve(response.result);
 });
 
-export default function ankiCall (apiType: string, data: any) {
+export default function ankiCall (apiType: string, data?: any) {
     return new Promise<any>((resolve, reject) => {
         const syncKey = createSyncKey();
         callbackTable.set(syncKey, { resolve, reject });

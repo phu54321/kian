@@ -14,6 +14,8 @@
         "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
         "one-variable-per-declaration": false,
         "no-implicit-dependencies": false,
-        "no-submodule-imports": false
+        "no-submodule-imports": false,
+        "object-literal-sort-keys": false,
+        "triple-equals": true
     }
 }
