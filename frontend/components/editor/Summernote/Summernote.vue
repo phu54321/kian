@@ -52,11 +52,7 @@ const summernoteHotkeys = [
 ];
 
 export default {
-    props : {
-        value: {
-            required: true
-        },
-    },
+    props : ['value', 'card', 'modelData'],
     watch: {
         value (val) {
             const oldVal = $(this.$refs.noteDiv).summernote('code');
@@ -66,7 +62,7 @@ export default {
         }
     },
     mounted () {
-        $(this.$refs.noteDiv).summernote({
+        const $noteDiv = $(this.$refs.noteDiv).summernote({
             prettifyHtml: true,
             autogrow: true,
             toolbar: [],
@@ -89,6 +85,8 @@ export default {
                 }
             }
         });
+
+        $noteDiv.data('summernote').$vm = this;
     },
     computed: {
         summernoteHotkeys () {

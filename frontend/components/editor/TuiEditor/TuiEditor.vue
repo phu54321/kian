@@ -108,9 +108,10 @@ const generalKeymap = [
 
 
 export default {
-    props: ['value', 'modelData'],
+    props: ['value', 'card', 'modelData'],
 
     isEditableHtml (html) {
+        if (html === '') return false;  // TODO: fix
         return decodeMarkdown(html) !== null;
     },
 
@@ -137,7 +138,7 @@ export default {
             }
         });
 
-        this.cm.$vnode = this;
+        this.cm.$vm = this;
         this.cm.on('focus', () => this.focused = true);
         this.cm.on('blur', () => this.focused = false);
 

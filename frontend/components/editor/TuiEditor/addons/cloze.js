@@ -7,7 +7,7 @@ import './clozeOverlayStyle.css';
 
 CodeMirror.commands.cloze = function (cm) {
     const selections = cm.getSelections();
-    const lastClozeId = getLastClozeId(cm.getValue());
+    const lastClozeId = getLastClozeId(cm.$vm.card);
     const replacements = selections.map((sel, index) => `{{c${lastClozeId + index + 1}::${sel}}}`);
     cm.replaceSelections(replacements);
 
@@ -19,9 +19,9 @@ CodeMirror.commands.cloze = function (cm) {
         return sel;
     }));
 
-    const $vnode = cm.$vnode;
-    if ($vnode.modelData.type !== 'cloze') {
-        $vnode.$toasted.info('You should only add clozes to cloze note types.', {
+    const $vm = cm.$vm;
+    if ($vm.modelData.type !== 'cloze') {
+        $vm.$toasted.info('You should only add clozes to cloze note types.', {
             icon: 'exclamation-triangle',
         });
     }
@@ -29,7 +29,7 @@ CodeMirror.commands.cloze = function (cm) {
 
 CodeMirror.commands.clozeSame = function (cm) {
     const selections = cm.getSelections();
-    const lastClozeId = getLastClozeId(cm.getValue()) || 1;
+    const lastClozeId = getLastClozeId(cm.$vm.card) || 1;
     const replacements = selections.map((sel) => `{{c${lastClozeId}::${sel}}}`);
     cm.replaceSelections(replacements);
 
@@ -41,11 +41,10 @@ CodeMirror.commands.clozeSame = function (cm) {
         return sel;
     }));
 
-    const $vnode = cm.$vnode;
-    if ($vnode.modelData.type !== 'cloze') {
-        $vnode.$toasted.show('You should only add clozes to cloze note types.', {
+    const $vm = cm.$vm;
+    if ($vm.modelData.type !== 'cloze') {
+        $vm.$toasted.show('You should only add clozes to cloze note types.', {
             icon: 'exclamation-triangle',
         });
     }
 };
-

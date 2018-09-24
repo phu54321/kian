@@ -23,7 +23,7 @@ import { turndown } from './TuiEditor/decompiler/markdownDecompiler';
 
 
 export default {
-    props: ['value', 'modelData'],
+    props: ['value', 'card', 'modelData'],
     computed: {
         isMarkdown () {
             return TuiEditor.isEditableHtml(this.value);

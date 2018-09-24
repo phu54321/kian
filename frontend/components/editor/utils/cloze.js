@@ -1,8 +1,10 @@
-export function getLastClozeId (code) {
+export function getLastClozeId (card) {
     let maxClozeId = 0;
-    code.replace(/\{\{c(\d+)::/g, (match, g1) => {
-        const clozeId = parseInt(g1);
-        if (maxClozeId < clozeId) maxClozeId = clozeId;
+    card.fields.forEach(field => {
+        field.replace(/\{\{c(\d+)::/g, (match, g1) => {
+            const clozeId = parseInt(g1);
+            if (maxClozeId < clozeId) maxClozeId = clozeId;
+        });
     });
     return maxClozeId;
 }
