@@ -50,6 +50,7 @@ export default {
             const card = this.card;
             updateCard(this.cardId, {
                 deck: card.deck,
+                model: card.model,
                 fields: card.fields,
                 tags: card.tags,
             }).then(() => {

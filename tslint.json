@@ -15,6 +15,7 @@
         "one-variable-per-declaration": false,
         "no-implicit-dependencies": false,
         "no-submodule-imports": false,
+        "ordered-imports": false,
         "object-literal-sort-keys": false,
         "triple-equals": true
     }
