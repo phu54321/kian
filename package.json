@@ -8,7 +8,7 @@
   "license": "AGPL-3.0",
   "scripts": {
     "audit": "npm-audit",
-    "start": "yarn dev",
+    "start": "npm run dev",
     "dev": "npm-run-all --parallel dev:*",
     "dev:frontend": "poi frontend/index.js",
     "dev:backend": "nodemon --watch backend -e py,pyx backend/server.py",
@@ -21,7 +21,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint"
+      "pre-commit": "npm run lint"
     }
   },
   "dependencies": {
