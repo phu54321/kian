@@ -52,11 +52,11 @@ div.browser-view
                             p Try different query instead.
 
     .editor-spacer(
-        v-if='selectedCardId !== -1',
+        v-if='showEditor',
         :style='{height: browserEditorHeight + "px"}'
     )
     .editor-row(
-        v-if='selectedCardId !== -1',
+        v-if='showEditor',
         :style='{height: browserEditorHeight + "px"}',
         :class='{fullscreen: editorFullscreen}'
     )
@@ -77,16 +77,16 @@ div.browser-view
     .browser-tools
         .tools-container(:class='{enabled: selectedCardList.length > 0}')
             b-button-group.mr-2
-                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', v-b-modal.browserChangeDeck)
+                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', @click='showBrowserTool("browserChangeDeck")')
                     icon.mr-1(name='sync')
                     | D
-                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change model', v-b-modal.browserChangeModel)
+                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change model', @click='showBrowserTool("browserChangeModel")')
                     icon.mr-1(name='sync')
                     | M
-                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Add tags', v-b-modal.browserAddTags)
+                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Add tags', @click='showBrowserTool("browserAddTags")')
                     icon.mr-1(name='plus')
                     | Tag
-                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', v-b-modal.browserRemoveTags)
+                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', @click='showBrowserTool("browserRemoveTags")')
                     icon.mr-1(name='minus')
                     | Tag
 
@@ -97,15 +97,15 @@ div.browser-view
                     icon.text-white(name='pause')
 
             b-button-group.mr-2
-                b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', v-b-modal.browserResetSched)
+                b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', @click='showBrowserTool("browserResetSched")')
                     icon(name='calendar-alt')
-                b-button(size='sm', variant='primary', v-b-tooltip.hover, title='Change card due', v-b-modal.browserChangeDue)
+                b-button(size='sm', variant='primary', v-b-tooltip.hover, title='Change card due', @click='showBrowserTool("browserChangeDue")')
                     icon.mr-1(name='sync')
                     icon(name='calendar-alt')
 
-            b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', v-b-modal.browserRemoveCards)
+            b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', @click='showBrowserTool("browserRemoveCards")')
                 icon(name='regular/trash-alt')
-        .editor-spacer(v-if='selectedCardId !== -1', :style='{height: (browserEditorHeight - 50) + "px"}')
+        .editor-spacer(v-if='showEditor', :style='{height: (browserEditorHeight - 50) + "px"}')
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
 
@@ -176,6 +176,7 @@ export default {
 
             isRendering: false,
 
+            showEditor: false,
             browserEditorHeight: (this.$localStorage.get('browserEditorHeight') || 350) | 0,
             oldPageY: null,
             editorFullscreen: false,
@@ -206,7 +207,14 @@ export default {
         },
         prerenderRange (r) {
             this.ensureCardRendered(r);
-        }
+        },
+        selectedCardId (v) {
+            if (v !== -1) {
+                this.showEditor = true;
+            } else {
+                this.showEditor = false;
+            }
+        },
     },
     asyncComputed: {
         displayCommands: {
@@ -306,6 +314,11 @@ export default {
         },
     },
     methods: {
+        showBrowserTool (modalID) {
+            this.showEditor = false;
+            this.$root.$emit('bv::show::modal', modalID);
+        },
+
         onScroll: _.throttle(function () {
             if (!this.$refs.mainTable) return;
 
