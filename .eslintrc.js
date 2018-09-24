@@ -1,9 +1,6 @@
 const path = require('path');
 
 module.exports = {
-    "plugins": [
-        "flowtype",
-    ],
     "env": {
         "browser": true,
         "commonjs": true,
@@ -14,7 +11,6 @@ module.exports = {
     "extends": [
         "es2015",
         "eslint:recommended",
-        "plugin:flowtype/recommended",
         'plugin:vue/essential',
     ],
     "parserOptions": {

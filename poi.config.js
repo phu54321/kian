@@ -14,6 +14,7 @@ module.exports = {
                 configFile: 'dev.eslintrc.js',
             }
         }),
+        require('@poi/plugin-typescript')(),
     ],
     html: {
         title: 'Kian',

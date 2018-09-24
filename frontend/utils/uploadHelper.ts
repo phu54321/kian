@@ -1,5 +1,3 @@
-// @flow
-
 // Copyright (C) 2018 Hyun Woo Park
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +12,6 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 
 import nanoid from 'nanoid';
 import ankiCall from '~/api/ankiCall';
@@ -77,9 +74,9 @@ export function getFileAsBase64 (file: File) {
         const reader = new FileReader();
         reader.readAsArrayBuffer(file);
         reader.onload = () => {
-            resolve(base64ArrayBuffer(((reader.result: any): ArrayBuffer)));
+            resolve(base64ArrayBuffer(reader.result as ArrayBuffer));
         };
-        reader.onerror = error => {
+        reader.onerror = (error) => {
             reject(error);
         };
     });
@@ -98,7 +95,7 @@ export async function uploadImageFromDataURI (filename: string, datab64: string)
     filename = getRandomFilename(filename);
 
     return ankiCall('media_upload', {
+        datab64,
         filename,
-        datab64
     });
 }

@@ -1,7 +1,5 @@
-// @flow
-
 import fuzzysearch from 'fuzzysearch';
-import Hangul from 'hangul-js';
+import * as Hangul from 'hangul-js';
 import padLeft from 'pad-left';
 
 export function clamp (x: number, min: number, max: number) {
@@ -10,7 +8,7 @@ export function clamp (x: number, min: number, max: number) {
     return x;
 }
 
-function joinArray (x) {
+function joinArray (x: string[] | string) {
     if (Array.isArray(x)) return x.join('');
     else return x;
 }
@@ -28,10 +26,10 @@ export function focusNextElement () {
         input[type=text]:not([disabled]),
         [tabindex]:not([disabled]):not([tabindex="-1"])
     `;
-    const activeElement = ((document.activeElement: any): ?{form: ?HTMLFormElement});
+    const activeElement = (document.activeElement as HTMLFormElement);
     if (activeElement && activeElement.form) {
         const focussable = Array.prototype.filter.call(activeElement.form.querySelectorAll(focussableElements),
-            (element) => {
+            (element: HTMLElement) => {
                 return element.offsetWidth > 0 || element.offsetHeight > 0 || element === activeElement;
             });
         const index = focussable.indexOf(activeElement);
