@@ -37,17 +37,32 @@ def listDeck(msg):
         return emit.emitResult(cIds)
 
 
+def safeGetCard(col, cid):
+    """ `Safer` col.getCard(cid). Returns None when no such card exists."""
+    try:
+        return col.getCard(cid)
+    except TypeError:
+        return None
+
+
 @registerApi('browser_get_batch')
 def getCardsBatch(msg):
     typeCheck(msg, {
         'cardIds': list
     })
     with Col() as col:
+        cardIds = msg['cardIds']
+
         noteDict = {}
-        cards = [col.getCard(cid) for cid in msg['cardIds']]
+        cards = [safeGetCard(col, cid) for cid in cardIds]
         ret = []
 
-        for card in cards:
+        for i, card in enumerate(cards):
+            if card is None:
+                ret.append({
+                    'id': cardIds[i]
+                })
+                continue
             try:
                 note = noteDict[card.nid]
             except KeyError:
