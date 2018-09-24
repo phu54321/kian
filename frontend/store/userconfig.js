@@ -14,6 +14,18 @@ const actions = {
         const config = await ankiCall('config_get');
         commit('userconfig_loaded', config);
     },
+    async setCurrentDeck ({ commit, dispatch, state }, newDeck) {
+        await dispatch('loadUserConfig');
+        if (state.config.currentDeck === newDeck) return;
+        await ankiCall('config_set_currentDeck', { deck: newDeck });
+        commit('userconfig_setCurrentDeck', newDeck);
+    },
+    async setCurrentModel ({ commit, dispatch, state }, newModel) {
+        await dispatch('loadUserConfig');
+        if (state.config.currentModel === newModel) return;
+        await ankiCall('config_set_currentModel', { model: newModel });
+        commit('userconfig_setCurrentModel', newModel);
+    },
 };
 
 const mutations = {
@@ -23,6 +35,12 @@ const mutations = {
     userconfig_loaded (state, config) {
         state.loaded = true;
         state.config = config;
+    },
+    userconfig_setCurrentDeck (state, currentDeck) {
+        state.config.currentDeck = currentDeck;
+    },
+    userconfig_setCurrentModel (state, currentModel) {
+        state.config.currentModel = currentModel;
     },
 };
 
