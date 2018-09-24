@@ -44,7 +44,7 @@ b-form(@submit='onSave')
             tr
                 td.editor-row(colspan='2')
                     .mb-2.font-weight-bold {{fFormat.name}}
-                    tui-summernote.editor-field(v-model='internalValue.fields[index]', :modelData='modelData')
+                    tui-summernote.editor-field(v-model='internalValue.fields[index]', :model-data='modelData', :card='internalValue')
 
         tr
             th Tags
