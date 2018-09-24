@@ -19,3 +19,18 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import BootstrapVue from 'bootstrap-vue';
 Vue.use(BootstrapVue);
+
+
+// Special helper for modal: click non-secondary button on enter.
+import $ from 'jquery';
+import '~/utils/hotkey/jquery.hotkeys';
+
+$(document).bind('keydown', 'enter', () => {
+    const modalDialogs = document.querySelectorAll('.modal.show');
+    if (modalDialogs.length === 1) {
+        const buttons = modalDialogs[0].querySelectorAll('.modal-footer .btn:not(.btn-secondary)');
+        if (buttons.length === 1) {
+            buttons[0].click();
+        }
+    }
+});
