@@ -1,17 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "es2015",
-    "moduleResolution": "node",
-    "strict": true,
-    "typeRoots": [
-        "./node_modules/@types",
-        "./@types"
-    ],
-    "baseUrl": ".",
-    "paths": {
-        "@/*": ["frontend/*"],
-        "~/*": ["frontend/*"]
-    }
-  }
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "strict": true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "./@types"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["frontend/*"],
+            "~/*": ["frontend/*"]
+        }
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.vue"
+    ]
 }

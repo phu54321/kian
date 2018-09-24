@@ -16,7 +16,6 @@
 import Jimp from 'jimp/es';
 import ImageView from './ImageView';
 
-
 function isHorizontalLineWhite (view, y) {
     const { data } = view;
     const dataIndexStart = view.dataIndex(0, y);
@@ -41,7 +40,6 @@ function isVerticalLine (view, x) {
     }
     return true;
 }
-
 
 export function parseQAPair (image) {
     const qaPair = [];
@@ -77,9 +75,8 @@ export function parseQAPair (image) {
             w: croppedWidth,
             h: croppedHeight,
         } = cropped;
+
         // Find vertical line.
-
-
         let minLineX = -1;
         for (let x = 0 ; x < croppedWidth ; x++) {
             if (isVerticalLine(cropped, x)) {

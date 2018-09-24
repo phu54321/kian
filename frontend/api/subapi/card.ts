@@ -2,12 +2,14 @@ import _ from 'lodash';
 import ankiCall from '../ankiCall';
 import { addDeck, hasDeck } from './deck';
 
-export async function addNote (noteDef: {
-    deck: string,
-    model: string,
-    fields: string,
-    tags: string,
-}) {
+interface INoteDef {
+    deck: string;
+    model: string;
+    fields: string;
+    tags: string;
+}
+
+export async function addNote (noteDef: INoteDef) {
     const { deck, model, fields, tags } = noteDef;
     if (!(await hasDeck(deck))) await addDeck(deck);
     return ankiCall('note_add', {
@@ -22,11 +24,7 @@ export async function getCard (cardId: number) {
     return ankiCall('card_get', { cardId });
 }
 
-export async function updateCard (cardId: number, { deck, fields, tags }: {
-    deck?: string,
-    fields?: string[],
-    tags?: string[],
-}) {
+export async function updateCard (cardId: number, { deck, fields, tags }: INoteDef) {
     return ankiCall('card_update', {
         cardId,
         deck,

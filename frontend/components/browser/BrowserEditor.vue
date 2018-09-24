@@ -65,6 +65,7 @@ export default {
                 const card = this.card;
                 await updateCard(card.id, {
                     deck: card.deck,
+                    model: card.model,
                     fields: card.fields,
                     tags: card.tags,
                 });
