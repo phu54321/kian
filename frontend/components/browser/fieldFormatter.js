@@ -14,19 +14,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import textVersion from 'textversionjs';
-import { formatDate } from '~/utils/utils';
-
+import { escapeHtml, formatDate } from '~/utils/utils';
 
 export default {
     textVersionJs (text) {
-        return textVersion (text, {
+        return escapeHtml(textVersion (text, {
             imgProcess (src, _alt) {
                 return src;
             }
-        });
+        }));
     },
     formatOrd (ord) {
-        return `#${ord + 1}`;
+        return escapeHtml(`#${ord + 1}`);
     },
     timeToText (timestamp) {
         if (typeof timestamp === 'string') return timestamp;
@@ -34,6 +33,10 @@ export default {
         return formatDate(date);
     },
     concatTags (tags) {
-        return tags.join(', ');
+        return escapeHtml(tags.join(', '));
+    },
+    schedTypeToDot (type) {
+        if (type === null) return '';
+        return `<span class='${type}Dot'>●</span>`;
     },
 };

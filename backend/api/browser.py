@@ -8,6 +8,7 @@ from utils import (
 
 from anki.utils import htmlToTextLine
 from .card import getNidSet
+import time
 
 
 @registerApi('browser_query')
@@ -55,6 +56,7 @@ def getCardsBatch(msg):
 
         noteDict = {}
         cards = [safeGetCard(col, cid) for cid in cardIds]
+        today = int((time.time() - col.crt) // 86400)
         ret = []
 
         for i, card in enumerate(cards):
@@ -81,6 +83,15 @@ def getCardsBatch(msg):
             else:
                 due = ''
 
+            if card.queue == 0:
+                schedType = 'new'
+            elif card.queue in (1, 3):
+                schedType = 'lrn'
+            elif card.queue == 2 and card.due <= today:
+                schedType = 'rev'
+            else:
+                schedType = None
+
             ret.append({
                 'id': card.id,
                 'deck': col.decks.get(card.did)['name'],
@@ -94,6 +105,7 @@ def getCardsBatch(msg):
                 'due': due,
                 'type': card.type,
                 'queue': card.queue,
+                'schedType': schedType,
                 'suspended': card.queue == -1,
             })
         return emit.emitResult(ret)

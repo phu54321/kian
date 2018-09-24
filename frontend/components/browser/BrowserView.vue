@@ -37,7 +37,7 @@ div.browser-view
                         @click.meta.exact.prevent='onSelectAdd(command.index)'
                     )
                         td(v-for='field in fields', :class='field.class')
-                            | {{ getFormatter(field.formatter)(command.card[field.key]) }}
+                            span(v-html='getFormatter(field.formatter)(command.card[field.key])')
 
                 template(v-else-if='command.type === "space"')
                     tr.spacer-row(:key='command.index')
@@ -183,12 +183,12 @@ export default {
     },
     created () {
         this.resetCardCache();
-        $('.app-container').on('scroll', this.onScroll);
+        $('.app-body').on('scroll', this.onScroll);
         window.addEventListener('click', this.clickBlurHandler, true);
     },
     destroyed () {
         window.removeEventListener('click', this.clickBlurHandler);
-        $('.app-container').off('scroll', this.onScroll);
+        $('.app-body').off('scroll', this.onScroll);
     },
     watch: {
         cardIds () {
@@ -283,6 +283,7 @@ export default {
         },
         fields () {
             return [
+                { label: '', key: 'schedType', class: 'pr-1', formatter: 'schedTypeToDot' },
                 { label: 'Preview', key: 'preview', sortable: this.enableSort, class: 'ellipsis' },
                 { label: 'Deck', key: 'deck', sortable: this.enableSort },
                 { label: 'Model', key: 'model', sortable: this.enableSort, class: 'ellipsis' },
