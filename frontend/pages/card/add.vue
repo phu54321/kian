@@ -28,7 +28,7 @@ div
 
 <script>
 
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 import BrowserView from '~/components/browser/BrowserView';
 import CardEditor from '~/components/editor/CardEditor';
@@ -77,14 +77,26 @@ export default {
                 sortBy: 'createdAt'
             });
             this.addedCardIds = createdCards.slice(0, historyNum);
-        }
+        },
+        cardModel (model) {
+            this.setCurrentModel(model);
+        },
+        cardDeck (deck) {
+            this.setCurrentDeck(deck);
+        },
     },
     computed: {
         ...mapGetters([
             'userConfig'
         ]),
+        cardModel () { return this.card.model; },
+        cardDeck () { return this.card.deck; },
     },
     methods: {
+        ...mapActions([
+            'setCurrentDeck',
+            'setCurrentModel'
+        ]),
         async save () {
             try {
                 const card = this.card;
@@ -117,4 +129,3 @@ export default {
 };
 
 </script>
-
