@@ -1,5 +1,3 @@
-// @flow
-
 // Copyright (C) 2018 Hyun Woo Park
 //
 // This program is free software: you can redistribute it and/or modify
@@ -15,9 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import io from 'socket.io-client';
 import Vue from 'vue';
-
-const io = require('socket.io-client');
 
 const apiRoot = 'http://localhost:28735/';
 const socket = io(apiRoot);
@@ -31,7 +28,12 @@ function createSyncKey () {
 
 const callbackTable = new Map();
 
-socket.on('msg', (response) => {
+interface IResponse {
+    syncKey: string;
+    [key: string]: any;
+}
+
+socket.on('msg', (response: IResponse) => {
     const { syncKey } = response;
     const callback = callbackTable.get(syncKey);
     if (!callback) return;
@@ -48,8 +50,8 @@ export default function ankiCall (apiType: string, data: any) {
         const syncKey = createSyncKey();
         callbackTable.set(syncKey, { resolve, reject });
         socket.emit('msg', {
-            syncKey,
             apiType,
+            syncKey,
             ...data,
         });
     });

@@ -4,6 +4,5 @@
         ["babel-preset-poi", {
             "jsx": "vue"
         }],
-        "@babel/preset-flow"
     ],
 }
