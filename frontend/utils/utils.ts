@@ -48,3 +48,12 @@ export function formatDate (date: Date) {
 export function formatTime (second: number) {
     return `${(second / 60).toFixed(1)}m`;
 }
+
+export function escapeHtml (unsafe: string) {
+    return unsafe
+         .replace(/&/g, '&amp;')
+         .replace(/</g, '&lt;')
+         .replace(/>/g, '&gt;')
+         .replace(/"/g, '&quot;')
+         .replace(/'/g, '&#039;');
+}
