@@ -89,6 +89,8 @@ export default {
                 this.$refs.inputBox.blur();
                 e.stopPropagation();
                 e.preventDefault();
+            } else if (e.keyCode === 13) {
+                focusNextElement();
             }
         },
         onAutocomplete (val) {
