@@ -16,7 +16,7 @@
 import { pasteHtmlToSelection, copySelectedHtml } from './common';
 import {
     addHotkey,
-    addFunctions
+    addFunctions,
 } from './summernoteExtend';
 const textVersion = require('textversionjs');
 
@@ -30,7 +30,7 @@ function escapeHtml (text) {
             '"': '&quot;',
             '&': '&amp;',
             '<': '&lt;',
-            '>': '&gt;'
+            '>': '&gt;',
         }[a];
     });
 }

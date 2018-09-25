@@ -10,5 +10,5 @@ export default {
     },
     list () {
         return toolbarList;
-    }
+    },
 };

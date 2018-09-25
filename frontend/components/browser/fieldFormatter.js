@@ -21,7 +21,7 @@ export default {
         return escapeHtml(textVersion (text, {
             imgProcess (src, _alt) {
                 return src;
-            }
+            },
         }));
     },
     formatOrd (ord) {

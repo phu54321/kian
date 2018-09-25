@@ -44,10 +44,10 @@ export default {
         renderer: {
             type: Function,
             default: () => undefined,
-        }
+        },
     },
     components: {
-        ColoredBadge
+        ColoredBadge,
     },
     mounted () {
         $(this.$el).on('keydown', 'input', (e) => {
@@ -101,14 +101,14 @@ export default {
                 $parentDiv.scrollTop() + $innerListItem.position().top
                     - $parentDiv.height()/2 + $innerListItem.height()/2
             );
-        }
+        },
     },
     methods: {
         applyAutocomplete (index) {
             this.$emit('commit', this.suggestions[index]);
             this.selected = -1;
-        }
-    }
+        },
+    },
 };
 
 </script>

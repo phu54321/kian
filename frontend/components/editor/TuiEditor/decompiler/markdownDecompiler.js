@@ -16,7 +16,7 @@ turndownService.addRule('kianComment', {
     },
     replacement: function (content) {
         return '//' + content + '//';
-    }
+    },
 });
 
 // turndownService.keep(['font']);

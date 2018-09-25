@@ -10,7 +10,7 @@ const clozeState = {
 const clozeHighlighter = {
     startState () {
         return {
-            mode: clozeState.STATE_TEXT
+            mode: clozeState.STATE_TEXT,
         };
     },
     token (stream, state) {
@@ -49,7 +49,7 @@ const clozeHighlighter = {
                 return 'cloze-hint';
             }
         }
-    }
+    },
 };
 
 function getBlockHighlighter (blockDelim, style) {
@@ -62,7 +62,7 @@ function getBlockHighlighter (blockDelim, style) {
     return {
         startState () {
             return {
-                mode: stateEnum.STATE_TEXT
+                mode: stateEnum.STATE_TEXT,
             };
         },
         token (stream, state) {
@@ -87,7 +87,7 @@ function getBlockHighlighter (blockDelim, style) {
                     return style;
                 }
             }
-        }
+        },
     };
 }
 

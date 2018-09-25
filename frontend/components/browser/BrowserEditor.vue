@@ -57,7 +57,7 @@ export default {
             await this.onNoteEdit(true);
             this.$emit('updateView');
             this.card = await getCard(value);
-        }
+        },
     },
     methods: {
         async onNoteEdit (silent) {

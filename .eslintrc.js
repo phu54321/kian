@@ -14,7 +14,8 @@ module.exports = {
         'plugin:vue/essential',
     ],
     "parserOptions": {
-        "parser": "babel-eslint",
+        "parser": "typescript-eslint-parser",
+        "plugins": ["typescript"],
         "ecmaVersion": 2017,
         "sourceType": "module"
     },
@@ -49,5 +50,8 @@ module.exports = {
             "before": true,
             "after": true,
         }],
+        "comma-dangle": ["error", "always-multiline"],
+        "no-undef": "off",
+        "no-unused-vars": "off",
     }
 };

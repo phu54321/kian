@@ -87,7 +87,7 @@ export default {
     async asyncData () {
         const createdCards = await findCards();
         return {
-            addedCardIds: createdCards.slice(0, 20)
+            addedCardIds: createdCards.slice(0, 20),
         };
     },
 
@@ -101,7 +101,7 @@ export default {
         async updateCardIds () {
             const createdCards = await findCards({
                 query: '',
-                sortBy: 'createdAt'
+                sortBy: 'createdAt',
             });
             this.addedCardIds = createdCards.slice(0, 20);
         },
@@ -116,7 +116,7 @@ export default {
             aImgCanvas.width = a.width;
             aImgCanvas.height = a.height;
             aImgCanvas.getContext('2d').putImageData(a, 0, 0);
-        }
+        },
     },
     components: {
         ListSelector,
@@ -149,7 +149,7 @@ export default {
 
                     await page.render({
                         canvasContext: context,
-                        viewport: viewport
+                        viewport: viewport,
                     });
                     this.message = `Processing page ${pageIndex}/${pageNum}`;
                     this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex);

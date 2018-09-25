@@ -42,8 +42,8 @@ export default {
             const newHtml = encodeMarkdown(markdown);
             this.$refs.markdownConvertModal.hide();
             this.$emit('input', newHtml);
-        }
-    }
+        },
+    },
 };
 
 </script>

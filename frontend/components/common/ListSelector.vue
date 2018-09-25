@@ -47,7 +47,7 @@ export default {
         const options = await props.optionsFunc();
         options.sort();
         return {
-            options
+            options,
         };
     },
 
@@ -63,7 +63,7 @@ export default {
     computed: {
         autocompleteList () {
             return this.options.filter(option => fuzzyMatch(this.internalValue, option));
-        }
+        },
     },
 
     methods: {
@@ -113,8 +113,8 @@ export default {
             if (!this.value && this.options.length) {
                 this.$emit('input', this.options[0]); // Select first option by default
             }
-        }
-    }
+        },
+    },
 };
 
 </script>

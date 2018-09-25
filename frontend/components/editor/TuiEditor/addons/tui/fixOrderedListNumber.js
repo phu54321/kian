@@ -72,10 +72,10 @@ function fixNumber (lineNumber, prevIndentLength, startIndex, cm) {
             // fix number
             cm.replaceRange(`${indent}${index}${delimiter}${text}`, {
                 line: lineNumber,
-                ch: 0
+                ch: 0,
             }, {
                 line: lineNumber,
-                ch: lineText.length
+                ch: lineText.length,
             });
             index += 1;
             lineNumber += 1;

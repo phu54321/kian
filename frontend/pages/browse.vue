@@ -81,14 +81,14 @@ export default {
             query: initialQuery,
             sortBy: 'id',
             sortOrder: 'desc',
-            updateCardIds: 0
+            updateCardIds: 0,
         };
     },
     watch: {
         queryString: _.debounce(function () {
             this.query = this.queryString.join(' ');
             this.$router.replace(`/browse?q=${encodeURIComponent(this.query)}`);
-        }, 200)
+        }, 200),
     },
     asyncComputed: {
         cardIds: {
@@ -105,7 +105,7 @@ export default {
             watch () {
                 this.updateCardIds;
             },
-            default: []
+            default: [],
         },
     },
     methods: {
@@ -114,7 +114,7 @@ export default {
             if (chunk.startsWith('-')) {
                 return {
                     variant: 'danger',
-                    title: chunk
+                    title: chunk,
                 };
             }
 
@@ -188,9 +188,9 @@ export default {
         },
         async fetchTags (tag) {
             return this.$ankiCall('tag_suggestions', {
-                query: tag
+                query: tag,
             });
-        }
+        },
     },
     components: {
         BrowserView,

@@ -103,7 +103,7 @@ const textStylingKeymap = [
 const generalKeymap = [
     ['ctrl+a', 'Select All'],
     ['ctrl+z', 'Undo'],
-    ['ctrl+y', 'Redo',]
+    ['ctrl+y', 'Redo'],
 ];
 
 
@@ -134,7 +134,7 @@ export default {
             hintOptions: {
                 hint: wautocompleter,
                 completeSingle: false,
-            }
+            },
         });
 
         this.cm.$vm = this;
@@ -147,7 +147,11 @@ export default {
             const blobItems = cbData && cbData.items;
             const { types } = cbData;
 
-            if (blobItems.length === 1 && types && types.length === 1 && [].slice.call(types).indexOf('Files') !== -1) {
+            if (
+                blobItems.length === 1 &&
+                types && types.length === 1 &&
+                Array.prototype.slice.call(types).indexOf('Files') !== -1
+            ) {
                 const item = blobItems[0];
                 if (item.type.indexOf('image') !== -1) {
                     const loader = this.$loading.show();

@@ -91,6 +91,6 @@ export default {
         resetSelectedCards () {
             this.cardSelected = new Array(this.cardIds.length).fill(false);
             this.lastSelectedIndex = -1;
-        }
-    }
+        },
+    },
 };

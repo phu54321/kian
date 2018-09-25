@@ -42,7 +42,7 @@ export default {
                 tags: [],
                 fields: [],
                 fieldFormats: [],
-            }
+            },
         };
     },
     methods: {
@@ -58,7 +58,7 @@ export default {
             }).catch(err => {
                 ErrorDialog.openErrorDialog(null, err.message);
             });
-        }
+        },
     },
     async asyncData (props) {
         const cardId = props.cardId;
@@ -70,7 +70,7 @@ export default {
                 fields: card.fields,
                 fieldFormats: card.fieldFormats,
                 tags: card.tags,
-            }
+            },
         };
     },
     name: 'card-edit',

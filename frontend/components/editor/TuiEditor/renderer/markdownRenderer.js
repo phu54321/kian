@@ -11,7 +11,7 @@ const md = new MarkdownIt({
     breaks: true,
     typographer: true,
 });
-md.use(require('markdown-it-katex'), { throwOnError: false, });
+md.use(require('markdown-it-katex'), { throwOnError: false });
 md.use(require('markdown-it-underline'));
 md.use(require('./comment'));
 

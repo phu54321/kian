@@ -48,7 +48,7 @@ function wrapClozeTag (s, clozeId) {
                 ) {
                     newChunks.push([
                         'data',
-                        chunks[i - 2][1] + chunks[i - 1][1] + chunks[i][1]
+                        chunks[i - 2][1] + chunks[i - 1][1] + chunks[i][1],
                     ]);
                     hasReduction = true;
                     i += 3;

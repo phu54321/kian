@@ -91,7 +91,7 @@ import $ from 'jquery';
             219: '[',
             220: '\\',
             221: ']',
-            222: '\''
+            222: '\'',
         },
 
         shiftNums: {
@@ -113,7 +113,7 @@ import $ from 'jquery';
             ',': '<',
             '.': '>',
             '/': '?',
-            '\\': '|'
+            '\\': '|',
         },
 
         // excludes: button, checkbox, file, hidden, image, password, radio, reset, search, submit, url
@@ -127,14 +127,14 @@ import $ from 'jquery';
         options: {
             filterInputAcceptingElements: true,
             filterTextInputs: true,
-            filterContentEditable: true
-        }
+            filterContentEditable: true,
+        },
     };
 
     function keyHandler (handleObj) {
         if (typeof handleObj.data === 'string') {
             handleObj.data = {
-                keys: handleObj.data
+                keys: handleObj.data,
             };
         }
 
@@ -207,7 +207,7 @@ import $ from 'jquery';
 
     $.each(['keydown', 'keyup', 'keypress'], function () {
         $.event.special[this] = {
-            add: keyHandler
+            add: keyHandler,
         };
     });
 

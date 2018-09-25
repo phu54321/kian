@@ -29,15 +29,15 @@ export default {
     props: {
         renderer: {
             type: Function,
-            default: () => undefined
+            default: () => undefined,
         },
-        item: String
+        item: String,
     },
     computed: {
         renderedItem () {
             const ret = this.renderer(this.item) || {
                 variant: 'secondary',
-                title: this.item
+                title: this.item,
             };
             ret.origValue = this.item;
             return ret;

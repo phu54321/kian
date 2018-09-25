@@ -46,7 +46,7 @@ export default {
             this.msg = data.msg;
             this.retFocus = data.retFocus;
             this.modalShow = true;
-        }
+        },
     },
     data () {
         return {

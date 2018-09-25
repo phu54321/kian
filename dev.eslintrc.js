@@ -3,6 +3,8 @@ module.exports = {
         './.eslintrc.js',
     ],
     'rules': {
-        'no-console': 'off'
-    }
+        'no-console': 'off',
+        'no-undef': 'error',
+        'no-unused-vars': 'error',
+    },
 };

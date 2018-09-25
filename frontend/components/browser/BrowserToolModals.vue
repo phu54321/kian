@@ -126,7 +126,7 @@ export default {
             await deleteCardBatch(this.selected);
             this.$emit('updateCardIds');
         },
-    }
+    },
 };
 
 </script>

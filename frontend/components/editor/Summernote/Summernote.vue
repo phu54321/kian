@@ -59,7 +59,7 @@ export default {
             if (oldVal !== val) {
                 $(this.$refs.noteDiv).summernote('code', val);
             }
-        }
+        },
     },
     mounted () {
         const $noteDiv = $(this.$refs.noteDiv).summernote({
@@ -82,8 +82,8 @@ export default {
                         });
                         $(this).summernote('insertImage', webFilename);
                     }
-                }
-            }
+                },
+            },
         });
 
         $noteDiv.data('summernote').$vm = this;
@@ -91,7 +91,7 @@ export default {
     computed: {
         summernoteHotkeys () {
             return summernoteHotkeys;
-        }
+        },
     },
     beforeDestroy () {
         $(this.$refs.noteDiv).summernote('destroy');

@@ -78,7 +78,7 @@ export default {
             } else {
                 this.html1 = renderTemplate(v);
             }
-        }
+        },
     },
     methods: {
         onLoad (iframeIndex) {
@@ -86,8 +86,8 @@ export default {
             if (thisIframe.srcdoc === '') return;
 
             this.currentIframe = iframeIndex;
-        }
-    }
+        },
+    },
 };
 
 </script>

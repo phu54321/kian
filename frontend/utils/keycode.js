@@ -53,7 +53,7 @@ export const KEY_MAP = {
     'SLASH': 191,
     'LEFTBRACKET': 219,
     'BACKSLASH': 220,
-    'RIGHTBRACKET': 221
+    'RIGHTBRACKET': 221,
 };
 
 export const INVERSE_KEY_MAP = {};

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import ankiCall from '../ankiCall';
 import { addDeck, hasDeck } from './deck';
 
