@@ -72,7 +72,7 @@ export default {
     },
     mounted () {
         const scriptEl = document.createElement('script');
-        scriptEl.setAttribute('src', '/pdfjs/build/pdf.js');
+        scriptEl.setAttribute('src', '/ysjokbo/pdfjs/build/pdf.js');
         this.$refs.scriptHolder.appendChild(scriptEl);
     },
     data () {
