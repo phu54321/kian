@@ -33,10 +33,6 @@ module.exports = {
             "error",
             "always"
         ],
-        "no-unused-vars": [
-            "error",
-            { "argsIgnorePattern": "next|_.*" }
-        ],
         "eqeqeq": [
             "error",
             "always"

@@ -5,6 +5,9 @@ module.exports = {
     'rules': {
         'no-console': 'off',
         'no-undef': 'error',
-        'no-unused-vars': 'error',
+        "no-unused-vars": [
+            "error",
+            { "argsIgnorePattern": "next|_.*" }
+        ],
     },
 };
