@@ -4,3 +4,4 @@ public/
 *.css
 pdfjs/
 svgedit/
+*.manifest

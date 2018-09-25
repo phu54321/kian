@@ -2,7 +2,9 @@ const express = require('express');
 const path = require('path');
 const VueAutoRoutingPlugin = require('vue-auto-routing/lib/webpack-plugin');
 const webpack = require('webpack');
-// const { yar } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+
 
 module.exports = {
     outDir: 'dist/frontend',
@@ -12,13 +14,13 @@ module.exports = {
             command: '*',
             loaderOptions: {
                 configFile: 'dev.eslintrc.js',
-            }
+            },
         }),
         require('@poi/plugin-typescript')(),
     ],
     html: {
         title: 'Kian',
-        description: 'Spaced learning app'
+        description: 'Spaced learning app',
     },
     restartOnFileChanges: [
         'frontend/addons/staticServe.js',
@@ -37,7 +39,7 @@ module.exports = {
             },
         };
         config.node = {
-            fs: 'empty'
+            fs: 'empty',
         };
         config.plugins.push(
             new VueAutoRoutingPlugin({
@@ -45,7 +47,7 @@ module.exports = {
                 importPrefix: '@/pages/',
             }),
             new webpack.DefinePlugin({
-                'process.browser': 'true'
+                'process.browser': 'true',
             }),
             // new BundleAnalyzerPlugin()
         );
@@ -56,6 +58,6 @@ module.exports = {
             app.use(express.static(',ckend/testdata/collection.media', { maxAge: '30d' }));
             app.use(express.static('frontend/public'));
             addonStaticServe(app);
-        }
-    }
+        },
+    },
 };
