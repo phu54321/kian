@@ -19,5 +19,5 @@ import VueToasted from 'vue-toasted';
 Vue.use(VueToasted, {
     iconPack : 'fontawesome',
     position: 'bottom-left',
-    duration : 2000
+    duration : 2000,
 });

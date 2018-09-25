@@ -44,11 +44,11 @@ export default {
         value: Array,
         validator: {
             type: Function,
-            default: () => true
+            default: () => true,
         },
         suggestions: {
             type: Function,
-            default: () => []
+            default: () => [],
         },
         renderer: {
             type: Function,
@@ -56,7 +56,7 @@ export default {
         },
         placeholder: {
             type: String,
-            default: ''
+            default: '',
         },
         focus: Boolean,
     },
@@ -85,7 +85,7 @@ export default {
                     return this.suggestions(this.buildingItem);
                 }
             },
-            default: []
+            default: [],
         },
     },
     methods: {
@@ -135,7 +135,7 @@ export default {
         applyAutocomplete (item) {
             this.buildingItem = item;
             this.emitItem(true);
-        }
+        },
     },
 };
 </script>

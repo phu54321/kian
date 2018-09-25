@@ -105,9 +105,9 @@ export default {
                 .map(([group, handlers]) => [
                     group,
                     _.sortBy(handlers, 'kString')
-                        .map(handler => [handler.kString, handler.title])
+                        .map(handler => [handler.kString, handler.title]),
                 ]);
-        }
+        },
     },
 };
 

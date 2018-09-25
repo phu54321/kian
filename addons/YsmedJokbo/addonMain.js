@@ -21,5 +21,5 @@ export default {
     install () {
         MainRouter.add('/jbread', JokboRead);
         MainToolbar.add('/jbread', 'Jokbo', 'book');        
-    }
+    },
 };

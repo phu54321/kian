@@ -76,10 +76,10 @@ export default {
             const mainKey = splitKey.length === 1 ? splitKey[0] : '';
             return [
                 { hasCtrl, hasAlt, hasShift },
-                firstLetterUpper(mainKey)
+                firstLetterUpper(mainKey),
             ];
-        }
-    }
+        },
+    },
 };
 
 </script>

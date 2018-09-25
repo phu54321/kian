@@ -31,7 +31,7 @@ import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
 export default {
     props: {
         value: Array,
-        focus: Boolean
+        focus: Boolean,
     },
     components: {
         SpaceSeperatedInput,
@@ -40,12 +40,12 @@ export default {
         tagRenderer (tag) {
             if (tag === 'marked') return {
                 variant: 'danger',
-                title: tag
+                title: tag,
             };
         },
         async fetchTags (tag) {
             return this.$ankiCall('tag_suggestions', {
-                query: tag
+                query: tag,
             });
         },
     },

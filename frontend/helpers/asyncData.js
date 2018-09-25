@@ -52,7 +52,7 @@ function translateParamsToProps (to) {
 
 
 const baseThis = Object.freeze({
-    $ankiCall: ankiCall
+    $ankiCall: ankiCall,
 });
 
 Vue.mixin({

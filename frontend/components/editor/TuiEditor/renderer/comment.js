@@ -38,7 +38,7 @@ function tokenize (state, silent) {
             level:  state.level,
             end:    -1,
             open:   scanned.can_open,
-            close:  scanned.can_close
+            close:  scanned.can_close,
         });
     }
 

@@ -46,12 +46,12 @@ export default {
         const selectorList = this.$localStorage.get('quick_model_selector_list');
         return {
             availableModels: [],
-            modelList: selectorList ? JSON.parse(selectorList) : []
+            modelList: selectorList ? JSON.parse(selectorList) : [],
         };
     },
     async asyncData () {
         return {
-            availableModels: await listModel()
+            availableModels: await listModel(),
         };
     },
     methods: {
@@ -67,10 +67,10 @@ export default {
         },
         changeModel (model) {
             this.$toasted.show(`Quick model change to "${model}"`, {
-                icon: 'sync'
+                icon: 'sync',
             });
             this.$emit('input', model);
-        }
+        },
     },
 };
 </script>

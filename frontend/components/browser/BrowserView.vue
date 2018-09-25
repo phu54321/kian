@@ -125,7 +125,7 @@ import { clamp } from '~/utils/utils';
 import {
     getCardsBrowserInfo,
     toggleCardMarkedBatch,
-    toggleCardSuspendedBatch
+    toggleCardSuspendedBatch,
 } from '~/api';
 
 function isDescendant (parent, child) {
@@ -148,12 +148,12 @@ export default {
         enableSort: Boolean,
         sortBy: {
             type: String,
-            default: 'id'
+            default: 'id',
         },
         sortOrder: {
             type: String,
-            default: 'desc'
-        }
+            default: 'desc',
+        },
     },
     components: {
         BrowserEditor,
@@ -243,7 +243,7 @@ export default {
                         type: 'card',
                         index,
                         card: cardCache[index],
-                        selected: cardSelected[index]
+                        selected: cardSelected[index],
                     };
                 };
 
@@ -258,7 +258,7 @@ export default {
                     } else if (entry === null) {  // null → space element
                         list.push({
                             type: 'space',
-                            length: 1
+                            length: 1,
                         });
                     } else {
                         list.push(entry);
@@ -340,7 +340,7 @@ export default {
             if (sortBy === sortField) {
                 sortOrder = {
                     desc: 'asc',
-                    asc: 'desc'
+                    asc: 'desc',
                 }[sortOrder];
             }
             else {
@@ -419,7 +419,7 @@ export default {
         toggleEditorFullscreen () {
             this.editorFullscreen = !this.editorFullscreen;
         },
-    }
+    },
 };
 
 </script>

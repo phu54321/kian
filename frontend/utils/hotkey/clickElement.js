@@ -12,7 +12,7 @@ const tagNameRules = {
 };
 
 const vnodeNameRules = {
-    'b-modal': (v) => v.show()
+    'b-modal': (v) => v.show(),
 };
 
 export function clickVNode (vnode) {

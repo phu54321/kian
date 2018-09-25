@@ -35,7 +35,7 @@ class ImageView {
             x: this.x0 + x,
             y: this.y0 + y,
             w,
-            h
+            h,
         });
     }
 
@@ -104,7 +104,7 @@ class ImageView {
             cropX0,
             cropY0,
             cropX1 - cropX0 + 1,
-            cropY1 - cropY0 + 1
+            cropY1 - cropY0 + 1,
         );
     }
 

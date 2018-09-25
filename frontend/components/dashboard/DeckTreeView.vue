@@ -51,7 +51,7 @@ export default {
             ).then(() => {
                 deck.collapsed = newCollapsed;
             });
-        }
+        },
     },
     name: 'deck-tree-view',
 };

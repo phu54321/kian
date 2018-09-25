@@ -28,16 +28,16 @@ export default {
     async asyncData () {
         const response = await this.$ankiCall('dashboard_deck_tree');
         return {
-            deckDueTree: response
+            deckDueTree: response,
         };
     },
     data () {
         return {
-            deckDueTree: []
+            deckDueTree: [],
         };
     },
     components: {
-        DeckTreeView
+        DeckTreeView,
     },
     name: 'dashboard',
 };

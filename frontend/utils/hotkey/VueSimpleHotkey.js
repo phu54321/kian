@@ -53,7 +53,7 @@ function addHotkeyToMap (kString, vnode, title, maxHotkeyDepth, packName) {
         vnode,
         title,
         maxHotkeyDepth,
-        packName
+        packName,
     });
 }
 
@@ -77,7 +77,7 @@ function resolveHotkey (kString, activeElement) {
     let matchedElementIndex = parentsFromActiveElement.length;
 
     for (const handler of handlerList) {
-        const { targetEl, } = handler;
+        const { targetEl } = handler;
         let maxHotkeyDepth = handler.maxHotkeyDepth || 10000;
 
         for (let el = targetEl ; el ; el = el.parentElement) {
@@ -143,7 +143,7 @@ export default {
             },
             unbind (el) {
                 unregisterHotkey(el);
-            }
+            },
         });
 
         Vue.component('hotkey-pack', {
@@ -154,14 +154,14 @@ export default {
                     { class: { invisible: true } },
                     this.pack.map(([key, value]) => h('span', {
                         directives: [
-                            { name: 'hotkey', arg: this.depth + 1, value: key, }
+                            { name: 'hotkey', arg: this.depth + 1, value: key },
                         ],
                         props: {
-                            packName: this.packName
+                            packName: this.packName,
                         },
                     }, [value]))
                 );
             },
         });
-    }
+    },
 };

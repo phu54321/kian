@@ -59,10 +59,10 @@ export default {
     async asyncData () {
         const createdCards = await findCards({
             query: '',
-            sortBy: 'createdAt'
+            sortBy: 'createdAt',
         });
         return {
-            addedCardIds: createdCards.slice(0, historyNum)
+            addedCardIds: createdCards.slice(0, historyNum),
         };
     },
     async mounted () {
@@ -74,7 +74,7 @@ export default {
         async updateCardIds () {
             const createdCards = await findCards({
                 query: '',
-                sortBy: 'createdAt'
+                sortBy: 'createdAt',
             });
             this.addedCardIds = createdCards.slice(0, historyNum);
         },
@@ -87,7 +87,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'userConfig'
+            'userConfig',
         ]),
         cardModel () { return this.card.model; },
         cardDeck () { return this.card.deck; },
@@ -95,7 +95,7 @@ export default {
     methods: {
         ...mapActions([
             'setCurrentDeck',
-            'setCurrentModel'
+            'setCurrentModel',
         ]),
         async save () {
             try {
@@ -123,7 +123,7 @@ export default {
             } catch (e) {
                 ErrorDialogVue.openErrorDialog('Error on adding notes', e.message);
             }
-        }
+        },
     },
     name: 'note-add',
 };

@@ -17,7 +17,7 @@
     "build:backend": "pyinstaller server.spec && shx mv dist/server/* dist && shx rm -r dist/server",
     "build:frontend": "poi build frontend/index.js",
     "lint": "npm-run-all lint:*",
-    "lint:frontend": "eslint frontend/** && eslint addons/** && tslint --project ."
+    "lint:frontend": "eslint --cache frontend/** addons/**"
   },
   "husky": {
     "hooks": {
@@ -43,6 +43,7 @@
     "eslint-config-es2015": "^1.1.0",
     "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-typescript": "^0.12.0",
     "eslint-plugin-vue": "^4.7.0",
     "express": "~4.16.0",
     "fuzzysearch": "^1.0.3",
@@ -79,6 +80,7 @@
     "turndown-plugin-gfm": "^1.0.2",
     "typeface-noto-sans": "0.0.54",
     "typescript": "^3.0.3",
+    "typescript-eslint-parser": "^18.0.0",
     "utf8": "^3.0.0",
     "vue": "^2.5.16",
     "vue-async-computed": "^3.4.1",

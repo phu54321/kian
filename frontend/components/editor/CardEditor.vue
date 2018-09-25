@@ -99,14 +99,14 @@ export default {
         tagRenderer (tag) {
             if (tag === 'marked') return {
                 variant: 'danger',
-                title: tag
+                title: tag,
             };
         },
         async fetchTags (tag) {
             return this.$ankiCall('tag_suggestions', {
-                query: tag
+                query: tag,
             });
-        }
+        },
     },
     asyncComputed: {
         modelData: {
@@ -115,7 +115,7 @@ export default {
                 return getModel(this.currentModel);
             },
             default: {},
-        }
+        },
     },
     computed: {
         currentModel () {
@@ -154,7 +154,7 @@ export default {
             this.internalValue.fields = newFields;
             this.internalValue = runHook('edit_card_load', this.internalValue);
         },
-    }
+    },
 };
 
 </script>

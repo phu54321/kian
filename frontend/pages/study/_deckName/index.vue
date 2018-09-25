@@ -76,10 +76,10 @@ async function getNextCard (deckName) {
             id: msg.cardId,
             noteId: msg.noteId,
             front: msg.front,
-            back: msg.back
+            back: msg.back,
         },
         ansButtonCount: msg.ansButtonCount,
-        flipped: false
+        flipped: false,
     };
 }
 
@@ -130,12 +130,12 @@ export default {
     methods: {
         loadCard () {
             return ankiCall('reviewer_next_card', {
-                deckName: this.deckName
+                deckName: this.deckName,
             }).then(msg => {
                 this.card = {
                     id: msg.cardId,
                     front: msg.front,
-                    back: msg.back
+                    back: msg.back,
                 };
                 this.ansButtonCount = 2;
                 this.flipped = false;
@@ -147,7 +147,7 @@ export default {
         answerCard (ease) {
             ankiCall('reviewer_answer_card', {
                 cardId: this.card.id,
-                ease: ease
+                ease: ease,
             }).then(() => {
                 this.progressTracker.update(this.currentProgress);
                 return getNextCard(this.deckName);
@@ -185,7 +185,7 @@ export default {
             return {
                 2: ['Again', 'Good'],
                 3: ['Again', 'Good', 'Easy'],
-                4: ['Again', 'Hard', 'Good', 'Easy']
+                4: ['Again', 'Hard', 'Good', 'Easy'],
             }[this.ansButtonCount];
         },
     },
