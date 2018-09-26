@@ -4,10 +4,29 @@
     .editor-header
         h2 Image occlusion revisited
     .editor-body
-        iframe(src='/imgocld/svgedit/svg-editor.html', width='100%', height='100%')
+        svg-edit(v-model='svg')
     .editor-footer
 
 </template>
+
+<script>
+
+const initialSVGUrl = '/imgocld/svgedit/test.svg';
+
+import SvgEdit from './SvgEdit';
+
+export default {
+    components: {
+        SvgEdit,
+    },
+    data () {
+        return {
+            svg: initialSVGUrl,
+        };
+    },
+};
+
+</script>
 
 <style scoped lang='scss'>
 
