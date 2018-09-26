@@ -4,7 +4,7 @@
     .editor-header
         h2 Image occlusion revisited
     .editor-body
-        svg-edit(v-model='svgData')
+        svg-edit(v-model='svgData', background-image-url='https://s.pstatic.net/static/www/img/2018/sp_main_v180730.png')
     .editor-footer
 
 </template>
