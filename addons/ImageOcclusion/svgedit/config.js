@@ -3,5 +3,5 @@
 svgEditor.setConfig({
     preventAllURLConfig: true,
     lockExtensions: true,
-    extensions: [],
+    noDefaultExtensions: true,
 });
