@@ -50,8 +50,9 @@ export default {
             const svgCanvas = new window.EmbeddedSVGEdit(iframeDOM);
             this.svgCanvas = svgCanvas;
 
-            if (this.backgroundImageUrl) await this.setBackgroundImage(this.backgroundImageUrl);
             if (this.internalValue) await this.setContent(this.internalValue);
+            if (this.backgroundImageUrl) await this.setBackgroundImage(this.backgroundImageUrl);
+            svgCanvas.zoomChanged(null, 'canvas');
 
             svgCanvas.bind('changed', () => {
                 this.internalValue = svgCanvas.svgCanvasreToString();
