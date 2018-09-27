@@ -59,6 +59,7 @@ import Summernote from './Summernote/Summernote';
 import TuiSummernote from './TuiSummernote';
 import TagEditor from '../common/TagEditor';
 import QuickModelSelector from './QuickModelSelector';
+import nonReactiveCopy from '~/utils/nonReactiveCopy';
 import _ from 'lodash';
 
 import './editor.scss';
@@ -127,13 +128,13 @@ export default {
     watch: {
         value: {
             handler (value) {
-                this.internalValue = runHook('edit_card_load', _.clone(value));
+                this.internalValue = runHook('edit_card_load', nonReactiveCopy(value));
             },
             deep: true,
         },
         internalValue: {
             handler (value) {
-                const emitVal = runHook('edit_card_save', _.clone(value));
+                const emitVal = runHook('edit_card_save', nonReactiveCopy(value));
                 if (_.isEqual(emitVal, this.value)) return;
                 this.$emit('input', emitVal);
             },
@@ -147,12 +148,12 @@ export default {
             }
 
             const model = await getModel(modelName);
+
             const fieldFormats = model.fieldFormats;
-            this.internalValue.fieldFormats = fieldFormats;
-            const newFields = _.clone(this.internalValue.fields);
-            resize(newFields, fieldFormats.length, '');
-            this.internalValue.fields = newFields;
-            this.internalValue = runHook('edit_card_load', this.internalValue);
+            const newValue = nonReactiveCopy(this.internalValue);
+            newValue.fieldFormats = fieldFormats;
+            resize(newValue.fields, fieldFormats.length, '');
+            this.internalValue = runHook('edit_card_load', newValue);
         },
     },
 };
