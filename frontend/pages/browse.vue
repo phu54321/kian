@@ -51,6 +51,10 @@ import { findCards } from '~/api';
 import _ from 'lodash';
 
 function parseInitialQuery (query) {
+    // if query == '', query.split(' ') becomes [''] rather than []
+    // so general code won't work
+    if (query === '') return [];
+
     const ret = [];
     let currentToken = '';
     for (const s of query.split(' ')) {
