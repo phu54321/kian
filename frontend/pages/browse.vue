@@ -50,6 +50,18 @@ import { listDeck } from '~/api';
 import { findCards } from '~/api';
 import _ from 'lodash';
 
+function parseInitialQuery (query) {
+    const ret = [];
+    let currentToken = '';
+    for (const s of query.split(' ')) {
+        currentToken += s;
+        if (queryValidator(currentToken)) {
+            ret.push(currentToken);
+            currentToken = '';
+        } else currentToken += ' ';
+    }
+    return ret;
+}
 
 function parseQueryToken (tok) {
     const pos = tok.indexOf(':');
@@ -77,7 +89,7 @@ export default {
     data () {
         const initialQuery = this.$route.query.q || '';
         return {
-            queryString: initialQuery ? initialQuery.split(' ') : [],
+            queryString: parseInitialQuery(initialQuery || ''),
             query: initialQuery,
             sortBy: 'id',
             sortOrder: 'desc',
