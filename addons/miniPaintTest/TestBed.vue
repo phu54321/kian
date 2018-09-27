@@ -13,13 +13,30 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import MainRouter from '~/router';
-import MainToolbar from '~/toolbar';
-import TestBedVue from './TestBed';
+<template lang="pug">
+div
+    h1.mb-4 Testbed
+
+    mini-paint.mini-paint(initial-url='favicon.png')
+
+</template>
+
+<script>
+
+import MiniPaint from './MiniPaint';
 
 export default {
-    install () {
-        MainRouter.add('/miniPaint', TestBedVue);
-        MainToolbar.add('/miniPaint', 'MiniPaint', 'image');
+    components: {
+        MiniPaint,
     },
 };
+
+</script>
+
+<style scoped lang='scss'>
+
+.mini-paint {
+    height: 400px;
+}
+
+</style>

@@ -46,13 +46,12 @@ function sleep (duration) {
 }
 
 export default {
-    // props: ['initialUrl'],
+    props: ['initialUrl'],
 
     data () {
         return {
             iframeWindow: null,
             internalValue: this.value,
-            initialUrl: '/favicon.png',
         };
     },
 
