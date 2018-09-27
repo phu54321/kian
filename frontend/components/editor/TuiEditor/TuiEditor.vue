@@ -111,7 +111,6 @@ export default {
     props: ['value', 'card', 'modelData'],
 
     isEditableHtml (html) {
-        if (html === '') return false;  // TODO: fix
         return decodeMarkdown(html) !== null;
     },
 
@@ -182,7 +181,6 @@ export default {
             }
         });
         this.cm.on('change', this.onChange);
-        this.onChange();
     },
 
     computed: {
