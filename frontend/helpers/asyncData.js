@@ -17,6 +17,12 @@ import ErrorDialog from '~/components/ErrorDialog';
 import ankiCall from '~/api/ankiCall';
 import Vue from 'vue';
 
+// Note: vue-router has to be registered **before** importing asyncData,
+// because vue-router's route guards merge options should be used before
+// asyncData registers its global mixins.
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
+
 function componentFromRoute (route) {
     const routeMatches = route.matched;
     const lastRoute = routeMatches[routeMatches.length - 1];
