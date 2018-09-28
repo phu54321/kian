@@ -91,7 +91,7 @@ export function getRandomFilename (filename: string) {
     }
 }
 
-export async function uploadImageFromDataURI (filename: string, datab64: string) {
+export async function uploadImageFromBase64 (filename: string, datab64: string) {
     filename = getRandomFilename(filename);
 
     return ankiCall('media_upload', {
