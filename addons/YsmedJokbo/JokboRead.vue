@@ -50,7 +50,7 @@ div
 import Jimp from 'jimp/es';
 import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
-import { uploadImageFromDataURI } from '~/utils/uploadHelper';
+import { uploadImageFromBase64 } from '~/utils/uploadHelper';
 import BrowserView from '~/components/browser/BrowserView';
 import { listDeck, findCards, addNote } from '~/api';
 
@@ -179,8 +179,8 @@ export default {
             this.qaPair.splice(0, 1);
 
             const [qUrl, aUrl] = await Promise.all([
-                uploadImageFromDataURI('image.jpg', q),
-                uploadImageFromDataURI('image.jpg', a),
+                uploadImageFromBase64('image.jpg', q),
+                uploadImageFromBase64('image.jpg', a),
             ]);
 
             await addNote({
