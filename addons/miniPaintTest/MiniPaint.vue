@@ -22,10 +22,10 @@ iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
 
 <script>
 
-// function eventPassThrough (e) {
-//     const newEvent = new e.constructor(e.type, e);
-//     document.body.dispatchEvent(newEvent);
-// }
+function eventPassThrough (e) {
+    const newEvent = new e.constructor(e.type, e);
+    document.body.dispatchEvent(newEvent);
+}
 
 function domOnloadPromise (win) {
     return new Promise((resolve) => {
@@ -60,6 +60,9 @@ export default {
 
         const iframeDOM = this.$refs.iframe;
         const iframeWindow = this.iframeWindow = iframeDOM.contentWindow;
+
+        iframeWindow.addEventListener('keydown', eventPassThrough);
+        iframeWindow.addEventListener('keyup', eventPassThrough);
 
         const imgEl = document.createElement('img');
         imgEl.src = this.initialUrl;
