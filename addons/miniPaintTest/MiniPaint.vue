@@ -15,12 +15,18 @@
 
 <template lang='pug'>
 
-iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
+.d-flex.flex-column
+    iframe.flex-fill(ref='iframe', src='/minipaint/index.html', width='100%')
+    span(v-hotkey=['ctrl+s'], :depth='2', title='Save Image', @click='onSave')
 
 </template>
 
 
 <script>
+
+import mime from 'mime-types';
+import { uploadImageFromDataURI } from '~/utils/uploadHelper';
+
 
 function eventPassThrough (e) {
     const newEvent = new e.constructor(e.type, e);
@@ -46,7 +52,7 @@ function sleep (duration) {
 }
 
 export default {
-    props: ['initialUrl'],
+    props: ['value'],
 
     data () {
         return {
@@ -65,7 +71,7 @@ export default {
         iframeWindow.addEventListener('keyup', eventPassThrough);
 
         const imgEl = document.createElement('img');
-        imgEl.src = this.initialUrl;
+        imgEl.src = this.value;
 
         await Promise.all([
             domOnloadPromise(iframeWindow),
@@ -88,6 +94,27 @@ export default {
 
         iframeWindow.Layers.insert(newLayer);
     },
+
+    beforeDestroy () {
+        this.onSave();
+    },
+
+    methods: {
+        async onSave () {
+            const { Layers } = this.iframeWindow;
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            const dim = Layers.get_dimensions();
+            tempCanvas.width = dim.width;
+            tempCanvas.height = dim.height;
+            Layers.convert_layers_to_canvas(tempCtx);
+
+            const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1];
+            const newImageUrl = await uploadImageFromDataURI(this.value, b64);
+            this.$emit('input', newImageUrl);
+        },
+    },
+    name: 'mini-paint',
 };
 
 
