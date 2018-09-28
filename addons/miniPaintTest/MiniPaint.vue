@@ -25,7 +25,7 @@
 <script>
 
 import mime from 'mime-types';
-import { uploadImageFromDataURI } from '~/utils/uploadHelper';
+import { uploadImageFromBase64 } from '~/utils/uploadHelper';
 
 
 function eventPassThrough (e) {
@@ -110,7 +110,7 @@ export default {
             Layers.convert_layers_to_canvas(tempCtx);
 
             const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1];
-            const newImageUrl = await uploadImageFromDataURI(this.value, b64);
+            const newImageUrl = await uploadImageFromBase64(this.value, b64);
             this.$emit('input', newImageUrl);
         },
     },
