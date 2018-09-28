@@ -17,7 +17,8 @@
 div
     h1.mb-4 Testbed
 
-    mini-paint.mini-paint(initial-url='favicon.png')
+    mini-paint.mini-paint(v-model='url')
+    | {{url}}
 
 </template>
 
@@ -28,6 +29,12 @@ import MiniPaint from './MiniPaint';
 export default {
     components: {
         MiniPaint,
+    },
+
+    data () {
+        return {
+            url: 'favicon.png',
+        };
     },
 };
 
