@@ -14,10 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-div
+.mainDiv.d-flex.flex-column
     h1.mb-4 Testbed
 
-    mini-paint.mini-paint(v-model='url')
+    mini-paint.flex-fill(v-model='url')
     | {{url}}
 
 </template>
@@ -42,8 +42,8 @@ export default {
 
 <style scoped lang='scss'>
 
-.mini-paint {
-    height: 400px;
+.mainDiv {
+    height: 100%;
 }
 
 </style>

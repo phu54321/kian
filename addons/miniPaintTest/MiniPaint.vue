@@ -31,6 +31,11 @@ import { uploadImageFromBase64 } from '~/utils/uploadHelper';
 function eventPassThrough (e) {
     const newEvent = new e.constructor(e.type, e);
     document.body.dispatchEvent(newEvent);
+
+    // Prevent Ctrl+S event
+    if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault();
+    }
 }
 
 function domOnloadPromise (win) {
@@ -92,11 +97,12 @@ export default {
             height_original: imgEl.naturalHeight || imgEl.height,
         };
 
-        iframeWindow.Layers.insert(newLayer);
+        await iframeWindow.Layers.insert(newLayer);
+        iframeWindow.Layers.render(true);
     },
 
     beforeDestroy () {
-        this.onSave();
+        // this.onSave();
     },
 
     methods: {
