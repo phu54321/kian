@@ -52,6 +52,7 @@ import './addons/textStyle';
 import './addons/table';
 
 import wautocompleter from './addons/wautocomplete';
+import { KEY_MAP } from '~/utils/keycode';
 
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
@@ -172,10 +173,18 @@ export default {
             }
         });
         this.cm.on('keyup', (cm, event) => {
+            const ignoredKeycodes = [
+                KEY_MAP['ENTER'],
+                KEY_MAP['TAB'],
+                KEY_MAP['ESC'],
+                KEY_MAP['LEFT'],
+                KEY_MAP['RIGHT'],
+                KEY_MAP['UP'],
+                KEY_MAP['DOWN'],
+            ];
+
             if (!cm.state.completionActive &&
-                event.keyCode !== 13 && // Enter
-                event.keyCode !== 9 && // Tab
-                event.keyCode !== 27  // ESC
+                ignoredKeycodes.indexOf(event.keyCode) === -1
             ) {
                 cm.showHint();
             }
