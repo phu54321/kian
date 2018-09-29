@@ -16,7 +16,7 @@
 export default {
     data () {
         return {
-            cardSelected: new Array(this.cardIds.length).fill(false),
+            cardSelected: [],
         };
     },
     computed: {
@@ -25,14 +25,14 @@ export default {
         },
         selectedCardId () {
             if (this.selectedCardCount !== 1) return -1;
-            return this.cardIds[this.cardSelected.indexOf(true)];
+            return this.frozenCardIds[this.cardSelected.indexOf(true)];
         },
         selectedCardIndex () {
             if (this.selectedCardCount !== 1) return -1;
             return this.cardSelected.indexOf(true);
         },
         selectedCardList () {
-            const { cardIds } = this;
+            const { frozenCardIds: cardIds } = this;
             return this.cardSelected
                 .map((x, i) => x ? cardIds[i] : null)
                 .filter(x => x !== null);
@@ -55,7 +55,7 @@ export default {
         },
 
         selectAll (selected) {
-            this.cardSelected = new Array(this.cardIds.length).fill(selected);
+            this.cardSelected = new Array(this.frozenCardIds.length).fill(selected);
         },
 
         onSelectSequential (index) {
@@ -85,11 +85,11 @@ export default {
         onSelectAll () {
             if (this.cardSelected.every(x => x)) this.selectAll(false);
             else this.selectAll(true);
-            this.lastSelectedIndex = this.cardIds.length - 1;
+            this.lastSelectedIndex = this.frozenCardIds.length - 1;
         },
 
         resetSelectedCards () {
-            this.cardSelected = new Array(this.cardIds.length).fill(false);
+            this.cardSelected = new Array(this.frozenCardIds.length).fill(false);
             this.lastSelectedIndex = -1;
         },
     },
