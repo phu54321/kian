@@ -21,6 +21,9 @@ export default async function (cm) {
     if ('A' <= word[0] && word[0] <= 'Z') { // First word is capital
         suggestions = suggestions.map(s => s[0].toUpperCase() + s.substr(1));
     }
+
+    if (suggestions.length === 1 && suggestions[0] === word) return null;
+
     if (suggestions.length) return {
         list: suggestions,
         from: CodeMirror.Pos(cursor.line, start),
