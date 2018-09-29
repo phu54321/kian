@@ -11,7 +11,7 @@ turndownService.addRule('kianComment', {
     filter (node) {
         return (
             node.nodeName.toLowerCase() === 'font' &&
-            node.getAttribute('color') === '#00aaff'
+            node.getAttribute('color') === '#85d7ff'
         );
     },
     replacement: function (content) {
@@ -53,7 +53,7 @@ export default function decodeMarkdown (html) {
 
     const parser = new DOMParser();
     const domElement = parser.parseFromString(html, 'text/html');
-    
+
     const { markdown, expectedHtmlCRC } = getMarkdownContent(domElement);
     if (!markdown) return null;
 

@@ -22,7 +22,7 @@ export default async function (cm) {
         suggestions = suggestions.map(s => s[0].toUpperCase() + s.substr(1));
     }
 
-    if (suggestions.length === 1 && suggestions[0] === word) return null;
+    if (suggestions.length === 1 && suggestions[0].toLowerCase() === word.toLowerCase()) return null;
 
     if (suggestions.length) return {
         list: suggestions,
