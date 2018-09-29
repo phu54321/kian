@@ -61,21 +61,39 @@ import encodeMarkdown, { replaceImageByIndex } from './renderer/markdownRenderer
 import decodeMarkdown from './decompiler/markdownDecompiler';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
 
+import Jimp from 'jimp/es';
+import BlobToBuffer from 'blob-to-buffer';
 
-function addImageBlobHook (blob, callback) {
-    const filename = getRandomFilename(blob.name);
 
-    getFileAsBase64(blob).then(datab64 => {
-        return ankiCall('media_upload', {
-            filename,
-            datab64,
+function BlobToBufferPromise (blob) {
+    return new Promise((resolve, reject) => {
+        BlobToBuffer(blob, (err, b) => {
+            if (err) reject(err);
+            else resolve(b);
         });
-    }).then(url => {
+    });
+}
+
+async function addImageBlobHook (blob, callback) {
+    try {
+        const filename = getRandomFilename(blob.name);
+        let datab64;
+
+        // autocrop for .png files
+        if (filename.toLowerCase().endsWith('.png')) {
+            const buffer = await BlobToBufferPromise(blob);
+            const img = await Jimp.read(buffer);
+            const croppedBuffer = await img.autocrop().getBufferAsync(Jimp.MIME_PNG);
+            datab64 = croppedBuffer.toString('base64');
+        } else {
+            datab64 = await getFileAsBase64(blob);
+        }
+        const url = await ankiCall('media_upload', { filename, datab64 });
         callback(url);
-    }).catch(e => {
+    } catch (e) {
         ErrorDialog.openErrorDialog('Image upload failed', e.message);
         callback('(upload error)');
-    });
+    }
 }
 
 
