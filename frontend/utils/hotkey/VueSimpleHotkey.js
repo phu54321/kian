@@ -21,7 +21,8 @@ const hotkeyHandlersMap = new Map();
 
 function getActiveElement (el) {
     if (el === undefined) el = document.activeElement;
-    if (el) return el;
+
+    if (el && el !== document.body) return el;
 
     const modalDialogs = document.querySelectorAll('.modal.show');
     if (modalDialogs.length === 1) return modalDialogs[0];
