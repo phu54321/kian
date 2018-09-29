@@ -141,6 +141,16 @@ function isDescendant (parent, child) {
     return false;
 }
 
+function isInModal (child) {
+    if (!child) return false;
+
+    for (let node = child ; node ; node = node.parentNode) {
+        const { classList } = node;
+        if (classList && classList.contains('modal') && classList.contains('show')) return true;
+    }
+    return false;
+}
+
 export default {
     mixins: [BrowserSelection],
     props: {
@@ -330,7 +340,7 @@ export default {
         }, 100),
 
         clickBlurHandler (e) {
-            if (!isDescendant(this.$el, e.target)) {
+            if (!isDescendant(this.$el, e.target) && !isInModal(e.target)) {
                 this.selectAll(false);
             }
         },

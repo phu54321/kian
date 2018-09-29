@@ -26,10 +26,6 @@
         .preview-body
             .userContent.markdown-body(v-html='strippedHtml')
 
-    b-modal(ref='imageEditModal', title='Image edit', lazy, hide-footer)
-        .mini-paint-container.d-flex
-            mini-paint.flex-fill(:value='editingUrl', @input='onImageEdit')
-
 </template>
 
 <script>
@@ -59,11 +55,10 @@ import wautocompleter from './addons/wautocomplete';
 
 import ankiCall from '~/api/ankiCall';
 import ErrorDialog from '~/components/ErrorDialog';
+import MiniPaintModal from '~/components/minipaint/MiniPaintModal';
 import encodeMarkdown, { replaceImageByIndex } from './renderer/markdownRenderer';
 import decodeMarkdown from './decompiler/markdownDecompiler';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
-
-import MiniPaint from '~/components/MiniPaint';
 
 
 function addImageBlobHook (blob, callback) {
@@ -115,10 +110,6 @@ const generalKeymap = [
 export default {
     props: ['value', 'card', 'modelData'],
 
-    components: {
-        MiniPaint,
-    },
-
     isEditableHtml (html) {
         return decodeMarkdown(html) !== null;
     },
@@ -128,8 +119,6 @@ export default {
             cm: null,
             openPreview: false,
             focused: false,
-            editingUrl: null,
-            editingIndex: null,
         };
     },
 
@@ -239,9 +228,14 @@ export default {
                     return;
                 }
 
-                this.editingUrl = match[1];
-                this.editingIndex = match[2] | 0;
-                this.$refs.imageEditModal.show();
+                const imgUrl = match[1];
+                const imgIndex = match[2] | 0;
+
+                MiniPaintModal.editImage(imgUrl)
+                    .then(newSrc => {
+                        const newMarkdown = replaceImageByIndex(this.markdown, imgIndex, newSrc);
+                        this.$emit('input', encodeMarkdown(newMarkdown));
+                    });
             }
         },
 
@@ -285,10 +279,5 @@ export default {
         }
     }
 }
-
-.mini-paint-container {
-    height: 80vh;
-}
-
 
 </style>

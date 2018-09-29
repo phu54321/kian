@@ -15,9 +15,7 @@
 
 <template lang='pug'>
 
-.d-flex.flex-column
-    iframe.flex-fill(ref='iframe', src='/minipaint/index.html', width='100%')
-    span(v-hotkey=['ctrl+s'], :depth='2', title='Save Image', @click='onSave')
+iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
 
 </template>
 
@@ -46,7 +44,9 @@ function domOnloadPromise (win) {
 
 function imgOnloadPromise (imgEl) {
     return new Promise((resolve) => {
-        imgEl.onload = resolve;
+        imgEl.onload = () => {
+            resolve(imgEl);
+        };
     });
 }
 
@@ -54,6 +54,12 @@ function sleep (duration) {
     return new Promise((resolve) => {
         setTimeout(resolve, duration);
     });
+}
+
+function loadImage (src) {
+    const imgEl = document.createElement('img');
+    imgEl.src = src;
+    return imgOnloadPromise(imgEl);
 }
 
 export default {
@@ -74,14 +80,9 @@ export default {
 
         iframeWindow.addEventListener('keydown', eventPassThrough);
         iframeWindow.addEventListener('keyup', eventPassThrough);
+        await domOnloadPromise(iframeWindow);
 
-        const imgEl = document.createElement('img');
-        imgEl.src = this.value;
-
-        await Promise.all([
-            domOnloadPromise(iframeWindow),
-            imgOnloadPromise(imgEl),
-        ]);
+        const imgEl = await loadImage(this.value);
 
         // miniPaint has its own onload handler, but it is registered after domOnloadPromise
         // is registered. (mounted called before iframe rendering). Let that handler run first.
@@ -99,14 +100,42 @@ export default {
 
         await iframeWindow.Layers.insert(newLayer);
         iframeWindow.Layers.render(true);
+
+        // Fixes cursor offset glitch
+        iframeWindow.resetCursor();
     },
 
-    beforeDestroy () {
-        // this.onSave();
+    watch: {
+        async value (newValue) {
+            const iframeDOM = this.$refs.iframe;
+            if (!iframeDOM) return;
+            const iframeWindow = iframeDOM.contentWindow;
+            if (!iframeWindow) return;
+
+            iframeWindow.Layers.reset_layers();
+
+            const imgEl = await loadImage(newValue);
+
+            const newLayer = {
+                name: 'Image',
+                type: 'image',
+                data: imgEl,
+                width: imgEl.naturalWidth || imgEl.width,
+                height: imgEl.naturalHeight || imgEl.height,
+                width_original: imgEl.naturalWidth || imgEl.width,
+                height_original: imgEl.naturalHeight || imgEl.height,
+            };
+
+            await iframeWindow.Layers.insert(newLayer);
+            iframeWindow.Layers.render(true);
+
+            // Fixes cursor offset glitch
+            iframeWindow.resetCursor();
+        },
     },
 
     methods: {
-        async onSave () {
+        onSave () {
             const { Layers } = this.iframeWindow;
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
@@ -116,8 +145,9 @@ export default {
             Layers.convert_layers_to_canvas(tempCtx);
 
             const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1];
-            const newImageUrl = await uploadImageFromBase64(this.value, b64);
-            this.$emit('input', newImageUrl);
+            uploadImageFromBase64(this.value, b64).then(newImageUrl => {
+                this.$emit('input', newImageUrl);
+            });
         },
     },
     name: 'mini-paint',
