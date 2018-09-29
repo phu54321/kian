@@ -18,6 +18,7 @@ div.app-main
     error-dialog
     sync-dialog
     hotkey-map
+    mini-paint-modal
 
     header.app-header
         b-navbar(toggleable='sm', variant='dark', type='dark')
@@ -72,6 +73,7 @@ div.app-main
 
 import ErrorDialog from './components/ErrorDialog';
 import HotkeyMap from './components/HotkeyMap';
+import MiniPaintModal from './components/minipaint/MiniPaintModal';
 import CookieLaw from 'vue-cookie-law';
 import SyncDialog from './components/SyncDialog';
 
@@ -85,6 +87,7 @@ export default {
     components: {
         ErrorDialog,
         HotkeyMap,
+        MiniPaintModal,
         CookieLaw,
         SyncDialog,
     },
