@@ -36,7 +36,7 @@ div
         b-modal(id='browserHelp', title='Browser help')
             | TODO: Add help here
 
-    browser-view.mt-2(:cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
+    browser-view.mt-2(:loading='loading', :cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
 </template>
 
 <script>
@@ -98,6 +98,7 @@ export default {
             sortBy: 'id',
             sortOrder: 'desc',
             updateCardIds: 0,
+            loading: true,
         };
     },
     watch: {
@@ -113,15 +114,17 @@ export default {
                     query: this.query,
                     sortBy: this.sortBy,
                     sortOrder: this.sortOrder,
+                }).then(cardIds => {
+                    return cardIds;
                 }).catch(_err => {
-                    // This can happen
+                    // This can happen on false queries
                     return [];
                 });
             },
             watch () {
                 this.updateCardIds;
             },
-            default: [],
+            default: null,
         },
     },
     methods: {

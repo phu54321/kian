@@ -51,6 +51,13 @@ div.browser-view
                                 | &nbsp;Oops, no cards :(
                             p Try different query instead.
 
+                template(v-else-if='command.type === "loading"')
+                    tr
+                        td.no-card(:colspan='fields.length')
+                            h4
+                                i.fas.fa-hourglass-half
+                                | &nbsp;Loading...
+
     .editor-spacer(
         v-if='showEditor',
         :style='{height: browserEditorHeight + "px"}'
@@ -154,7 +161,7 @@ function isInModal (child) {
 export default {
     mixins: [BrowserSelection],
     props: {
-        cardIds: Array,
+        cardIds: [Array, null],
         enableSort: Boolean,
         sortBy: {
             type: String,
@@ -229,6 +236,8 @@ export default {
     asyncComputed: {
         displayCommands: {
             async get () {
+                if (this.cardIds === null) return [{ type: 'loading' }];
+
                 const { frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex } = this;
                 if (cardIds.length === 0) return [{ type: 'noCards' }];
 
@@ -297,6 +306,7 @@ export default {
     },
     computed: {
         frozenCardIds () {
+            if (this.cardIds === null) return [];
             return Object.freeze(this.cardIds.slice());
         },
         fields () {
