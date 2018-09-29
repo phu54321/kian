@@ -4,11 +4,11 @@ cimport cython
 
 
 def ngramExtract(str string):
-    cdef bytes s = string.lower().encode('utf-8')
-    cdef const unsigned char* view = s
-    cdef const unsigned char *p = view
-    cdef const unsigned char *end = view + len(view)
-    cdef const unsigned char* ngramStartPointer[10]
+    cdef bytearray s = bytearray(string.lower().encode('utf-8'))
+    cdef unsigned char* view = s
+    cdef unsigned char *p = view
+    cdef unsigned char *end = view + len(view)
+    cdef unsigned char* ngramStartPointer[10]
     cdef unsigned char ch
 
     cdef int ngramSegmentCount = 1
@@ -31,6 +31,9 @@ def ngramExtract(str string):
                     ret.append(
                         ngramStartPointer[ngramIndex][:ngramLength]
                     )
+
+            if ch == ord('-'):
+                p[0] = ch = ord(' ')
 
             if ch == ord(' '):
                 if ngramSegmentCount == 10:
