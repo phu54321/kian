@@ -18,7 +18,11 @@ md.use(require('./comment'));
 export default function encodeMarkdown (markdown) {
     if (markdown === '') return '';
 
-    let html = md.render(markdown);
+    let imgIndex = 0;
+    let html = md.render(markdown.replace(
+        /!\[(.*?)\]\((.+?)\)/g,
+        (match, alt, href) => `![${alt}](${href}?i=${imgIndex++})`
+    ));
 
     // Note: Browser may apply its specific escaping rules when HTML really gets into DOM.
     // ( for instance, browser may remove unmatched opening/closing tags without warning )
