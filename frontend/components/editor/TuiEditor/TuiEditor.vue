@@ -22,9 +22,13 @@
     hotkey-pack(:depth='2', :pack='generalKeymap', pack-name='Text styling shortcuts')
 
     .codemirror-editor(ref='mdEdit')
-    .preview
+    .preview(ref='preview')
         .preview-body
             .userContent.markdown-body(v-html='strippedHtml')
+
+    b-modal(ref='imageEditModal', title='Image edit', lazy, hide-footer)
+        .mini-paint-container.d-flex
+            mini-paint.flex-fill(:value='editingUrl', @input='onImageEdit')
 
 </template>
 
@@ -54,11 +58,12 @@ import './addons/table';
 import wautocompleter from './addons/wautocomplete';
 
 import ankiCall from '~/api/ankiCall';
-
 import ErrorDialog from '~/components/ErrorDialog';
-import encodeMarkdown from './renderer/markdownRenderer';
+import encodeMarkdown, { replaceImageByIndex } from './renderer/markdownRenderer';
 import decodeMarkdown from './decompiler/markdownDecompiler';
 import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper';
+
+import MiniPaint from '~/components/MiniPaint';
 
 
 function addImageBlobHook (blob, callback) {
@@ -110,6 +115,10 @@ const generalKeymap = [
 export default {
     props: ['value', 'card', 'modelData'],
 
+    components: {
+        MiniPaint,
+    },
+
     isEditableHtml (html) {
         return decodeMarkdown(html) !== null;
     },
@@ -119,6 +128,8 @@ export default {
             cm: null,
             openPreview: false,
             focused: false,
+            editingUrl: null,
+            editingIndex: null,
         };
     },
 
@@ -181,6 +192,12 @@ export default {
             }
         });
         this.cm.on('change', this.onChange);
+
+        this.$refs.preview.addEventListener('click', this.onImageClick);
+    },
+
+    beforeDestroy () {
+        this.$refs.preview.removeEventListener('click', this.onImageClick);
     },
 
     computed: {
@@ -210,6 +227,30 @@ export default {
         onChange () {
             const markdown = this.cm.getValue();
             this.$emit('input', encodeMarkdown(markdown));
+        },
+
+        onImageClick (e) {
+            if (e.target.tagName === 'IMG') {
+                const imgEl = e.target;
+                const oldSrc = imgEl.src;
+                const match = oldSrc.match(/\/?([^/]+)\?i=(\d+)$/);
+                if (!match) {
+                    this.$toasted.error('Invalid image');
+                    return;
+                }
+
+                this.editingUrl = match[1];
+                this.editingIndex = match[2] | 0;
+                this.$refs.imageEditModal.show();
+            }
+        },
+
+        onImageEdit (newSrc) {
+            const newMarkdown = replaceImageByIndex(this.markdown, this.editingIndex, newSrc);
+            this.editingUrl = null;
+            this.editingIndex = null;
+            this.$refs.imageEditModal.hide();
+            this.$emit('input', encodeMarkdown(newMarkdown));
         },
     },
 };
@@ -243,6 +284,10 @@ export default {
             border-left: 3px solid #99F9A9;
         }
     }
+}
+
+.mini-paint-container {
+    height: 80vh;
 }
 
 

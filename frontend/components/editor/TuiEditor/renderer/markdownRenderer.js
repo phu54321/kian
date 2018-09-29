@@ -15,6 +15,18 @@ md.use(require('markdown-it-katex'), { throwOnError: false });
 md.use(require('markdown-it-underline'));
 md.use(require('./comment'));
 
+
+export function replaceImageByIndex (markdown, index, newHref) {
+    let imgIndex = 0;
+    return markdown.replace(
+        /!\[(.*?)\]\((.+?)\)/g,
+        (match, alt) => {
+            if (imgIndex++ === index) return `![${alt}](${newHref})`;
+            return match;
+        }
+    );
+}
+
 export default function encodeMarkdown (markdown) {
     if (markdown === '') return '';
 
