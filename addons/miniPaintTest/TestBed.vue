@@ -24,7 +24,7 @@
 
 <script>
 
-import MiniPaint from './MiniPaint';
+import MiniPaint from '~/components/MiniPaint';
 
 export default {
     components: {
