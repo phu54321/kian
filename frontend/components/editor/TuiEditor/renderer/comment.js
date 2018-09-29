@@ -115,6 +115,6 @@ function postProcess (state) {
 module.exports = function (md) {
     md.inline.ruler.after('emphasis', 'kian_comment', tokenize);
     md.inline.ruler2.after('emphasis', 'kian_comment', postProcess);
-    md.renderer.rules.cm_open = () => '<i><font color=#00aaff>';
+    md.renderer.rules.cm_open = () => '<i><font color=#85d7ff>';
     md.renderer.rules.cm_close = () => '</font></i>';
 };
