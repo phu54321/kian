@@ -18,7 +18,7 @@ div
     .float-right
         b-btn-group
             b-btn(variant='outline-primary', size='sm', @click='removeEmptyCards') Remove empty cards
-            b-btn(variant='outline-primary', size='sm') Check database
+            b-btn(variant='outline-primary', size='sm', @click='checkDatabase') Check database
 
     h2 Config
 
@@ -28,7 +28,6 @@ div
 <script>
 
 export default {
-    name: 'config',
     methods: {
         async removeEmptyCards () {
             const loader = this.$loading.show();
@@ -40,6 +39,18 @@ export default {
                 this.$toasted.show('No empty cards.');
             }
             loader.hide();
+        },
+
+        async checkDatabase () {
+            const loader = this.$loading.show();
+            try {
+                const ret = await this.$ankiCall('col_check');
+                this.$toasted.show(ret);
+            } catch (e) {
+                this.$toasted.error(e.message);
+            } finally {
+                loader.hide();
+            }
         },
     },
 };

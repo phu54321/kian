@@ -20,3 +20,13 @@ def removeCards(msg):
     with Col() as col:
         col.remCards(msg['cardIds'])
         return emit.emitResult(True)
+
+
+@registerApi('col_check')
+def checkDatabase(msg):
+    with Col() as col:
+        ret, ok = col.fixIntegrity()
+        if not ok:
+            return emit.emitError(ret)
+        else:
+            return emit.emitResult(ret)
