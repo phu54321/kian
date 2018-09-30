@@ -7,6 +7,7 @@ from utils import (
 
 from .autocomplete import updateWordset
 
+
 def getNidSet(col, cids):
     nidSet = set()
     for cardId in cids:

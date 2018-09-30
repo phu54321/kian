@@ -1,6 +1,7 @@
 # This file imports every apis
 
 from . import (
+    col,
     deck,
     note,
     card,
