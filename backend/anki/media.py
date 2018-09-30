@@ -10,7 +10,7 @@ import sys
 import zipfile
 from io import StringIO
 
-from anki.utils import checksum, isWin, isMac, json
+from anki.utils import checksum, isWin, isMac, json, _
 from anki.db import DB, DBError
 from anki.consts import *
 from anki.latex import mungeQA
