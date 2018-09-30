@@ -1844,8 +1844,9 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-  long __pyx_t_5;
+  int __pyx_t_5;
   long __pyx_t_6;
+  long __pyx_t_7;
   __Pyx_RefNannySetupContext("fast_fuzzymatch", 0);
 
   /* "utils/fast_fuzzymatch.pyx":34
@@ -1967,41 +1968,74 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  *         ch = needle[needleIndex]
  *         prevHaystackIndex = haystackIndex             # <<<<<<<<<<<<<<
  * 
- *         while haystack[haystackIndex] != ch:
+ *         while (
  */
     __pyx_v_prevHaystackIndex = __pyx_v_haystackIndex;
 
     /* "utils/fast_fuzzymatch.pyx":56
  *         prevHaystackIndex = haystackIndex
  * 
- *         while haystack[haystackIndex] != ch:             # <<<<<<<<<<<<<<
- *             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):
- *                 return 0
+ *         while (             # <<<<<<<<<<<<<<
+ *             haystack[haystackIndex] != ch and
+ *             not (ch == ord(' ') and haystack[haystackIndex] == ord('-'))
  */
     while (1) {
-      __pyx_t_2 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) != __pyx_v_ch) != 0);
-      if (!__pyx_t_2) break;
 
       /* "utils/fast_fuzzymatch.pyx":57
  * 
- *         while haystack[haystackIndex] != ch:
+ *         while (
+ *             haystack[haystackIndex] != ch and             # <<<<<<<<<<<<<<
+ *             not (ch == ord(' ') and haystack[haystackIndex] == ord('-'))
+ *         ):
+ */
+      __pyx_t_3 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) != __pyx_v_ch) != 0);
+      if (__pyx_t_3) {
+      } else {
+        __pyx_t_2 = __pyx_t_3;
+        goto __pyx_L8_bool_binop_done;
+      }
+
+      /* "utils/fast_fuzzymatch.pyx":58
+ *         while (
+ *             haystack[haystackIndex] != ch and
+ *             not (ch == ord(' ') and haystack[haystackIndex] == ord('-'))             # <<<<<<<<<<<<<<
+ *         ):
+ *             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):
+ */
+      __pyx_t_4 = ((__pyx_v_ch == 32) != 0);
+      if (__pyx_t_4) {
+      } else {
+        __pyx_t_3 = __pyx_t_4;
+        goto __pyx_L10_bool_binop_done;
+      }
+      __pyx_t_4 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) == 45) != 0);
+      __pyx_t_3 = __pyx_t_4;
+      __pyx_L10_bool_binop_done:;
+      __pyx_t_4 = ((!__pyx_t_3) != 0);
+      __pyx_t_2 = __pyx_t_4;
+      __pyx_L8_bool_binop_done:;
+      if (!__pyx_t_2) break;
+
+      /* "utils/fast_fuzzymatch.pyx":60
+ *             not (ch == ord(' ') and haystack[haystackIndex] == ord('-'))
+ *         ):
  *             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):             # <<<<<<<<<<<<<<
  *                 return 0
  *             haystackIndex += 1
  */
-      __pyx_t_3 = ((__pyx_v_ch != 32) != 0);
-      if (__pyx_t_3) {
+      __pyx_t_4 = ((__pyx_v_ch != 32) != 0);
+      if (__pyx_t_4) {
       } else {
-        __pyx_t_2 = __pyx_t_3;
-        goto __pyx_L9_bool_binop_done;
+        __pyx_t_2 = __pyx_t_4;
+        goto __pyx_L13_bool_binop_done;
       }
-      __pyx_t_3 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) == 32) != 0);
-      __pyx_t_2 = __pyx_t_3;
-      __pyx_L9_bool_binop_done:;
+      __pyx_t_4 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) == 32) != 0);
+      __pyx_t_2 = __pyx_t_4;
+      __pyx_L13_bool_binop_done:;
       if (__pyx_t_2) {
 
-        /* "utils/fast_fuzzymatch.pyx":58
- *         while haystack[haystackIndex] != ch:
+        /* "utils/fast_fuzzymatch.pyx":61
+ *         ):
  *             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):
  *                 return 0             # <<<<<<<<<<<<<<
  *             haystackIndex += 1
@@ -2010,16 +2044,16 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
         __pyx_r = 0;
         goto __pyx_L0;
 
-        /* "utils/fast_fuzzymatch.pyx":57
- * 
- *         while haystack[haystackIndex] != ch:
+        /* "utils/fast_fuzzymatch.pyx":60
+ *             not (ch == ord(' ') and haystack[haystackIndex] == ord('-'))
+ *         ):
  *             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):             # <<<<<<<<<<<<<<
  *                 return 0
  *             haystackIndex += 1
  */
       }
 
-      /* "utils/fast_fuzzymatch.pyx":59
+      /* "utils/fast_fuzzymatch.pyx":62
  *             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):
  *                 return 0
  *             haystackIndex += 1             # <<<<<<<<<<<<<<
@@ -2028,7 +2062,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
       __pyx_v_haystackIndex = (__pyx_v_haystackIndex + 1);
 
-      /* "utils/fast_fuzzymatch.pyx":60
+      /* "utils/fast_fuzzymatch.pyx":63
  *                 return 0
  *             haystackIndex += 1
  *             if haystackIndex == haystackLen:             # <<<<<<<<<<<<<<
@@ -2038,7 +2072,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
       __pyx_t_2 = ((__pyx_v_haystackIndex == __pyx_v_haystackLen) != 0);
       if (__pyx_t_2) {
 
-        /* "utils/fast_fuzzymatch.pyx":61
+        /* "utils/fast_fuzzymatch.pyx":64
  *             haystackIndex += 1
  *             if haystackIndex == haystackLen:
  *                 return 0             # <<<<<<<<<<<<<<
@@ -2048,7 +2082,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
         __pyx_r = 0;
         goto __pyx_L0;
 
-        /* "utils/fast_fuzzymatch.pyx":60
+        /* "utils/fast_fuzzymatch.pyx":63
  *                 return 0
  *             haystackIndex += 1
  *             if haystackIndex == haystackLen:             # <<<<<<<<<<<<<<
@@ -2058,7 +2092,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
       }
     }
 
-    /* "utils/fast_fuzzymatch.pyx":63
+    /* "utils/fast_fuzzymatch.pyx":66
  *                 return 0
  * 
  *         chdist = haystackIndex - prevHaystackIndex             # <<<<<<<<<<<<<<
@@ -2067,23 +2101,23 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     __pyx_v_chdist = (__pyx_v_haystackIndex - __pyx_v_prevHaystackIndex);
 
-    /* "utils/fast_fuzzymatch.pyx":64
+    /* "utils/fast_fuzzymatch.pyx":67
  * 
  *         chdist = haystackIndex - prevHaystackIndex
  *         chd_mul = max(1, max_prioritized_char_dist - chdist)             # <<<<<<<<<<<<<<
  * 
  *         wsIndex = haystackIndex
  */
-    __pyx_t_4 = (__pyx_v_max_prioritized_char_dist - __pyx_v_chdist);
-    __pyx_t_5 = 1;
-    if (((__pyx_t_4 > __pyx_t_5) != 0)) {
-      __pyx_t_6 = __pyx_t_4;
+    __pyx_t_5 = (__pyx_v_max_prioritized_char_dist - __pyx_v_chdist);
+    __pyx_t_6 = 1;
+    if (((__pyx_t_5 > __pyx_t_6) != 0)) {
+      __pyx_t_7 = __pyx_t_5;
     } else {
-      __pyx_t_6 = __pyx_t_5;
+      __pyx_t_7 = __pyx_t_6;
     }
-    __pyx_v_chd_mul = __pyx_t_6;
+    __pyx_v_chd_mul = __pyx_t_7;
 
-    /* "utils/fast_fuzzymatch.pyx":66
+    /* "utils/fast_fuzzymatch.pyx":69
  *         chd_mul = max(1, max_prioritized_char_dist - chdist)
  * 
  *         wsIndex = haystackIndex             # <<<<<<<<<<<<<<
@@ -2092,7 +2126,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     __pyx_v_wsIndex = __pyx_v_haystackIndex;
 
-    /* "utils/fast_fuzzymatch.pyx":67
+    /* "utils/fast_fuzzymatch.pyx":70
  * 
  *         wsIndex = haystackIndex
  *         while wsIndex >= 0:             # <<<<<<<<<<<<<<
@@ -2103,7 +2137,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
       __pyx_t_2 = ((__pyx_v_wsIndex >= 0) != 0);
       if (!__pyx_t_2) break;
 
-      /* "utils/fast_fuzzymatch.pyx":68
+      /* "utils/fast_fuzzymatch.pyx":71
  *         wsIndex = haystackIndex
  *         while wsIndex >= 0:
  *             wsi_ch = haystack[wsIndex]             # <<<<<<<<<<<<<<
@@ -2112,7 +2146,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
       __pyx_v_wsi_ch = (__pyx_v_haystack[__pyx_v_wsIndex]);
 
-      /* "utils/fast_fuzzymatch.pyx":69
+      /* "utils/fast_fuzzymatch.pyx":72
  *         while wsIndex >= 0:
  *             wsi_ch = haystack[wsIndex]
  *             if wsi_ch == 32:  # space             # <<<<<<<<<<<<<<
@@ -2122,7 +2156,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
       __pyx_t_2 = ((__pyx_v_wsi_ch == 32) != 0);
       if (__pyx_t_2) {
 
-        /* "utils/fast_fuzzymatch.pyx":70
+        /* "utils/fast_fuzzymatch.pyx":73
  *             wsi_ch = haystack[wsIndex]
  *             if wsi_ch == 32:  # space
  *                 wsIndex += 1             # <<<<<<<<<<<<<<
@@ -2131,16 +2165,16 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
         __pyx_v_wsIndex = (__pyx_v_wsIndex + 1);
 
-        /* "utils/fast_fuzzymatch.pyx":71
+        /* "utils/fast_fuzzymatch.pyx":74
  *             if wsi_ch == 32:  # space
  *                 wsIndex += 1
  *                 break             # <<<<<<<<<<<<<<
  *             elif 97 <= wsi_ch <= 122:  # a-z
  *                 break
  */
-        goto __pyx_L13_break;
+        goto __pyx_L17_break;
 
-        /* "utils/fast_fuzzymatch.pyx":69
+        /* "utils/fast_fuzzymatch.pyx":72
  *         while wsIndex >= 0:
  *             wsi_ch = haystack[wsIndex]
  *             if wsi_ch == 32:  # space             # <<<<<<<<<<<<<<
@@ -2149,7 +2183,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
       }
 
-      /* "utils/fast_fuzzymatch.pyx":72
+      /* "utils/fast_fuzzymatch.pyx":75
  *                 wsIndex += 1
  *                 break
  *             elif 97 <= wsi_ch <= 122:  # a-z             # <<<<<<<<<<<<<<
@@ -2160,19 +2194,19 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
       if (__pyx_t_2) {
         __pyx_t_2 = (__pyx_v_wsi_ch <= 0x7A);
       }
-      __pyx_t_3 = (__pyx_t_2 != 0);
-      if (__pyx_t_3) {
+      __pyx_t_4 = (__pyx_t_2 != 0);
+      if (__pyx_t_4) {
 
-        /* "utils/fast_fuzzymatch.pyx":73
+        /* "utils/fast_fuzzymatch.pyx":76
  *                 break
  *             elif 97 <= wsi_ch <= 122:  # a-z
  *                 break             # <<<<<<<<<<<<<<
  *             wsIndex -= 1
  * 
  */
-        goto __pyx_L13_break;
+        goto __pyx_L17_break;
 
-        /* "utils/fast_fuzzymatch.pyx":72
+        /* "utils/fast_fuzzymatch.pyx":75
  *                 wsIndex += 1
  *                 break
  *             elif 97 <= wsi_ch <= 122:  # a-z             # <<<<<<<<<<<<<<
@@ -2181,7 +2215,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
       }
 
-      /* "utils/fast_fuzzymatch.pyx":74
+      /* "utils/fast_fuzzymatch.pyx":77
  *             elif 97 <= wsi_ch <= 122:  # a-z
  *                 break
  *             wsIndex -= 1             # <<<<<<<<<<<<<<
@@ -2190,9 +2224,9 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
       __pyx_v_wsIndex = (__pyx_v_wsIndex - 1);
     }
-    __pyx_L13_break:;
+    __pyx_L17_break:;
 
-    /* "utils/fast_fuzzymatch.pyx":76
+    /* "utils/fast_fuzzymatch.pyx":79
  *             wsIndex -= 1
  * 
  *         wsDist = haystackIndex - wsIndex             # <<<<<<<<<<<<<<
@@ -2201,23 +2235,23 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     __pyx_v_wsDist = (__pyx_v_haystackIndex - __pyx_v_wsIndex);
 
-    /* "utils/fast_fuzzymatch.pyx":77
+    /* "utils/fast_fuzzymatch.pyx":80
  * 
  *         wsDist = haystackIndex - wsIndex
  *         wsd_mul = max(1, max_prioritized_wordstart_dist - wsDist)             # <<<<<<<<<<<<<<
  * 
  *         rank += 100 * chd_mul * wsd_mul
  */
-    __pyx_t_4 = (__pyx_v_max_prioritized_wordstart_dist - __pyx_v_wsDist);
-    __pyx_t_6 = 1;
-    if (((__pyx_t_4 > __pyx_t_6) != 0)) {
-      __pyx_t_5 = __pyx_t_4;
+    __pyx_t_5 = (__pyx_v_max_prioritized_wordstart_dist - __pyx_v_wsDist);
+    __pyx_t_7 = 1;
+    if (((__pyx_t_5 > __pyx_t_7) != 0)) {
+      __pyx_t_6 = __pyx_t_5;
     } else {
-      __pyx_t_5 = __pyx_t_6;
+      __pyx_t_6 = __pyx_t_7;
     }
-    __pyx_v_wsd_mul = __pyx_t_5;
+    __pyx_v_wsd_mul = __pyx_t_6;
 
-    /* "utils/fast_fuzzymatch.pyx":79
+    /* "utils/fast_fuzzymatch.pyx":82
  *         wsd_mul = max(1, max_prioritized_wordstart_dist - wsDist)
  * 
  *         rank += 100 * chd_mul * wsd_mul             # <<<<<<<<<<<<<<
@@ -2226,7 +2260,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     __pyx_v_rank = (__pyx_v_rank + ((0x64 * __pyx_v_chd_mul) * __pyx_v_wsd_mul));
 
-    /* "utils/fast_fuzzymatch.pyx":80
+    /* "utils/fast_fuzzymatch.pyx":83
  * 
  *         rank += 100 * chd_mul * wsd_mul
  *         haystackIndex += 1             # <<<<<<<<<<<<<<
@@ -2235,7 +2269,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     __pyx_v_haystackIndex = (__pyx_v_haystackIndex + 1);
 
-    /* "utils/fast_fuzzymatch.pyx":81
+    /* "utils/fast_fuzzymatch.pyx":84
  *         rank += 100 * chd_mul * wsd_mul
  *         haystackIndex += 1
  *         needleIndex += 1             # <<<<<<<<<<<<<<
@@ -2245,7 +2279,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
     __pyx_v_needleIndex = (__pyx_v_needleIndex + 1);
   }
 
-  /* "utils/fast_fuzzymatch.pyx":83
+  /* "utils/fast_fuzzymatch.pyx":86
  *         needleIndex += 1
  * 
  *     while haystackIndex < haystackLen:             # <<<<<<<<<<<<<<
@@ -2253,20 +2287,20 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  *             return 0
  */
   while (1) {
-    __pyx_t_3 = ((__pyx_v_haystackIndex < __pyx_v_haystackLen) != 0);
-    if (!__pyx_t_3) break;
+    __pyx_t_4 = ((__pyx_v_haystackIndex < __pyx_v_haystackLen) != 0);
+    if (!__pyx_t_4) break;
 
-    /* "utils/fast_fuzzymatch.pyx":84
+    /* "utils/fast_fuzzymatch.pyx":87
  * 
  *     while haystackIndex < haystackLen:
  *         if haystack[haystackIndex] == ord(' '):             # <<<<<<<<<<<<<<
  *             return 0
  *         haystackIndex += 1
  */
-    __pyx_t_3 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) == 32) != 0);
-    if (__pyx_t_3) {
+    __pyx_t_4 = (((__pyx_v_haystack[__pyx_v_haystackIndex]) == 32) != 0);
+    if (__pyx_t_4) {
 
-      /* "utils/fast_fuzzymatch.pyx":85
+      /* "utils/fast_fuzzymatch.pyx":88
  *     while haystackIndex < haystackLen:
  *         if haystack[haystackIndex] == ord(' '):
  *             return 0             # <<<<<<<<<<<<<<
@@ -2276,7 +2310,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
       __pyx_r = 0;
       goto __pyx_L0;
 
-      /* "utils/fast_fuzzymatch.pyx":84
+      /* "utils/fast_fuzzymatch.pyx":87
  * 
  *     while haystackIndex < haystackLen:
  *         if haystack[haystackIndex] == ord(' '):             # <<<<<<<<<<<<<<
@@ -2285,7 +2319,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     }
 
-    /* "utils/fast_fuzzymatch.pyx":86
+    /* "utils/fast_fuzzymatch.pyx":89
  *         if haystack[haystackIndex] == ord(' '):
  *             return 0
  *         haystackIndex += 1             # <<<<<<<<<<<<<<
@@ -2295,17 +2329,17 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
     __pyx_v_haystackIndex = (__pyx_v_haystackIndex + 1);
   }
 
-  /* "utils/fast_fuzzymatch.pyx":88
+  /* "utils/fast_fuzzymatch.pyx":91
  *         haystackIndex += 1
  * 
  *     if haystackLen < 100:             # <<<<<<<<<<<<<<
  *         rank += 100 - haystackLen
  * 
  */
-  __pyx_t_3 = ((__pyx_v_haystackLen < 0x64) != 0);
-  if (__pyx_t_3) {
+  __pyx_t_4 = ((__pyx_v_haystackLen < 0x64) != 0);
+  if (__pyx_t_4) {
 
-    /* "utils/fast_fuzzymatch.pyx":89
+    /* "utils/fast_fuzzymatch.pyx":92
  * 
  *     if haystackLen < 100:
  *         rank += 100 - haystackLen             # <<<<<<<<<<<<<<
@@ -2314,7 +2348,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
     __pyx_v_rank = (__pyx_v_rank + (0x64 - __pyx_v_haystackLen));
 
-    /* "utils/fast_fuzzymatch.pyx":88
+    /* "utils/fast_fuzzymatch.pyx":91
  *         haystackIndex += 1
  * 
  *     if haystackLen < 100:             # <<<<<<<<<<<<<<
@@ -2323,7 +2357,7 @@ static int __pyx_f_5utils_15fast_fuzzymatch_fast_fuzzymatch(unsigned char *__pyx
  */
   }
 
-  /* "utils/fast_fuzzymatch.pyx":91
+  /* "utils/fast_fuzzymatch.pyx":94
  *         rank += 100 - haystackLen
  * 
  *     return rank             # <<<<<<<<<<<<<<

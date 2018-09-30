@@ -1407,45 +1407,17 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
       /* "utils/ngram_extractor.pyx":35
  *                     )
  * 
- *             if ch == ord('-'):             # <<<<<<<<<<<<<<
- *                 p[0] = ch = ord(' ')
- * 
- */
-      __pyx_t_5 = ((__pyx_v_ch == 45) != 0);
-      if (__pyx_t_5) {
-
-        /* "utils/ngram_extractor.pyx":36
- * 
- *             if ch == ord('-'):
- *                 p[0] = ch = ord(' ')             # <<<<<<<<<<<<<<
- * 
- *             if ch == ord(' '):
- */
-        (__pyx_v_p[0]) = 32;
-        __pyx_v_ch = 32;
-
-        /* "utils/ngram_extractor.pyx":35
- *                     )
- * 
- *             if ch == ord('-'):             # <<<<<<<<<<<<<<
- *                 p[0] = ch = ord(' ')
- * 
- */
-      }
-
-      /* "utils/ngram_extractor.pyx":38
- *                 p[0] = ch = ord(' ')
- * 
- *             if ch == ord(' '):             # <<<<<<<<<<<<<<
+ *             if ch == ord(' ') or ch == ord('-'):             # <<<<<<<<<<<<<<
  *                 if ngramSegmentCount == 10:
  *                     for i in range(1, 10):
  */
-      __pyx_t_5 = ((__pyx_v_ch == 32) != 0);
-      if (__pyx_t_5) {
+      switch (__pyx_v_ch) {
+        case 32:
+        case 45:
 
-        /* "utils/ngram_extractor.pyx":39
+        /* "utils/ngram_extractor.pyx":36
  * 
- *             if ch == ord(' '):
+ *             if ch == ord(' ') or ch == ord('-'):
  *                 if ngramSegmentCount == 10:             # <<<<<<<<<<<<<<
  *                     for i in range(1, 10):
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]
@@ -1453,8 +1425,8 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
         __pyx_t_5 = ((__pyx_v_ngramSegmentCount == 10) != 0);
         if (__pyx_t_5) {
 
-          /* "utils/ngram_extractor.pyx":40
- *             if ch == ord(' '):
+          /* "utils/ngram_extractor.pyx":37
+ *             if ch == ord(' ') or ch == ord('-'):
  *                 if ngramSegmentCount == 10:
  *                     for i in range(1, 10):             # <<<<<<<<<<<<<<
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]
@@ -1463,7 +1435,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
           for (__pyx_t_8 = 1; __pyx_t_8 < 10; __pyx_t_8+=1) {
             __pyx_v_i = __pyx_t_8;
 
-            /* "utils/ngram_extractor.pyx":41
+            /* "utils/ngram_extractor.pyx":38
  *                 if ngramSegmentCount == 10:
  *                     for i in range(1, 10):
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]             # <<<<<<<<<<<<<<
@@ -1473,16 +1445,16 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
             (__pyx_v_ngramStartPointer[(__pyx_v_i - 1)]) = (__pyx_v_ngramStartPointer[__pyx_v_i]);
           }
 
-          /* "utils/ngram_extractor.pyx":39
+          /* "utils/ngram_extractor.pyx":36
  * 
- *             if ch == ord(' '):
+ *             if ch == ord(' ') or ch == ord('-'):
  *                 if ngramSegmentCount == 10:             # <<<<<<<<<<<<<<
  *                     for i in range(1, 10):
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]
  */
         }
 
-        /* "utils/ngram_extractor.pyx":42
+        /* "utils/ngram_extractor.pyx":39
  *                     for i in range(1, 10):
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]
  *                 if ngramSegmentCount < 10:             # <<<<<<<<<<<<<<
@@ -1492,7 +1464,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
         __pyx_t_5 = ((__pyx_v_ngramSegmentCount < 10) != 0);
         if (__pyx_t_5) {
 
-          /* "utils/ngram_extractor.pyx":43
+          /* "utils/ngram_extractor.pyx":40
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]
  *                 if ngramSegmentCount < 10:
  *                     ngramStartPointer[ngramSegmentCount] = p + 1             # <<<<<<<<<<<<<<
@@ -1501,7 +1473,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
           (__pyx_v_ngramStartPointer[__pyx_v_ngramSegmentCount]) = (__pyx_v_p + 1);
 
-          /* "utils/ngram_extractor.pyx":44
+          /* "utils/ngram_extractor.pyx":41
  *                 if ngramSegmentCount < 10:
  *                     ngramStartPointer[ngramSegmentCount] = p + 1
  *                     ngramSegmentCount += 1             # <<<<<<<<<<<<<<
@@ -1510,7 +1482,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
           __pyx_v_ngramSegmentCount = (__pyx_v_ngramSegmentCount + 1);
 
-          /* "utils/ngram_extractor.pyx":42
+          /* "utils/ngram_extractor.pyx":39
  *                     for i in range(1, 10):
  *                         ngramStartPointer[i - 1] = ngramStartPointer[i]
  *                 if ngramSegmentCount < 10:             # <<<<<<<<<<<<<<
@@ -1519,27 +1491,26 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
         }
 
-        /* "utils/ngram_extractor.pyx":38
- *                 p[0] = ch = ord(' ')
+        /* "utils/ngram_extractor.pyx":35
+ *                     )
  * 
- *             if ch == ord(' '):             # <<<<<<<<<<<<<<
+ *             if ch == ord(' ') or ch == ord('-'):             # <<<<<<<<<<<<<<
  *                 if ngramSegmentCount == 10:
  *                     for i in range(1, 10):
  */
-        goto __pyx_L12;
-      }
+        break;
+        default:
 
-      /* "utils/ngram_extractor.pyx":46
+        /* "utils/ngram_extractor.pyx":43
  *                     ngramSegmentCount += 1
  *             else:
  *                 ngramSegmentCount = 1             # <<<<<<<<<<<<<<
  *                 ngramStartPointer[0] = p + 1
  * 
  */
-      /*else*/ {
         __pyx_v_ngramSegmentCount = 1;
 
-        /* "utils/ngram_extractor.pyx":47
+        /* "utils/ngram_extractor.pyx":44
  *             else:
  *                 ngramSegmentCount = 1
  *                 ngramStartPointer[0] = p + 1             # <<<<<<<<<<<<<<
@@ -1547,8 +1518,8 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  *         else:
  */
         (__pyx_v_ngramStartPointer[0]) = (__pyx_v_p + 1);
+        break;
       }
-      __pyx_L12:;
 
       /* "utils/ngram_extractor.pyx":25
  *         if ord('a') <= ch <= ord('z') or ord('0') <= ch <= ord('9'):
@@ -1560,7 +1531,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
       goto __pyx_L5;
     }
 
-    /* "utils/ngram_extractor.pyx":50
+    /* "utils/ngram_extractor.pyx":47
  * 
  *         else:
  *             ngramSegmentCount = 1             # <<<<<<<<<<<<<<
@@ -1570,7 +1541,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
     /*else*/ {
       __pyx_v_ngramSegmentCount = 1;
 
-      /* "utils/ngram_extractor.pyx":51
+      /* "utils/ngram_extractor.pyx":48
  *         else:
  *             ngramSegmentCount = 1
  *             ngramStartPointer[0] = p + 1             # <<<<<<<<<<<<<<
@@ -1581,7 +1552,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
     }
     __pyx_L5:;
 
-    /* "utils/ngram_extractor.pyx":53
+    /* "utils/ngram_extractor.pyx":50
  *             ngramStartPointer[0] = p + 1
  * 
  *         p += 1             # <<<<<<<<<<<<<<
@@ -1591,7 +1562,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
     __pyx_v_p = (__pyx_v_p + 1);
   }
 
-  /* "utils/ngram_extractor.pyx":55
+  /* "utils/ngram_extractor.pyx":52
  *         p += 1
  * 
  *     inSegment = False             # <<<<<<<<<<<<<<
@@ -1600,7 +1571,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
   __pyx_v_inSegment = 0;
 
-  /* "utils/ngram_extractor.pyx":57
+  /* "utils/ngram_extractor.pyx":54
  *     inSegment = False
  * 
  *     for ngramIndex in range(ngramSegmentCount):             # <<<<<<<<<<<<<<
@@ -1612,7 +1583,7 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
     __pyx_v_ngramIndex = __pyx_t_10;
 
-    /* "utils/ngram_extractor.pyx":58
+    /* "utils/ngram_extractor.pyx":55
  * 
  *     for ngramIndex in range(ngramSegmentCount):
  *         ngramLength = p - ngramStartPointer[ngramIndex]             # <<<<<<<<<<<<<<
@@ -1621,20 +1592,20 @@ static PyObject *__pyx_pf_5utils_15ngram_extractor_ngramExtract(CYTHON_UNUSED Py
  */
     __pyx_v_ngramLength = (__pyx_v_p - (__pyx_v_ngramStartPointer[__pyx_v_ngramIndex]));
 
-    /* "utils/ngram_extractor.pyx":59
+    /* "utils/ngram_extractor.pyx":56
  *     for ngramIndex in range(ngramSegmentCount):
  *         ngramLength = p - ngramStartPointer[ngramIndex]
  *         ret.append(ngramStartPointer[ngramIndex][:ngramLength])             # <<<<<<<<<<<<<<
  * 
  *     return ret
  */
-    __pyx_t_2 = __Pyx_PyBytes_FromStringAndSize(((const char*)(__pyx_v_ngramStartPointer[__pyx_v_ngramIndex])) + 0, __pyx_v_ngramLength - 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyBytes_FromStringAndSize(((const char*)(__pyx_v_ngramStartPointer[__pyx_v_ngramIndex])) + 0, __pyx_v_ngramLength - 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_2); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_ret, __pyx_t_2); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
 
-  /* "utils/ngram_extractor.pyx":61
+  /* "utils/ngram_extractor.pyx":58
  *         ret.append(ngramStartPointer[ngramIndex][:ngramLength])
  * 
  *     return ret             # <<<<<<<<<<<<<<

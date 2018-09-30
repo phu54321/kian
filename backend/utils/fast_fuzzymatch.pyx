@@ -53,7 +53,10 @@ cpdef int fast_fuzzymatch(const unsigned char[] needle, const unsigned char[] ha
         ch = needle[needleIndex]
         prevHaystackIndex = haystackIndex
 
-        while haystack[haystackIndex] != ch:
+        while (
+            haystack[haystackIndex] != ch and
+            not (ch == ord(' ') and haystack[haystackIndex] == ord('-'))
+        ):
             if ch != ord(' ') and haystack[haystackIndex] == ord(' '):
                 return 0
             haystackIndex += 1

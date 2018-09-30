@@ -11,7 +11,7 @@ export default async function (cm) {
     let start = cursor.ch, end = cursor.ch;
     while (start && /[\w-]/.test(line.charAt(start - 1))) --start;
     while (end < line.length && /[\w-]/.test(line.charAt(end))) ++end;
-    const word = line.slice(start, end).replace('-', ' ').trim();
+    const word = line.slice(start, end).replace(/-/g, ' ').trim();
     if (word.length < 4) return null;
 
     let suggestions = (await getAutocomplete(word))
@@ -19,7 +19,9 @@ export default async function (cm) {
         .slice(0, 10);
 
     if ('A' <= word[0] && word[0] <= 'Z') { // First word is capital
-        suggestions = suggestions.map(s => s[0].toUpperCase() + s.substr(1));
+        suggestions = suggestions.map(s =>
+            s.split(' ').map(t => t[0].toUpperCase() + t.substr(1)).join(' ')
+        );
     }
 
     if (suggestions.length === 1 && suggestions[0].toLowerCase() === word.toLowerCase()) return null;
