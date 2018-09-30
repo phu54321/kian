@@ -25,11 +25,10 @@ html, body {
     .app-body {
         position: relative;
         overflow: auto;
-        padding-top: 1.5em;
         flex: 1;
 
         .app-container {
-            height: 100%;
+            min-height: 100%;
         }
     }
 }
