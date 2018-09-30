@@ -46,9 +46,6 @@ div.app-main
                             span.d-sm-none.ml-2 Sync now
                         b-nav-text.ml-3
 
-                        b-nav-item(v-hotkey='"H"', pack-name='Menu', to='/decks', v-b-tooltip.hover, title='Home')
-                            icon(name='home')
-                            span.d-sm-none.ml-2 Home
                         b-nav-item(v-hotkey='"A"', pack-name='Menu', to='/card/add', v-b-tooltip.hover, title='Add card')
                             icon(name='plus')
                             span.d-sm-none.ml-2 Add cards
@@ -58,6 +55,11 @@ div.app-main
                         b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                             icon(name='chart-bar')
                             span.d-sm-none.ml-2 Statistics
+                        b-nav-text.ml-3
+
+                        b-nav-item(to='/config', v-b-tooltip.hover, title='Config')
+                            icon(name='cog')
+                            span.d-sm-none.ml-2 Configuration
 
     .app-body
         b-container.app-container

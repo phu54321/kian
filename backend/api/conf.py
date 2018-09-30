@@ -11,6 +11,7 @@ def getConf(msg):
     with Col() as col:
         conf = col.conf
         return emit.emitResult({
+            'confObject': conf,
             'currentModel': col.models.get(conf['curModel'])['name'],
             'currentDeck': col.decks.get(conf['curDeck'])['name'],
         })
