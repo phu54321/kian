@@ -32,10 +32,7 @@ def ngramExtract(str string):
                         ngramStartPointer[ngramIndex][:ngramLength]
                     )
 
-            if ch == ord('-'):
-                p[0] = ch = ord(' ')
-
-            if ch == ord(' '):
+            if ch == ord(' ') or ch == ord('-'):
                 if ngramSegmentCount == 10:
                     for i in range(1, 10):
                         ngramStartPointer[i - 1] = ngramStartPointer[i]

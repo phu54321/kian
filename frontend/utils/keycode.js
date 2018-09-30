@@ -4,6 +4,7 @@ export const KEY_MAP = {
     'ENTER': 13,
     'SPACE': 32,
     'DELETE': 46,
+    'ESC': 27,
 
     // Arrow
     'LEFT': 37,
