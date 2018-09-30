@@ -19,6 +19,7 @@ div
         b-btn-group
             b-btn(variant='outline-primary', size='sm', @click='removeEmptyCards') Remove empty cards
             b-btn(variant='outline-primary', size='sm', @click='checkDatabase') Check database
+            b-btn(variant='outline-primary', size='sm', @click='removeUnusedMedia') Remove unused media
 
     h2 Config
 
@@ -45,9 +46,30 @@ export default {
             const loader = this.$loading.show();
             try {
                 const ret = await this.$ankiCall('col_check');
-                this.$toasted.show(ret);
+                this.$toasted.show(ret, { icon: 'check' });
             } catch (e) {
-                this.$toasted.error(e.message);
+                this.$toasted.error(e.message, { icon: 'exclamation-triangle' });
+            } finally {
+                loader.hide();
+            }
+        },
+
+        async removeUnusedMedia () {
+            const loader = this.$loading.show();
+            try {
+                const { missing, unused } = await this.$ankiCall('media_check');
+                if (missing.length) {
+                    this.$toasted.info(`${missing.length} files missing`, { icon: 'exclamation-triangle' });
+                }
+                if (unused.length) {
+                    const deleteFailed = await this.$ankiCall('media_remove', { filenames: unused });
+                    const msg = (deleteFailed === 0)
+                        ? `${unused.length} unused files removed`
+                        : `${unused.length} unused files, ${unused.length - deleteFailed} removed`;
+                    this.$toasted.show(msg, { icon: 'check' });
+                }
+            } catch (e) {
+                this.$toasted.error(e.message, { icon: 'exclamation-triangle' });
             } finally {
                 loader.hide();
             }
