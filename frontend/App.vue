@@ -63,6 +63,7 @@ div.app-main
 
     .app-body
         b-container.app-container
+            div.mt-4
             router-view
 
     footer.app-footer
