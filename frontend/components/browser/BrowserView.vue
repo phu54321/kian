@@ -533,8 +533,10 @@ $color-row-selected: rgba(175, 226, 196, .5);
 
     .browser-tools {
         text-align: center;
-        position: sticky;
+        position: fixed;
         bottom: 60px;
+        left: 0;
+        right: 0;
         pointer-events: none;
 
         .tools-container {
@@ -542,6 +544,7 @@ $color-row-selected: rgba(175, 226, 196, .5);
             pointer-events: initial;
             &.enabled {
                 display: inline-block;
+                z-index: 10;
             }
         }
     }
