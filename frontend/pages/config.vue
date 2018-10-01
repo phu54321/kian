@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-div
+b-container.pt-4
     .float-right
         b-btn-group
             b-btn(variant='outline-primary', size='sm', @click='removeEmptyCards') Remove empty cards

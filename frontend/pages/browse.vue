@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-div
+b-container.pt-4(fluid)
     h1.mb-4 Browser
 
     .queryBox(@submit.prevent='query = queryString.join(" ")')

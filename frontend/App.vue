@@ -62,9 +62,7 @@ div.app-main
                             span.d-sm-none.ml-2 Configuration
 
     .app-body
-        b-container.app-container
-            div.mt-4
-            router-view
+        router-view
 
     footer.app-footer
         cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
