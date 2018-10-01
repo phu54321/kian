@@ -409,11 +409,15 @@ export default {
         },
 
         async markCards () {
+            this.showEditor = false;
+            await this.$nextTick();
             await toggleCardMarkedBatch(this.selectedCardList);
             this.updateView++;
         },
 
         async suspendCards () {
+            this.showEditor = false;
+            await this.$nextTick();
             await toggleCardSuspendedBatch(this.selectedCardList);
             this.updateView++;
         },
