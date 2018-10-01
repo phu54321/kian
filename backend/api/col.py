@@ -6,14 +6,14 @@ from utils import (
 )
 
 
-@registerApi('col_emptycards_get')
-def getEmptyCards(msg):
+@registerApi
+def colEmptycardsGet(msg):
     with Col() as col:
         return emit.emitResult(col.emptyCids())
 
 
-@registerApi('col_card_remove_batch')
-def removeCards(msg):
+@registerApi
+def colCardRemoveBatch(msg):
     typeCheck(msg, {
         'cardIds': list
     })
@@ -22,8 +22,8 @@ def removeCards(msg):
         return emit.emitResult(True)
 
 
-@registerApi('col_check')
-def checkDatabase(msg):
+@registerApi
+def colCheck(msg):
     with Col() as col:
         ret, ok = col.fixIntegrity()
         if not ok:

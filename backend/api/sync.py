@@ -37,8 +37,8 @@ syncThread = None
 syncMessageQueue = Queue()
 
 
-@registerApi('sync')
-def onSync(msg):
+@registerApi
+def sync(msg):
     global syncThread
 
     if not msg['authKey']:
@@ -62,8 +62,8 @@ def onSync(msg):
     return emit.emitResult(True)
 
 
-@registerApi('sync_status')
-def getSyncStatus(msg):
+@registerApi
+def syncStatus(msg):
     if not syncThread:
         return emit.emitError('Not syncing')
 
@@ -77,8 +77,8 @@ def getSyncStatus(msg):
     })
 
 
-@registerApi('sync_fullsync')
-def issueFullSync(msg):
+@registerApi
+def syncFullsync(msg):
     if not syncThread:
         return emit.emitError('Not syncing')
 
@@ -89,8 +89,8 @@ def issueFullSync(msg):
     syncThread.fullSyncChoice = msg['mode']
 
 
-@registerApi('sync_terminate')
-def terminateSync(msg):
+@registerApi
+def syncTerminate(msg):
     global syncThread
 
     if not syncThread:

@@ -11,8 +11,8 @@ from .card import getNidSet
 import time
 
 
-@registerApi('browser_query')
-def listDeck(msg):
+@registerApi
+def browserQuery(msg):
     typeCheck(msg, {
         'query': str,
     })
@@ -46,8 +46,8 @@ def safeGetCard(col, cid):
         return None
 
 
-@registerApi('browser_get_batch')
-def getCardsBatch(msg):
+@registerApi
+def browserGetBatch(msg):
     typeCheck(msg, {
         'cardIds': list
     })
@@ -111,8 +111,8 @@ def getCardsBatch(msg):
         return emit.emitResult(ret)
 
 
-@registerApi('card_delete_batch')
-def deleteCardBatch(msg):
+@registerApi
+def cardDeleteBatch(msg):
     typeCheck(msg, {
         'cardIds': list,
     })
@@ -121,8 +121,8 @@ def deleteCardBatch(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_update_deck_batch')
-def updateCardsDeck(msg):
+@registerApi
+def cardUpdateDeckBatch(msg):
     typeCheck(msg, {
         'deck': str,
         'cardIds': list,
@@ -139,8 +139,8 @@ def updateCardsDeck(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_update_model_batch')
-def updateCardsModel(msg):
+@registerApi
+def cardUpdateModelBatch(msg):
     typeCheck(msg, {
         'model': str,
         'cardIds': list,
@@ -153,8 +153,8 @@ def updateCardsModel(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_add_tag_batch')
-def addCardTags(msg):
+@registerApi
+def cardAddTagBatch(msg):
     typeCheck(msg, {
         'tags': list,
         'cardIds': list,
@@ -171,8 +171,8 @@ def addCardTags(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_remove_tag_batch')
-def deleteCardTags(msg):
+@registerApi
+def cardRemoveTagBatch(msg):
     typeCheck(msg, {
         'tags': list,
         'cardIds': list,
@@ -189,8 +189,8 @@ def deleteCardTags(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_toggle_marked_batch')
-def toggleMarked(msg):
+@registerApi
+def cardToggleMarkedBatch(msg):
     typeCheck(msg, {
         'cardIds': list,
     })
@@ -209,8 +209,8 @@ def toggleMarked(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_toggle_suspended_batch')
-def toggleSuspended(msg):
+@registerApi
+def cardToggleSuspendedBatch(msg):
     typeCheck(msg, {
         'cardIds': list,
     })

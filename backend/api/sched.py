@@ -11,8 +11,8 @@ from utils import (
 )
 
 
-@registerApi('card_sched_reset')
-def resetScheduling(msg):
+@registerApi
+def cardSchedReset(msg):
     typeCheck(msg, {
         'cardIds': list
     })
@@ -25,8 +25,8 @@ def resetScheduling(msg):
         return emit.emitResult(True)
 
 
-@registerApi('card_sched_reschedule')
-def changeDues(msg):
+@registerApi
+def cardSchedReschedule(msg):
     typeCheck(msg, {
         'cardIds': list,
         'minDue': int,

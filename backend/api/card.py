@@ -16,8 +16,8 @@ def getNidSet(col, cids):
     return nidSet
 
 
-@registerApi('card_get')
-def getCard(msg):
+@registerApi
+def cardGet(msg):
     typeCheck(msg, {
         'cardId': int,
     })
@@ -40,8 +40,8 @@ def getCard(msg):
         })
 
 
-@registerApi('card_update')
-def updateCard(msg):
+@registerApi
+def cardUpdate(msg):
     typeCheck(msg, {
         'cardId': int,
         'deck': str,

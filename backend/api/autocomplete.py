@@ -45,8 +45,8 @@ with Col() as col:
     updateWordset(col)
 
 
-@registerApi('get_word_autocomplete')
-def listDeck(msg):
+@registerApi
+def getWordAutocomplete(msg):
     typeCheck(msg, {
         'query': str
     })

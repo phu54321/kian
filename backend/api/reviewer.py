@@ -11,15 +11,15 @@ cardDict = {}
 prevDeckName = None
 
 
-@registerApi('reviewer_reset')
-def resetReviewer(msg):
+@registerApi
+def reviewerReset(msg):
     with Col() as col:
         col.reset()
         return emit.emitResult(None)
 
 
-@registerApi('reviewer_next_card')
-def getNextScheduledCard(msg):
+@registerApi
+def reviewerNextCard(msg):
     """Fetch next scheduled card"""
 
     global prevDeckName
@@ -60,8 +60,8 @@ def getNextScheduledCard(msg):
         })
 
 
-@registerApi('reviewer_answer_card')
-def answerCard(msg):
+@registerApi
+def reviewerAnswerCard(msg):
     typeCheck(msg, {
         'cardId': int,
         'ease': int,
