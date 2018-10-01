@@ -230,15 +230,12 @@ export default {
         onImageClick (e) {
             if (e.target.tagName === 'IMG') {
                 const imgEl = e.target;
-                const oldSrc = imgEl.src;
-                const match = oldSrc.match(/\/?([^/]+)\?i=(\d+)$/);
-                if (!match) {
+                const imgUrl = imgEl.src;
+                const imgIndex = this.$refs.preview.getElementsByTagName('img').indexOf(e);
+                if (!imgIndex === -1) {
                     this.$toasted.error('Invalid image');
                     return;
                 }
-
-                const imgUrl = match[1];
-                const imgIndex = match[2] | 0;
 
                 MiniPaintModal.editImage(imgUrl)
                     .then(newSrc => {
