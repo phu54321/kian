@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-div
+b-container.pt-4
     h2 Deck list
 
     deck-tree-view(:tree='deckDueTree', :indent='0')

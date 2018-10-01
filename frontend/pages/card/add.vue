@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-div
+b-container.pt-4
     h1 Add Note
 
     card-editor(v-model='card', @save='save')

@@ -15,8 +15,9 @@
 
 <template lang="pug">
 
-.study-main
+b-container.study-main
     input(type='hidden', v-if='card', :value='card.id')
+    .mt-4
     .study-header
         span Deck: {{deckName}}
         span.text-secondary.ml-3 (
