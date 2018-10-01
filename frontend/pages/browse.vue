@@ -140,7 +140,7 @@ export default {
             const { model, body } = parseQueryToken(chunk);
             if (model === 'tag') {
                 return {
-                    variant: 'info',
+                    variant: (body === 'marked') ? 'danger' : 'info',
                     title: `Tag: ${body}`,
                 };
             }
