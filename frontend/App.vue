@@ -51,7 +51,7 @@ div.app-main
                             span.d-sm-none.ml-2 Add cards
                         b-nav-item(v-hotkey='"B"', pack-name='Menu', to='/browse', v-b-tooltip.hover, title='Browse')
                             icon(name='search')
-                            span.d-sm-none.ml-2 Browser cards
+                            span.d-sm-none.ml-2 Browse cards
                         b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
                             icon(name='chart-bar')
                             span.d-sm-none.ml-2 Statistics
