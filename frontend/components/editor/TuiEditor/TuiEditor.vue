@@ -231,7 +231,8 @@ export default {
             if (e.target.tagName === 'IMG') {
                 const imgEl = e.target;
                 const imgUrl = imgEl.src;
-                const imgIndex = this.$refs.preview.getElementsByTagName('img').indexOf(e);
+                const images = this.$refs.preview.getElementsByTagName('img');
+                const imgIndex = Array.prototype.indexOf(images, e);
                 if (!imgIndex === -1) {
                     this.$toasted.error('Invalid image');
                     return;
