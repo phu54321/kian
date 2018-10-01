@@ -17,6 +17,7 @@
 
 b-container.study-main
     input(type='hidden', v-if='card', :value='card.id')
+    span(v-hotkey=['ctrl+z'], @click='undoReview', title='Undo review')
     .mt-4
     .study-header
         span Deck: {{deckName}}
@@ -159,6 +160,18 @@ export default {
                 ErrorDialog.openErrorDialog(err.message);
             });
         },
+        undoReview () {
+            this.$ankiCall('reviewer_undo')
+                .then((ret) => {
+                    if (ret) {
+                        this.$toasted.info('Review undone.', { icon: 'undo' });
+                        this.loadCard();
+                    } else {
+                        this.$toasted.error('Undo not available.', { icon: 'ban' });
+                    }
+                });
+        },
+
         answerButtonColor (type) {
             return {
                 Again: 'danger',

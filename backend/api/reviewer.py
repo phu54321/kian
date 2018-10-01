@@ -4,6 +4,7 @@ from utils import (
     typeCheck,
     emit,
 )
+from anki.utils import _
 import logging
 
 
@@ -76,3 +77,15 @@ def reviewerAnswerCard(msg):
         col.sched.answerCard(card, ease)
         logging.info("Cid[%d] Reviewed with ease %d" % (cardId, ease))
         return emit.emitResult(True)
+
+
+@registerApi
+def reviewerUndo(msg):
+    with Col() as col:
+        if col.undoName() == _('Review'):
+            cid = col.undo()
+            card = col.getCard(cid)
+            col.reset()
+            return emit.emitResult(True)
+        else:
+            return emit.emitResult(False)
