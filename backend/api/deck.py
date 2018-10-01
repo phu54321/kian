@@ -7,16 +7,16 @@ from utils import (
 import time
 
 
-@registerApi('deck_list')
-def listDeck(msg):
+@registerApi
+def deckList(msg):
     with Col() as col:
         deckNames = [d['name'] for d in col.decks.all()]
         deckNames.sort()
         return emit.emitResult(deckNames)
 
 
-@registerApi('deck_add')
-def addDeck(msg):
+@registerApi
+def deckAdd(msg):
     typeCheck(msg, {
         'deckName': str
     })
@@ -26,8 +26,8 @@ def addDeck(msg):
         return emit.emitResult(True)
 
 
-@registerApi('dashboard_deck_tree')
-def listDeckDue(msg):
+@registerApi
+def dashboardDeckTree(msg):
     with Col() as col:
         dueTree = col.sched.deckDueTree()
 
@@ -52,8 +52,8 @@ def listDeckDue(msg):
         )
 
 
-@registerApi('deck_collapse')
-def collapseDeck(msg):
+@registerApi
+def deckCollapse(msg):
     typeCheck(msg, {
         'deckName': str,
         'collapse': bool,
@@ -69,8 +69,8 @@ def collapseDeck(msg):
         return emit.emitResult(deck['collapsed'])
 
 
-@registerApi('deck_info')
-def getDeckInfo(msg):
+@registerApi
+def deckInfo(msg):
     typeCheck(msg, {
         'deckName': str,
     })
@@ -120,7 +120,7 @@ def getDeckInfo(msg):
                 })
 
 
-@registerApi('deckname_from_did')
-def getDecknameFromDid(msg):
+@registerApi
+def decknameFromDid(msg):
     with Col() as col:
         return emit.emitResult(col.decks.get(msg['did'], False)['name'])

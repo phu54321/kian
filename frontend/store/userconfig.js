@@ -17,13 +17,13 @@ const actions = {
     async setCurrentDeck ({ commit, dispatch, state }, newDeck) {
         await dispatch('loadUserConfig');
         if (state.config.currentDeck === newDeck) return;
-        await ankiCall('config_set_currentDeck', { deck: newDeck });
+        await ankiCall('config_set_current_deck', { deck: newDeck });
         commit('userconfig_setCurrentDeck', newDeck);
     },
     async setCurrentModel ({ commit, dispatch, state }, newModel) {
         await dispatch('loadUserConfig');
         if (state.config.currentModel === newModel) return;
-        await ankiCall('config_set_currentModel', { model: newModel });
+        await ankiCall('config_set_current_model', { model: newModel });
         commit('userconfig_setCurrentModel', newModel);
     },
 };

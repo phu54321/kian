@@ -7,8 +7,8 @@ from utils import (
 )
 
 
-@registerApi('tag_suggestions')
-def queryTagSuggestions(msg):
+@registerApi
+def tagSuggestions(msg):
     typeCheck(msg, {
         'query': str,
     })

@@ -10,8 +10,8 @@ from send2trash import send2trash
 import os
 
 
-@registerApi('media_upload')
-def uploadMedia(msg):
+@registerApi
+def mediaUpload(msg):
     typeCheck(msg, {
         'filename': str,
         'datab64': str,
@@ -26,7 +26,7 @@ def uploadMedia(msg):
         return emit.emitResult(mediaFilename)
 
 
-@registerApi('media_check')
+@registerApi
 def mediaCheck(msg):
     with Col() as col:
         (nohave, unused, warnings) = col.media.check()
@@ -37,7 +37,7 @@ def mediaCheck(msg):
         })
 
 
-@registerApi('media_remove')
+@registerApi
 def mediaRemove(msg):
     typeCheck(msg, {
         'filenames': list

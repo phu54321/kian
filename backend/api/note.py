@@ -13,8 +13,8 @@ from anki.utils import _, htmlToTextLine
 from .autocomplete import updateWordset
 
 
-@registerApi('note_get')
-def getNote(msg):
+@registerApi
+def noteGet(msg):
     typeCheck(msg, {
         'noteId': int,
     })
@@ -34,8 +34,8 @@ def getNote(msg):
         })
 
 
-@registerApi('note_update')
-def updateNote(msg):
+@registerApi
+def noteUpdate(msg):
     typeCheck(msg, {
         'noteId': int,
         'fields': list,
@@ -58,8 +58,8 @@ def updateNote(msg):
         return emit.emitResult(True)
 
 
-@registerApi('nid_from_cid')
-def getNidFromCid(msg):
+@registerApi
+def nidFromCid(msg):
     typeCheck(msg, {
         'cardId': int
     })
@@ -68,8 +68,8 @@ def getNidFromCid(msg):
         return emit.emitResult(col.getCard(cid).nid)
 
 
-@registerApi('cid_from_nid')
-def getCidFromNid(msg):
+@registerApi
+def cidFromNid(msg):
     typeCheck(msg, {
         'noteId': int
     })
@@ -86,8 +86,8 @@ def isClozeNote(fields):
     return False
 
 
-@registerApi('note_add')
-def addNote(msg):
+@registerApi
+def noteAdd(msg):
     typeCheck(msg, {
         'deck': str,
         'model': str,

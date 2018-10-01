@@ -6,8 +6,8 @@ from utils import (
 )
 
 
-@registerApi('config_get')
-def getConf(msg):
+@registerApi
+def configGet(msg):
     with Col() as col:
         conf = col.conf
         return emit.emitResult({
@@ -17,8 +17,8 @@ def getConf(msg):
         })
 
 
-@registerApi('config_set_currentModel')
-def setConfCurrentModel(msg):
+@registerApi
+def configSetCurrentModel(msg):
     typeCheck(msg, {
         'model': str
     })
@@ -30,8 +30,8 @@ def setConfCurrentModel(msg):
         return emit.emitResult(True)
 
 
-@registerApi('config_set_currentDeck')
-def setConfCurrentDeck(msg):
+@registerApi
+def configSetCurrentDeck(msg):
     typeCheck(msg, {
         'deck': str
     })

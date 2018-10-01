@@ -6,20 +6,20 @@ from utils import (
 )
 
 
-@registerApi('model_list')
-def getModelList(msg):
+@registerApi
+def modelList(msg):
     with Col() as col:
         return emit.emitResult(col.models.allNames())
 
 
-@registerApi('modelname_from_mid')
-def getModelnameFromMid(msg):
+@registerApi
+def modelnameFromMid(msg):
     with Col() as col:
         return col.models.get(msg['mid'])
 
 
-@registerApi('model_get')
-def getModel(msg):
+@registerApi
+def modelGet(msg):
     typeCheck(msg, {
         'modelName': str,
     })
