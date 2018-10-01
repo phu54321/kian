@@ -19,7 +19,20 @@ b-container.pt-4
         b-btn-group
             b-btn(variant='outline-primary', size='sm', @click='removeEmptyCards') Remove empty cards
             b-btn(variant='outline-primary', size='sm', @click='checkDatabase') Check database
-            b-btn(variant='outline-primary', size='sm', @click='removeUnusedMedia') Remove unused media
+            b-btn(variant='outline-primary', size='sm', @click='checkMedia') Check media
+
+        b-modal(ref='checkMediaModal', lazy, title='Check media')
+            h5 Missing items ({{missing.length}} items)
+            ul.file-list
+                li(v-for='item in missing') {{item}}
+
+            h5 Unused items ({{unused.length}} items)
+            ul.file-list
+                li(v-for='item in unused') {{item}}
+
+            template(slot='modal-footer')
+                b-btn(variant='primary', size='sm', @click='removeUnusedMedia') Remove unused media
+                b-btn(variant='secondary', size='sm', @click='$refs.checkMediaModal.hide()') Cancel
 
     h2 Config
 
@@ -29,6 +42,13 @@ b-container.pt-4
 <script>
 
 export default {
+    data () {
+        return {
+            missing: [],
+            unused: [],
+        };
+    },
+
     methods: {
         async removeEmptyCards () {
             const loader = this.$loading.show();
@@ -54,27 +74,51 @@ export default {
             }
         },
 
-        async removeUnusedMedia () {
+        async checkMedia () {
             const loader = this.$loading.show();
             try {
                 const { missing, unused } = await this.$ankiCall('media_check');
-                if (missing.length) {
-                    this.$toasted.info(`${missing.length} files missing`, { icon: 'exclamation-triangle' });
-                }
-                if (unused.length) {
-                    const deleteFailed = await this.$ankiCall('media_remove', { filenames: unused });
-                    const msg = (deleteFailed === 0)
-                        ? `${unused.length} unused files removed`
-                        : `${unused.length} unused files, ${unused.length - deleteFailed} removed`;
-                    this.$toasted.show(msg, { icon: 'check' });
-                }
+                this.missing = missing;
+                this.unused = unused;
+                this.$refs.checkMediaModal.show();
             } catch (e) {
                 this.$toasted.error(e.message, { icon: 'exclamation-triangle' });
             } finally {
                 loader.hide();
             }
         },
+
+        async removeUnusedMedia () {
+            const { unused } = this;
+            if (unused.length) {
+                const deleteFailed = await this.$ankiCall('media_remove', { filenames: unused });
+                const msg = (deleteFailed === 0)
+                    ? `${unused.length} unused files removed`
+                    : `${unused.length} unused files, ${unused.length - deleteFailed} removed`;
+                this.$toasted.show(msg, { icon: 'check' });
+                this.unused = [];
+            }
+        },
     },
 };
 
 </script>
+
+<style lang="scss" scoped>
+
+.file-list {
+    max-height: 10em;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+        padding: .1em .6em;
+        &:hover {
+            background-color: #eee;
+        }
+    }
+}
+
+</style>
