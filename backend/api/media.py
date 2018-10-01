@@ -6,6 +6,7 @@ from utils import (
 )
 
 import base64
+from send2trash import send2trash
 import os
 
 
@@ -49,7 +50,7 @@ def mediaRemove(msg):
         for fname in filenames:
             fullPath = os.path.join(mdir, fname)
             try:
-                os.unlink(fullPath)
+                send2trash(fullPath)
             except Exception:
                 print('Cannot delete file %s' % fullPath)
                 deleteFailed += 1
