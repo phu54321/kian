@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import nanoid from 'nanoid';
 import ankiCall from '~/api/ankiCall';
 
 function base64ArrayBuffer (arrayBuffer: ArrayBuffer) {
@@ -82,12 +81,24 @@ export function getFileAsBase64 (file: File) {
     });
 }
 
+function toHexString (byteArray: Uint8Array) {
+    return Array.prototype.map.call(byteArray, (byte: number) => {
+        return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('');
+}
+
 export function getRandomFilename (filename: string) {
+    // Because filename might be case-insensitive, we cannot use base64 or nanoids.
+    // We just generate a random hexadecimal string w/ Web crypto library.
+    const crypto = window.crypto || (window as any).msCrypto;
+
     const lastDotIndex = filename.lastIndexOf('.');
+    const randomHex = toHexString(crypto.getRandomValues(new Uint8Array(8)));
+
     if (lastDotIndex !== -1) {
-        return nanoid() + filename.substr(lastDotIndex);
+        return randomHex + filename.substr(lastDotIndex);
     } else {
-        return filename;
+        return randomHex;
     }
 }
 
