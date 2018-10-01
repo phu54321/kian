@@ -92,10 +92,10 @@ div.browser-view
                     | M
                 b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Add tags', @click='showBrowserTool("browserAddTags")')
                     icon.mr-1(name='plus')
-                    | Tag
+                    | T
                 b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', @click='showBrowserTool("browserRemoveTags")')
                     icon.mr-1(name='minus')
-                    | Tag
+                    | T
 
             b-button-group.mr-2
                 b-button(size='sm', variant='danger', v-hotkey=['ctrl+k'], v-b-tooltip.hover, title='Mark', @click='markCards')
