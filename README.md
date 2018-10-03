@@ -36,6 +36,15 @@ After you've done that, you can start the development server.
 ```
 $ npm start
 ```
+## Gallary
+
+This reflects the version as of 2018-10-03. UI may change drastically as the program is developed.
+
+- Deck overview (Home page) ![Overview](readme_assets/overview.png)
+- Card browser ![Card browser](readme_assets/browser.png)
+- Card browser w/ some card selected & browser toolbox opened ![Card browser 2](readme_assets/browser2.png)
+- Study mode ![Reviewer](readme_assets/reviewer.png)
+- Hotkey helper ![Hotkey](readme_assets/hotkey_window.png)
 
 
 ## License
