@@ -37,7 +37,7 @@ b-container.study-main
             span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
                 icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
-        b-progress.mt-1(:value='currentProgress', :max='1', height='3px')
+        b-progress.mt-1(:value='currentProgress', :max='1', height='6px')
 
     .study-body(v-if='!card')
     .study-body.mb-2.mt-2(v-else-if='!flipped')
