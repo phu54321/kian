@@ -60,5 +60,5 @@ export async function toggleCardMarkedBatch (cardIds: number[]) {
 }
 
 export async function toggleCardSuspendedBatch (cardIds: number[]) {
-    return ankiCall('card_toggle_suspendeded_batch', { cardIds });
+    return ankiCall('card_toggle_suspended_batch', { cardIds });
 }
