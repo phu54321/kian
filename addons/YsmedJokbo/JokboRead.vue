@@ -34,10 +34,16 @@ b-container.pt-4
             .toolbar
                 b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
                 b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
+                b-btn.mr-1(size='sm', variant='info', @click='splitQAPair',
+                    v-if='qSeperator.length == aSeperator.length && qSeperator.length >= 1') Split
             b-col
-                canvas.downscale(ref='qImgCanvas')
+                .imgCol
+                    canvas.img(ref='qImgCanvas')
+                    canvas(ref='qSeperatorCanvas', @click='toggleSeperatorQ')
             b-col
-                canvas.downscale(ref='aImgCanvas')
+                .imgCol
+                    canvas.img(ref='aImgCanvas')
+                    canvas(ref='aSeperatorCanvas', @click='toggleSeperatorA')
 
     browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
 
@@ -48,6 +54,7 @@ b-container.pt-4
 <script>
 
 import Jimp from 'jimp/es';
+import ImageView from './ImageView';
 import { parseQAPair } from './qaPairParser';
 import ListSelector from '~/components//common/ListSelector';
 import { uploadImageFromBase64 } from '~/utils/uploadHelper';
@@ -61,6 +68,29 @@ function imageDataFromJimp (img) {
         new Uint8ClampedArray(img.bitmap.data),
         img.bitmap.width, img.bitmap.height
     );
+}
+
+function jimpFromCanvas (canvas) {
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    return new Jimp(imgData);
+}
+
+function splitImage (img, separatorYList) {
+    let y0 = 0;
+    const imgs = [];
+    const { width: imgW, height: imgH } = img.bitmap;
+
+    separatorYList = separatorYList.slice().sort();
+
+    const view = new ImageView(img);
+
+    for (const y1 of separatorYList) {
+        imgs.push(view.crop(0, y0, imgW, y1 - y0).autocrop().toJimpWithPad(20));
+        y0 = y1;
+    }
+    imgs.push(view.crop(0, y0, imgW, imgH - y0).autocrop().toJimpWithPad(20));
+    return imgs;
 }
 
 export default {
@@ -82,6 +112,9 @@ export default {
             deck: 'Default',
             addedCardIds: [],
             updateCardIds: 0,
+
+            qSeperator: [],
+            aSeperator: [],
         };
     },
     async asyncData () {
@@ -105,10 +138,12 @@ export default {
             });
             this.addedCardIds = createdCards.slice(0, 20);
         },
-        qaFirst (v) {
+        qaFirst (v, oldv) {
+            if (v === oldv) return;
+
             const [q, a] = v;
 
-            const { qImgCanvas, aImgCanvas } = this.$refs;
+            const { qImgCanvas, aImgCanvas, qSeperatorCanvas, aSeperatorCanvas } = this.$refs;
             qImgCanvas.width = q.width;
             qImgCanvas.height = q.height;
             qImgCanvas.getContext('2d').putImageData(q, 0, 0);
@@ -116,6 +151,22 @@ export default {
             aImgCanvas.width = a.width;
             aImgCanvas.height = a.height;
             aImgCanvas.getContext('2d').putImageData(a, 0, 0);
+
+            qSeperatorCanvas.width = q.width;
+            qSeperatorCanvas.height = q.height;
+            this.qSeperator = [];
+
+            aSeperatorCanvas.width = a.width;
+            aSeperatorCanvas.height = a.height;
+            this.aSeperator = [];
+        },
+
+        qSeperator (v) {
+            this.renderSeperatorCanvas(this.$refs.qSeperatorCanvas, v);
+        },
+
+        aSeperator (v) {
+            this.renderSeperatorCanvas(this.$refs.aSeperatorCanvas, v);
         },
     },
     components: {
@@ -152,7 +203,7 @@ export default {
                         viewport: viewport,
                     });
                     this.message = `Processing page ${pageIndex}/${pageNum}`;
-                    this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex);
+                    this.handleImage(jimpFromCanvas(canvas), pageIndex);
                 }
                 this.message = 'Waiting for page extraction...';
                 this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `;
@@ -161,8 +212,8 @@ export default {
             }
         },
 
-        handleImage (imageData, page) {
-            const qaPair = parseQAPair(new Jimp(imageData));
+        handleImage (img, page) {
+            const qaPair = parseQAPair(img);
             qaPair.forEach(([q, a]) => {
                 const qImgData = imageDataFromJimp(q);
                 const aImgData = imageDataFromJimp(a);
@@ -197,6 +248,61 @@ export default {
         async dismissQAPair () {
             this.qaPair.splice(0, 1);
         },
+
+        // Seperator-related codes
+
+        toggleSeperatorQ (e) {
+            this.toggleSeperator(e, this.qSeperator);
+        },
+
+        toggleSeperatorA (e) {
+            this.toggleSeperator(e, this.aSeperator);
+        },
+
+        toggleSeperator (e, seperatorList) {
+            const clickedY = (e.offsetY / e.target.offsetHeight * e.target.height) | 0;
+            for (let i = 0 ; i < seperatorList.length ; i++) {
+                const y = seperatorList[i];
+                if (Math.abs(y - clickedY) < 20) {
+                    seperatorList.splice(i, 1);
+                    return;
+                }
+            }
+            seperatorList.push(clickedY);
+        },
+
+        splitQAPair () {
+            const { qImgCanvas, aImgCanvas } = this.$refs;
+            const qJimp = jimpFromCanvas(qImgCanvas);
+            const aJimp = jimpFromCanvas(aImgCanvas);
+
+            const qs = splitImage(qJimp, this.qSeperator);
+            const as = splitImage(aJimp, this.aSeperator);
+            const page = this.qaFirst[2];
+
+            const newPairs = [];
+            for (let i  = 0 ; i < qs.length ; i++) {
+                newPairs.push([
+                    imageDataFromJimp(qs[i]),
+                    imageDataFromJimp(as[i]),
+                    page,
+                ]);
+            }
+
+            this.qaPair.splice(0, 1, ...newPairs);
+        },
+
+        renderSeperatorCanvas (canvas, seperatorList) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (const y of seperatorList) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        },
     },
 };
 
@@ -217,8 +323,18 @@ export default {
         z-index: 1;
     }
 
-    .downscale {
-        max-width: 95%;
+    .imgCol {
+        position: relative;
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            max-width: 95%;
+
+            &.img {
+                position: relative;
+            }
+        }
     }
 }
 

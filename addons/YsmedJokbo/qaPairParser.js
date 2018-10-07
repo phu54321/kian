@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Jimp from 'jimp/es';
 import ImageView from './ImageView';
 
 function isHorizontalLineWhite (view, y) {
@@ -32,8 +31,7 @@ function isVerticalLine (view, x) {
     const dataIndexEnd = view.dataIndex(x, view.h);
 
     const y0Color = data.readUInt32BE(dataIndexStart);
-    const { r, g, b } = Jimp.intToRGBA(y0Color);
-    if (r > 0x80 || g > 0x80 || b > 0x80) return false;
+    if (y0Color === 0xFFFFFFFF) return false;
 
     for (let i = dataIndexStart + pitch ; i < dataIndexEnd ; i += pitch) {
         if (data.readUInt32BE(i) !== y0Color) return false;
@@ -63,6 +61,11 @@ export function parseQAPair (image) {
             lastY = -1;
         }
     }
+
+    if (lastY !== -1) {
+        imgBlockYRange.push([lastY, height]);
+    }
+
 
     const XPADDING = 3, YPADDING = 3;
     imgBlockYRange.forEach(([y0, y1]) => {
