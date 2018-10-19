@@ -44,21 +44,21 @@ b-container.pt-4
 
 <script>
 
-import { getDeckInfo } from '~/api';
+import { getDeckInfo } from '~/api'
 
 export default {
-    props: ['deckName'],
-    async asyncData (props) {
-        return getDeckInfo(props.deckName);
-    },
-    data () {
-        return {
-            stat: {},
-            due: {},
-        };
-    },
-    name: 'deck-view',
-};
+  props: ['deckName'],
+  async asyncData (props) {
+    return getDeckInfo(props.deckName)
+  },
+  data () {
+    return {
+      stat: {},
+      due: {}
+    }
+  },
+  name: 'deck-view'
+}
 </script>
 
 <style lang="scss" scoped>

@@ -22,23 +22,23 @@ b-container.pt-4
 
 <script>
 
-import DeckTreeView from '~/components/dashboard/DeckTreeView';
+import DeckTreeView from '~/components/dashboard/DeckTreeView'
 
 export default {
-    async asyncData () {
-        const response = await this.$ankiCall('dashboard_deck_tree');
-        return {
-            deckDueTree: response,
-        };
-    },
-    data () {
-        return {
-            deckDueTree: [],
-        };
-    },
-    components: {
-        DeckTreeView,
-    },
-    name: 'dashboard',
-};
+  async asyncData () {
+    const response = await this.$ankiCall('dashboard_deck_tree')
+    return {
+      deckDueTree: response
+    }
+  },
+  data () {
+    return {
+      deckDueTree: []
+    }
+  },
+  components: {
+    DeckTreeView
+  },
+  name: 'dashboard'
+}
 </script>

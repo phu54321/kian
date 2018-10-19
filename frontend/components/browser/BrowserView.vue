@@ -80,7 +80,6 @@ div.browser-view
                 @updateView='updateView++',
             )
 
-
     .browser-tools
         .tools-container(:class='{enabled: selectedCardList.length > 0}')
             b-button-group.mr-2
@@ -120,331 +119,332 @@ div.browser-view
 
 <script>
 
-import _ from 'lodash';
-import $ from 'jquery';
+import _ from 'lodash'
+import $ from 'jquery'
 
-import BrowserEditor from './BrowserEditor';
-import BrowserToolModals from './BrowserToolModals';
-import fieldFormatter from './fieldFormatter';
-import BrowserSelection from './BrowserSelection';
-import { clamp } from '~/utils/utils';
+import BrowserEditor from './BrowserEditor'
+import BrowserToolModals from './BrowserToolModals'
+import fieldFormatter from './fieldFormatter'
+import BrowserSelection from './BrowserSelection'
+import { clamp } from '~/utils/utils'
 
 import {
-    getCardsBrowserInfo,
-    toggleCardMarkedBatch,
-    toggleCardSuspendedBatch,
-} from '~/api';
+  getCardsBrowserInfo,
+  toggleCardMarkedBatch,
+  toggleCardSuspendedBatch
+} from '~/api'
 
 function isDescendant (parent, child) {
-    if (!child) return false;
+  if (!child) return false
 
-    var node = child.parentNode;
-    while (node) {
-        if (node === parent) {
-            return true;
-        }
-        node = node.parentNode;
+  var node = child.parentNode
+  while (node) {
+    if (node === parent) {
+      return true
     }
-    return false;
+    node = node.parentNode
+  }
+  return false
 }
 
 function isInModal (child) {
-    if (!child) return false;
+  if (!child) return false
 
-    for (let node = child ; node ; node = node.parentNode) {
-        const { classList } = node;
-        if (classList && classList.contains('modal') && classList.contains('show')) return true;
-    }
-    return false;
+  for (let node = child; node; node = node.parentNode) {
+    const { classList } = node
+    if (classList && classList.contains('modal') && classList.contains('show')) return true
+  }
+  return false
 }
 
 export default {
-    mixins: [BrowserSelection],
-    props: {
-        cardIds: [Array, null],
-        enableSort: Boolean,
-        sortBy: {
-            type: String,
-            default: 'id',
-        },
-        sortOrder: {
-            type: String,
-            default: 'desc',
-        },
+  mixins: [BrowserSelection],
+  props: {
+    cardIds: [Array, null],
+    enableSort: Boolean,
+    sortBy: {
+      type: String,
+      default: 'id'
     },
-    components: {
-        BrowserEditor,
-        BrowserToolModals,
+    sortOrder: {
+      type: String,
+      default: 'desc'
+    }
+  },
+  components: {
+    BrowserEditor,
+    BrowserToolModals
+  },
+  data () {
+    return {
+      page: 1,
+      updateView: 0,
+      lastSelectedIndex: -1,
+      cardCache: [],
+      cardSelected: [],
+
+      visibleMinIndex: 0,
+      visibleMaxIndex: 100,
+      renderRangeBegin: 0,
+      renderRangeEnd: 0,
+      prerenderRangeBegin: 0,
+      prerenderRangeEnd: 0,
+
+      isRendering: false,
+
+      showEditor: false,
+      browserEditorHeight: (this.$localStorage.get('browserEditorHeight') || 350) | 0,
+      oldPageY: null,
+      editorFullscreen: false
+    }
+  },
+  created () {
+    this.resetCardCache()
+    $('.app-body').on('scroll', this.onScroll)
+    window.addEventListener('click', this.clickBlurHandler, true)
+  },
+  destroyed () {
+    window.removeEventListener('click', this.clickBlurHandler)
+    $('.app-body').off('scroll', this.onScroll)
+  },
+  watch: {
+    cardIds () {
+      this.resetCardCache()
+      this.resetSelectedCards()
     },
-    data () {
-        return {
-            page: 1,
-            updateView: 0,
-            lastSelectedIndex: -1,
-            cardCache: [],
-            cardSelected: [],
-
-            visibleMinIndex: 0,
-            visibleMaxIndex: 100,
-            renderRangeBegin: 0,
-            renderRangeEnd: 0,
-            prerenderRangeBegin: 0,
-            prerenderRangeEnd: 0,
-
-            isRendering: false,
-
-            showEditor: false,
-            browserEditorHeight: (this.$localStorage.get('browserEditorHeight') || 350) | 0,
-            oldPageY: null,
-            editorFullscreen: false,
-        };
+    updateView () {
+      this.resetCardCache()
     },
-    created () {
-        this.resetCardCache();
-        $('.app-body').on('scroll', this.onScroll);
-        window.addEventListener('click', this.clickBlurHandler, true);
+    visibleRangeWatcher () {
+      if (!this.isRendering) {
+        this.renderRangeBegin = clamp(this.visibleMinIndex, 0, this.frozenCardIds.length)
+        this.renderRangeEnd = clamp(this.visibleMaxIndex, 0, this.frozenCardIds.length)
+      }
     },
-    destroyed () {
-        window.removeEventListener('click', this.clickBlurHandler);
-        $('.app-body').off('scroll', this.onScroll);
+    prerenderRange (r) {
+      this.ensureCardRendered(r)
     },
-    watch: {
-        cardIds () {
-            this.resetCardCache();
-            this.resetSelectedCards();
-        },
-        updateView () {
-            this.resetCardCache();
-        },
-        visibleRangeWatcher () {
-            if (!this.isRendering) {
-                this.renderRangeBegin = clamp(this.visibleMinIndex, 0, this.frozenCardIds.length);
-                this.renderRangeEnd = clamp(this.visibleMaxIndex, 0, this.frozenCardIds.length);
-            }
-        },
-        prerenderRange (r) {
-            this.ensureCardRendered(r);
-        },
-        selectedCardId (v) {
-            if (v !== -1) {
-                this.showEditor = true;
-            } else {
-                this.showEditor = false;
-            }
-        },
+    selectedCardId (v) {
+      if (v !== -1) {
+        this.showEditor = true
+      } else {
+        this.showEditor = false
+      }
+    }
+  },
+  asyncComputed: {
+    displayCommands: {
+      async get () {
+        if (this.cardIds === null) return [{ type: 'loading' }]
+
+        const { frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex } = this
+        if (cardIds.length === 0) return [{ type: 'noCards' }]
+
+        // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
+        // after a rendering session completes.
+        this.isRendering = true
+
+        const renderIndexes = _.range(renderRangeBegin, renderRangeEnd)
+        if (selectedCardIndex !== -1) renderIndexes.push(selectedCardIndex)
+        await this.ensureCardRendered(renderIndexes)
+
+        // Build basic render commands
+        const renderCommands = new Array(cardIds.length).fill(null)
+        const addIndexToRenderCommand = (index) => {
+          // We store each cards' selection state in displayCommand, rather than
+          // accessing this.cardSelected inside computeRowClass. That is because,
+          // accessing `cardSelected` takes quite a time (~10ms), and computing
+          // each card's selected state for each commands takes quite long, since
+          // evaluation `this.cardSelected` for each card commands trigger a reactive
+          // getter of it.
+          renderCommands[index] = {
+            type: 'card',
+            index,
+            card: cardCache[index],
+            selected: cardSelected[index]
+          }
+        }
+
+        _.range(renderRangeBegin, renderRangeEnd).forEach(i => addIndexToRenderCommand(i))
+        if (selectedCardIndex !== -1) addIndexToRenderCommand(selectedCardIndex)
+
+        // Nulls → space entry
+        const compressedRenderCommands = renderCommands.reduce((list, entry) => {
+          const lastEntry = list[list.length - 1]
+          if (lastEntry.type === 'space' && entry === null) {
+            lastEntry.length++
+          } else if (entry === null) { // null → space element
+            list.push({
+              type: 'space',
+              length: 1
+            })
+          } else {
+            list.push(entry)
+          }
+          return list
+        }, [{ type: 'space', length: 0 }])
+
+        const firstCommand = compressedRenderCommands[0]
+        if (firstCommand.type === 'space' && firstCommand.length === 0) {
+          compressedRenderCommands.splice(0, 1)
+        }
+
+        this.isRendering = false
+
+        // Prerender some items below/over the table.
+        // These items don't need to be rendered right now, but they may be needed after scrolling.
+        // Return the currently rendered rows and pend the prerender task to watch() tags.
+        const PRERENDER_PADDING = 500
+        this.prerenderRangeBegin = this.renderRangeBegin - PRERENDER_PADDING
+        this.prerenderRangeEnd = this.renderRangeEnd + PRERENDER_PADDING
+
+        return Object.freeze(compressedRenderCommands.filter(x => x))
+      },
+      default: [{ type: 'loading' }]
+    }
+  },
+  computed: {
+    frozenCardIds () {
+      if (this.cardIds === null) return []
+      return Object.freeze(this.cardIds.slice())
     },
-    asyncComputed: {
-        displayCommands: {
-            async get () {
-                if (this.cardIds === null) return [{ type: 'loading' }];
-
-                const { frozenCardIds: cardIds, cardCache, cardSelected, renderRangeBegin, renderRangeEnd, selectedCardIndex } = this;
-                if (cardIds.length === 0) return [{ type: 'noCards' }];
-
-                // Prevent parallel ajax (ensureCardsRendered) call. Ajax call can only be initiated
-                // after a rendering session completes.
-                this.isRendering = true;
-
-                const renderIndexes = _.range(renderRangeBegin, renderRangeEnd);
-                if (selectedCardIndex !== -1) renderIndexes.push(selectedCardIndex);
-                await this.ensureCardRendered(renderIndexes);
-
-                // Build basic render commands
-                const renderCommands = new Array(cardIds.length).fill(null);
-                const addIndexToRenderCommand = (index) => {
-                    // We store each cards' selection state in displayCommand, rather than
-                    // accessing this.cardSelected inside computeRowClass. That is because,
-                    // accessing `cardSelected` takes quite a time (~10ms), and computing
-                    // each card's selected state for each commands takes quite long, since
-                    // evaluation `this.cardSelected` for each card commands trigger a reactive
-                    // getter of it.
-                    renderCommands[index] = {
-                        type: 'card',
-                        index,
-                        card: cardCache[index],
-                        selected: cardSelected[index],
-                    };
-                };
-
-                _.range(renderRangeBegin, renderRangeEnd).forEach(i => addIndexToRenderCommand(i));
-                if (selectedCardIndex !== -1) addIndexToRenderCommand(selectedCardIndex);
-
-                // Nulls → space entry
-                const compressedRenderCommands = renderCommands.reduce((list, entry) => {
-                    const lastEntry = list[list.length - 1];
-                    if (lastEntry.type === 'space' && entry === null) {
-                        lastEntry.length++;
-                    } else if (entry === null) {  // null → space element
-                        list.push({
-                            type: 'space',
-                            length: 1,
-                        });
-                    } else {
-                        list.push(entry);
-                    }
-                    return list;
-                }, [{ type: 'space', length: 0 }]);
-
-                const firstCommand = compressedRenderCommands[0];
-                if (firstCommand.type === 'space' && firstCommand.length === 0) {
-                    compressedRenderCommands.splice(0, 1);
-                }
-
-                this.isRendering = false;
-
-                // Prerender some items below/over the table.
-                // These items don't need to be rendered right now, but they may be needed after scrolling.
-                // Return the currently rendered rows and pend the prerender task to watch() tags.
-                const PRERENDER_PADDING = 500;
-                this.prerenderRangeBegin = this.renderRangeBegin - PRERENDER_PADDING;
-                this.prerenderRangeEnd = this.renderRangeEnd + PRERENDER_PADDING;
-
-                return Object.freeze(compressedRenderCommands.filter(x => x));
-            },
-            default: [{ type: 'loading' }],
-        },
+    fields () {
+      return [
+        { label: '', key: 'schedType', class: 'pr-1', formatter: 'schedTypeToDot' },
+        { label: 'Preview', key: 'preview', sortable: this.enableSort, class: 'ellipsis' },
+        { label: 'Deck', key: 'deck', sortable: this.enableSort },
+        { label: 'Model', key: 'model', sortable: this.enableSort, class: 'ellipsis' },
+        { label: '#', key: 'ord', formatter: 'formatOrd' },
+        { label: 'Created', key: 'createdAt', sortable: this.enableSort, formatter: 'timeToText' },
+        { label: 'Modified', key: 'updatedAt', sortable: this.enableSort, formatter: 'timeToText' },
+        { label: 'Due', key: 'due', sortable: this.enableSort, formatter: 'timeToText' },
+        { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' }
+      ]
     },
-    computed: {
-        frozenCardIds () {
-            if (this.cardIds === null) return [];
-            return Object.freeze(this.cardIds.slice());
-        },
-        fields () {
-            return [
-                { label: '', key: 'schedType', class: 'pr-1', formatter: 'schedTypeToDot' },
-                { label: 'Preview', key: 'preview', sortable: this.enableSort, class: 'ellipsis' },
-                { label: 'Deck', key: 'deck', sortable: this.enableSort },
-                { label: 'Model', key: 'model', sortable: this.enableSort, class: 'ellipsis' },
-                { label: '#', key: 'ord', formatter: 'formatOrd' },
-                { label: 'Created', key: 'createdAt', sortable: this.enableSort, formatter: 'timeToText' },
-                { label: 'Modified', key: 'updatedAt', sortable: this.enableSort, formatter: 'timeToText' },
-                { label: 'Due', key: 'due', sortable: this.enableSort, formatter: 'timeToText' },
-                { label: 'Tag', key: 'tags', formatter: 'concatTags', class: 'ellipsis' },
-            ];
-        },
-        visibleRangeWatcher () {
-            return [
-                this.visibleMinIndex,
-                this.visibleMaxIndex,
-                this.isRendering,
-            ];
-        },
-        prerenderRange () {
-            return _.range(this.prerenderRangeBegin, this.prerenderRangeEnd);
-        },
+    visibleRangeWatcher () {
+      return [
+        this.visibleMinIndex,
+        this.visibleMaxIndex,
+        this.isRendering
+      ]
     },
-    methods: {
-        showBrowserTool (modalID) {
-            this.showEditor = false;
-            this.$root.$emit('bv::show::modal', modalID);
-        },
+    prerenderRange () {
+      return _.range(this.prerenderRangeBegin, this.prerenderRangeEnd)
+    }
+  },
+  methods: {
+    showBrowserTool (modalID) {
+      this.showEditor = false
+      this.$root.$emit('bv::show::modal', modalID)
+    },
 
-        onScroll: _.throttle(function () {
-            if (!this.$refs.mainTable) return;
+    onScroll: _.throttle(function () {
+      if (!this.$refs.mainTable) return
 
-            const { top } = this.$refs.mainTable.getBoundingClientRect();
-            const viewportHeight = document.documentElement.clientHeight;
-            const PADDING = 100;
-            this.visibleMinIndex = ((-top) / 30 - PADDING) | 0;
-            this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0;
-        }, 100),
+      const { top } = this.$refs.mainTable.getBoundingClientRect()
+      const viewportHeight = document.documentElement.clientHeight
+      const PADDING = 100
+      this.visibleMinIndex = ((-top) / 30 - PADDING) | 0
+      this.visibleMaxIndex = ((viewportHeight - top) / 30 + PADDING) | 0
+    }, 100),
 
-        clickBlurHandler (e) {
-            if (!isDescendant(this.$el, e.target) && !isInModal(e.target)) {
-                this.selectAll(false);
-            }
-        },
+    clickBlurHandler (e) {
+      if (!isDescendant(this.$el, e.target) && !isInModal(e.target)) {
+        this.selectAll(false)
+      }
+    },
 
-        issueSortBy (sortField) {
-            let { sortBy, sortOrder } = this;
-            if (sortBy === sortField) {
-                sortOrder = {
-                    desc: 'asc',
-                    asc: 'desc',
-                }[sortOrder];
-            }
-            else {
-                sortBy = sortField;
-                sortOrder = 'desc';
-            }
-            this.$emit('update:sortBy', sortBy);
-            this.$emit('update:sortOrder', sortOrder);
-        },
+    issueSortBy (sortField) {
+      let { sortBy, sortOrder } = this
+      if (sortBy === sortField) {
+        sortOrder = {
+          desc: 'asc',
+          asc: 'desc'
+        }[sortOrder]
+      } else {
+        sortBy = sortField
+        sortOrder = 'desc'
+      }
+      this.$emit('update:sortBy', sortBy)
+      this.$emit('update:sortOrder', sortOrder)
+    },
 
-        computeRowClass (command) {
-            return {
-                selected: command.selected,
-                marked: command.card.tags.indexOf('marked') !== -1,
-                suspended: command.card.suspended,
-            };
-        },
+    computeRowClass (command) {
+      return {
+        selected: command.selected,
+        marked: command.card.tags.indexOf('marked') !== -1,
+        suspended: command.card.suspended
+      }
+    },
 
-        getFormatter (formatter) {
-            if (formatter) return fieldFormatter[formatter];
-            else return (x) => x;
-        },
+    getFormatter (formatter) {
+      if (formatter) return fieldFormatter[formatter]
+      else return (x) => x
+    },
 
-        resetCardCache () {
-            this.cardCache = [];
-        },
+    resetCardCache () {
+      this.cardCache = []
+    },
 
-        async ensureCardRendered (cardIndexes) {
-            const { frozenCardIds: cardIds, cardCache } = this;
-            const renderRequests = cardIndexes.filter(idx => (
-                0 <= idx && idx < cardIds.length &&
+    async ensureCardRendered (cardIndexes) {
+      const { frozenCardIds: cardIds, cardCache } = this
+      const renderRequests = cardIndexes.filter(idx => (
+        idx >= 0 && idx < cardIds.length &&
                 !cardCache[idx]
-            ));
-            if (renderRequests.length === 0) return;
-            const renderedRows = await getCardsBrowserInfo(renderRequests.map(idx => cardIds[idx]));
+      ))
+      if (renderRequests.length === 0) return
+      const renderedRows = await getCardsBrowserInfo(renderRequests.map(idx => cardIds[idx]))
 
-            // cardCache is just a cache, so it doesn't need to be reactive
-            // so we just use plain assignment instead of using this.$set
-            renderRequests.forEach((idx, i) => cardCache[idx] = renderedRows[i]);
-        },
-
-        updateCardIds () {
-            this.resetCardCache();
-            this.resetSelectedCards();
-            this.$emit('updateCardIds');
-        },
-
-        async markCards () {
-            this.showEditor = false;
-            await this.$nextTick();
-            await toggleCardMarkedBatch(this.selectedCardList);
-            this.updateView++;
-        },
-
-        async suspendCards () {
-            this.showEditor = false;
-            await this.$nextTick();
-            await toggleCardSuspendedBatch(this.selectedCardList);
-            this.updateView++;
-        },
-
-        onDragStart (ev) {
-            document.addEventListener('mousemove', this.onDragMove, false);
-            document.addEventListener('mouseup', this.onDragEnd, false);
-            this.oldPageY = ev.pageY;
-        },
-        onDragMove (ev) {
-            const yMovement = ev.pageY - this.oldPageY;
-            this.browserEditorHeight -= yMovement;
-            if (this.browserEditorHeight < 100) this.browserEditorHeight = 100;
-            else if (this.browserEditorHeight > 800) this.browserEditorHeight = 800;
-            this.$localStorage.set('browserEditorHeight', this.browserEditorHeight, { expires: '10Y' });
-            this.oldPageY = ev.pageY;
-        },
-        onDragEnd () {
-            document.removeEventListener('mousemove', this.onDragMove, false);
-            document.removeEventListener('mouseup', this. onDragEnd, false);
-        },
-
-        toggleEditorFullscreen () {
-            this.editorFullscreen = !this.editorFullscreen;
-        },
+      // cardCache is just a cache, so it doesn't need to be reactive
+      // so we just use plain assignment instead of using this.$set
+      renderRequests.forEach(function (idx, i) {
+        cardCache[idx] = renderedRows[i]
+      })
     },
-};
+
+    updateCardIds () {
+      this.resetCardCache()
+      this.resetSelectedCards()
+      this.$emit('updateCardIds')
+    },
+
+    async markCards () {
+      this.showEditor = false
+      await this.$nextTick()
+      await toggleCardMarkedBatch(this.selectedCardList)
+      this.updateView++
+    },
+
+    async suspendCards () {
+      this.showEditor = false
+      await this.$nextTick()
+      await toggleCardSuspendedBatch(this.selectedCardList)
+      this.updateView++
+    },
+
+    onDragStart (ev) {
+      document.addEventListener('mousemove', this.onDragMove, false)
+      document.addEventListener('mouseup', this.onDragEnd, false)
+      this.oldPageY = ev.pageY
+    },
+    onDragMove (ev) {
+      const yMovement = ev.pageY - this.oldPageY
+      this.browserEditorHeight -= yMovement
+      if (this.browserEditorHeight < 100) this.browserEditorHeight = 100
+      else if (this.browserEditorHeight > 800) this.browserEditorHeight = 800
+      this.$localStorage.set('browserEditorHeight', this.browserEditorHeight, { expires: '10Y' })
+      this.oldPageY = ev.pageY
+    },
+    onDragEnd () {
+      document.removeEventListener('mousemove', this.onDragMove, false)
+      document.removeEventListener('mouseup', this.onDragEnd, false)
+    },
+
+    toggleEditorFullscreen () {
+      this.editorFullscreen = !this.editorFullscreen
+    }
+  }
+}
 
 </script>
 

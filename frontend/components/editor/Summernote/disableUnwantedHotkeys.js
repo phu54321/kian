@@ -14,8 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-    removeHotkey,
-} from './summernoteExtend';
+  removeHotkey
+} from './summernoteExtend'
 
-removeHotkey(['TAB', 'SHIFT+TAB']);
-removeHotkey(['CTRL+ENTER']);
+removeHotkey(['TAB', 'SHIFT+TAB'])
+removeHotkey(['CTRL+ENTER'])

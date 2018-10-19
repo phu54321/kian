@@ -19,140 +19,137 @@ iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
 
 </template>
 
-
 <script>
 
-import mime from 'mime-types';
-import { uploadImageFromBase64 } from '~/utils/uploadHelper';
-
+import mime from 'mime-types'
+import { uploadImageFromBase64 } from '~/utils/uploadHelper'
 
 function eventPassThrough (e) {
-    const newEvent = new e.constructor(e.type, e);
-    document.body.dispatchEvent(newEvent);
+  const newEvent = new e.constructor(e.type, e)
+  document.body.dispatchEvent(newEvent)
 
-    // Prevent Ctrl+S event
-    if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-        e.preventDefault();
-    }
+  // Prevent Ctrl+S event
+  if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+    e.preventDefault()
+  }
 }
 
 function domOnloadPromise (win) {
-    return new Promise((resolve) => {
-        win.addEventListener('load', resolve);
-    });
+  return new Promise((resolve) => {
+    win.addEventListener('load', resolve)
+  })
 }
 
 function imgOnloadPromise (imgEl) {
-    return new Promise((resolve) => {
-        imgEl.onload = () => {
-            resolve(imgEl);
-        };
-    });
+  return new Promise((resolve) => {
+    imgEl.onload = () => {
+      resolve(imgEl)
+    }
+  })
 }
 
 function sleep (duration) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, duration);
-    });
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration)
+  })
 }
 
 function loadImage (src) {
-    const imgEl = document.createElement('img');
-    imgEl.src = src;
-    return imgOnloadPromise(imgEl);
+  const imgEl = document.createElement('img')
+  imgEl.src = src
+  return imgOnloadPromise(imgEl)
 }
 
 export default {
-    props: ['value'],
+  props: ['value'],
 
-    data () {
-        return {
-            iframeWindow: null,
-            internalValue: this.value,
-        };
-    },
+  data () {
+    return {
+      iframeWindow: null,
+      internalValue: this.value
+    }
+  },
 
-    async mounted () {
-        await this.$nextTick();
+  async mounted () {
+    await this.$nextTick()
 
-        const iframeDOM = this.$refs.iframe;
-        const iframeWindow = this.iframeWindow = iframeDOM.contentWindow;
+    const iframeDOM = this.$refs.iframe
+    const iframeWindow = this.iframeWindow = iframeDOM.contentWindow
 
-        iframeWindow.addEventListener('keydown', eventPassThrough);
-        iframeWindow.addEventListener('keyup', eventPassThrough);
-        await domOnloadPromise(iframeWindow);
+    iframeWindow.addEventListener('keydown', eventPassThrough)
+    iframeWindow.addEventListener('keyup', eventPassThrough)
+    await domOnloadPromise(iframeWindow)
 
-        const imgEl = await loadImage(this.value);
+    const imgEl = await loadImage(this.value)
 
-        // miniPaint has its own onload handler, but it is registered after domOnloadPromise
-        // is registered. (mounted called before iframe rendering). Let that handler run first.
-        while (!iframeWindow.Layers) await sleep(1);
+    // miniPaint has its own onload handler, but it is registered after domOnloadPromise
+    // is registered. (mounted called before iframe rendering). Let that handler run first.
+    while (!iframeWindow.Layers) await sleep(1)
 
-        const newLayer = {
-            name: 'Image',
-            type: 'image',
-            data: imgEl,
-            width: imgEl.naturalWidth || imgEl.width,
-            height: imgEl.naturalHeight || imgEl.height,
-            width_original: imgEl.naturalWidth || imgEl.width,
-            height_original: imgEl.naturalHeight || imgEl.height,
-        };
+    const newLayer = {
+      name: 'Image',
+      type: 'image',
+      data: imgEl,
+      width: imgEl.naturalWidth || imgEl.width,
+      height: imgEl.naturalHeight || imgEl.height,
+      width_original: imgEl.naturalWidth || imgEl.width,
+      height_original: imgEl.naturalHeight || imgEl.height
+    }
 
-        await iframeWindow.Layers.insert(newLayer);
-        iframeWindow.Layers.render(true);
+    await iframeWindow.Layers.insert(newLayer)
+    iframeWindow.Layers.render(true)
 
-        // Fixes cursor offset glitch
-        iframeWindow.resetCursor();
-    },
+    // Fixes cursor offset glitch
+    iframeWindow.resetCursor()
+  },
 
-    watch: {
-        async value (newValue) {
-            const iframeDOM = this.$refs.iframe;
-            if (!iframeDOM) return;
-            const iframeWindow = iframeDOM.contentWindow;
-            if (!iframeWindow) return;
+  watch: {
+    async value (newValue) {
+      const iframeDOM = this.$refs.iframe
+      if (!iframeDOM) return
+      const iframeWindow = iframeDOM.contentWindow
+      if (!iframeWindow) return
 
-            iframeWindow.Layers.reset_layers();
+      iframeWindow.Layers.reset_layers()
 
-            const imgEl = await loadImage(newValue);
+      const imgEl = await loadImage(newValue)
 
-            const newLayer = {
-                name: 'Image',
-                type: 'image',
-                data: imgEl,
-                width: imgEl.naturalWidth || imgEl.width,
-                height: imgEl.naturalHeight || imgEl.height,
-                width_original: imgEl.naturalWidth || imgEl.width,
-                height_original: imgEl.naturalHeight || imgEl.height,
-            };
+      const newLayer = {
+        name: 'Image',
+        type: 'image',
+        data: imgEl,
+        width: imgEl.naturalWidth || imgEl.width,
+        height: imgEl.naturalHeight || imgEl.height,
+        width_original: imgEl.naturalWidth || imgEl.width,
+        height_original: imgEl.naturalHeight || imgEl.height
+      }
 
-            await iframeWindow.Layers.insert(newLayer);
-            iframeWindow.Layers.render(true);
+      await iframeWindow.Layers.insert(newLayer)
+      iframeWindow.Layers.render(true)
 
-            // Fixes cursor offset glitch
-            iframeWindow.resetCursor();
-        },
-    },
+      // Fixes cursor offset glitch
+      iframeWindow.resetCursor()
+    }
+  },
 
-    methods: {
-        onSave () {
-            const { Layers } = this.iframeWindow;
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            const dim = Layers.get_dimensions();
-            tempCanvas.width = dim.width;
-            tempCanvas.height = dim.height;
-            Layers.convert_layers_to_canvas(tempCtx);
+  methods: {
+    onSave () {
+      const { Layers } = this.iframeWindow
+      const tempCanvas = document.createElement('canvas')
+      const tempCtx = tempCanvas.getContext('2d')
+      const dim = Layers.get_dimensions()
+      tempCanvas.width = dim.width
+      tempCanvas.height = dim.height
+      Layers.convert_layers_to_canvas(tempCtx)
 
-            const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1];
-            uploadImageFromBase64(this.value, b64).then(newImageUrl => {
-                this.$emit('input', newImageUrl);
-            });
-        },
-    },
-    name: 'mini-paint',
-};
-
+      const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1]
+      uploadImageFromBase64(this.value, b64).then(newImageUrl => {
+        this.$emit('input', newImageUrl)
+      })
+    }
+  },
+  name: 'mini-paint'
+}
 
 </script>
 

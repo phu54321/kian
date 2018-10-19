@@ -25,97 +25,97 @@ autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
 </template>
 
 <script>
-import { fuzzyMatch, focusNextElement } from '~/utils/utils';
-import AutocompleteBox from './AutocompleteBox';
+import { fuzzyMatch, focusNextElement } from '~/utils/utils'
+import AutocompleteBox from './AutocompleteBox'
 
 export default {
-    props: ['placeholder', 'value', 'optionsFunc', 'disabled', 'taggable', 'focus'],
-    name: 'list-selector',
-    components: {
-        AutocompleteBox,
-    },
+  props: ['placeholder', 'value', 'optionsFunc', 'disabled', 'taggable', 'focus'],
+  name: 'list-selector',
+  components: {
+    AutocompleteBox
+  },
 
-    data () {
-        return {
-            options: [this.value],
-            internalValue: this.value,
-            focused: false,
-        };
-    },
+  data () {
+    return {
+      options: [this.value],
+      internalValue: this.value,
+      focused: false
+    }
+  },
 
-    async asyncData (props) {
-        const options = await props.optionsFunc();
-        options.sort();
-        return {
-            options,
-        };
-    },
+  async asyncData (props) {
+    const options = await props.optionsFunc()
+    options.sort()
+    return {
+      options
+    }
+  },
 
-    mounted () {
-        if (this.focus !== undefined) {
-            window.setTimeout(() => {
-                this.$refs.inputBox.focus();
-                this.$refs.inputBox.select();
-            }, 1);
+  mounted () {
+    if (this.focus !== undefined) {
+      window.setTimeout(() => {
+        this.$refs.inputBox.focus()
+        this.$refs.inputBox.select()
+      }, 1)
+    }
+  },
+
+  computed: {
+    autocompleteList () {
+      return this.options.filter(option => fuzzyMatch(this.internalValue, option))
+    }
+  },
+
+  methods: {
+    isValidInput (v) {
+      if (this.taggable !== undefined) return true
+      else return this.options.indexOf(v) !== -1
+    },
+    onFocus (focused) {
+      this.focused = focused
+      if (focused) {
+        this.$refs.inputBox.select()
+      } else {
+        if (!this.isValidInput(this.internalValue)) {
+          this.internalValue = this.value
         }
+      }
     },
-
-    computed: {
-        autocompleteList () {
-            return this.options.filter(option => fuzzyMatch(this.internalValue, option));
-        },
+    onInput () {
+      this.internalValue = this.$refs.inputBox.value
     },
-
-    methods: {
-        isValidInput (v) {
-            if (this.taggable !== undefined) return true;
-            else return this.options.indexOf(v) !== -1;
-        },
-        onFocus (focused) {
-            this.focused = focused;
-            if (focused) {
-                this.$refs.inputBox.select();
-            } else {
-                if (!this.isValidInput(this.internalValue)) {
-                    this.internalValue = this.value;
-                }
-            }
-        },
-        onInput () {
-            this.internalValue = this.$refs.inputBox.value;
-        },
-        onKeyDown (e) {
-            if (e.keyCode === 27) {  // ESC
-                this.$refs.inputBox.blur();
-                e.stopPropagation();
-                e.preventDefault();
-            } else if (e.keyCode === 13) {
-                focusNextElement();
-            }
-        },
-        onAutocomplete (val) {
-            this.internalValue = val;
-            focusNextElement();
-        },
-
+    onKeyDown (e) {
+      if (e.keyCode === 27) { // ESC
+        this.$refs.inputBox.blur()
+        e.stopPropagation()
+        e.preventDefault()
+      } else if (e.keyCode === 13) {
+        focusNextElement()
+      }
     },
+    onAutocomplete (val) {
+      this.internalValue = val
+      focusNextElement()
+    }
 
-    watch: {
-        value (v) {
-            this.internalValue = v;
-        },
-        internalValue (v) {
-            if (this.isValidInput(v)) {
-                this.$emit('input', v);
-            }
-        },
-        options () {
-            if (!this.value && this.options.length) {
-                this.$emit('input', this.options[0]); // Select first option by default
-            }
-        },
+  },
+
+  watch: {
+    value (v) {
+      this.internalValue = v
     },
-};
+    internalValue (v) {
+      if (this.isValidInput(v)) {
+        this.$emit('input', v)
+      }
+    },
+    options () {
+      if (!this.value && this.options.length) {
+        this.$emit('input', this.options[0]) // Select first option by default
+      }
+    }
+  }
+}
 
 </script>
 

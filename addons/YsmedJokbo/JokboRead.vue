@@ -41,164 +41,162 @@ div
 
     browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
 
-
 </template>
-
 
 <script>
 
-import Jimp from 'jimp/es';
-import { parseQAPair } from './qaPairParser';
-import ListSelector from '~/components//common/ListSelector';
-import { uploadImageFromBase64 } from '~/utils/uploadHelper';
-import BrowserView from '~/components/browser/BrowserView';
-import { listDeck, findCards, addNote } from '~/api';
+import Jimp from 'jimp/es'
+import { parseQAPair } from './qaPairParser'
+import ListSelector from '~/components//common/ListSelector'
+import { uploadImageFromBase64 } from '~/utils/uploadHelper'
+import BrowserView from '~/components/browser/BrowserView'
+import { listDeck, findCards, addNote } from '~/api'
 
-const URLObj = window.URL || window.webkitURL;
+const URLObj = window.URL || window.webkitURL
 
 function imageDataFromJimp (img) {
-    return new ImageData(
-        new Uint8ClampedArray(img.bitmap.data),
-        img.bitmap.width, img.bitmap.height
-    );
+  return new ImageData(
+    new Uint8ClampedArray(img.bitmap.data),
+    img.bitmap.width, img.bitmap.height
+  )
 }
 
 export default {
-    created () {
-        document.addEventListener('paste', this.handlePaste);
+  created () {
+    document.addEventListener('paste', this.handlePaste)
+  },
+  destroyed () {
+    document.removeEventListener('paste', this.handlePaste)
+  },
+  mounted () {
+    const scriptEl = document.createElement('script')
+    scriptEl.setAttribute('src', '/pdfjs/build/pdf.js')
+    this.$refs.scriptHolder.appendChild(scriptEl)
+  },
+  data () {
+    return {
+      qaPair: [],
+      message: 'Select a file.',
+      deck: 'Default',
+      addedCardIds: [],
+      updateCardIds: 0
+    }
+  },
+  async asyncData () {
+    const createdCards = await findCards()
+    return {
+      addedCardIds: createdCards.slice(0, 20)
+    }
+  },
+
+  computed: {
+    qaFirst () {
+      return this.qaPair[0]
     },
-    destroyed () {
-        document.removeEventListener('paste', this.handlePaste);
+    listDeck: () => listDeck
+  },
+  watch: {
+    async updateCardIds () {
+      const createdCards = await findCards({
+        query: '',
+        sortBy: 'createdAt'
+      })
+      this.addedCardIds = createdCards.slice(0, 20)
     },
-    mounted () {
-        const scriptEl = document.createElement('script');
-        scriptEl.setAttribute('src', '/pdfjs/build/pdf.js');
-        this.$refs.scriptHolder.appendChild(scriptEl);
+    qaFirst (v) {
+      const [q, a] = v
+
+      const { qImgCanvas, aImgCanvas } = this.$refs
+      qImgCanvas.width = q.width
+      qImgCanvas.height = q.height
+      qImgCanvas.getContext('2d').putImageData(q, 0, 0)
+
+      aImgCanvas.width = a.width
+      aImgCanvas.height = a.height
+      aImgCanvas.getContext('2d').putImageData(a, 0, 0)
+    }
+  },
+  components: {
+    ListSelector,
+    BrowserView
+  },
+  methods: {
+    onFileChange (e) {
+      const files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.handlePdf(files[0])
     },
-    data () {
-        return {
-            qaPair: [],
-            message: 'Select a file.',
-            deck: 'Default',
-            addedCardIds: [],
-            updateCardIds: 0,
-        };
+    async handlePdf (pdfFile) {
+      this.message = `Processing ${pdfFile.name}...`
+      const source = URLObj.createObjectURL(pdfFile)
+      const pdf = await window.pdfjsLib.getDocument({ url: source })
+
+      try {
+        const startTime = new Date().getTime()
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d')
+
+        const pageNum = pdf.numPages
+        for (let pageIndex = 1; pageIndex <= pageNum; pageIndex++) {
+          const page = await pdf.getPage(pageIndex)
+          const scale = 1.5
+          const viewport = page.getViewport(scale)
+
+          canvas.height = viewport.height
+          canvas.width = viewport.width
+
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          })
+          this.message = `Processing page ${pageIndex}/${pageNum}`
+          this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex)
+        }
+        this.message = 'Waiting for page extraction...'
+        this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `
+      } finally {
+        pdf.destroy()
+      }
     },
-    async asyncData () {
-        const createdCards = await findCards();
-        return {
-            addedCardIds: createdCards.slice(0, 20),
-        };
+
+    handleImage (imageData, page) {
+      const qaPair = parseQAPair(new Jimp(imageData))
+      qaPair.forEach(([q, a]) => {
+        const qImgData = imageDataFromJimp(q)
+        const aImgData = imageDataFromJimp(a)
+        this.qaPair.push([qImgData, aImgData, page])
+      })
     },
 
-    computed: {
-        qaFirst () {
-            return this.qaPair[0];
-        },
-        listDeck: () => listDeck,
+    async acceptQAPair () {
+      const { qImgCanvas, aImgCanvas } = this.$refs
+      const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1]
+      const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1]
+      const page = this.qaFirst[2]
+
+      this.qaPair.splice(0, 1)
+
+      const [qUrl, aUrl] = await Promise.all([
+        uploadImageFromBase64('image.jpg', q),
+        uploadImageFromBase64('image.jpg', a)
+      ])
+
+      await addNote({
+        deck: this.deck,
+        model: 'Basic',
+        fields: [
+          `<img src="${encodeURIComponent(qUrl)}">`,
+          `<p><i>Page: ${page}</i></p><img src="${encodeURIComponent(aUrl)}">`
+        ],
+        tags: []
+      })
+      this.updateCardIds++
     },
-    watch: {
-        async updateCardIds () {
-            const createdCards = await findCards({
-                query: '',
-                sortBy: 'createdAt',
-            });
-            this.addedCardIds = createdCards.slice(0, 20);
-        },
-        qaFirst (v) {
-            const [q, a] = v;
-
-            const { qImgCanvas, aImgCanvas } = this.$refs;
-            qImgCanvas.width = q.width;
-            qImgCanvas.height = q.height;
-            qImgCanvas.getContext('2d').putImageData(q, 0, 0);
-
-            aImgCanvas.width = a.width;
-            aImgCanvas.height = a.height;
-            aImgCanvas.getContext('2d').putImageData(a, 0, 0);
-        },
-    },
-    components: {
-        ListSelector,
-        BrowserView,
-    },
-    methods: {
-        onFileChange (e) {
-            const files = e.target.files || e.dataTransfer.files;
-            if (!files.length) return;
-            this.handlePdf(files[0]);
-        },
-        async handlePdf (pdfFile) {
-            this.message = `Processing ${pdfFile.name}...`;
-            const source = URLObj.createObjectURL(pdfFile);
-            const pdf = await window.pdfjsLib.getDocument({ url: source });
-
-            try {
-                const startTime = new Date().getTime();
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-
-                const pageNum = pdf.numPages;
-                for (let pageIndex = 1 ; pageIndex <= pageNum ; pageIndex++) {
-                    const page = await pdf.getPage(pageIndex);
-                    const scale = 1.5;
-                    const viewport = page.getViewport(scale);
-
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-
-                    await page.render({
-                        canvasContext: context,
-                        viewport: viewport,
-                    });
-                    this.message = `Processing page ${pageIndex}/${pageNum}`;
-                    this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex);
-                }
-                this.message = 'Waiting for page extraction...';
-                this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `;
-            } finally {
-                pdf.destroy();
-            }
-        },
-
-        handleImage (imageData, page) {
-            const qaPair = parseQAPair(new Jimp(imageData));
-            qaPair.forEach(([q, a]) => {
-                const qImgData = imageDataFromJimp(q);
-                const aImgData = imageDataFromJimp(a);
-                this.qaPair.push([qImgData, aImgData, page]);
-            });
-        },
-
-        async acceptQAPair () {
-            const { qImgCanvas, aImgCanvas } = this.$refs;
-            const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
-            const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1];
-            const page = this.qaFirst[2];
-
-            this.qaPair.splice(0, 1);
-
-            const [qUrl, aUrl] = await Promise.all([
-                uploadImageFromBase64('image.jpg', q),
-                uploadImageFromBase64('image.jpg', a),
-            ]);
-
-            await addNote({
-                deck: this.deck,
-                model: 'Basic',
-                fields: [
-                    `<img src="${encodeURIComponent(qUrl)}">`,
-                    `<p><i>Page: ${page}</i></p><img src="${encodeURIComponent(aUrl)}">`,
-                ],
-                tags: [],
-            });
-            this.updateCardIds++;
-        },
-        async dismissQAPair () {
-            this.qaPair.splice(0, 1);
-        },
-    },
-};
+    async dismissQAPair () {
+      this.qaPair.splice(0, 1)
+    }
+  }
+}
 
 </script>
 

@@ -26,28 +26,30 @@ space-seperated-input(
 
 <script>
 
-import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
+import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
 
 export default {
-    props: {
-        value: Array,
-        focus: Boolean,
+  props: {
+    value: Array,
+    focus: Boolean
+  },
+  components: {
+    SpaceSeperatedInput
+  },
+  methods: {
+    tagRenderer (tag) {
+      if (tag === 'marked') {
+        return {
+          variant: 'danger',
+          title: tag
+        }
+      }
     },
-    components: {
-        SpaceSeperatedInput,
-    },
-    methods: {
-        tagRenderer (tag) {
-            if (tag === 'marked') return {
-                variant: 'danger',
-                title: tag,
-            };
-        },
-        async fetchTags (tag) {
-            return this.$ankiCall('tag_suggestions', {
-                query: tag,
-            });
-        },
-    },
-};
+    async fetchTags (tag) {
+      return this.$ankiCall('tag_suggestions', {
+        query: tag
+      })
+    }
+  }
+}
 </script>

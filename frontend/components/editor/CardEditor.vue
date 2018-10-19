@@ -54,109 +54,109 @@ b-form(@submit='onSave')
 
 <script>
 
-import ListSelector from '../common/ListSelector';
-import Summernote from './Summernote/Summernote';
-import TuiSummernote from './TuiSummernote';
-import TagEditor from '../common/TagEditor';
-import QuickModelSelector from './QuickModelSelector';
-import nonReactiveCopy from '~/utils/nonReactiveCopy';
-import _ from 'lodash';
+import ListSelector from '../common/ListSelector'
+import Summernote from './Summernote/Summernote'
+import TuiSummernote from './TuiSummernote'
+import TagEditor from '../common/TagEditor'
+import QuickModelSelector from './QuickModelSelector'
+import nonReactiveCopy from '~/utils/nonReactiveCopy'
+import _ from 'lodash'
 
-import './editor.scss';
-import { runHook } from '~/utils/hookBase';
+import './editor.scss'
+import { runHook } from '~/utils/hookBase'
 
-import { listModel, getModel } from '~/api';
-import { listDeck } from '~/api';
+import { listModel, getModel, listDeck } from '~/api'
 
 function resize (arr, size, defval) {
-    while (arr.length > size) { arr.pop(); }
-    while (arr.length < size) { arr.push(defval); }
+  while (arr.length > size) { arr.pop() }
+  while (arr.length < size) { arr.push(defval) }
 }
 
-
 export default {
-    props: [
-        'deckFixed',
-        'modelFixed',
-        'value',
-    ],
-    data () {
+  props: [
+    'deckFixed',
+    'modelFixed',
+    'value'
+  ],
+  data () {
+    return {
+      internalValue: runHook('edit_card_load', _.clone(this.value))
+    }
+  },
+  components: {
+    Summernote,
+    ListSelector,
+    TagEditor,
+    TuiSummernote,
+    QuickModelSelector
+  },
+  methods: {
+    onSave () {
+      this.$el.querySelectorAll('.editor-field')[0].focus()
+      this.$emit('save')
+    },
+    tagRenderer (tag) {
+      if (tag === 'marked') {
         return {
-            internalValue: runHook('edit_card_load', _.clone(this.value)),
-        };
+          variant: 'danger',
+          title: tag
+        }
+      }
     },
-    components: {
-        Summernote,
-        ListSelector,
-        TagEditor,
-        TuiSummernote,
-        QuickModelSelector,
+    async fetchTags (tag) {
+      return this.$ankiCall('tag_suggestions', {
+        query: tag
+      })
+    }
+  },
+  asyncComputed: {
+    modelData: {
+      get () {
+        if (!this.currentModel) return {}
+        return getModel(this.currentModel)
+      },
+      default: {}
+    }
+  },
+  computed: {
+    currentModel () {
+      return this.internalValue.model
     },
-    methods: {
-        onSave () {
-            this.$el.querySelectorAll('.editor-field')[0].focus();
-            this.$emit('save');
-        },
-        tagRenderer (tag) {
-            if (tag === 'marked') return {
-                variant: 'danger',
-                title: tag,
-            };
-        },
-        async fetchTags (tag) {
-            return this.$ankiCall('tag_suggestions', {
-                query: tag,
-            });
-        },
+    listModel: () => listModel,
+    listDeck: () => listDeck
+  },
+  watch: {
+    value: {
+      handler (value) {
+        this.internalValue = runHook('edit_card_load', nonReactiveCopy(value))
+      },
+      deep: true
     },
-    asyncComputed: {
-        modelData: {
-            get () {
-                if (!this.currentModel) return {};
-                return getModel(this.currentModel);
-            },
-            default: {},
-        },
+    internalValue: {
+      handler (value) {
+        const emitVal = runHook('edit_card_save', nonReactiveCopy(value))
+        if (_.isEqual(emitVal, this.value)) return
+        this.$emit('input', emitVal)
+      },
+      deep: true
     },
-    computed: {
-        currentModel () {
-            return this.internalValue.model;
-        },
-        listModel: () => listModel,
-        listDeck: () => listDeck,
-    },
-    watch: {
-        value: {
-            handler (value) {
-                this.internalValue = runHook('edit_card_load', nonReactiveCopy(value));
-            },
-            deep: true,
-        },
-        internalValue: {
-            handler (value) {
-                const emitVal = runHook('edit_card_save', nonReactiveCopy(value));
-                if (_.isEqual(emitVal, this.value)) return;
-                this.$emit('input', emitVal);
-            },
-            deep: true,
-        },
-        async currentModel (modelName, oldModelName) {
-            // Model change
-            if (!modelName) {
-                this.internalValue.model = oldModelName;
-                return;
-            }
+    async currentModel (modelName, oldModelName) {
+      // Model change
+      if (!modelName) {
+        this.internalValue.model = oldModelName
+        return
+      }
 
-            const model = await getModel(modelName);
+      const model = await getModel(modelName)
 
-            const fieldFormats = model.fieldFormats;
-            const newValue = nonReactiveCopy(this.internalValue);
-            newValue.fieldFormats = fieldFormats;
-            resize(newValue.fields, fieldFormats.length, '');
-            this.internalValue = runHook('edit_card_load', newValue);
-        },
-    },
-};
+      const fieldFormats = model.fieldFormats
+      const newValue = nonReactiveCopy(this.internalValue)
+      newValue.fieldFormats = fieldFormats
+      resize(newValue.fields, fieldFormats.length, '')
+      this.internalValue = runHook('edit_card_load', newValue)
+    }
+  }
+}
 
 </script>
 

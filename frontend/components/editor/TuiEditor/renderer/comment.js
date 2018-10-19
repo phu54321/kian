@@ -5,116 +5,120 @@
 // Insert each marker as a separate text token, and add it to delimiter list
 //
 
-
 function tokenize (state, silent) {
-    var i, scanned, token, len, ch,
-        start = state.pos,
-        marker = state.src.charCodeAt(start);
+  var i
+  var scanned
+  var token
+  var len
+  var ch
 
-    if (silent) { return false; }
+  var start = state.pos
 
-    if (marker !== 0x5E/* /^*/) { return false; }
+  var marker = state.src.charCodeAt(start)
 
-    scanned = state.scanDelims(state.pos, true);
-    len = scanned.length;
-    ch = String.fromCharCode(marker);
+  if (silent) { return false }
 
-    if (len < 2) { return false; }
+  if (marker !== 0x5E/* /^ */) { return false }
 
-    if (len % 2) {
-        token         = state.push('text', '', 0);
-        token.content = ch;
-        len--;
-    }
+  scanned = state.scanDelims(state.pos, true)
+  len = scanned.length
+  ch = String.fromCharCode(marker)
 
-    for (i = 0; i < len; i += 2) {
-        token         = state.push('text', '', 0);
-        token.content = ch + ch;
+  if (len < 2) { return false }
 
-        state.delimiters.push({
-            marker: marker,
-            jump:   i,
-            token:  state.tokens.length - 1,
-            level:  state.level,
-            end:    -1,
-            open:   scanned.can_open,
-            close:  scanned.can_close,
-        });
-    }
+  if (len % 2) {
+    token = state.push('text', '', 0)
+    token.content = ch
+    len--
+  }
 
-    state.pos += scanned.length;
+  for (i = 0; i < len; i += 2) {
+    token = state.push('text', '', 0)
+    token.content = ch + ch
 
-    return true;
+    state.delimiters.push({
+      marker: marker,
+      jump: i,
+      token: state.tokens.length - 1,
+      level: state.level,
+      end: -1,
+      open: scanned.can_open,
+      close: scanned.can_close
+    })
+  }
+
+  state.pos += scanned.length
+
+  return true
 }
-
 
 // Walk through delimiter list and replace text tokens with tags
 //
 function postProcess (state) {
-    var i, j,
-        startDelim,
-        endDelim,
-        token,
-        loneMarkers = [],
-        delimiters = state.delimiters,
-        max = state.delimiters.length;
+  var i, j
+  var startDelim
+  var endDelim
+  var token
+  var loneMarkers = []
+  var delimiters = state.delimiters
+  var max = state.delimiters.length
 
-    for (i = 0; i < max; i++) {
-        startDelim = delimiters[i];
+  for (i = 0; i < max; i++) {
+    startDelim = delimiters[i]
 
-        if (startDelim.marker !== 0x5E/* ^ */) {
-            continue;
-        }
+    if (startDelim.marker !== 0x5E/* ^ */) {
+      continue
+    }
 
-        if (startDelim.end === -1) {
-            continue;
-        }
+    if (startDelim.end === -1) {
+      continue
+    }
 
-        endDelim = delimiters[startDelim.end];
+    endDelim = delimiters[startDelim.end]
 
-        token         = state.tokens[startDelim.token];
-        token.type    = 'cm_open';
-        token.nesting = 1;
-        token.markup  = '^^';
+    token = state.tokens[startDelim.token]
+    token.type = 'cm_open'
+    token.nesting = 1
+    token.markup = '^^'
 
-        token         = state.tokens[endDelim.token];
-        token.type    = 'cm_close';
-        token.nesting = -1;
-        token.markup  = '^^';
+    token = state.tokens[endDelim.token]
+    token.type = 'cm_close'
+    token.nesting = -1
+    token.markup = '^^'
 
-        if (state.tokens[endDelim.token - 1].type === 'text' &&
+    if (state.tokens[endDelim.token - 1].type === 'text' &&
         state.tokens[endDelim.token - 1].content === '^') {
-            loneMarkers.push(endDelim.token - 1);
-        }
+      loneMarkers.push(endDelim.token - 1)
+    }
+  }
+
+  // If a marker sequence has an odd number of characters, it's splitted
+  // like this: `/////` -> `/` + `//` + `//`, leaving one marker at the
+  // start of the sequence.
+  //
+  // So, we have to move all those markers after subsequent s_close tags.
+  //
+  while (loneMarkers.length) {
+    i = loneMarkers.pop()
+    j = i + 1
+
+    while (j < state.tokens.length && state.tokens[j].type === 'cm_close') {
+      j++
     }
 
-    // If a marker sequence has an odd number of characters, it's splitted
-    // like this: `/////` -> `/` + `//` + `//`, leaving one marker at the
-    // start of the sequence.
-    //
-    // So, we have to move all those markers after subsequent s_close tags.
-    //
-    while (loneMarkers.length) {
-        i = loneMarkers.pop();
-        j = i + 1;
+    j--
 
-        while (j < state.tokens.length && state.tokens[j].type === 'cm_close') {
-            j++;
-        }
-
-        j--;
-
-        if (i !== j) {
-            token = state.tokens[j];
-            state.tokens[j] = state.tokens[i];
-            state.tokens[i] = token;
-        }
+    if (i !== j) {
+      token = state.tokens[j]
+      state.tokens[j] = state.tokens[i]
+      state.tokens[i] = token
     }
+  }
 }
 
 module.exports = function (md) {
-    md.inline.ruler.after('emphasis', 'kian_comment', tokenize);
-    md.inline.ruler2.after('emphasis', 'kian_comment', postProcess);
-    md.renderer.rules.cm_open = () => '<i><font color=#85d7ff>';
-    md.renderer.rules.cm_close = () => '</font></i>';
-};
+  md.inline.ruler.after('emphasis', 'kian_comment', tokenize)
+  md.inline.ruler2.after('emphasis', 'kian_comment', postProcess)
+  md.renderer.rules.cm_open = () => '<i><font color=#85d7ff>'
+  md.renderer.rules.cm_close = () => '</font></i>'
+}

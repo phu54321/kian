@@ -23,58 +23,58 @@ b-container.pt-4
 
 <script>
 
-import ErrorDialog from '~/components/ErrorDialog';
-import CardEditor from '~/components/editor/CardEditor';
+import ErrorDialog from '~/components/ErrorDialog'
+import CardEditor from '~/components/editor/CardEditor'
 
-import { getCard, updateCard } from '~/api';
+import { getCard, updateCard } from '~/api'
 
 export default {
-    props: {
-        cardId: Number,
-    },
-    components: {
-        CardEditor,
-    },
-    data () {
-        return {
-            card: {
-                deck: '',
-                model: '',
-                tags: [],
-                fields: [],
-                fieldFormats: [],
-            },
-        };
-    },
-    methods: {
-        save () {
-            const card = this.card;
-            updateCard(this.cardId, {
-                deck: card.deck,
-                model: card.model,
-                fields: card.fields,
-                tags: card.tags,
-            }).then(() => {
-                this.$router.go(-1);
-            }).catch(err => {
-                ErrorDialog.openErrorDialog(null, err.message);
-            });
-        },
-    },
-    async asyncData (props) {
-        const cardId = props.cardId;
-        const card = await getCard(cardId);
-        return {
-            card: {
-                model: card.model,
-                deck: card.deck,
-                fields: card.fields,
-                fieldFormats: card.fieldFormats,
-                tags: card.tags,
-            },
-        };
-    },
-    name: 'card-edit',
-};
+  props: {
+    cardId: Number
+  },
+  components: {
+    CardEditor
+  },
+  data () {
+    return {
+      card: {
+        deck: '',
+        model: '',
+        tags: [],
+        fields: [],
+        fieldFormats: []
+      }
+    }
+  },
+  methods: {
+    save () {
+      const card = this.card
+      updateCard(this.cardId, {
+        deck: card.deck,
+        model: card.model,
+        fields: card.fields,
+        tags: card.tags
+      }).then(() => {
+        this.$router.go(-1)
+      }).catch(err => {
+        ErrorDialog.openErrorDialog(null, err.message)
+      })
+    }
+  },
+  async asyncData (props) {
+    const cardId = props.cardId
+    const card = await getCard(cardId)
+    return {
+      card: {
+        model: card.model,
+        deck: card.deck,
+        fields: card.fields,
+        fieldFormats: card.fieldFormats,
+        tags: card.tags
+      }
+    }
+  },
+  name: 'card-edit'
+}
 
 </script>

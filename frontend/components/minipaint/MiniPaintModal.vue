@@ -8,64 +8,64 @@ b-modal(v-model='modalShow', size='lg', title='Image edit', hide-footer, @hidden
 
 <script>
 
-import Vue from 'vue';
-const eventHub = new Vue();
+import Vue from 'vue'
 
-import MiniPaint from './MiniPaint';
+import MiniPaint from './MiniPaint'
+const eventHub = new Vue()
 
 export default {
-    editImage (src) {
-        return new Promise(resolve => {
-            eventHub.$emit('errormsg', {
-                src,
-                onSave: resolve,
-            });
-        });
+  editImage (src) {
+    return new Promise(resolve => {
+      eventHub.$emit('errormsg', {
+        src,
+        onSave: resolve
+      })
+    })
+  },
+
+  data () {
+    return {
+      modalShow: false,
+      editingUrl: null,
+      onSaveCallback: null
+    }
+  },
+
+  components: {
+    MiniPaint
+  },
+
+  created () {
+    eventHub.$on('errormsg', this.openErrorMessage)
+  },
+
+  beforeDestroy () {
+    eventHub.$off('errormsg')
+  },
+
+  methods: {
+    openErrorMessage (data) {
+      this.editingUrl = data.src
+      this.onSaveCallback = data.onSave
+      this.modalShow = true
     },
 
-    data () {
-        return {
-            modalShow: false,
-            editingUrl: null,
-            onSaveCallback: null,
-        };
+    onImageEdit (newSrc) {
+      const onSave = this.onSaveCallback
+
+      this.editingUrl = null
+      this.onSaveCallback = null
+      this.modalShow = false
+
+      onSave(newSrc)
     },
 
-    components: {
-        MiniPaint,
-    },
-
-    created () {
-        eventHub.$on('errormsg', this.openErrorMessage);
-    },
-
-    beforeDestroy () {
-        eventHub.$off('errormsg');
-    },
-
-    methods: {
-        openErrorMessage (data) {
-            this.editingUrl = data.src;
-            this.onSaveCallback = data.onSave;
-            this.modalShow = true;
-        },
-
-        onImageEdit (newSrc) {
-            const onSave = this.onSaveCallback;
-
-            this.editingUrl = null;
-            this.onSaveCallback = null;
-            this.modalShow = false;
-
-            onSave(newSrc);
-        },
-
-        onHide () {
-            if (this.editingUrl === null) return;
-            this.$refs.miniPaint.onSave();
-        },
-    },
-};
+    onHide () {
+      if (this.editingUrl === null) return
+      this.$refs.miniPaint.onSave()
+    }
+  }
+}
 
 </script>
 

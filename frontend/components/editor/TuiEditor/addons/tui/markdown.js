@@ -4,7 +4,7 @@
  * @modifier NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
  */
 // based on https://github.com/codemirror/CodeMirror/blob/ff04f127ba8a736b97d06c505fb85d976e3f2980/mode/markdown/markdown.js
-import CodeMirror from 'codemirror';
+import CodeMirror from 'codemirror'
 
 /*eslint-disable */
 CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {

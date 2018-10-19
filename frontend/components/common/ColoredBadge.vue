@@ -26,24 +26,24 @@ b-badge(
 <script>
 
 export default {
-    props: {
-        renderer: {
-            type: Function,
-            default: () => undefined,
-        },
-        item: String,
+  props: {
+    renderer: {
+      type: Function,
+      default: () => undefined
     },
-    computed: {
-        renderedItem () {
-            const ret = this.renderer(this.item) || {
-                variant: 'secondary',
-                title: this.item,
-            };
-            ret.origValue = this.item;
-            return ret;
-        },
-    },
-    name: 'colored-badge',
-};
+    item: String
+  },
+  computed: {
+    renderedItem () {
+      const ret = this.renderer(this.item) || {
+        variant: 'secondary',
+        title: this.item
+      }
+      ret.origValue = this.item
+      return ret
+    }
+  },
+  name: 'colored-badge'
+}
 
 </script>

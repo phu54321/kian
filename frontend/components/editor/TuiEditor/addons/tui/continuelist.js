@@ -3,7 +3,7 @@
 /**
  * @modifier NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
  */
-import CodeMirror from 'codemirror';
+import CodeMirror from 'codemirror'
 
 /*eslint-disable */
 var listRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/,

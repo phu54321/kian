@@ -38,23 +38,23 @@
 
 <script>
 
-import { collapseDeck } from '~/api';
+import { collapseDeck } from '~/api'
 
 export default {
-    props: ['tree', 'indent'],
-    methods: {
-        toggleDeckCollapse (deck) {
-            const newCollapsed = !deck.collapsed;
-            collapseDeck(
-                deck.fullname,
-                !deck.collapsed
-            ).then(() => {
-                deck.collapsed = newCollapsed;
-            });
-        },
-    },
-    name: 'deck-tree-view',
-};
+  props: ['tree', 'indent'],
+  methods: {
+    toggleDeckCollapse (deck) {
+      const newCollapsed = !deck.collapsed
+      collapseDeck(
+        deck.fullname,
+        !deck.collapsed
+      ).then(() => {
+        deck.collapsed = newCollapsed
+      })
+    }
+  },
+  name: 'deck-tree-view'
+}
 </script>
 
 <style scoped lang='scss'>

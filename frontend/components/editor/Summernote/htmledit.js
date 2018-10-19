@@ -13,24 +13,24 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { addHotkey, addFunctions } from './summernoteExtend';
-import $ from 'jquery';
+import { addHotkey, addFunctions } from './summernoteExtend'
+import $ from 'jquery'
 
 addHotkey({
-    'CTRL+SHIFT+X': 'toggleCodeView',
-});
+  'CTRL+SHIFT+X': 'toggleCodeView'
+})
 
-addFunctions ({
-    toggleCodeView () {
-        const editorContext = this.context;
-        editorContext.invoke('codeview.toggle');
-        this.$editor.prepend($('<div></div>')
-            .text('Quit codeview')
-            .addClass('codeview-exit')
-            .on('click', function () {
-                $(this).remove();
-                editorContext.invoke('codeview.toggle');
-            })
-        );
-    },
-});
+addFunctions({
+  toggleCodeView () {
+    const editorContext = this.context
+    editorContext.invoke('codeview.toggle')
+    this.$editor.prepend($('<div></div>')
+      .text('Quit codeview')
+      .addClass('codeview-exit')
+      .on('click', function () {
+        $(this).remove()
+        editorContext.invoke('codeview.toggle')
+      })
+    )
+  }
+})

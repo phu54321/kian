@@ -13,60 +13,59 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { pasteHtmlToSelection, copySelectedHtml } from './common';
+import { pasteHtmlToSelection, copySelectedHtml } from './common'
 import {
-    addHotkey,
-    addFunctions,
-} from './summernoteExtend';
-const textVersion = require('textversionjs');
+  addHotkey,
+  addFunctions
+} from './summernoteExtend'
+const textVersion = require('textversionjs')
 
 addHotkey({
-    'CTRL+SHIFT+D': 'makeTable',
-});
+  'CTRL+SHIFT+D': 'makeTable'
+})
 
 function escapeHtml (text) {
-    return text.replace(/["&<>]/g, function (a) {
-        return {
-            '"': '&quot;',
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-        }[a];
-    });
+  return text.replace(/["&<>]/g, function (a) {
+    return {
+      '"': '&quot;',
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;'
+    }[a]
+  })
 }
 
 addFunctions({
-    makeTable () {
-        this.beforeCommand();
+  makeTable () {
+    this.beforeCommand()
 
-        const oldHtml = copySelectedHtml();
-        const text = textVersion(oldHtml);
-        const lines = text.split('\n').filter(x => x);
-        const cells = lines.map(x => x.split('|').map(x => x.trim()));
-        const colCount = Math.max.apply(null, cells.map(x => x.length));
-        const rowCount = cells.length;
+    const oldHtml = copySelectedHtml()
+    const text = textVersion(oldHtml)
+    const lines = text.split('\n').filter(x => x)
+    const cells = lines.map(x => x.split('|').map(x => x.trim()))
+    const colCount = Math.max.apply(null, cells.map(x => x.length))
+    const rowCount = cells.length
 
-        if (!(rowCount && colCount)) {
-            alert('Select some text');
+    if (!(rowCount && colCount)) {
+      alert('Select some text')
+    } else {
+      const outHtml = []
+      outHtml.push('<table>')
+      for (let y = 0; y < rowCount; y++) {
+        const row = cells[y]
+        while (row.length < colCount) row.push('')
+        outHtml.push('<tr>')
+        for (let x = 0; x < colCount; x++) {
+          outHtml.push('<td>')
+          outHtml.push(escapeHtml(row[x]))
+          outHtml.push('</td>')
         }
-        else {
-            const outHtml = [];
-            outHtml.push('<table>');
-            for (let y = 0 ; y < rowCount ; y++) {
-                const row = cells[y];
-                while (row.length < colCount) row.push('');
-                outHtml.push('<tr>');
-                for (let x = 0 ; x < colCount ; x++) {
-                    outHtml.push('<td>');
-                    outHtml.push(escapeHtml(row[x]));
-                    outHtml.push('</td>');
-                }
-                outHtml.push('</tr>');
-            }
-            outHtml.push('</table><br>');
-            pasteHtmlToSelection(outHtml.join(''));
-        }
+        outHtml.push('</tr>')
+      }
+      outHtml.push('</table><br>')
+      pasteHtmlToSelection(outHtml.join(''))
+    }
 
-        this.afterCommand();
-    },
-});
+    this.afterCommand()
+  }
+})

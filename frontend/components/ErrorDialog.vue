@@ -23,40 +23,40 @@
 
 <script>
 
-import Vue from 'vue';
-const eventHub = new Vue();
+import Vue from 'vue'
+const eventHub = new Vue()
 
 export default {
-    openErrorDialog (title, msg) {
-        eventHub.$emit('errormsg', {
-            title,
-            msg,
-            retFocus: document.activeElement,
-        });
-    },
-    created () {
-        eventHub.$on('errormsg', this.openErrorMessage);
-    },
-    beforeDestroy () {
-        eventHub.$off('errormsg');
-    },
-    methods: {
-        openErrorMessage (data) {
-            this.title = data.title;
-            this.msg = data.msg;
-            this.retFocus = data.retFocus;
-            this.modalShow = true;
-        },
-    },
-    data () {
-        return {
-            modalShow: false,
-            title: 'Hello from Modal!',
-            msg: 'asdf\nasdf\nasdf',
-            retFocus: null,
-        };
-    },
-};
+  openErrorDialog (title, msg) {
+    eventHub.$emit('errormsg', {
+      title,
+      msg,
+      retFocus: document.activeElement
+    })
+  },
+  created () {
+    eventHub.$on('errormsg', this.openErrorMessage)
+  },
+  beforeDestroy () {
+    eventHub.$off('errormsg')
+  },
+  methods: {
+    openErrorMessage (data) {
+      this.title = data.title
+      this.msg = data.msg
+      this.retFocus = data.retFocus
+      this.modalShow = true
+    }
+  },
+  data () {
+    return {
+      modalShow: false,
+      title: 'Hello from Modal!',
+      msg: 'asdf\nasdf\nasdf',
+      retFocus: null
+    }
+  }
+}
 
 </script>
 

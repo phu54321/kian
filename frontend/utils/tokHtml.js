@@ -14,67 +14,67 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const voidElements = new Set([
-    'area', 'base', 'basefont', 'bgsound', 'br', 'col',
-    'command', 'embed', 'frame', 'hr', 'image', 'img', 'input', 'isindex',
-    'keygen', 'link', 'menuitem', 'meta', 'nextid', 'param', 'source',
-    'track', 'wbr',
-]);
+  'area', 'base', 'basefont', 'bgsound', 'br', 'col',
+  'command', 'embed', 'frame', 'hr', 'image', 'img', 'input', 'isindex',
+  'keygen', 'link', 'menuitem', 'meta', 'nextid', 'param', 'source',
+  'track', 'wbr'
+])
 
 export function tokHtml (html) {
-    const PARSE_DATA = 0;
-    const PARSE_TAG = 1;
-    let mode = PARSE_DATA;
+  const PARSE_DATA = 0
+  const PARSE_TAG = 1
+  let mode = PARSE_DATA
 
-    const dataCh = [];
-    const tagCh = [];
+  const dataCh = []
+  const tagCh = []
 
-    const chunks = [];
+  const chunks = []
 
-    function emitData () {
-        const data = dataCh.join('');
-        dataCh.length = 0;
+  function emitData () {
+    const data = dataCh.join('')
+    dataCh.length = 0
 
-        if (!data) return;
-        chunks.push(['data', data]);
+    if (!data) return
+    chunks.push(['data', data])
+  }
+
+  function emitTag () {
+    const tag = tagCh.join('')
+    tagCh.length = 0
+
+    const tagStartMatch = tag.match(/<\s*([a-zA-Z0-9]+)/)
+    const tagEndMatch = tag.match(/<\s*\/\s*([a-zA-Z0-9]+)/)
+
+    if (tagStartMatch) {
+      // Void tags are treated as data
+      if (!voidElements.has(tagStartMatch[1].toLowerCase())) {
+        chunks.push(['data', tag])
+      } else {
+        chunks.push(['tstart', tag, tagStartMatch[1].toLowerCase()])
+      }
+    } else if (tagEndMatch) {
+      chunks.push(['tend', tag, tagEndMatch[1].toLowerCase()])
     }
+  }
 
-    function emitTag () {
-        const tag = tagCh.join('');
-        tagCh.length = 0;
-
-        const tagStartMatch = tag.match(/<\s*([a-zA-Z0-9]+)/);
-        const tagEndMatch = tag.match(/<\s*\/\s*([a-zA-Z0-9]+)/);
-
-        if (tagStartMatch) {
-            // Void tags are treated as data
-            if (!voidElements.has(tagStartMatch[1].toLowerCase())) {
-                chunks.push(['data', tag]);
-            } else {
-                chunks.push(['tstart', tag, tagStartMatch[1].toLowerCase()]);
-            }
-        } else if (tagEndMatch) {
-            chunks.push(['tend', tag, tagEndMatch[1].toLowerCase()]);
-        }
+  for (const ch of html) {
+    if (mode === PARSE_DATA) {
+      if (ch === '<') {
+        mode = PARSE_TAG
+        emitData()
+        tagCh.push('<')
+      } else dataCh.push(ch)
+    } else {
+      tagCh.push(ch)
+      if (ch === '>') {
+        mode = PARSE_DATA
+        emitTag()
+      }
     }
+  }
 
-    for (const ch of html) {
-        if (mode === PARSE_DATA) {
-            if (ch === '<') {
-                mode = PARSE_TAG;
-                emitData();
-                tagCh.push('<');
-            } else dataCh.push(ch);
-        } else {
-            tagCh.push(ch);
-            if (ch === '>') {
-                mode = PARSE_DATA;
-                emitTag();
-            }
-        }
-    }
+  if (mode === PARSE_DATA) emitData()
+  else emitTag()
 
-    if (mode === PARSE_DATA) emitData();
-    else emitTag();
-
-    return chunks;
+  return chunks
 }

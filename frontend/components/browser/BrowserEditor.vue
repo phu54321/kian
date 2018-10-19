@@ -25,65 +25,65 @@ card-editor(
 
 <script>
 
-import CardEditor from '../editor/CardEditor';
-import ErrorDialog from '../ErrorDialog';
-import { getCard, updateCard } from '~/api';
+import CardEditor from '../editor/CardEditor'
+import ErrorDialog from '../ErrorDialog'
+import { getCard, updateCard } from '~/api'
 
 export default {
-    props: ['cardId'],
-    components: {
-        CardEditor,
-        ErrorDialog,
-    },
-    data () {
-        return {
-            card: {
-                id: null,
-                deck: '',
-                model: '',
-                fieldFormats: [],
-                fields: [],
-                tags: [],
-            },
-        };
-    },
-    async asyncData (props) {
-        return {
-            card: await getCard(props.cardId),
-        };
-    },
-    watch: {
-        async cardId (value) {
-            await this.onNoteEdit(true);
-            this.$emit('updateView');
-            this.card = await getCard(value);
-        },
-    },
-    methods: {
-        async onNoteEdit (silent) {
-            try {
-                const card = this.card;
-                await updateCard(card.id, {
-                    deck: card.deck,
-                    model: card.model,
-                    fields: card.fields,
-                    tags: card.tags,
-                });
-                if (silent) return;
+  props: ['cardId'],
+  components: {
+    CardEditor,
+    ErrorDialog
+  },
+  data () {
+    return {
+      card: {
+        id: null,
+        deck: '',
+        model: '',
+        fieldFormats: [],
+        fields: [],
+        tags: []
+      }
+    }
+  },
+  async asyncData (props) {
+    return {
+      card: await getCard(props.cardId)
+    }
+  },
+  watch: {
+    async cardId (value) {
+      await this.onNoteEdit(true)
+      this.$emit('updateView')
+      this.card = await getCard(value)
+    }
+  },
+  methods: {
+    async onNoteEdit (silent) {
+      try {
+        const card = this.card
+        await updateCard(card.id, {
+          deck: card.deck,
+          model: card.model,
+          fields: card.fields,
+          tags: card.tags
+        })
+        if (silent) return
 
-                this.$toasted.show('Edit saved', {
-                    icon: 'save',
-                });
-                this.$emit('updateCardIds');
-            } catch (err) {
-                ErrorDialog.openErrorDialog(null, err.message);
-            }
-        },
-    },
-    beforeDestroy () {
-        this.onNoteEdit(true);
-        this.$emit('updateView');
-    },
-};
+        this.$toasted.show('Edit saved', {
+          icon: 'save'
+        })
+        this.$emit('updateCardIds')
+      } catch (err) {
+        ErrorDialog.openErrorDialog(null, err.message)
+      }
+    }
+  },
+  beforeDestroy () {
+    this.onNoteEdit(true)
+    this.$emit('updateView')
+  }
+}
 
 </script>

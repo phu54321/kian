@@ -31,85 +31,84 @@
 
 <script>
 
-import $ from 'jquery';
-import ColoredBadge from './ColoredBadge';
-
+import $ from 'jquery'
+import ColoredBadge from './ColoredBadge'
 
 export default {
-    props: {
-        suggestions: {
-            type: Array,
-            default: () => [],
-        },
-        renderer: {
-            type: Function,
-            default: () => undefined,
-        },
+  props: {
+    suggestions: {
+      type: Array,
+      default: () => []
     },
-    components: {
-        ColoredBadge,
-    },
-    mounted () {
-        $(this.$el).on('keydown', 'input', (e) => {
-            if (e.keyCode === 38) {  // Up arrow key
-                this.selected = Math.max(0, this.selected - 1);
-                e.preventDefault();
-            } else if (e.keyCode === 40) {  // Down arrow key
-                this.selected = Math.min(this.suggestions.length - 1, this.selected + 1);
-                e.preventDefault();
-            } else if (e.keyCode === 9) { // Tab
-                if (this.suggestions.length > 0) {
-                    if (this.selected === -1) this.applyAutocomplete(0);
-                    else this.applyAutocomplete(this.selected);
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            } else if (e.keyCode === 13) {  // enter
-                if (this.selected !== -1) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    this.applyAutocomplete(this.selected);
-                }
-            }
-        });
+    renderer: {
+      type: Function,
+      default: () => undefined
+    }
+  },
+  components: {
+    ColoredBadge
+  },
+  mounted () {
+    $(this.$el).on('keydown', 'input', (e) => {
+      if (e.keyCode === 38) { // Up arrow key
+        this.selected = Math.max(0, this.selected - 1)
+        e.preventDefault()
+      } else if (e.keyCode === 40) { // Down arrow key
+        this.selected = Math.min(this.suggestions.length - 1, this.selected + 1)
+        e.preventDefault()
+      } else if (e.keyCode === 9) { // Tab
+        if (this.suggestions.length > 0) {
+          if (this.selected === -1) this.applyAutocomplete(0)
+          else this.applyAutocomplete(this.selected)
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      } else if (e.keyCode === 13) { // enter
+        if (this.selected !== -1) {
+          e.stopPropagation()
+          e.preventDefault()
+          this.applyAutocomplete(this.selected)
+        }
+      }
+    })
 
-        $(this.$el).on('focus', 'input', () => {
-            this.hasFocus = true;
-        });
+    $(this.$el).on('focus', 'input', () => {
+      this.hasFocus = true
+    })
 
-        $(this.$el).on('blur', 'input', () => {
-            this.hasFocus = false;
-        });
+    $(this.$el).on('blur', 'input', () => {
+      this.hasFocus = false
+    })
+  },
+  data () {
+    return {
+      selected: -1,
+      hasFocus: false
+    }
+  },
+  watch: {
+    suggestions () {
+      this.selected = -1
     },
-    data () {
-        return {
-            selected: -1,
-            hasFocus: false,
-        };
-    },
-    watch: {
-        suggestions () {
-            this.selected = -1;
-        },
-        selected () {
-            if (this.selected === -1 || this.suggestions.length === 0) return;
+    selected () {
+      if (this.selected === -1 || this.suggestions.length === 0) return
 
-            const $parentDiv = $(this.$el).find('.autocomplete-box');
-            const $innerListItem = $($(this.$el).find('.autocomplete-entry')[this.selected]);
+      const $parentDiv = $(this.$el).find('.autocomplete-box')
+      const $innerListItem = $($(this.$el).find('.autocomplete-entry')[this.selected])
 
-            $parentDiv.scrollTop(
-                $parentDiv.scrollTop() + $innerListItem.position().top
-                    - $parentDiv.height()/2 + $innerListItem.height()/2
-            );
-        },
-    },
-    methods: {
-        applyAutocomplete (index) {
-            this.$emit('commit', this.suggestions[index]);
-            this.selected = -1;
-        },
-    },
-};
+      $parentDiv.scrollTop(
+        $parentDiv.scrollTop() + $innerListItem.position().top -
+                    $parentDiv.height() / 2 + $innerListItem.height() / 2
+      )
+    }
+  },
+  methods: {
+    applyAutocomplete (index) {
+      this.$emit('commit', this.suggestions[index])
+      this.selected = -1
+    }
+  }
+}
 
 </script>
 

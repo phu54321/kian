@@ -29,115 +29,114 @@ autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit=
             :placeholder='placeholder',
             @blur='emitItem(true)')
 
-
 </template>
 
 <script>
 
-import AutocompleteBox from './AutocompleteBox';
-import ColoredBadge from './ColoredBadge';
-import { KEY_MAP } from '~/utils/keycode';
-import { focusNextElement } from '~/utils/utils';
+import AutocompleteBox from './AutocompleteBox'
+import ColoredBadge from './ColoredBadge'
+import { KEY_MAP } from '~/utils/keycode'
+import { focusNextElement } from '~/utils/utils'
 
 export default {
-    props: {
-        value: Array,
-        validator: {
-            type: Function,
-            default: () => true,
-        },
-        suggestions: {
-            type: Function,
-            default: () => [],
-        },
-        renderer: {
-            type: Function,
-            default: () => undefined,
-        },
-        placeholder: {
-            type: String,
-            default: '',
-        },
-        focus: Boolean,
+  props: {
+    value: Array,
+    validator: {
+      type: Function,
+      default: () => true
     },
-    components: {
-        AutocompleteBox,
-        ColoredBadge,
+    suggestions: {
+      type: Function,
+      default: () => []
     },
-    data () {
-        return {
-            buildingItem: '',
-        };
+    renderer: {
+      type: Function,
+      default: () => undefined
     },
-    mounted () {
-        if (this.focus) {
-            setTimeout(() => {
-                this.$refs.input.focus();
-                this.$refs.input.select();
-            }, 1);
+    placeholder: {
+      type: String,
+      default: ''
+    },
+    focus: Boolean
+  },
+  components: {
+    AutocompleteBox,
+    ColoredBadge
+  },
+  data () {
+    return {
+      buildingItem: ''
+    }
+  },
+  mounted () {
+    if (this.focus) {
+      setTimeout(() => {
+        this.$refs.input.focus()
+        this.$refs.input.select()
+      }, 1)
+    }
+  },
+  asyncComputed: {
+    autocompleteList: {
+      async get () {
+        if (this.buildingItem === '') return []
+        else {
+          return this.suggestions(this.buildingItem)
         }
+      },
+      default: []
+    }
+  },
+  methods: {
+    onKeyDown (e) {
+      if (e.keyCode === KEY_MAP['BACKSPACE']) {
+        const inputEl = this.$refs.input
+        if (inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
+          const items = this.value.slice()
+          items.pop()
+          this.$emit('input', items)
+        }
+      } else if (e.keyCode === 13) { // enter
+        if (this.buildingItem === '') {
+          return focusNextElement()
+        }
+        this.emitItem(true)
+      }
     },
-    asyncComputed: {
-        autocompleteList: {
-            async get () {
-                if (this.buildingItem === '') return [];
-                else {
-                    return this.suggestions(this.buildingItem);
-                }
-            },
-            default: [],
-        },
+    removeItemByName (name) {
+      const items = this.value.slice()
+      const index = items.indexOf(name)
+      items.splice(index, 1)
+      this.$emit('input', items)
     },
-    methods: {
-        onKeyDown (e) {
-            if (e.keyCode === KEY_MAP['BACKSPACE']) {
-                const inputEl = this.$refs.input;
-                if (inputEl.selectionStart === 0 && inputEl.selectionEnd === 0) {
-                    const items = this.value.slice();
-                    items.pop();
-                    this.$emit('input', items);
-                }
-            } else if (e.keyCode === 13) {  // enter
-                if (this.buildingItem === '') {
-                    return focusNextElement();
-                }
-                this.emitItem(true);
-            }
-        },
-        removeItemByName (name) {
-            const items = this.value.slice();
-            const index = items.indexOf(name);
-            items.splice(index, 1);
-            this.$emit('input', items);
-        },
-        modifyItem (item) {
-            this.emitItem(true);
+    modifyItem (item) {
+      this.emitItem(true)
 
-            const items = this.value.slice();
-            const itemIdx = items.indexOf(item);
-            items.splice(itemIdx, 1);
-            this.$emit('input', items);
+      const items = this.value.slice()
+      const itemIdx = items.indexOf(item)
+      items.splice(itemIdx, 1)
+      this.$emit('input', items)
 
-            this.buildingItem = item;
-            this.$refs.input.focus();
-        },
-        emitItem (force=false) {
-            if (force === true || this.buildingItem.endsWith(' ')) {
-                const newTag = this.buildingItem.trim();
-                if (newTag && this.validator(newTag)) {
-                    if (newTag && this.value.indexOf(newTag) === -1) {
-                        this.$emit('input', [...this.value, newTag]);
-                    }
-                    this.buildingItem = '';
-                }
-            }
-        },
-        applyAutocomplete (item) {
-            this.buildingItem = item;
-            this.emitItem(true);
-        },
+      this.buildingItem = item
+      this.$refs.input.focus()
     },
-};
+    emitItem (force = false) {
+      if (force === true || this.buildingItem.endsWith(' ')) {
+        const newTag = this.buildingItem.trim()
+        if (newTag && this.validator(newTag)) {
+          if (newTag && this.value.indexOf(newTag) === -1) {
+            this.$emit('input', [...this.value, newTag])
+          }
+          this.buildingItem = ''
+        }
+      }
+    },
+    applyAutocomplete (item) {
+      this.buildingItem = item
+      this.emitItem(true)
+    }
+  }
+}
 </script>
 
 <style lang='scss' scoped>
@@ -162,6 +161,5 @@ export default {
         flex: 1;
     }
 }
-
 
 </style>

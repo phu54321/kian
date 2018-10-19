@@ -32,84 +32,84 @@ div
 
 <script>
 
-import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey';
-import KeyImage from './common/KeyImage';
-import _ from 'lodash';
+import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey'
+import KeyImage from './common/KeyImage'
+import _ from 'lodash'
 
 function sortObjectItemsByKey (obj) {
-    const keys = Object.keys(obj);
-    return keys.sort().map(k => [k, obj[k]]);
+  const keys = Object.keys(obj)
+  return keys.sort().map(k => [k, obj[k]])
 }
 
 export default {
-    data () {
-        return {
-            items: [],
-            show: false,
-            lastActiveElement: null,
-            openHotkeyMapTimer: null,
-        };
+  data () {
+    return {
+      items: [],
+      show: false,
+      lastActiveElement: null,
+      openHotkeyMapTimer: null
+    }
+  },
+  created () {
+    window.addEventListener('keydown', this.detectLongCtrlPress_keydown, true)
+    window.addEventListener('keyup', this.detectLongCtrlPress_keyup, true)
+    window.addEventListener('blur', this.detectLongCtrlPress_keyup, true)
+  },
+  destroyed () {
+    window.removeEventListener('keydown', this.detectLongCtrlPress_keydown)
+    window.removeEventListener('keyup', this.detectLongCtrlPress_keyup)
+    window.removeEventListener('blur', this.detectLongCtrlPress_keyup)
+  },
+  components: {
+    KeyImage
+  },
+  methods: {
+    toggleShow () {
+      // If there are any model visible, then quit.
+      if (document.querySelectorAll('.modal.show').length > 0) return
+      this.lastActiveElement = document.activeElement
+      this.show = true
     },
-    created () {
-        window.addEventListener('keydown', this.detectLongCtrlPress_keydown, true);
-        window.addEventListener('keyup', this.detectLongCtrlPress_keyup, true);
-        window.addEventListener('blur', this.detectLongCtrlPress_keyup, true);
+    detectLongCtrlPress_keydown (event) {
+      if (event.keyCode === 17) {
+        if (this.openHotkeyMapTimer === null) { // Ctrl on Win/Linux, Cmd on macOS
+          this.openHotkeyMapTimer = window.setTimeout(() => {
+            this.toggleShow()
+            window.clearTimeout(this.openHotkeyMapTimer)
+            this.openHotkeyMapTimer = null
+          }, 1300)
+        }
+      } else if (this.openHotkeyMapTimer) {
+        //  Ignore if other keys are pressed
+        window.clearTimeout(this.openHotkeyMapTimer)
+        this.openHotkeyMapTimer = null
+      }
     },
-    destroyed () {
-        window.removeEventListener('keydown', this.detectLongCtrlPress_keydown);
-        window.removeEventListener('keyup', this.detectLongCtrlPress_keyup);
-        window.removeEventListener('blur', this.detectLongCtrlPress_keyup);
-    },
-    components: {
-        KeyImage,
-    },
-    methods: {
-        toggleShow () {
-            // If there are any model visible, then quit.
-            if (document.querySelectorAll('.modal.show').length > 0) return;
-            this.lastActiveElement = document.activeElement;
-            this.show = true;
-        },
-        detectLongCtrlPress_keydown (event) {
-            if (event.keyCode === 17) {
-                if (this.openHotkeyMapTimer === null) {  // Ctrl on Win/Linux, Cmd on macOS
-                    this.openHotkeyMapTimer = window.setTimeout(() => {
-                        this.toggleShow();
-                        window.clearTimeout(this.openHotkeyMapTimer);
-                        this.openHotkeyMapTimer = null;
-                    }, 1300);
-                }
-            } else if (this.openHotkeyMapTimer) {
-                //  Ignore if other keys are pressed
-                window.clearTimeout(this.openHotkeyMapTimer);
-                this.openHotkeyMapTimer = null;
-            }
-        },
-        detectLongCtrlPress_keyup (event) {
-            if ((
-                event.type === 'blur' ||
+    detectLongCtrlPress_keyup (event) {
+      if ((
+        event.type === 'blur' ||
                 (event.type === 'keyup' && event.keyCode === 17)
-            ) && this.openHotkeyMapTimer) {
-                window.clearTimeout(this.openHotkeyMapTimer);
-                this.openHotkeyMapTimer = null;
-            }
-        },
-    },
-    watch: {
-        show () {
-            const hotkeyMap = getHotkeyMap(this.lastActiveElement);
-            const hotkeyList = Object.keys(hotkeyMap).map(kString => Object.assign({ kString }, hotkeyMap[kString]));
-            const hotkeyGroup = _.groupBy(hotkeyList, 'packName');
+      ) && this.openHotkeyMapTimer) {
+        window.clearTimeout(this.openHotkeyMapTimer)
+        this.openHotkeyMapTimer = null
+      }
+    }
+  },
+  watch: {
+    show () {
+      const hotkeyMap = getHotkeyMap(this.lastActiveElement)
+      const hotkeyList = Object.keys(hotkeyMap).map(kString => Object.assign({ kString }, hotkeyMap[kString]))
+      const hotkeyGroup = _.groupBy(hotkeyList, 'packName')
 
-            this.items = sortObjectItemsByKey(hotkeyGroup)
-                .map(([group, handlers]) => [
-                    group,
-                    _.sortBy(handlers, 'kString')
-                        .map(handler => [handler.kString, handler.title]),
-                ]);
-        },
-    },
-};
+      this.items = sortObjectItemsByKey(hotkeyGroup)
+        .map(([group, handlers]) => [
+          group,
+          _.sortBy(handlers, 'kString')
+            .map(handler => [handler.kString, handler.title])
+        ])
+    }
+  }
+}
 
 </script>
 

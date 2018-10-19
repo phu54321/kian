@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Vue from 'vue';
+import Vue from 'vue'
 
-import VueSimpleHotkey from '~/utils/hotkey/VueSimpleHotkey';
-Vue.use(VueSimpleHotkey);
+import VueSimpleHotkey from '~/utils/hotkey/VueSimpleHotkey'
+Vue.use(VueSimpleHotkey)
