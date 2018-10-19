@@ -55,7 +55,10 @@ import {
   updateCardModelBatch,
   addCardTagBatch,
   deleteCardTagBatch,
-  deleteCardBatch
+  deleteCardBatch,
+
+  cardSchedReset,
+  cardSchedReschedule
 } from '~/api'
 
 export default {
@@ -108,17 +111,14 @@ export default {
       this.$emit('updateView')
     },
     async resetSched () {
-      await this.$ankiCall('card_sched_reset', {
-        cardIds: this.selected
-      })
+      await cardSchedReset(this.selected)
       this.$emit('updateView')
     },
     async changeDue () {
       const dueTimestamp = (this.due.getTime() / 1000) | 0
-      await this.$ankiCall('card_sched_reschedule', {
-        cardIds: this.selected,
-        minDue: dueTimestamp,
-        maxDue: dueTimestamp
+      await cardSchedReschedule(this.selected, {
+        min: dueTimestamp,
+        max: dueTimestamp
       })
       this.due = null
       this.$emit('updateView')

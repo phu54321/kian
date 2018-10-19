@@ -102,11 +102,6 @@ export default {
           title: tag
         }
       }
-    },
-    async fetchTags (tag) {
-      return this.$ankiCall('tag_suggestions', {
-        query: tag
-      })
     }
   },
   asyncComputed: {
