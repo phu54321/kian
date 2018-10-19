@@ -13,34 +13,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-type Handler = (x: any) => any;
+type Handler = (x: any) => any
 
-const hookMap = new Map();
+const hookMap = new Map()
 
 export function addHook<T> (hookID: string, handler: Handler) {
-    let handlerList = hookMap.get(hookID);
-    if (!handlerList) {
-        handlerList = [];
-        hookMap.set(hookID, handlerList);
-    }
-    handlerList.push(handler);
+  let handlerList = hookMap.get(hookID)
+  if (!handlerList) {
+    handlerList = []
+    hookMap.set(hookID, handlerList)
+  }
+  handlerList.push(handler)
 }
 
 export function removeHook<T> (hookID: string, handler: Handler) {
-    const handlerList = hookMap.get(hookID);
-    if (!handlerList) return;
-    const handlerIdx = handlerList.indexOf(handler);
-    if (handlerIdx === -1) return;
-    handlerList.splice(handlerIdx, 1);
+  const handlerList = hookMap.get(hookID)
+  if (!handlerList) return
+  const handlerIdx = handlerList.indexOf(handler)
+  if (handlerIdx === -1) return
+  handlerList.splice(handlerIdx, 1)
 }
 
 export function runHook<T> (hookID: string, msg: T): T | null {
-    const handlerList = hookMap.get(hookID);
-    if (!handlerList) return msg;
+  const handlerList = hookMap.get(hookID)
+  if (!handlerList) return msg
 
-    for (const handler of handlerList) {
-        msg = handler(msg);
-        if (!msg) return null;
-    }
-    return msg;
+  for (const handler of handlerList) {
+    msg = handler(msg)
+    if (!msg) return null
+  }
+  return msg
 }
