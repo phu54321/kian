@@ -307,3 +307,6 @@ fabric.properties
 
 secret.js
 server.out
+
+## YSJokbo
+!addons/YsmedJokbo/pdfjs/build

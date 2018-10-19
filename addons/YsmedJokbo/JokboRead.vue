@@ -131,7 +131,7 @@ export default {
         async handlePdf (pdfFile) {
             this.message = `Processing ${pdfFile.name}...`;
             const source = URLObj.createObjectURL(pdfFile);
-            const pdf = await window.PDFJS.getDocument({ url: source });
+            const pdf = await window.pdfjsLib.getDocument({ url: source });
 
             try {
                 const startTime = new Date().getTime();
