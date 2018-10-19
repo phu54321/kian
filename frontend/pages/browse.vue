@@ -45,7 +45,7 @@ import BrowserView from '~/components/browser/BrowserView'
 import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput'
 
 import { fuzzyMatch } from '~/utils/utils'
-import { listModel, listDeck, findCards } from '~/api'
+import { listModel, listDeck, findCards, autocompleteTag } from '~/api'
 import _ from 'lodash'
 
 function parseInitialQuery (query) {
@@ -167,7 +167,7 @@ export default {
 
       const { model, body } = parseQueryToken(chunk)
       if (model === 'tag') {
-        const tagList = await this.fetchTags(chunk.substring(4))
+        const tagList = await autocompleteTag(chunk.substring(4))
         return tagList
           .filter(tag => fuzzyMatch(body, tag))
           .map(tag => `tag:${tag}`)
@@ -198,11 +198,6 @@ export default {
         ].filter(c => fuzzyMatch(chunk, c))
       }
       return []
-    },
-    async fetchTags (tag) {
-      return this.$ankiCall('tag_suggestions', {
-        query: tag
-      })
     }
   },
   components: {

@@ -1,8 +1,8 @@
-import ankiCall from '~/api/ankiCall'
 import CodeMirror from 'codemirror'
+import { autocompleteWord } from '~/api'
 
 function getAutocomplete (query) {
-  return ankiCall('get_word_autocomplete', { query })
+  return autocompleteWord(query)
 }
 
 export default async function (cm) {

@@ -27,6 +27,7 @@ space-seperated-input(
 <script>
 
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
+import { autocompleteTag } from '@/api'
 
 export default {
   props: {
@@ -46,9 +47,7 @@ export default {
       }
     },
     async fetchTags (tag) {
-      return this.$ankiCall('tag_suggestions', {
-        query: tag
-      })
+      return autocompleteTag(tag)
     }
   }
 }
