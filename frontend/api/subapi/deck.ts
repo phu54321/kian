@@ -33,6 +33,6 @@ export async function getDeckInfo (deckName: string) {
 export function collapseDeck (deckName: string, collapse: boolean) {
     return ankiCall('deck_collapse', {
         deckName,
-        collapse: collapse || true,
+        collapse,
     });
 }
