@@ -15,35 +15,33 @@ div(v-else)
 
 <script>
 
-import TuiEditor from './TuiEditor/TuiEditor';
-import Summernote from './Summernote/Summernote';
-import encodeMarkdown from './TuiEditor/renderer/markdownRenderer';
-import { turndown } from './TuiEditor/decompiler/markdownDecompiler';
-
-
+import TuiEditor from './TuiEditor/TuiEditor'
+import Summernote from './Summernote/Summernote'
+import encodeMarkdown from './TuiEditor/renderer/markdownRenderer'
+import { turndown } from './TuiEditor/decompiler/markdownDecompiler'
 
 export default {
-    props: ['value', 'card', 'modelData'],
-    computed: {
-        isMarkdown () {
-            return TuiEditor.isEditableHtml(this.value);
-        },
+  props: ['value', 'card', 'modelData'],
+  computed: {
+    isMarkdown () {
+      return TuiEditor.isEditableHtml(this.value)
+    }
+  },
+  components: {
+    TuiEditor,
+    Summernote
+  },
+  methods: {
+    openMarkdownDialog () {
+      this.$refs.markdownConvertModal.show()
     },
-    components: {
-        TuiEditor,
-        Summernote,
-    },
-    methods: {
-        openMarkdownDialog () {
-            this.$refs.markdownConvertModal.show();
-        },
-        convertToMarkdown () {
-            const markdown = turndown(this.value);
-            const newHtml = encodeMarkdown(markdown);
-            this.$refs.markdownConvertModal.hide();
-            this.$emit('input', newHtml);
-        },
-    },
-};
+    convertToMarkdown () {
+      const markdown = turndown(this.value)
+      const newHtml = encodeMarkdown(markdown)
+      this.$refs.markdownConvertModal.hide()
+      this.$emit('input', newHtml)
+    }
+  }
+}
 
 </script>

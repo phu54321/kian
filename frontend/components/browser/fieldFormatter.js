@@ -13,30 +13,30 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import textVersion from 'textversionjs';
-import { escapeHtml, formatDate } from '~/utils/utils';
+import textVersion from 'textversionjs'
+import { escapeHtml, formatDate } from '~/utils/utils'
 
 export default {
-    textVersionJs (text) {
-        return escapeHtml(textVersion (text, {
-            imgProcess (src, _alt) {
-                return src;
-            },
-        }));
-    },
-    formatOrd (ord) {
-        return escapeHtml(`#${ord + 1}`);
-    },
-    timeToText (timestamp) {
-        if (typeof timestamp === 'string') return timestamp;
-        const date = new Date(timestamp * 1000);
-        return formatDate(date);
-    },
-    concatTags (tags) {
-        return escapeHtml(tags.join(', '));
-    },
-    schedTypeToDot (type) {
-        if (type === null) return '';
-        return `<span class='${type}Dot'>●</span>`;
-    },
-};
+  textVersionJs (text) {
+    return escapeHtml(textVersion(text, {
+      imgProcess (src, _alt) {
+        return src
+      }
+    }))
+  },
+  formatOrd (ord) {
+    return escapeHtml(`#${ord + 1}`)
+  },
+  timeToText (timestamp) {
+    if (typeof timestamp === 'string') return timestamp
+    const date = new Date(timestamp * 1000)
+    return formatDate(date)
+  },
+  concatTags (tags) {
+    return escapeHtml(tags.join(', '))
+  },
+  schedTypeToDot (type) {
+    if (type === null) return ''
+    return `<span class='${type}Dot'>●</span>`
+  }
+}

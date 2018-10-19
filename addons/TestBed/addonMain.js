@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import MainRouter from '~/router';
-import MainToolbar from '~/toolbar';
-import TestBedVue from './TestBed';
+import MainRouter from '~/router'
+import MainToolbar from '~/toolbar'
+import TestBedVue from './TestBed'
 
 export default {
-    install () {
-        MainRouter.add('/testbed', TestBedVue);
-        MainToolbar.add('/testbed', 'Testbed', 'flask');
-    },
-};
+  install () {
+    MainRouter.add('/testbed', TestBedVue)
+    MainToolbar.add('/testbed', 'Testbed', 'flask')
+  }
+}

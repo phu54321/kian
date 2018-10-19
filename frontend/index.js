@@ -13,38 +13,39 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Vue from 'vue';
+import Vue from 'vue'
 
-import './api/ankiCall';
+import './api/ankiCall'
 
-import './helpers/asyncData';
-import './helpers/asyncComputed';
-import './helpers/axios';
-import './helpers/bootstrap-vue';
-import './helpers/localStorage';
-import './helpers/datepicker';
-import './helpers/fontawesome';
-import './helpers/hotkey';
-import './helpers/toasted';
-import './helpers/loadingOverlay';
+import './helpers/asyncData'
+import './helpers/asyncComputed'
+import './helpers/axios'
+import './helpers/bootstrap-vue'
+import './helpers/localStorage'
+import './helpers/datepicker'
+import './helpers/fontawesome'
+import './helpers/hotkey'
+import './helpers/toasted'
+import './helpers/loadingOverlay'
 
-import './addons/install';
+import './addons/install'
 
-import VueRouter from 'vue-router';
-import Router from './router';
-Vue.use(VueRouter);
+import VueRouter from 'vue-router'
+import Router from './router'
 
-import store from './store';
-
-window.onbeforeunload = function () {
-    return 'Really refresh?';
-};
+import store from './store'
 
 // App
-import App from './App';
-new Vue({
-    el: '#app',
-    render: h => h(App),
-    store,
-    router: Router.createRouter(),
-});
+import App from './App'
+Vue.use(VueRouter)
+
+window.onbeforeunload = function () {
+  return 'Really refresh?'
+};
+
+(() => new Vue({
+  el: '#app',
+  render: h => h(App),
+  store,
+  router: Router.createRouter()
+}))()

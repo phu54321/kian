@@ -9,45 +9,14 @@ module.exports = {
         "mocha": true,
     },
     "extends": [
-        "es2015",
-        "eslint:recommended",
+        "eslint-config-standard",
         'plugin:vue/essential',
     ],
+    "parser": "vue-eslint-parser",
     "parserOptions": {
         "parser": "typescript-eslint-parser",
         "plugins": ["typescript"],
         "ecmaVersion": 2017,
         "sourceType": "module"
     },
-    "rules": {
-        "space-before-function-paren": ["error", "always"],
-        "indent": [
-            "error",
-            4
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "eqeqeq": [
-            "error",
-            "always"
-        ],
-        "no-constant-condition": [
-            "error",
-            { "checkLoops": false }
-        ],
-        "object-curly-spacing": ["error", "always"],
-        "keyword-spacing": ["error", {
-            "before": true,
-            "after": true,
-        }],
-        "comma-dangle": ["error", "always-multiline"],
-        "no-undef": "off",
-        "no-unused-vars": "off",
-    }
 };

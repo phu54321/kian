@@ -13,27 +13,25 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 // This file is intented to be run inside poi.config.js, so it uses path module
 // to get all modules.
 
 module.exports = function (app) {
-    const path = require('path');
-    const fs = require('fs');
-    const express = require('express');
-    const addonListDir = path.resolve(__dirname, '../../addons');
+  const path = require('path')
+  const fs = require('fs')
+  const express = require('express')
+  const addonListDir = path.resolve(__dirname, '../../addons')
 
-    fs.readdirSync(addonListDir).forEach(addonName => {
-        if (addonName.startsWith('.')) return;
+  fs.readdirSync(addonListDir).forEach(addonName => {
+    if (addonName.startsWith('.')) return
 
-        const addonDir = path.join(addonListDir, addonName);
-        const { staticFiles } = require(path.join(addonDir, 'addonConfig.js'));
-        if (!staticFiles) return;
+    const addonDir = path.join(addonListDir, addonName)
+    const { staticFiles } = require(path.join(addonDir, 'addonConfig.js'))
+    if (!staticFiles) return
 
-        for (const { src, servePath } of staticFiles) {
-            const staticPath = path.join(addonDir, src);
-            app.use(servePath, express.static(staticPath));
-        }
-    });
-};
-
+    for (const { src, servePath } of staticFiles) {
+      const staticPath = path.join(addonDir, src)
+      app.use(servePath, express.static(staticPath))
+    }
+  })
+}

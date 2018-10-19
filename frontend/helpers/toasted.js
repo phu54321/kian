@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Vue from 'vue';
+import Vue from 'vue'
 
-import VueToasted from 'vue-toasted';
+import VueToasted from 'vue-toasted'
 Vue.use(VueToasted, {
-    iconPack : 'fontawesome',
-    position: 'bottom-left',
-    duration : 2000,
-});
+  iconPack: 'fontawesome',
+  position: 'bottom-left',
+  duration: 2000
+})

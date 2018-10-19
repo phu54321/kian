@@ -34,43 +34,43 @@ div
 
 <script>
 
-import SpaceSeperatedInput from '../common/SpaceSeperatedInput';
-import { fuzzyMatch } from '~/utils/utils';
-import { listModel } from '~/api';
+import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
+import { fuzzyMatch } from '~/utils/utils'
+import { listModel } from '~/api'
 
 export default {
-    components: {
-        SpaceSeperatedInput,
+  components: {
+    SpaceSeperatedInput
+  },
+  data () {
+    const selectorList = this.$localStorage.get('quick_model_selector_list')
+    return {
+      availableModels: [],
+      modelList: selectorList ? JSON.parse(selectorList) : []
+    }
+  },
+  async asyncData () {
+    return {
+      availableModels: await listModel()
+    }
+  },
+  methods: {
+    modelValidator (model) {
+      return this.availableModels.indexOf(model) !== -1
     },
-    data () {
-        const selectorList = this.$localStorage.get('quick_model_selector_list');
-        return {
-            availableModels: [],
-            modelList: selectorList ? JSON.parse(selectorList) : [],
-        };
+    modelSuggestions (m) {
+      return this.availableModels.filter(model => fuzzyMatch(m, model))
     },
-    async asyncData () {
-        return {
-            availableModels: await listModel(),
-        };
+    onInput (val) {
+      this.modelList = val
+      this.$localStorage.set('quick_model_selector_list', JSON.stringify(val))
     },
-    methods: {
-        modelValidator (model) {
-            return this.availableModels.indexOf(model) !== -1;
-        },
-        modelSuggestions (m) {
-            return this.availableModels.filter(model => fuzzyMatch(m, model));
-        },
-        onInput (val) {
-            this.modelList = val;
-            this.$localStorage.set('quick_model_selector_list', JSON.stringify(val));
-        },
-        changeModel (model) {
-            this.$toasted.show(`Quick model change to "${model}"`, {
-                icon: 'sync',
-            });
-            this.$emit('input', model);
-        },
-    },
-};
+    changeModel (model) {
+      this.$toasted.show(`Quick model change to "${model}"`, {
+        icon: 'sync'
+      })
+      this.$emit('input', model)
+    }
+  }
+}
 </script>

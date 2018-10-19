@@ -36,71 +36,70 @@ b-container.pt-4
 
     h2 Config
 
-
 </template>
 
 <script>
 
 export default {
-    data () {
-        return {
-            missing: [],
-            unused: [],
-        };
+  data () {
+    return {
+      missing: [],
+      unused: []
+    }
+  },
+
+  methods: {
+    async removeEmptyCards () {
+      const loader = this.$loading.show()
+      const cardIds = await this.$ankiCall('col_emptycards_get')
+      if (cardIds.length) {
+        this.$toasted.show(`${cardIds.length} empty card(s) removed.`)
+        await this.$ankiCall('col_card_remove_batch', { cardIds })
+      } else {
+        this.$toasted.show('No empty cards.')
+      }
+      loader.hide()
     },
 
-    methods: {
-        async removeEmptyCards () {
-            const loader = this.$loading.show();
-            const cardIds = await this.$ankiCall('col_emptycards_get');
-            if (cardIds.length) {
-                this.$toasted.show(`${cardIds.length} empty card(s) removed.`);
-                await this.$ankiCall('col_card_remove_batch', { cardIds });
-            } else {
-                this.$toasted.show('No empty cards.');
-            }
-            loader.hide();
-        },
-
-        async checkDatabase () {
-            const loader = this.$loading.show();
-            try {
-                const ret = await this.$ankiCall('col_check');
-                this.$toasted.show(ret, { icon: 'check' });
-            } catch (e) {
-                this.$toasted.error(e.message, { icon: 'exclamation-triangle' });
-            } finally {
-                loader.hide();
-            }
-        },
-
-        async checkMedia () {
-            const loader = this.$loading.show();
-            try {
-                const { missing, unused } = await this.$ankiCall('media_check');
-                this.missing = missing;
-                this.unused = unused;
-                this.$refs.checkMediaModal.show();
-            } catch (e) {
-                this.$toasted.error(e.message, { icon: 'exclamation-triangle' });
-            } finally {
-                loader.hide();
-            }
-        },
-
-        async removeUnusedMedia () {
-            const { unused } = this;
-            if (unused.length) {
-                const deleteFailed = await this.$ankiCall('media_remove', { filenames: unused });
-                const msg = (deleteFailed === 0)
-                    ? `${unused.length} unused files removed`
-                    : `${unused.length} unused files, ${unused.length - deleteFailed} removed`;
-                this.$toasted.show(msg, { icon: 'check' });
-                this.unused = [];
-            }
-        },
+    async checkDatabase () {
+      const loader = this.$loading.show()
+      try {
+        const ret = await this.$ankiCall('col_check')
+        this.$toasted.show(ret, { icon: 'check' })
+      } catch (e) {
+        this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
+      } finally {
+        loader.hide()
+      }
     },
-};
+
+    async checkMedia () {
+      const loader = this.$loading.show()
+      try {
+        const { missing, unused } = await this.$ankiCall('media_check')
+        this.missing = missing
+        this.unused = unused
+        this.$refs.checkMediaModal.show()
+      } catch (e) {
+        this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
+      } finally {
+        loader.hide()
+      }
+    },
+
+    async removeUnusedMedia () {
+      const { unused } = this
+      if (unused.length) {
+        const deleteFailed = await this.$ankiCall('media_remove', { filenames: unused })
+        const msg = (deleteFailed === 0)
+          ? `${unused.length} unused files removed`
+          : `${unused.length} unused files, ${unused.length - deleteFailed} removed`
+        this.$toasted.show(msg, { icon: 'check' })
+        this.unused = []
+      }
+    }
+  }
+}
 
 </script>
 

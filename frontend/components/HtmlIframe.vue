@@ -56,39 +56,39 @@ window.addEventListener('keydown', eventPassThrough);
 </body>
 </head>
 </html>
-`;
+`
 
 function renderTemplate (html) {
-    return template.replace('{{content}}', html);
+  return template.replace('{{content}}', html)
 }
 
 export default {
-    props: ['html'],
-    data () {
-        return {
-            currentIframe: 1,
-            html1: renderTemplate(this.html),
-            html2: '',
-        };
-    },
-    watch: {
-        html (v) {
-            if (this.currentIframe === 1) {
-                this.html2 = renderTemplate(v);
-            } else {
-                this.html1 = renderTemplate(v);
-            }
-        },
-    },
-    methods: {
-        onLoad (iframeIndex) {
-            const thisIframe = (iframeIndex === 1) ? this.$refs.iframe1 : this.$refs.iframe2;
-            if (thisIframe.srcdoc === '') return;
+  props: ['html'],
+  data () {
+    return {
+      currentIframe: 1,
+      html1: renderTemplate(this.html),
+      html2: ''
+    }
+  },
+  watch: {
+    html (v) {
+      if (this.currentIframe === 1) {
+        this.html2 = renderTemplate(v)
+      } else {
+        this.html1 = renderTemplate(v)
+      }
+    }
+  },
+  methods: {
+    onLoad (iframeIndex) {
+      const thisIframe = (iframeIndex === 1) ? this.$refs.iframe1 : this.$refs.iframe2
+      if (thisIframe.srcdoc === '') return
 
-            this.currentIframe = iframeIndex;
-        },
-    },
-};
+      this.currentIframe = iframeIndex
+    }
+  }
+}
 
 </script>
 

@@ -39,94 +39,95 @@ div
     b-modal(id='browserRemoveCards', title='Delete cards', lazy, ok-variant='danger', @ok='deleteCards')
         | Really delete?
 
-
 </template>
 
 <script>
 
-import ListSelector from '../common/ListSelector';
-import TagEditor from '../common/TagEditor';
-import { listModel, listDeck } from '~/api';
-import { formatDate } from '~/utils/utils';
+import ListSelector from '../common/ListSelector'
+import TagEditor from '../common/TagEditor'
+import { formatDate } from '~/utils/utils'
 
 import {
-    updateCardDeckBatch,
-    updateCardModelBatch,
-    addCardTagBatch,
-    deleteCardTagBatch,
-    deleteCardBatch,
-} from '~/api';
+  listModel,
+  listDeck,
+
+  updateCardDeckBatch,
+  updateCardModelBatch,
+  addCardTagBatch,
+  deleteCardTagBatch,
+  deleteCardBatch
+} from '~/api'
 
 export default {
-    props: ['selected'],
-    components: {
-        ListSelector,
-        TagEditor,
+  props: ['selected'],
+  components: {
+    ListSelector,
+    TagEditor
+  },
+  data () {
+    return {
+      deck: '',
+      model: '',
+      tags: [],
+      due: null,
+      changeDueShow: false
+    }
+  },
+  computed: {
+    listModel: () => listModel,
+    listDeck: () => listDeck
+  },
+  watch: {
+    changeDueShow (v) {
+      if (v) {
+        const today = new Date()
+        this.due = today
+      }
+    }
+  },
+  methods: {
+    formatDate,
+    async changeDeck () {
+      await updateCardDeckBatch(this.selected, this.deck)
+      this.deck = ''
+      this.$emit('updateView')
     },
-    data () {
-        return {
-            deck: '',
-            model: '',
-            tags: [],
-            due: null,
-            changeDueShow: false,
-        };
+    async changeModel () {
+      await updateCardModelBatch(this.selected, this.model)
+      this.model = ''
+      this.$emit('updateCardIds')
     },
-    computed: {
-        listModel: () => listModel,
-        listDeck: () => listDeck,
+    async addTags () {
+      await addCardTagBatch(this.selected, this.tags)
+      this.tags = []
+      this.$emit('updateView')
     },
-    watch: {
-        changeDueShow (v) {
-            if (v) {
-                const today = new Date();
-                this.due = today;
-            }
-        },
+    async removeTags () {
+      await deleteCardTagBatch(this.selected, this.tags)
+      this.tags = []
+      this.$emit('updateView')
     },
-    methods: {
-        formatDate,
-        async changeDeck () {
-            await updateCardDeckBatch(this.selected, this.deck);
-            this.deck = '';
-            this.$emit('updateView');
-        },
-        async changeModel () {
-            await updateCardModelBatch(this.selected, this.model);
-            this.model = '';
-            this.$emit('updateCardIds');
-        },
-        async addTags () {
-            await addCardTagBatch(this.selected, this.tags);
-            this.tags = [];
-            this.$emit('updateView');
-        },
-        async removeTags () {
-            await deleteCardTagBatch(this.selected, this.tags);
-            this.tags = [];
-            this.$emit('updateView');
-        },
-        async resetSched () {
-            await this.$ankiCall('card_sched_reset', {
-                cardIds: this.selected,
-            });
-            this.$emit('updateView');
-        },
-        async changeDue () {
-            const dueTimestamp = (this.due.getTime() / 1000) | 0;
-            await this.$ankiCall('card_sched_reschedule', {
-                cardIds: this.selected,
-                minDue: dueTimestamp,
-                maxDue: dueTimestamp,
-            });
-            this.due = null;
-            this.$emit('updateView');
-        },
-        async deleteCards () {
-            await deleteCardBatch(this.selected);
-            this.$emit('updateCardIds');
-        },
+    async resetSched () {
+      await this.$ankiCall('card_sched_reset', {
+        cardIds: this.selected
+      })
+      this.$emit('updateView')
     },
-};
+    async changeDue () {
+      const dueTimestamp = (this.due.getTime() / 1000) | 0
+      await this.$ankiCall('card_sched_reschedule', {
+        cardIds: this.selected,
+        minDue: dueTimestamp,
+        maxDue: dueTimestamp
+      })
+      this.due = null
+      this.$emit('updateView')
+    },
+    async deleteCards () {
+      await deleteCardBatch(this.selected)
+      this.$emit('updateCardIds')
+    }
+  }
+}
 
 </script>

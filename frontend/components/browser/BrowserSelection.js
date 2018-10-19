@@ -14,83 +14,82 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export default {
-    data () {
-        return {
-            cardSelected: [],
-        };
+  data () {
+    return {
+      cardSelected: []
+    }
+  },
+  computed: {
+    selectedCardCount () {
+      return this.cardSelected.filter(x => x).length
     },
-    computed: {
-        selectedCardCount () {
-            return this.cardSelected.filter(x => x).length;
-        },
-        selectedCardId () {
-            if (this.selectedCardCount !== 1) return -1;
-            return this.frozenCardIds[this.cardSelected.indexOf(true)];
-        },
-        selectedCardIndex () {
-            if (this.selectedCardCount !== 1) return -1;
-            return this.cardSelected.indexOf(true);
-        },
-        selectedCardList () {
-            const { frozenCardIds: cardIds } = this;
-            return this.cardSelected
-                .map((x, i) => x ? cardIds[i] : null)
-                .filter(x => x !== null);
-        },
+    selectedCardId () {
+      if (this.selectedCardCount !== 1) return -1
+      return this.frozenCardIds[this.cardSelected.indexOf(true)]
     },
-    methods: {
-        selectCardIndex (cardIndex, selected) {
-            this.$set(this.cardSelected, cardIndex, selected);
-        },
-
-        selectCardIndexBatch (cardIndexes, selected) {
-            for (const idx of cardIndexes) this.selectCardIndex(idx, selected);
-        },
-
-        selectCardIndexOnly (index) {
-            const origSelect = this.cardSelected[index];
-            this.selectAll(false);
-            this.selectCardIndex(index, !origSelect);
-            this.lastSelectedIndex = index;
-        },
-
-        selectAll (selected) {
-            this.cardSelected = new Array(this.frozenCardIds.length).fill(selected);
-        },
-
-        onSelectSequential (index) {
-            const { lastSelectedIndex } = this;
-            if (lastSelectedIndex === -1) return this.selectCardIndexOnly(index);
-            else {
-                if (lastSelectedIndex < index) {
-                    for (let i = lastSelectedIndex + 1 ; i <= index ; i++) {
-                        this.selectCardIndex(i, true);
-                    }
-                }
-                else {
-                    for (let i = lastSelectedIndex - 1 ; i >= index ; i--) {
-                        this.selectCardIndex(i, true);
-                    }
-                }
-                this.lastSelectedIndex = index;
-            }
-        },
-
-        onSelectAdd (index) {
-            const origSelect = this.cardSelected[index];
-            this.selectCardIndex(index, !origSelect);
-            if (!origSelect) this.lastSelectedIndex = index;
-        },
-
-        onSelectAll () {
-            if (this.cardSelected.every(x => x)) this.selectAll(false);
-            else this.selectAll(true);
-            this.lastSelectedIndex = this.frozenCardIds.length - 1;
-        },
-
-        resetSelectedCards () {
-            this.cardSelected = new Array(this.frozenCardIds.length).fill(false);
-            this.lastSelectedIndex = -1;
-        },
+    selectedCardIndex () {
+      if (this.selectedCardCount !== 1) return -1
+      return this.cardSelected.indexOf(true)
     },
-};
+    selectedCardList () {
+      const { frozenCardIds: cardIds } = this
+      return this.cardSelected
+        .map((x, i) => x ? cardIds[i] : null)
+        .filter(x => x !== null)
+    }
+  },
+  methods: {
+    selectCardIndex (cardIndex, selected) {
+      this.$set(this.cardSelected, cardIndex, selected)
+    },
+
+    selectCardIndexBatch (cardIndexes, selected) {
+      for (const idx of cardIndexes) this.selectCardIndex(idx, selected)
+    },
+
+    selectCardIndexOnly (index) {
+      const origSelect = this.cardSelected[index]
+      this.selectAll(false)
+      this.selectCardIndex(index, !origSelect)
+      this.lastSelectedIndex = index
+    },
+
+    selectAll (selected) {
+      this.cardSelected = new Array(this.frozenCardIds.length).fill(selected)
+    },
+
+    onSelectSequential (index) {
+      const { lastSelectedIndex } = this
+      if (lastSelectedIndex === -1) return this.selectCardIndexOnly(index)
+      else {
+        if (lastSelectedIndex < index) {
+          for (let i = lastSelectedIndex + 1; i <= index; i++) {
+            this.selectCardIndex(i, true)
+          }
+        } else {
+          for (let i = lastSelectedIndex - 1; i >= index; i--) {
+            this.selectCardIndex(i, true)
+          }
+        }
+        this.lastSelectedIndex = index
+      }
+    },
+
+    onSelectAdd (index) {
+      const origSelect = this.cardSelected[index]
+      this.selectCardIndex(index, !origSelect)
+      if (!origSelect) this.lastSelectedIndex = index
+    },
+
+    onSelectAll () {
+      if (this.cardSelected.every(x => x)) this.selectAll(false)
+      else this.selectAll(true)
+      this.lastSelectedIndex = this.frozenCardIds.length - 1
+    },
+
+    resetSelectedCards () {
+      this.cardSelected = new Array(this.frozenCardIds.length).fill(false)
+      this.lastSelectedIndex = -1
+    }
+  }
+}

@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Vue from 'vue';
+import Vue from 'vue'
 
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'vue-awesome/icons';
-import Icon from 'vue-awesome/components/Icon.vue';
-Vue.component('icon', Icon);
+import '@fortawesome/fontawesome-free/css/all.min.css'
+import 'vue-awesome/icons'
+import Icon from 'vue-awesome/components/Icon.vue'
+Vue.component('icon', Icon)

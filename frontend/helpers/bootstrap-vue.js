@@ -13,24 +13,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Vue from 'vue';
+import Vue from 'vue'
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
-import BootstrapVue from 'bootstrap-vue';
-Vue.use(BootstrapVue);
-
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import BootstrapVue from 'bootstrap-vue'
 
 // Special helper for modal: click non-secondary button on enter.
-import $ from 'jquery';
-import '~/utils/hotkey/jquery.hotkeys';
+import $ from 'jquery'
+import '~/utils/hotkey/jquery.hotkeys'
+Vue.use(BootstrapVue)
 
 $(document).bind('keydown', 'enter', () => {
-    const modalDialogs = document.querySelectorAll('.modal.show');
-    if (modalDialogs.length === 1) {
-        const buttons = modalDialogs[0].querySelectorAll('.modal-footer .btn:not(.btn-secondary)');
-        if (buttons.length === 1) {
-            buttons[0].click();
-        }
+  const modalDialogs = document.querySelectorAll('.modal.show')
+  if (modalDialogs.length === 1) {
+    const buttons = modalDialogs[0].querySelectorAll('.modal-footer .btn:not(.btn-secondary)')
+    if (buttons.length === 1) {
+      buttons[0].click()
     }
-});
+  }
+})

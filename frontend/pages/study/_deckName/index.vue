@@ -63,147 +63,145 @@ b-container.study-main
 
 <script>
 
-import ankiCall from '~/api/ankiCall';
-import ErrorDialog from '~/components/ErrorDialog.vue';
-import HtmlIframe from '~/components/HtmlIframe';
-import { formatTime } from '~/utils/utils';
-import ExponentialSmoother from './exponentialSmoother';
-
+import ankiCall from '~/api/ankiCall'
+import ErrorDialog from '~/components/ErrorDialog.vue'
+import HtmlIframe from '~/components/HtmlIframe'
+import { formatTime } from '~/utils/utils'
+import ExponentialSmoother from './exponentialSmoother'
 
 async function getNextCard (deckName) {
-    const msg = await ankiCall('reviewer_next_card', { deckName });
-    return {
-        remaining: msg.remaining,
-        card: {
-            id: msg.cardId,
-            noteId: msg.noteId,
-            front: msg.front,
-            back: msg.back,
-        },
-        ansButtonCount: msg.ansButtonCount,
-        flipped: false,
-    };
+  const msg = await ankiCall('reviewer_next_card', { deckName })
+  return {
+    remaining: msg.remaining,
+    card: {
+      id: msg.cardId,
+      noteId: msg.noteId,
+      front: msg.front,
+      back: msg.back
+    },
+    ansButtonCount: msg.ansButtonCount,
+    flipped: false
+  }
 }
 
 function remainingToProgress ({ new: newCnt, lrn, rev }) {
-    return newCnt * 2 + lrn + rev;
+  return newCnt * 2 + lrn + rev
 }
 
-
 export default {
-    props: ['deckName'],
-    async asyncData (props) {
-        const deckName = props.deckName;
-        const initialData = await getNextCard(deckName);
-        return {
-            ...initialData,
-            initialRemaining: Object.assign({}, initialData.remaining),
-        };
+  props: ['deckName'],
+  async asyncData (props) {
+    const deckName = props.deckName
+    const initialData = await getNextCard(deckName)
+    return {
+      ...initialData,
+      initialRemaining: Object.assign({}, initialData.remaining)
+    }
+  },
+  data () {
+    return {
+      card: null,
+      flipped: false,
+      ansButtonCount: 0,
+      note: null,
+      remaining: {
+        new: 0,
+        lrn: 0,
+        rev: 0
+      },
+      initialRemaining: null,
+      startTime: (new Date()).getTime() / 1000,
+      currentTime: null,
+      currentTimeUpdater: null,
+      progressTracker: new ExponentialSmoother()
+    }
+  },
+  mounted () {
+    this.currentTime = (new Date()).getTime() / 1000
+    this.currentTimeUpdater = window.setInterval(() => {
+      this.currentTime = (new Date()).getTime() / 1000
+    }, 1000)
+  },
+  beforeDestroy () {
+    window.clearInterval(this.currentTimeUpdater)
+    this.$ankiCall('reviewer_reset')
+  },
+  components: { HtmlIframe },
+  methods: {
+    loadCard () {
+      return ankiCall('reviewer_next_card', {
+        deckName: this.deckName
+      }).then(msg => {
+        this.card = {
+          id: msg.cardId,
+          front: msg.front,
+          back: msg.back
+        }
+        this.ansButtonCount = 2
+        this.flipped = false
+      })
     },
-    data () {
-        return {
-            card: null,
-            flipped: false,
-            ansButtonCount: 0,
-            note: null,
-            remaining: {
-                new: 0,
-                lrn: 0,
-                rev: 0,
-            },
-            initialRemaining: null,
-            startTime: (new Date()).getTime() / 1000,
-            currentTime: null,
-            currentTimeUpdater: null,
-            progressTracker: new ExponentialSmoother(),
-        };
+    openEditor () {
+      this.$router.push(`/card/${this.card.id}`)
     },
-    mounted () {
-        this.currentTime = (new Date()).getTime() / 1000;
-        this.currentTimeUpdater = window.setInterval(() => {
-            this.currentTime = (new Date()).getTime() / 1000;
-        }, 1000);
+    answerCard (ease) {
+      ankiCall('reviewer_answer_card', {
+        cardId: this.card.id,
+        ease: ease
+      }).then(() => {
+        this.progressTracker.update(this.currentProgress)
+        return getNextCard(this.deckName)
+      }).then(card => {
+        Object.assign(this.$data, card)
+        this.remaining = this.remaining
+      }).catch(err => {
+        ErrorDialog.openErrorDialog(err.message)
+      })
     },
-    beforeDestroy () {
-        window.clearInterval(this.currentTimeUpdater);
-        this.$ankiCall('reviewer_reset');
+    undoReview () {
+      this.$ankiCall('reviewer_undo')
+        .then((ret) => {
+          if (ret) {
+            this.$toasted.info('Review undone.', { icon: 'undo' })
+            this.loadCard()
+          } else {
+            this.$toasted.error('Undo not available.', { icon: 'ban' })
+          }
+        })
     },
-    components: { HtmlIframe },
-    methods: {
-        loadCard () {
-            return ankiCall('reviewer_next_card', {
-                deckName: this.deckName,
-            }).then(msg => {
-                this.card = {
-                    id: msg.cardId,
-                    front: msg.front,
-                    back: msg.back,
-                };
-                this.ansButtonCount = 2;
-                this.flipped = false;
-            });
-        },
-        openEditor () {
-            this.$router.push(`/card/${this.card.id}`);
-        },
-        answerCard (ease) {
-            ankiCall('reviewer_answer_card', {
-                cardId: this.card.id,
-                ease: ease,
-            }).then(() => {
-                this.progressTracker.update(this.currentProgress);
-                return getNextCard(this.deckName);
-            }).then(card => {
-                Object.assign(this.$data, card);
-                this.remaining = this.remaining;
-            }).catch(err => {
-                ErrorDialog.openErrorDialog(err.message);
-            });
-        },
-        undoReview () {
-            this.$ankiCall('reviewer_undo')
-                .then((ret) => {
-                    if (ret) {
-                        this.$toasted.info('Review undone.', { icon: 'undo' });
-                        this.loadCard();
-                    } else {
-                        this.$toasted.error('Undo not available.', { icon: 'ban' });
-                    }
-                });
-        },
 
-        answerButtonColor (type) {
-            return {
-                Again: 'danger',
-                Hard: 'secondary',
-                Good: 'success',
-                Easy: 'primary',
-            }[type];
-        },
-        formatTime,
+    answerButtonColor (type) {
+      return {
+        Again: 'danger',
+        Hard: 'secondary',
+        Good: 'success',
+        Easy: 'primary'
+      }[type]
     },
-    computed: {
-        elapsedTime () {
-            return this.currentTime - this.startTime;
-        },
-        remainingTime () {
-            return (1 - this.currentProgress) / this.progressTracker.slope;
-        },
-        currentProgress () {
-            if (!this.initialRemaining) return 0;
-            const total = remainingToProgress(this.initialRemaining);
-            const current = remainingToProgress(this.remaining);
-            return 1 - (current / total);
-        },
-        answerButtons () {
-            return {
-                2: ['Again', 'Good'],
-                3: ['Again', 'Good', 'Easy'],
-                4: ['Again', 'Hard', 'Good', 'Easy'],
-            }[this.ansButtonCount];
-        },
+    formatTime
+  },
+  computed: {
+    elapsedTime () {
+      return this.currentTime - this.startTime
     },
-};
+    remainingTime () {
+      return (1 - this.currentProgress) / this.progressTracker.slope
+    },
+    currentProgress () {
+      if (!this.initialRemaining) return 0
+      const total = remainingToProgress(this.initialRemaining)
+      const current = remainingToProgress(this.remaining)
+      return 1 - (current / total)
+    },
+    answerButtons () {
+      return {
+        2: ['Again', 'Good'],
+        3: ['Again', 'Good', 'Easy'],
+        4: ['Again', 'Hard', 'Good', 'Easy']
+      }[this.ansButtonCount]
+    }
+  }
+}
 
 </script>
 

@@ -67,46 +67,45 @@ div.app-main
     footer.app-footer
         cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
 
-
 </template>
 
 <script>
 
-import ErrorDialog from './components/ErrorDialog';
-import HotkeyMap from './components/HotkeyMap';
-import MiniPaintModal from './components/minipaint/MiniPaintModal';
-import CookieLaw from 'vue-cookie-law';
-import SyncDialog from './components/SyncDialog';
+import ErrorDialog from './components/ErrorDialog'
+import HotkeyMap from './components/HotkeyMap'
+import MiniPaintModal from './components/minipaint/MiniPaintModal'
+import CookieLaw from 'vue-cookie-law'
+import SyncDialog from './components/SyncDialog'
 
-import './css/kian.scss';
+import './css/kian.scss'
 
-import MainToolbar from './toolbar';
+import MainToolbar from './toolbar'
 
-import { mapActions } from 'vuex';
+import { mapActions } from 'vuex'
 
 export default {
-    components: {
-        ErrorDialog,
-        HotkeyMap,
-        MiniPaintModal,
-        CookieLaw,
-        SyncDialog,
-    },
+  components: {
+    ErrorDialog,
+    HotkeyMap,
+    MiniPaintModal,
+    CookieLaw,
+    SyncDialog
+  },
 
-    created () {
-        this.loadUserConfig();
-    },
+  created () {
+    this.loadUserConfig()
+  },
 
-    methods: {
-        ...mapActions([
-            'loadUserConfig',
-        ]),
-    },
+  methods: {
+    ...mapActions([
+      'loadUserConfig'
+    ])
+  },
 
-    computed: {
-        toolbarList: () => MainToolbar.list(),
-    },
-};
+  computed: {
+    toolbarList: () => MainToolbar.list()
+  }
+}
 
 </script>
 
