@@ -18,11 +18,12 @@
     "build:frontend": "poi build frontend/index.js",
     "lint": "npm-run-all lint:* && eslint --cache poi.config.js",
     "lint:frontend": "eslint --cache frontend/** addons/**",
+    "lint:diff:frontend": "git diff-index --name-only HEAD | grep -E \"(.*)\\.(jsx|js|ts)$\" | xargs node_modules/eslint/bin/eslint.js -c .eslintrc.js",
     "fix": "eslint --fix frontend/** addons/**"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run lint:diff:frontend"
     }
   },
   "dependencies": {

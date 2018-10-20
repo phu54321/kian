@@ -40,7 +40,7 @@ export const specialCharTable = {
   TAB: '⭾',
   HOME: '↖',
   END: '↘',
-  SPACE: '☐'
+  SPACE: '\' \''
 }
 
 function firstLetterUpper (s) {
