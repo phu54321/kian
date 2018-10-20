@@ -23,13 +23,12 @@ b-container.pt-4
 <script>
 
 import DeckTreeView from '@/components/dashboard/DeckTreeView'
-import { getDeckDueTree } from '@/api/subapi/col'
+import { getDueTree } from '@/api'
 
 export default {
   async asyncData () {
-    const response = await getDeckDueTree()
     return {
-      deckDueTree: response
+      deckDueTree: await getDueTree()
     }
   },
   data () {
