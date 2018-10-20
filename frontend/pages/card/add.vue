@@ -28,11 +28,11 @@ b-container.pt-4
 
 import { mapGetters, mapActions } from 'vuex'
 
-import BrowserView from '~/components/browser/BrowserView'
-import CardEditor from '~/components/editor/CardEditor'
-import ErrorDialogVue from '~/components/ErrorDialog.vue'
+import BrowserView from '@/components/browser/BrowserView'
+import CardEditor from '@/components/editor/CardEditor'
+import ErrorDialogVue from '@/components/ErrorDialog.vue'
 
-import { addNote, findCards } from '~/api'
+import { addNote, findCards } from '@/api'
 
 const historyNum = 50
 

@@ -59,13 +59,13 @@ import Summernote from './Summernote/Summernote'
 import TuiSummernote from './TuiSummernote'
 import TagEditor from '../common/TagEditor'
 import QuickModelSelector from './QuickModelSelector'
-import nonReactiveCopy from '~/utils/nonReactiveCopy'
+import nonReactiveCopy from '@/utils/nonReactiveCopy'
 import _ from 'lodash'
 
 import './editor.scss'
-import { runHook } from '~/utils/hookBase'
+import { runHook } from '@/utils/hookBase'
 
-import { listModel, getModel, listDeck } from '~/api'
+import { listModel, getModel, listDeck } from '@/api'
 
 function resize (arr, size, defval) {
   while (arr.length > size) { arr.pop() }

@@ -47,10 +47,10 @@ div
 
 import Jimp from 'jimp/es'
 import { parseQAPair } from './qaPairParser'
-import ListSelector from '~/components//common/ListSelector'
-import { uploadImageFromBase64 } from '~/utils/uploadHelper'
-import BrowserView from '~/components/browser/BrowserView'
-import { listDeck, findCards, addNote } from '~/api'
+import ListSelector from '@/components//common/ListSelector'
+import { uploadImageFromBase64 } from '@/utils/uploadHelper'
+import BrowserView from '@/components/browser/BrowserView'
+import { listDeck, findCards, addNote } from '@/api'
 
 const URLObj = window.URL || window.webkitURL
 

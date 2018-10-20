@@ -25,7 +25,7 @@ autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
 </template>
 
 <script>
-import { fuzzyMatch, focusNextElement } from '~/utils/utils'
+import { fuzzyMatch, focusNextElement } from '@/utils/utils'
 import AutocompleteBox from './AutocompleteBox'
 
 export default {

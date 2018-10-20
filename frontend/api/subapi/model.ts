@@ -1,4 +1,4 @@
-import LRUCached from '~/utils/lrucache'
+import LRUCached from '@/utils/lrucache'
 import ankiCall from '../ankiCall'
 
 let modelListCache: string[] = []

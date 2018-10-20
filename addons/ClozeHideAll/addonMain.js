@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { addHook } from '~/utils//hookBase'
-import { tokHtml } from '~/utils/tokHtml'
+import { addHook } from '@/utils//hookBase'
+import { tokHtml } from '@/utils/tokHtml'
 
 const modelName = 'Cloze (Hide all)'
 

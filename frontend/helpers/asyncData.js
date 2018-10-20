@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import ErrorDialog from '~/components/ErrorDialog'
-import ankiCall from '~/api/ankiCall'
+import ErrorDialog from '@/components/ErrorDialog'
+import ankiCall from '@/api/ankiCall'
 import Vue from 'vue'
 
 // Note: vue-router has to be registered **before** importing asyncData,

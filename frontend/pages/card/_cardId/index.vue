@@ -23,10 +23,10 @@ b-container.pt-4
 
 <script>
 
-import ErrorDialog from '~/components/ErrorDialog'
-import CardEditor from '~/components/editor/CardEditor'
+import ErrorDialog from '@/components/ErrorDialog'
+import CardEditor from '@/components/editor/CardEditor'
 
-import { getCard, updateCard } from '~/api'
+import { getCard, updateCard } from '@/api'
 
 export default {
   props: {

@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import textVersion from 'textversionjs'
-import { escapeHtml, formatDate } from '~/utils/utils'
+import { escapeHtml, formatDate } from '@/utils/utils'
 
 export default {
   textVersionJs (text) {

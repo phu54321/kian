@@ -1,4 +1,4 @@
-import ankiCall from '~/api/ankiCall'
+import ankiCall from '@/api/ankiCall'
 
 const state = {
   loaded: false,

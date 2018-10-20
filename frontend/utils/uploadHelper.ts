@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import ankiCall from '~/api/ankiCall'
+import { mediaUpload } from '@/api'
 
 function base64ArrayBuffer (arrayBuffer: ArrayBuffer) {
   let base64 = ''
@@ -107,9 +107,5 @@ export function getRandomFilename (filename: string) {
 
 export async function uploadImageFromBase64 (filename: string, datab64: string) {
   filename = getRandomFilename(filename)
-
-  return ankiCall('media_upload', {
-    datab64,
-    filename
-  })
+  return mediaUpload(filename, datab64)
 }

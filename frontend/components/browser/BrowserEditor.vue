@@ -27,7 +27,7 @@ card-editor(
 
 import CardEditor from '../editor/CardEditor'
 import ErrorDialog from '../ErrorDialog'
-import { getCard, updateCard } from '~/api'
+import { getCard, updateCard } from '@/api'
 
 export default {
   props: ['cardId'],

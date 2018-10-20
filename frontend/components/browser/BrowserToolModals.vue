@@ -45,7 +45,7 @@ div
 
 import ListSelector from '../common/ListSelector'
 import TagEditor from '../common/TagEditor'
-import { formatDate } from '~/utils/utils'
+import { formatDate } from '@/utils/utils'
 
 import {
   listModel,
@@ -55,11 +55,11 @@ import {
   updateCardModelBatch,
   addCardTagBatch,
   deleteCardTagBatch,
-  deleteCardBatch,
+  deleteCard,
 
   cardSchedReset,
   cardSchedReschedule
-} from '~/api'
+} from '@/api'
 
 export default {
   props: ['selected'],
@@ -124,7 +124,7 @@ export default {
       this.$emit('updateView')
     },
     async deleteCards () {
-      await deleteCardBatch(this.selected)
+      await deleteCard(this.selected)
       this.$emit('updateCardIds')
     }
   }

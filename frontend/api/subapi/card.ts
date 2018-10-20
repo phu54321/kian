@@ -1,5 +1,6 @@
 import ankiCall from '../ankiCall'
 import { addDeck, hasDeck } from './deck'
+import { pleuralize } from '@/utils/pleuralize'
 
 interface INoteDef {
   deck: string
@@ -51,7 +52,8 @@ export async function deleteCardTagBatch (cardIds: number[], tags: string[] | st
   return ankiCall('card_remove_tag_batch', { cardIds, tags })
 }
 
-export async function deleteCardBatch (cardIds: number[]) {
+export async function deleteCard (cardIds: number[] | number) {
+  cardIds = pleuralize(cardIds)
   return ankiCall('card_delete_batch', { cardIds })
 }
 

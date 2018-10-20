@@ -44,7 +44,7 @@ b-container.pt-4
 
 <script>
 
-import { getDeckInfo } from '~/api'
+import { getDeckInfo } from '@/api'
 
 export default {
   props: ['deckName'],

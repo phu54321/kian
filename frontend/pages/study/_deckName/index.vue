@@ -63,10 +63,10 @@ b-container.study-main
 
 <script>
 
-import ankiCall from '~/api/ankiCall'
-import ErrorDialog from '~/components/ErrorDialog.vue'
-import HtmlIframe from '~/components/HtmlIframe'
-import { formatTime } from '~/utils/utils'
+import ankiCall from '@/api/ankiCall'
+import ErrorDialog from '@/components/ErrorDialog.vue'
+import HtmlIframe from '@/components/HtmlIframe'
+import { formatTime } from '@/utils/utils'
 import ExponentialSmoother from './exponentialSmoother'
 
 async function getNextCard (deckName) {
