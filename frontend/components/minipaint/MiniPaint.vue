@@ -22,6 +22,7 @@ iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
 <script>
 
 import mime from 'mime-types'
+import { sleep } from '@/utils/promiseUtil'
 import { uploadImageFromBase64 } from '@/utils/uploadHelper'
 
 function eventPassThrough (e) {
@@ -45,12 +46,6 @@ function imgOnloadPromise (imgEl) {
     imgEl.onload = () => {
       resolve(imgEl)
     }
-  })
-}
-
-function sleep (duration) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, duration)
   })
 }
 
