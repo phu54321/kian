@@ -8,6 +8,10 @@ export function mediaUpload (filename: string, datab64: string) {
   })
 }
 
+export function checkMedia () {
+  return ankiCall('media_check')
+}
+
 export function mediaDelete (filenames: string[] | string) {
   filenames = pleuralize(filenames)
   return ankiCall('media_remove', { filenames })

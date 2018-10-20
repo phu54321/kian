@@ -40,8 +40,7 @@ b-container.pt-4
 
 <script>
 
-import { getEmptyCards, checkMedia, checkDatabase } from '@/api/subapi/col'
-import { deleteCard, mediaDelete } from '@/api'
+import { getEmptyCards, checkMedia, checkDatabase, deleteCard, mediaDelete } from '@/api'
 
 export default {
   data () {
