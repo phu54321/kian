@@ -63,23 +63,23 @@ b-container.study-main
 
 <script>
 
-import ankiCall from '@/api/ankiCall'
 import ErrorDialog from '@/components/ErrorDialog.vue'
 import HtmlIframe from '@/components/HtmlIframe'
 import { formatTime } from '@/utils/utils'
 import ExponentialSmoother from './exponentialSmoother'
+import { getReviewerNextCard, reviewerShuffle, reviewerAnswerCard, reviewerUndo } from '@/api'
 
 async function getNextCard (deckName) {
-  const msg = await ankiCall('reviewer_next_card', { deckName })
+  const card = await getReviewerNextCard(deckName)
   return {
-    remaining: msg.remaining,
+    remaining: card.remaining,
     card: {
-      id: msg.cardId,
-      noteId: msg.noteId,
-      front: msg.front,
-      back: msg.back
+      id: card.cardId,
+      noteId: card.noteId,
+      front: card.front,
+      back: card.back
     },
-    ansButtonCount: msg.ansButtonCount,
+    ansButtonCount: card.ansButtonCount,
     flipped: false
   }
 }
@@ -124,18 +124,16 @@ export default {
   },
   beforeDestroy () {
     window.clearInterval(this.currentTimeUpdater)
-    this.$ankiCall('reviewer_reset')
+    reviewerShuffle()
   },
   components: { HtmlIframe },
   methods: {
     loadCard () {
-      return ankiCall('reviewer_next_card', {
-        deckName: this.deckName
-      }).then(msg => {
+      getReviewerNextCard(this.deckName).then(card => {
         this.card = {
-          id: msg.cardId,
-          front: msg.front,
-          back: msg.back
+          id: card.cardId,
+          front: card.front,
+          back: card.back
         }
         this.ansButtonCount = 2
         this.flipped = false
@@ -145,10 +143,7 @@ export default {
       this.$router.push(`/card/${this.card.id}`)
     },
     answerCard (ease) {
-      ankiCall('reviewer_answer_card', {
-        cardId: this.card.id,
-        ease: ease
-      }).then(() => {
+      reviewerAnswerCard(this.card.id, ease).then(() => {
         this.progressTracker.update(this.currentProgress)
         return getNextCard(this.deckName)
       }).then(card => {
@@ -159,15 +154,14 @@ export default {
       })
     },
     undoReview () {
-      this.$ankiCall('reviewer_undo')
-        .then((ret) => {
-          if (ret) {
-            this.$toasted.info('Review undone.', { icon: 'undo' })
-            this.loadCard()
-          } else {
-            this.$toasted.error('Undo not available.', { icon: 'ban' })
-          }
-        })
+      reviewerUndo().then((ret) => {
+        if (ret) {
+          this.$toasted.info('Review undone.', { icon: 'undo' })
+          this.loadCard()
+        } else {
+          this.$toasted.error('Undo not available.', { icon: 'ban' })
+        }
+      })
     },
 
     answerButtonColor (type) {
