@@ -16,14 +16,16 @@
     "clean": "shx rm -rf dist",
     "build:backend": "pyinstaller server.spec && shx mv dist/server/* dist && shx rm -r dist/server",
     "build:frontend": "poi build frontend/index.js",
-    "lint": "npm-run-all lint:* && eslint --cache poi.config.js",
-    "lint:frontend": "eslint --cache frontend/** addons/**",
-    "lint:diff:frontend": "git diff-index --name-only HEAD | grep -E \"(.*)\\.(jsx|js|ts)$\" | xargs node_modules/eslint/bin/eslint.js -c .eslintrc.js",
+    "lint": "npm-run-all lint:full:* && eslint --cache poi.config.js",
+    "lint:full:frontend": "eslint --cache frontend/** addons/**",
+    "lint:diff": "npm-run-all lint:diff:*",
+    "lint:diff:eslint": "git diff-index --name-only HEAD | grep -E \"(.*)\\.(jsx|js)$\" | xargs node_modules/eslint/bin/eslint.js -c .eslintrc.js",
+    "lint:diff:tslint": "git diff-index --name-only HEAD | grep -E \"(.*)\\.(ts|tsx)$\" | xargs node_modules/tslint/bin/tslint -p .",
     "fix": "eslint --fix frontend/** addons/**"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint:diff:frontend"
+      "pre-commit": "npm run lint:diff"
     }
   },
   "dependencies": {
