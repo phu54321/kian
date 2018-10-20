@@ -15,7 +15,7 @@
 
 <template lang="pug">
 div
-    b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer, :return-focus='lastActiveElement')
+    b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer, no-close-on-esc, :return-focus='lastActiveElement')
         span(slot='modal-title') Kian Cheatsheet
         template(v-for='(pack, index) in items')
             hr(v-if='index > 0')
@@ -35,6 +35,8 @@ div
 import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey'
 import KeyImage from './common/KeyImage'
 import _ from 'lodash'
+
+const ALT = 18
 
 function sortObjectItemsByKey (obj) {
   const keys = Object.keys(obj)
@@ -64,20 +66,20 @@ export default {
     KeyImage
   },
   methods: {
-    toggleShow () {
+    openDialog () {
       // If there are any model visible, then quit.
       if (document.querySelectorAll('.modal.show').length > 0) return
       this.lastActiveElement = document.activeElement
       this.show = true
     },
     detectLongCtrlPress_keydown (event) {
-      if (event.keyCode === 17) {
-        if (this.openHotkeyMapTimer === null) { // Ctrl on Win/Linux, Cmd on macOS
+      if (event.keyCode === ALT) {
+        if (this.openHotkeyMapTimer === null) {
           this.openHotkeyMapTimer = window.setTimeout(() => {
-            this.toggleShow()
+            this.openDialog()
             window.clearTimeout(this.openHotkeyMapTimer)
             this.openHotkeyMapTimer = null
-          }, 1300)
+          }, 800)
         }
       } else if (this.openHotkeyMapTimer) {
         //  Ignore if other keys are pressed
@@ -88,10 +90,14 @@ export default {
     detectLongCtrlPress_keyup (event) {
       if ((
         event.type === 'blur' ||
-                (event.type === 'keyup' && event.keyCode === 17)
-      ) && this.openHotkeyMapTimer) {
-        window.clearTimeout(this.openHotkeyMapTimer)
-        this.openHotkeyMapTimer = null
+                (event.type === 'keyup' && event.keyCode === ALT)
+      )) {
+        if (this.openHotkeyMapTimer) {
+          window.clearTimeout(this.openHotkeyMapTimer)
+          this.openHotkeyMapTimer = null
+        } else if (this.show) {
+          this.show = false
+        }
       }
     }
   },
