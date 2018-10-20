@@ -13,16 +13,6 @@ def colEmptycardsGet(msg):
 
 
 @registerApi
-def colCardRemoveBatch(msg):
-    typeCheck(msg, {
-        'cardIds': list
-    })
-    with Col() as col:
-        col.remCards(msg['cardIds'])
-        return emit.emitResult(True)
-
-
-@registerApi
 def colCheck(msg):
     with Col() as col:
         ret, ok = col.fixIntegrity()

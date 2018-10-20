@@ -22,7 +22,7 @@ iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
 <script>
 
 import mime from 'mime-types'
-import { uploadImageFromBase64 } from '~/utils/uploadHelper'
+import { uploadImageFromBase64 } from '@/utils/uploadHelper'
 
 function eventPassThrough (e) {
   const newEvent = new e.constructor(e.type, e)

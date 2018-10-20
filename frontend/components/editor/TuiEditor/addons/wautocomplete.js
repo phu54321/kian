@@ -1,5 +1,5 @@
 import CodeMirror from 'codemirror'
-import { autocompleteWord } from '~/api'
+import { autocompleteWord } from '@/api'
 
 function getAutocomplete (query) {
   return autocompleteWord(query)

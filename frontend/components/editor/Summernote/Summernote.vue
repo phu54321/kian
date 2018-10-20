@@ -27,7 +27,7 @@ import './cloze'
 import './table'
 import './htmledit'
 import './disableUnwantedHotkeys'
-import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper'
+import { getFileAsBase64, getRandomFilename, uploadImageFromBase64 } from '@/utils/uploadHelper'
 
 const summernoteHotkeys = [
   ['Summernote - text styling', [
@@ -76,10 +76,8 @@ export default {
             const file = files[i]
             const filename = getRandomFilename(file.name)
             const datab64 = await getFileAsBase64(file)
-            const webFilename = await this.$ankiCall('media_upload', {
-              filename,
-              datab64
-            })
+
+            const webFilename = await uploadImageFromBase64(filename, datab64)
             $(this).summernote('insertImage', webFilename)
           }
         }

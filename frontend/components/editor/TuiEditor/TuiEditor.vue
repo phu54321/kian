@@ -52,30 +52,17 @@ import './addons/textStyle'
 import './addons/table'
 
 import wautocompleter from './addons/wautocomplete'
-import { KEY_MAP } from '~/utils/keycode'
+import { KEY_MAP } from '@/utils/keycode'
 
-import ankiCall from '~/api/ankiCall'
-import ErrorDialog from '~/components/ErrorDialog'
-import MiniPaintModal from '~/components/minipaint/MiniPaintModal'
+import ErrorDialog from '@/components/ErrorDialog'
+import MiniPaintModal from '@/components/minipaint/MiniPaintModal'
 import encodeMarkdown, { replaceImageByIndex } from './renderer/markdownRenderer'
 import decodeMarkdown from './decompiler/markdownDecompiler'
-import { getFileAsBase64, getRandomFilename } from '~/utils/uploadHelper'
-import ErrorDialogVue from '@/components/ErrorDialog.vue'
+import { getFileAsBase64, uploadImageFromBase64 } from '@/utils/uploadHelper'
 
-function addImageBlobHook (blob, callback) {
-  const filename = getRandomFilename(blob.name)
-
-  getFileAsBase64(blob).then(datab64 => {
-    return ankiCall('media_upload', {
-      filename,
-      datab64
-    })
-  }).then(url => {
-    callback(null, url)
-  }).catch(e => {
-    ErrorDialog.openErrorDialog('Image upload failed', e.message)
-    callback(e, '(upload error)')
-  })
+async function addImageBlobHook (blob) {
+  const datab64 = await getFileAsBase64(blob)
+  return uploadImageFromBase64(blob.name, datab64)
 }
 
 const codeMirrorKeymap = [
@@ -161,15 +148,13 @@ export default {
           evData.codemirrorIgnore = true
 
           const blob = item.name ? item : item.getAsFile() // Blob or File
-          addImageBlobHook(blob, (err, fname) => {
+          addImageBlobHook(blob).then((fname) => {
             loader.hide()
             this.cm.getInputField().focus()
             this.cm.setSelections(oldSelections)
             this.cm.replaceSelection(`![](${fname})`)
-
-            if (err) {
-              ErrorDialogVue.openErrorDialog('Upload error', err.message)
-            }
+          }).catch(err => {
+            ErrorDialog.openErrorDialog('Image upload failed', err.message)
           })
         }
       }

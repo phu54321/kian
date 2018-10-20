@@ -21,7 +21,7 @@ import BootstrapVue from 'bootstrap-vue'
 
 // Special helper for modal: click non-secondary button on enter.
 import $ from 'jquery'
-import '~/utils/hotkey/jquery.hotkeys'
+import '@/utils/hotkey/jquery.hotkeys'
 Vue.use(BootstrapVue)
 
 $(document).bind('keydown', 'enter', () => {

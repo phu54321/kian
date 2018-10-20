@@ -22,11 +22,12 @@ b-container.pt-4
 
 <script>
 
-import DeckTreeView from '~/components/dashboard/DeckTreeView'
+import DeckTreeView from '@/components/dashboard/DeckTreeView'
+import { getDeckDueTree } from '@/api/subapi/col'
 
 export default {
   async asyncData () {
-    const response = await this.$ankiCall('dashboard_deck_tree')
+    const response = await getDeckDueTree()
     return {
       deckDueTree: response
     }

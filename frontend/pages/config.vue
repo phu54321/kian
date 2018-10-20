@@ -40,6 +40,9 @@ b-container.pt-4
 
 <script>
 
+import { getEmptyCards, checkMedia, checkDatabase } from '@/api/subapi/col'
+import { deleteCard, mediaDelete } from '@/api'
+
 export default {
   data () {
     return {
@@ -51,10 +54,10 @@ export default {
   methods: {
     async removeEmptyCards () {
       const loader = this.$loading.show()
-      const cardIds = await this.$ankiCall('col_emptycards_get')
+      const cardIds = await getEmptyCards()
       if (cardIds.length) {
         this.$toasted.show(`${cardIds.length} empty card(s) removed.`)
-        await this.$ankiCall('col_card_remove_batch', { cardIds })
+        await deleteCard(cardIds)
       } else {
         this.$toasted.show('No empty cards.')
       }
@@ -64,7 +67,7 @@ export default {
     async checkDatabase () {
       const loader = this.$loading.show()
       try {
-        const ret = await this.$ankiCall('col_check')
+        const ret = await checkDatabase()
         this.$toasted.show(ret, { icon: 'check' })
       } catch (e) {
         this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
@@ -76,7 +79,7 @@ export default {
     async checkMedia () {
       const loader = this.$loading.show()
       try {
-        const { missing, unused } = await this.$ankiCall('media_check')
+        const { missing, unused } = await checkMedia()
         this.missing = missing
         this.unused = unused
         this.$refs.checkMediaModal.show()
@@ -90,7 +93,7 @@ export default {
     async removeUnusedMedia () {
       const { unused } = this
       if (unused.length) {
-        const deleteFailed = await this.$ankiCall('media_remove', { filenames: unused })
+        const deleteFailed = await mediaDelete(unused)
         const msg = (deleteFailed === 0)
           ? `${unused.length} unused files removed`
           : `${unused.length} unused files, ${unused.length - deleteFailed} removed`

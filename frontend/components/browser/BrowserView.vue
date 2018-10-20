@@ -126,13 +126,13 @@ import BrowserEditor from './BrowserEditor'
 import BrowserToolModals from './BrowserToolModals'
 import fieldFormatter from './fieldFormatter'
 import BrowserSelection from './BrowserSelection'
-import { clamp } from '~/utils/utils'
+import { clamp } from '@/utils/utils'
 
 import {
   getCardsBrowserInfo,
   toggleCardMarkedBatch,
   toggleCardSuspendedBatch
-} from '~/api'
+} from '@/api'
 
 function isDescendant (parent, child) {
   if (!child) return false

@@ -41,11 +41,11 @@ b-container.pt-4(fluid)
 
 <script>
 
-import BrowserView from '~/components/browser/BrowserView'
-import SpaceSeperatedInput from '~/components/common/SpaceSeperatedInput'
+import BrowserView from '@/components/browser/BrowserView'
+import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
-import { fuzzyMatch } from '~/utils/utils'
-import { listModel, listDeck, findCards, autocompleteTag } from '~/api'
+import { fuzzyMatch } from '@/utils/utils'
+import { listModel, listDeck, findCards, autocompleteTag } from '@/api'
 import _ from 'lodash'
 
 function parseInitialQuery (query) {
