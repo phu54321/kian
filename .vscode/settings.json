@@ -4,8 +4,10 @@
         "codemirror",
         "kian",
         "nprogress",
+        "pleuralize",
         "sched",
         "summernote",
+        "unpleuralize",
         "vuetify"
     ],
     "licenser.license": "AGPLv3",
