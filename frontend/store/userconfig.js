@@ -1,4 +1,8 @@
-import ankiCall from '@/api/ankiCall'
+import {
+  getAnkiConfig,
+  setCurrentDeck,
+  setCurrentModel
+} from '@/api'
 
 const state = {
   loaded: false,
@@ -11,19 +15,19 @@ const actions = {
     if (state.loaded) return
 
     commit('userconfig_loading')
-    const config = await ankiCall('config_get')
+    const config = await getAnkiConfig()
     commit('userconfig_loaded', config)
   },
   async setCurrentDeck ({ commit, dispatch, state }, newDeck) {
     await dispatch('loadUserConfig')
     if (state.config.currentDeck === newDeck) return
-    await ankiCall('config_set_current_deck', { deck: newDeck })
+    await setCurrentDeck(newDeck)
     commit('userconfig_setCurrentDeck', newDeck)
   },
   async setCurrentModel ({ commit, dispatch, state }, newModel) {
     await dispatch('loadUserConfig')
     if (state.config.currentModel === newModel) return
-    await ankiCall('config_set_current_model', { model: newModel })
+    await setCurrentModel(newModel)
     commit('userconfig_setCurrentModel', newModel)
   }
 }

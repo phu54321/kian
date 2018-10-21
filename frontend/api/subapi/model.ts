@@ -15,3 +15,7 @@ export async function listModel () {
   }
   return modelListCache
 }
+
+export function setCurrentModel (model: string) {
+  return ankiCall('config_set_current_model', { model })
+}
