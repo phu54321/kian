@@ -130,8 +130,8 @@ import { clamp } from '@/utils/utils'
 
 import {
   getCardsBrowserInfo,
-  toggleCardMarkedBatch,
-  toggleCardSuspendedBatch
+  toggleCardMarked,
+  toggleCardSuspended
 } from '@/api'
 
 function isDescendant (parent, child) {
@@ -411,14 +411,14 @@ export default {
     async markCards () {
       this.showEditor = false
       await this.$nextTick()
-      await toggleCardMarkedBatch(this.selectedCardList)
+      await toggleCardMarked(this.selectedCardList)
       this.updateView++
     },
 
     async suspendCards () {
       this.showEditor = false
       await this.$nextTick()
-      await toggleCardSuspendedBatch(this.selectedCardList)
+      await toggleCardSuspended(this.selectedCardList)
       this.updateView++
     },
 
