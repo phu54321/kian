@@ -23,15 +23,6 @@ export async function addNote (noteDef: INoteDef) {
   })
 }
 
-/**
- * Get card information by ID
- */
-export async function getCardById (cardId: number[] | number) {
-  const [cardIds, isPleural] = pleuralize(cardId)
-  const cards = await Promise.all(cardIds.map(cardId => ankiCall('card_get', { cardId })))
-  return unpleuralize(cards, isPleural)
-}
-
 export async function queryCardIds (param?: {
   query: string,
   sortBy: string,
@@ -95,6 +86,12 @@ export async function getCardsBrowserInfo (cardIds: number[]): Promise<ICardBrow
   }))
 }
 
+export async function getCardById (cardId: number[] | number) {
+  const [cardIds, isPleural] = pleuralize(cardId)
+  const cards = await Promise.all(cardIds.map(cardId => ankiCall('card_get', { cardId })))
+  return unpleuralize(cards, isPleural)
+}
+
 export async function updateCard (cardId: number, { deck, fields, tags }: INoteDef) {
   return ankiCall('card_update', {
     cardId,
@@ -104,22 +101,26 @@ export async function updateCard (cardId: number, { deck, fields, tags }: INoteD
   })
 }
 
-export async function updateCardDeckBatch (cardIds: number[], deck: string) {
+export async function updateCardDeck (cardIds: number[] | number, deck: string) {
   if (!(await hasDeck(deck))) await addDeck(deck)
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_update_deck_batch', { cardIds, deck })
 }
 
-export async function updateCardModelBatch (cardIds: number[], model: string) {
+export async function updateCardModel (cardIds: number[], model: string) {
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_update_model_batch', { cardIds, model })
 }
 
-export async function addCardTagBatch (cardIds: number[], tags: string[] | string) {
+export async function addCardTag (cardIds: number[], tags: string[] | string) {
   if (typeof tags === 'string') tags = [tags]
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_add_tag_batch', { cardIds, tags })
 }
 
-export async function deleteCardTagBatch (cardIds: number[], tags: string[] | string) {
+export async function deleteCardTag (cardIds: number[], tags: string[] | string) {
   if (typeof tags === 'string') tags = [tags]
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_remove_tag_batch', { cardIds, tags })
 }
 
@@ -128,10 +129,12 @@ export async function deleteCard (cardIds: number[] | number) {
   return ankiCall('card_delete_batch', { cardIds })
 }
 
-export async function toggleCardMarkedBatch (cardIds: number[]) {
+export async function toggleCardMarked (cardIds: number[] | number) {
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_toggle_marked_batch', { cardIds })
 }
 
-export async function toggleCardSuspendedBatch (cardIds: number[]) {
+export async function toggleCardSuspended (cardIds: number[] | number) {
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_toggle_suspendeded_batch', { cardIds })
 }

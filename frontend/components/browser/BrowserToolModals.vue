@@ -51,10 +51,10 @@ import {
   listModel,
   listDeck,
 
-  updateCardDeckBatch,
-  updateCardModelBatch,
-  addCardTagBatch,
-  deleteCardTagBatch,
+  updateCardDeck,
+  updateCardModel,
+  addCardTag,
+  deleteCardTag,
   deleteCard,
 
   cardSchedReset,
@@ -91,22 +91,22 @@ export default {
   methods: {
     formatDate,
     async changeDeck () {
-      await updateCardDeckBatch(this.selected, this.deck)
+      await updateCardDeck(this.selected, this.deck)
       this.deck = ''
       this.$emit('updateView')
     },
     async changeModel () {
-      await updateCardModelBatch(this.selected, this.model)
+      await updateCardModel(this.selected, this.model)
       this.model = ''
       this.$emit('updateCardIds')
     },
     async addTags () {
-      await addCardTagBatch(this.selected, this.tags)
+      await addCardTag(this.selected, this.tags)
       this.tags = []
       this.$emit('updateView')
     },
     async removeTags () {
-      await deleteCardTagBatch(this.selected, this.tags)
+      await deleteCardTag(this.selected, this.tags)
       this.tags = []
       this.$emit('updateView')
     },
