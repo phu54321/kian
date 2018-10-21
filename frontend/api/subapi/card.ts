@@ -1,6 +1,6 @@
 import ankiCall from '../ankiCall'
 import { addDeck, hasDeck } from './deck'
-import { pleuralize } from '@/utils/pleuralize'
+import { pleuralize, unpleuralize } from '@/utils/pleuralize'
 
 interface INoteDef {
   deck: string
@@ -26,8 +26,10 @@ export async function addNote (noteDef: INoteDef) {
 /**
  * Get card information by ID
  */
-export async function getCardById (cardId: number) {
-  return ankiCall('card_get', { cardId })
+export async function getCardById (cardId: number[] | number) {
+  const [cardIds, isPleural] = pleuralize(cardId)
+  const cards = await Promise.all(cardIds.map(cardId => ankiCall('card_get', { cardId })))
+  return unpleuralize(cards, isPleural)
 }
 
 export async function queryCardIds (param?: {
@@ -122,7 +124,7 @@ export async function deleteCardTagBatch (cardIds: number[], tags: string[] | st
 }
 
 export async function deleteCard (cardIds: number[] | number) {
-  cardIds = pleuralize(cardIds)
+  cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_delete_batch', { cardIds })
 }
 

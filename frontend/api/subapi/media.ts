@@ -13,6 +13,6 @@ export function checkMedia () {
 }
 
 export function mediaDelete (filenames: string[] | string) {
-  filenames = pleuralize(filenames)
+  filenames = pleuralize(filenames)[0]
   return ankiCall('media_remove', { filenames })
 }
