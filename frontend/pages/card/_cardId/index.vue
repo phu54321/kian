@@ -26,7 +26,7 @@ b-container.pt-4
 import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
 
-import { getCard, updateCard } from '@/api'
+import { getCardById, updateCard } from '@/api'
 
 export default {
   props: {
@@ -63,7 +63,7 @@ export default {
   },
   async asyncData (props) {
     const cardId = props.cardId
-    const card = await getCard(cardId)
+    const card = await getCardById(cardId)
     return {
       card: {
         model: card.model,

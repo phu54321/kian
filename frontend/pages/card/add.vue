@@ -32,7 +32,7 @@ import BrowserView from '@/components/browser/BrowserView'
 import CardEditor from '@/components/editor/CardEditor'
 import ErrorDialogVue from '@/components/ErrorDialog.vue'
 
-import { addNote, findCards } from '@/api'
+import { addNote, queryCardIds } from '@/api'
 
 const historyNum = 50
 
@@ -55,7 +55,7 @@ export default {
     }
   },
   async asyncData () {
-    const createdCards = await findCards({
+    const createdCards = await queryCardIds({
       query: '',
       sortBy: 'createdAt'
     })
@@ -70,7 +70,7 @@ export default {
   },
   watch: {
     async updateCardIds () {
-      const createdCards = await findCards({
+      const createdCards = await queryCardIds({
         query: '',
         sortBy: 'createdAt'
       })

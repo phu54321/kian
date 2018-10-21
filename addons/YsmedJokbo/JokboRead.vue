@@ -50,7 +50,7 @@ import { parseQAPair } from './qaPairParser'
 import ListSelector from '@/components//common/ListSelector'
 import { uploadImageFromBase64 } from '@/utils/uploadHelper'
 import BrowserView from '@/components/browser/BrowserView'
-import { listDeck, findCards, addNote } from '@/api'
+import { listDeck, queryCardIds, addNote } from '@/api'
 
 const URLObj = window.URL || window.webkitURL
 
@@ -83,7 +83,7 @@ export default {
     }
   },
   async asyncData () {
-    const createdCards = await findCards()
+    const createdCards = await queryCardIds()
     return {
       addedCardIds: createdCards.slice(0, 20)
     }
@@ -97,7 +97,7 @@ export default {
   },
   watch: {
     async updateCardIds () {
-      const createdCards = await findCards({
+      const createdCards = await queryCardIds({
         query: '',
         sortBy: 'createdAt'
       })

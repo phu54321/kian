@@ -27,7 +27,7 @@ card-editor(
 
 import CardEditor from '../editor/CardEditor'
 import ErrorDialog from '../ErrorDialog'
-import { getCard, updateCard } from '@/api'
+import { getCardById, updateCard } from '@/api'
 
 export default {
   props: ['cardId'],
@@ -49,14 +49,14 @@ export default {
   },
   async asyncData (props) {
     return {
-      card: await getCard(props.cardId)
+      card: await getCardById(props.cardId)
     }
   },
   watch: {
     async cardId (value) {
       await this.onNoteEdit(true)
       this.$emit('updateView')
-      this.card = await getCard(value)
+      this.card = await getCardById(value)
     }
   },
   methods: {
