@@ -9,6 +9,10 @@ export async function listDeck (): Promise<string[]> {
   return deckListCache
 }
 
+export function setCurrentDeck (deck: string) {
+  return ankiCall('config_set_current_deck', { deck })
+}
+
 export async function hasDeck (deckName: string) {
   const deckList = await listDeck()
   return (deckList.indexOf(deckName) !== -1)

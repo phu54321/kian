@@ -56,5 +56,3 @@ export default function ankiCall (apiType: string, data?: any) {
     })
   })
 }
-
-Vue.prototype.$ankiCall = ankiCall
