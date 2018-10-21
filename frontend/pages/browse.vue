@@ -45,7 +45,7 @@ import BrowserView from '@/components/browser/BrowserView'
 import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
 import { fuzzyMatch } from '@/utils/utils'
-import { listModel, listDeck, findCards, autocompleteTag } from '@/api'
+import { listModel, listDeck, queryCardIds, autocompleteTag } from '@/api'
 import _ from 'lodash'
 
 function parseInitialQuery (query) {
@@ -107,7 +107,7 @@ export default {
   asyncComputed: {
     cardIds: {
       get () {
-        return findCards({
+        return queryCardIds({
           query: this.query,
           sortBy: this.sortBy,
           sortOrder: this.sortOrder

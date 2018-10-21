@@ -9,6 +9,9 @@ interface INoteDef {
   tags: string
 }
 
+/**
+ * Add note to databsae
+ */
 export async function addNote (noteDef: INoteDef) {
   const { deck, model, fields, tags } = noteDef
   if (!(await hasDeck(deck))) await addDeck(deck)
@@ -20,8 +23,74 @@ export async function addNote (noteDef: INoteDef) {
   })
 }
 
-export async function getCard (cardId: number) {
+/**
+ * Get card information by ID
+ */
+export async function getCardById (cardId: number) {
   return ankiCall('card_get', { cardId })
+}
+
+export async function queryCardIds (param?: {
+  query: string,
+  sortBy: string,
+  sortOrder: string
+}) {
+  const { query, sortBy, sortOrder }: {
+    query ?: string,
+    sortBy ?: string,
+    sortOrder ?: string
+  } = param || {}
+
+  return ankiCall('browser_query', {
+    query: query || '',
+    sortBy: sortBy || 'createdAt',
+    sortOrder: sortOrder || 'desc'
+  })
+}
+
+export enum SchedType {
+  New,
+  Learn,
+  Review,
+  NotScheduled
+}
+interface ICardBrowserInfo {
+  id: number
+  noteId: number
+  deck: string
+  model: string
+  ord: number
+  preview: string
+  tags: string[]
+  createdAt: number
+  updatedAt: number
+  due: number
+  schedType: SchedType
+  suspended: boolean
+}
+
+export async function getCardsBrowserInfo (cardIds: number[]): Promise<ICardBrowserInfo[]> {
+  const cards = await ankiCall('browser_get_batch', {
+    cardIds
+  })
+  return cards.map((card: any) => ({
+    id: card.id,
+    noteId: card.noteId,
+    deck: card.deck,
+    model: card.model,
+    ord: card.ord,
+    preview: card.preview,
+    tags: card.tags,
+    createdAt: card.createdAt,
+    updatedAt: card.updatedAt,
+    due: card.due,
+    schedType:
+    (card.schedType === 'new') ? SchedType.New :
+      (card.schedType === 'lrn') ? SchedType.Learn :
+      (card.schedType === 'rev') ? SchedType.Review :
+      SchedType.NotScheduled,
+    suspended: card.suspended
+  }))
 }
 
 export async function updateCard (cardId: number, { deck, fields, tags }: INoteDef) {

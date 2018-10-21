@@ -15,6 +15,7 @@
 
 import textVersion from 'textversionjs'
 import { escapeHtml, formatDate } from '@/utils/utils'
+import { SchedType } from '@/api/subapi/card'
 
 export default {
   textVersionJs (text) {
@@ -36,7 +37,12 @@ export default {
     return escapeHtml(tags.join(', '))
   },
   schedTypeToDot (type) {
-    if (type === null) return ''
+    if (type === SchedType.NotScheduled) return ''
+    type = {
+      [SchedType.New]: 'new',
+      [SchedType.Learn]: 'lrn',
+      [SchedType.Review]: 'rev'
+    }[type]
     return `<span class='${type}Dot'>●</span>`
   }
 }
