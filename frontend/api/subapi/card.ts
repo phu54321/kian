@@ -30,19 +30,19 @@ export async function addNote (noteDef: INoteDef) {
   })
 }
 
-export async function getCardById (cardId: number[] | number) {
+export async function getCard (cardId: number[] | number) {
   const [cardIds, isPleural] = pleuralize(cardId)
   const cards = await Promise.all(cardIds.map(cardId => ankiCall('card_get', { cardId })))
   return unpleuralize(cards, isPleural)
 }
 
+export async function deleteCard (cardIds: number[] | number) {
+  cardIds = pleuralize(cardIds)[0]
+  return ankiCall('card_delete_batch', { cardIds })
+}
+
 export async function updateCard (cardId: number, { deck, fields, tags }: INoteDef) {
-  return ankiCall('card_update', {
-    cardId,
-    deck,
-    fields,
-    tags
-  })
+  return ankiCall('card_update', { cardId, deck, fields, tags })
 }
 
 export async function updateCardDeck (cardIds: number[] | number, deck: string) {
@@ -66,11 +66,6 @@ export async function deleteCardTag (cardIds: number[], tags: string[] | string)
   if (typeof tags === 'string') tags = [tags]
   cardIds = pleuralize(cardIds)[0]
   return ankiCall('card_remove_tag_batch', { cardIds, tags })
-}
-
-export async function deleteCard (cardIds: number[] | number) {
-  cardIds = pleuralize(cardIds)[0]
-  return ankiCall('card_delete_batch', { cardIds })
 }
 
 export async function toggleCardMarked (cardIds: number[] | number) {
