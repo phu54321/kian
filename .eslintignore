@@ -4,3 +4,4 @@ public/
 *.css
 pdfjs/
 *.manifest
+-.eslintrc.js
