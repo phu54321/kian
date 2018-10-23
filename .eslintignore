@@ -4,5 +4,6 @@ public/
 *.css
 pdfjs/
 *.manifest
+*.*.js
+
 -.eslintrc.js
--*.*.js

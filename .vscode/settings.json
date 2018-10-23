@@ -12,5 +12,6 @@
     ],
     "licenser.license": "AGPLv3",
     "licenser.author": "Hyun Woo Park",
-    "licenser.projectName": "Kian"
+    "licenser.projectName": "Kian",
+    "standard.enable": false
 }
