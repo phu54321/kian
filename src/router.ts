@@ -57,6 +57,8 @@ export function createRouter () {
     routes: propEnabledRoutes
   })
 
+  console.log(routes)
+
   return router
 }
 
