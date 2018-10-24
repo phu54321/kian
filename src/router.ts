@@ -18,11 +18,17 @@ import Router, { RouteConfig, Route } from 'vue-router'
 
 import routes from 'vue-auto-routing'
 import { Component } from 'vue-router/types/router'
+import { createRouterLayout } from 'vue-router-layout'
+
 Vue.use(Router)
 
+const RouterLayout = createRouterLayout(layout => {
+  return import('@/layouts/' + layout + '.vue')
+})
+
+/** Type-cast route.parameter based on component's property definition. */
 function propEnableRouteEntry (route: RouteConfig) {
   const propsHandler = (route: Route) => {
-    // Type-cast route.parameter based on component's property definition.
     const component: any = route.matched[route.matched.length - 1].components.default
     const props = component.props
     const typeCastedParams = Object.assign({}, route.params)
@@ -40,6 +46,7 @@ function propEnableRouteEntry (route: RouteConfig) {
 
 const propEnabledRoutes: RouteConfig[] = routes.map(propEnableRouteEntry)
 
+/** Add a path to main router */
 export function MainRouterAdd (path: string, component: Component) {
   propEnabledRoutes.push(propEnableRouteEntry({
     path,
@@ -47,19 +54,31 @@ export function MainRouterAdd (path: string, component: Component) {
   }))
 }
 
+/**
+ * Create a router
+ *
+ * @description
+ * Note that rather than exporting a router object itself, we export createRouter
+ * function instead. This is because addons may add additional routes via
+ * `MainRouterAdd`, and router should be created after all addons have added
+ * their routes.
+ */
 export function createRouter () {
   propEnabledRoutes.push({
     path: '*',
-    redirect: '/'
+    redirect: '/404'
   })
 
+  // vue-cli-auto-routing returns nested router. Respect that.
   const router = new Router({
-    routes: propEnabledRoutes
+    routes: [
+      {
+        path: '/',
+        component: RouterLayout,
+        children: propEnabledRoutes
+      }
+    ]
   })
-
-  console.log(routes)
 
   return router
 }
-
-export default createRouter()
