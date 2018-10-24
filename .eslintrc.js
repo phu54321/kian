@@ -1,21 +1,17 @@
 module.exports = {
+  root: true,
   env: {
-    browser: true,
-    commonjs: true,
-    es6: true,
-    node: true,
-    mocha: true
+    node: true
   },
-  extends: [
-    'eslint-config-standard',
-    'plugin:vue/essential'
+  'extends': [
+    'plugin:vue/essential',
+    '@vue/standard'
   ],
-  parser: 'vue-eslint-parser',
-  parserOptions: {
-    parser: 'typescript-eslint-parser',
-    plugins: ['typescript'],
-    ecmaVersion: 2017,
-    sourceType: 'module'
+  rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
-  plugins: ['vue']
+  parserOptions: {
+    parser: 'babel-eslint'
+  }
 }

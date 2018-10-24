@@ -50,3 +50,26 @@ This reflects the version as of 2018-10-03. UI may change drastically as the pro
 ## License
 
 This project is licensed under AGPL.
+
+
+## Vue-cli 3 commands
+
+```
+## Project setup
+npm install
+
+### Compiles and hot-reloads for development
+npm run serve
+
+### Compiles and minifies for production
+npm run build
+
+### Run your tests
+npm run test
+
+### Lints and fixes files
+npm run lint
+
+### Run your unit tests
+npm run test:unit
+```
