@@ -16,7 +16,7 @@
 // This code is intented to be run on webpack-side, so it uses webpack's require
 // context to get all addons.
 
-const addonMainContext = require.context('../../addons/', true, /addonMain.js$/)
+const addonMainContext = require.context('../../addons/', true, /addonMain.(ts|js)$/)
 for (const addonName of addonMainContext.keys()) {
   const addonMain = addonMainContext(addonName).default
   if (addonMain && addonMain.install) addonMain.install()

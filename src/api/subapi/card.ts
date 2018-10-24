@@ -2,7 +2,7 @@ import ankiCall from '../ankiCall'
 import { addDeck, hasDeck } from './deck'
 import { pleuralize, unpleuralize } from '@/utils/pleuralize'
 
-interface INoteDef {
+interface NoteDef {
   deck: string
   model: string
   fields: string
@@ -19,7 +19,7 @@ export enum SchedType {
 /**
  * Add note to databsae
  */
-export async function addNote (noteDef: INoteDef) {
+export async function addNote (noteDef: NoteDef) {
   const { deck, model, fields, tags } = noteDef
   if (!(await hasDeck(deck))) await addDeck(deck)
   return ankiCall('note_add', {
@@ -41,7 +41,7 @@ export async function deleteCard (cardIds: number[] | number) {
   return ankiCall('card_delete_batch', { cardIds })
 }
 
-export async function updateCard (cardId: number, { deck, fields, tags }: INoteDef) {
+export async function updateCard (cardId: number, { deck, fields, tags }: NoteDef) {
   return ankiCall('card_update', { cardId, deck, fields, tags })
 }
 

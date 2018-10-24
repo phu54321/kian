@@ -25,7 +25,7 @@ import './helpers/hotkey'
 import './helpers/toasted'
 import './helpers/loadingOverlay'
 
-import './addons/install'
+import './helpers/addons/install'
 
 import App from './App.vue'
 import { createRouter } from './router'

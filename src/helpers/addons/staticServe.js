@@ -35,7 +35,7 @@ module.exports = function (app) {
     if (addonName.startsWith('.')) return
 
     const addonDir = path.join(addonListDir, addonName)
-    const { staticFiles } = require(path.join(addonDir, 'addonConfig.js'))
+    const { staticFiles } = require(path.join(addonDir, 'addonConfig.json'))
     if (!staticFiles) return
 
     for (const { src, servePath } of staticFiles) {

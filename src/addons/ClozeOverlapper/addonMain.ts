@@ -17,9 +17,16 @@ import { addHook } from '@/utils/hookBase'
 
 const modelName = 'Cloze (overlapping)'
 
+// TODO: Add appropriate typing for card
+interface EditorCard {
+  model: String
+  fields: string[]
+  fieldFormats: any[]
+}
+
 export default {
   install () {
-    addHook('edit_card_load', card => {
+    addHook('edit_card_load', (card: EditorCard) => {
       const { model, fields } = card
       if (model === modelName) {
         card.fieldFormats = card.fieldFormats.map(fFormat => {
@@ -39,7 +46,7 @@ export default {
       return card
     })
 
-    addHook('edit_card_save', card => {
+    addHook('edit_card_save', (card: EditorCard) => {
       const { model } = card
       if (model === modelName) {
         const fields = card.fields.slice()
