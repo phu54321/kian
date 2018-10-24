@@ -1,10 +1,10 @@
 import ObjectHash from 'object-hash'
 import { LRUMap } from 'lru_map'
 
-export default function LRUCached (fn, capacity) {
+export default function LRUCached (fn: any, capacity: number) {
   const cache = new LRUMap(capacity)
 
-  const callable = function () {
+  const callable = function (this: any) {
     const args = Array.from(arguments)
     const hashVal = ObjectHash(args)
     if (cache.has(hashVal)) {
