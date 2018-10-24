@@ -1,8 +1,0 @@
-{
-    "plugins": ["lodash"],
-    "presets": [
-        ["babel-preset-poi", {
-            "jsx": "vue"
-        }],
-    ],
-}

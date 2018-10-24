@@ -1,9 +1,0 @@
-node_modules/
-public/
-*.scss
-*.css
-pdfjs/
-*.manifest
-*.*.js
-
--.eslintrc.js
