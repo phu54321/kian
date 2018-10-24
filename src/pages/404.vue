@@ -13,28 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Vue from 'vue'
+<template lang="pug">
+div
+    h1.mb-4 404 Not found
+    p So sad...
 
-import './helpers/asyncData'
-import './helpers/asyncComputed'
-import './helpers/bootstrap-vue'
-import './helpers/localStorage'
-import './helpers/datepicker'
-import './helpers/fontawesome'
-import './helpers/hotkey'
-import './helpers/toasted'
-import './helpers/loadingOverlay'
-
-import './addons/install'
-
-import App from './App.vue'
-import { createRouter } from './router'
-import store from './store'
-
-Vue.config.productionTip = false
-
-new Vue({
-  router: createRouter(),
-  store,
-  render: h => h(App)
-}).$mount('#app')
+</template>
