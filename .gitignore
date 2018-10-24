@@ -308,5 +308,8 @@ fabric.properties
 secret.js
 server.out
 
+## minipaint
+!public/minipaint/dist
+
 ## YSJokbo
 !addons/YsmedJokbo/pdfjs/build

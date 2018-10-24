@@ -14,12 +14,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const path = require('path')
+const express = require('express')
 
 module.exports = {
   configureWebpack: {
     externals: {
       jquery: 'jQuery',
       $: 'jQuery'
+    }
+  },
+  devServer: {
+    after (app) {
+      const addonStaticServe = require('./src/addons/staticServe')
+      app.use(express.static('backend/testdata/collection.media', { maxAge: '30d' }))
+      addonStaticServe(app)
     }
   }
 }

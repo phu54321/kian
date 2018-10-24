@@ -1,6 +1,6 @@
 import fuzzysearch from 'fuzzysearch'
 import * as Hangul from 'hangul-js'
-import padLeft from 'pad-left'
+import leftPad from 'left-pad'
 
 export function clamp (x: number, min: number, max: number) {
   if (x < min) x = min
@@ -40,7 +40,7 @@ export function formatDate (date: Date) {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const day = date.getDate()
-  return `${year}-${padLeft(month, 2, '0')}-${padLeft(day, 2, '0')}`
+  return `${year}-${leftPad(month, 2, '0')}-${leftPad(day, 2, '0')}`
 }
 
 export function formatTime (second: number) {
