@@ -29,7 +29,7 @@ $(document).bind('keydown', 'enter', () => {
   if (modalDialogs.length === 1) {
     const buttons = modalDialogs[0].querySelectorAll('.modal-footer .btn:not(.btn-secondary)')
     if (buttons.length === 1) {
-      buttons[0].click()
+      (buttons[0] as HTMLElement).click()
     }
   }
 })
