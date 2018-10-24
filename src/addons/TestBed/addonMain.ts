@@ -13,9 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-module.exports = {
-  main: 'YsmedJokbo.js',
-  staticFiles: [
-    { src: 'pdfjs/', servePath: '/pdfjs' }
-  ]
+import TestBedVue from './TestBed'
+import { MainRouterAdd } from '@/router'
+import { MainToolbarAdd } from '@/toolbar'
+
+export default {
+  install () {
+    MainRouterAdd('/testbed', TestBedVue)
+    MainToolbarAdd('/testbed', 'Testbed', 'flask')
+  }
 }

@@ -18,7 +18,7 @@ import { tokHtml } from '@/utils/tokHtml'
 
 const modelName = 'Cloze (Hide all)'
 
-function stripClozeHelper (html) {
+function stripClozeHelper (html: string) {
   return (html
     .replace(/<\/?(cz_hide|cloze2|cloze2_w)>/g, '')
     .replace(/<(cloze2_w|cloze2) class=("|')cz-\d+("|')>/g, '')
@@ -26,7 +26,7 @@ function stripClozeHelper (html) {
   )
 }
 
-function wrapClozeTag (s, clozeId) {
+function wrapClozeTag (s: string, clozeId: number) {
   const output = [`<cloze2_w class='cz-${clozeId}'></cloze2_w>`]
   const clozeHeader = `<cloze2 class='cz-${clozeId}'>`
   const clozeFooter = '</cloze2>'
@@ -68,7 +68,7 @@ function wrapClozeTag (s, clozeId) {
   return output.join('')
 }
 
-function makeClozeCompatiable (html) {
+function makeClozeCompatiable (html: string) {
   html = html.replace(
     /\{\{c(\d+)::([^!]([^:}]|:[^:}])*?)\}\}/g,
     (...match) => `{{c${match[1]}::${wrapClozeTag(match[2], match[1] | 0)}}}`
@@ -94,7 +94,10 @@ export default {
       return card
     })
 
-    addHook('edit_card_save', card => {
+    addHook('edit_card_save', (card: {
+    model: string,
+    fields: string[]
+    }) => {
       const { model, fields } = card
       if (model === modelName) {
         card.fields = fields.map(

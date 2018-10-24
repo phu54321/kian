@@ -1,16 +1,32 @@
-import Jimp from 'jimp/es'
+import Jimp from 'jimp'
+
+export interface Viewport {
+  x: number
+  y: number
+  w: number
+  h: number
+}
 
 class ImageView {
-  constructor (img, cropArea) {
+  img: Jimp
+  data: Buffer
+  pitch: number
+
+  x0: number
+  y0: number
+  w: number
+  h: number
+
+  constructor (img: Jimp, viewport?: Viewport) {
     this.img = img
     this.data = img.bitmap.data
     this.pitch = img.bitmap.width * 4
 
-    if (cropArea) {
-      this.x0 = cropArea.x
-      this.y0 = cropArea.y
-      this.w = cropArea.w
-      this.h = cropArea.h
+    if (viewport) {
+      this.x0 = viewport.x
+      this.y0 = viewport.y
+      this.w = viewport.w
+      this.h = viewport.h
     } else {
       this.x0 = 0
       this.y0 = 0
@@ -19,15 +35,15 @@ class ImageView {
     }
   }
 
-  dataIndex (x, y) {
+  dataIndex (x: number, y: number) {
     return (x + this.x0) * 4 + (y + this.y0) * this.pitch
   }
 
-  u32col (x, y) {
+  u32col (x: number, y: number) {
     return this.data.readUInt32BE(this.dataIndex(x, y))
   }
 
-  crop (x, y, w, h) {
+  crop (x: number, y: number, w: number, h: number) {
     if (w < 0) w = 0
     if (h < 0) h = 0
 
@@ -112,7 +128,7 @@ class ImageView {
     return this.toJimpWithPad(0)
   }
 
-  toJimpWithPad (padding) {
+  toJimpWithPad (padding: number) {
     const outImg = new Jimp(
       this.w + padding * 2,
       this.h + padding * 2,

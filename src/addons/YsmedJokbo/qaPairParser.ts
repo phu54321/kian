@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Jimp from 'jimp/es'
+import Jimp from 'jimp'
 import ImageView from './ImageView'
 
-function isHorizontalLineWhite (view, y) {
+function isHorizontalLineWhite (view: ImageView, y: number) {
   const { data } = view
   const dataIndexStart = view.dataIndex(0, y)
   const dataIndexEnd = view.dataIndex(view.w, y)
@@ -26,7 +26,7 @@ function isHorizontalLineWhite (view, y) {
   return true
 }
 
-function isVerticalLine (view, x) {
+function isVerticalLine (view: ImageView, x: number) {
   const { data, pitch } = view
   const dataIndexStart = view.dataIndex(x, 0)
   const dataIndexEnd = view.dataIndex(x, view.h)
@@ -41,8 +41,8 @@ function isVerticalLine (view, x) {
   return true
 }
 
-export function parseQAPair (image) {
-  const qaPair = []
+export function parseQAPair (image: Jimp) {
+  const qaPair: Jimp[][] = []
 
   // y-split things
   const view = new ImageView(image)

@@ -15,12 +15,18 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js,ts,vue}": ["eslint --fix", "git add"]
+      "*.{js,ts,vue}": [
+        "eslint --fix",
+        "git add"
+      ]
     },
-    "ignore": ["**/*.min.js"]
+    "ignore": [
+      "**/*.min.js"
+    ]
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.4.1",
+    "@types/node": "^10.12.0",
     "@types/socket.io-client": "^1.4.32",
     "base-64": "^0.1.0",
     "bootstrap-vue": "^2.0.0-rc.11",
