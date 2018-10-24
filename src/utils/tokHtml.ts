@@ -20,15 +20,14 @@ const voidElements = new Set([
   'track', 'wbr'
 ])
 
-export function tokHtml (html) {
+export function tokHtml (html: string) {
   const PARSE_DATA = 0
   const PARSE_TAG = 1
   let mode = PARSE_DATA
 
-  const dataCh = []
-  const tagCh = []
-
-  const chunks = []
+  const dataCh: string[] = []
+  const tagCh: string[] = []
+  const chunks: string[][] = []
 
   function emitData () {
     const data = dataCh.join('')

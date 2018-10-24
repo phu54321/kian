@@ -1,4 +1,4 @@
-export const KEY_MAP = {
+export const KEY_MAP: { [key: string]: number } = {
   'BACKSPACE': 8,
   'TAB': 9,
   'ENTER': 13,
@@ -57,7 +57,7 @@ export const KEY_MAP = {
   'RIGHTBRACKET': 221
 }
 
-export const INVERSE_KEY_MAP = {}
+export const INVERSE_KEY_MAP: {[key: number]: string} = {}
 Object.keys(KEY_MAP).forEach(key => {
   INVERSE_KEY_MAP[KEY_MAP[key]] = key
 })
