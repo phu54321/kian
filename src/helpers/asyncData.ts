@@ -14,29 +14,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import ErrorDialog from '@/components/ErrorDialog'
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 
 // Note: vue-router has to be registered **before** importing asyncData,
 // because vue-router's route guards merge options should be used before
 // asyncData registers its global mixins.
-import VueRouter from 'vue-router'
+import VueRouter, { Route } from 'vue-router'
+import { Component } from 'vue-router/types/router'
 Vue.use(VueRouter)
 
-function componentFromRoute (route) {
+function componentFromRoute (route: Route): Component {
   const routeMatches = route.matched
   const lastRoute = routeMatches[routeMatches.length - 1]
   return lastRoute.components.default
 }
 
-function translateParamsToProps (to) {
+function translateParamsToProps (to: Route) {
   const routeMatches = to.matched
   const params = to.params
   const lastRoute = routeMatches[routeMatches.length - 1]
-  const routeProps = lastRoute.props.default
+
+  const routeProps = (lastRoute.props as any).default
 
   if (routeProps === true) {
-    const targetProps = lastRoute.components.default.props
-    const props = {}
+    const targetProps = (lastRoute.components.default as any).props
+    const props: { [key: string]: any } = {}
 
     // Match types to target component's typing system, if possible.
     if (targetProps) {
@@ -57,28 +59,35 @@ const baseThis = Object.freeze({
   // Add additional props here
 })
 
-Vue.mixin({
+declare module 'vue/types/options' {
+  // 3. Vue에 보강할 내용을 선언하세요.
+  interface ComponentOptions<V extends Vue> {
+    asyncData?: (x: any) => void
+  }
+}
+
+Vue.mixin(Vue.extend({
   props: ['$asyncDataTrap'],
   created () {
     const asyncData = this.$options.asyncData
     if (!asyncData) return
 
     if (this.$route.params.$asyncDataTrap) {
-      this.$route.params.$asyncDataTrap = false
+      this.$route.params.$asyncDataTrap = ''
       return
     }
-    asyncData.call(this, this).then(d => {
+    asyncData.call(this, this).then((d: any) => {
       Object.assign(this.$data, d)
     })
   },
   async beforeRouteEnter (to, from, next) {
-    const component = componentFromRoute(to)
+    const component = (componentFromRoute(to) as any)
     if (!component.asyncData) return next()
 
     const toProps = translateParamsToProps(to)
     try {
       const data = await component.asyncData.call(baseThis, toProps)
-      to.params.$asyncDataTrap = true
+      to.params.$asyncDataTrap = 'true'
       next(vm => {
         Object.assign(vm.$data, data)
       })
@@ -88,12 +97,13 @@ Vue.mixin({
     }
   },
   async beforeRouteUpdate (to, from, next) {
-    if (!this.asyncData) return next()
+    const component = (componentFromRoute(to) as any)
+    if (!component.asyncData) return next()
 
     const toProps = translateParamsToProps(to)
 
     try {
-      const data = await this.asyncData.call(baseThis, toProps)
+      const data = await component.asyncData.call(baseThis, toProps)
       Object.assign(this.$data, data)
       next()
     } catch (e) {
@@ -101,4 +111,4 @@ Vue.mixin({
       next(false)
     }
   }
-})
+}))

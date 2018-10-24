@@ -16,6 +16,10 @@
 import Vue from 'vue'
 
 import VueToasted from 'vue-toasted'
+
+// vue-toasted has erroneous typings...
+
+// @ts-ignore
 Vue.use(VueToasted, {
   iconPack: 'fontawesome',
   position: 'bottom-left',
