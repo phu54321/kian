@@ -24,7 +24,7 @@ module.exports = {
     }
   },
   devServer: {
-    after (app) {
+    before (app) {
       const addonStaticServe = require('./src/addons/staticServe')
       app.use(express.static('backend/testdata/collection.media', { maxAge: '30d' }))
       addonStaticServe(app)
