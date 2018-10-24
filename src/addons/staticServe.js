@@ -16,6 +16,15 @@
 // This file is intented to be run inside poi.config.js, so it uses path module
 // to get all modules.
 
+// ############################################################################
+// ############################################################################
+//
+// NOTE: Because this module is directly required by webpack, this module
+// is not meant to be transpiled. Hence, no typescript!
+//
+// ############################################################################
+// ############################################################################
+
 module.exports = function (app) {
   const path = require('path')
   const fs = require('fs')
