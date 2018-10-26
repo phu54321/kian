@@ -18,31 +18,31 @@ import { escapeHtml, formatDate } from '@/utils/utils'
 import { SchedType } from '@/api/subapi/card'
 
 export default {
-  textVersionJs (text) {
+  textVersionJs (text: string) {
     return escapeHtml(textVersion(text, {
-      imgProcess (src, _alt) {
+      imgProcess (src: string) {
         return src
       }
     }))
   },
-  formatOrd (ord) {
+  formatOrd (ord: number) {
     return escapeHtml(`#${ord + 1}`)
   },
-  timeToText (timestamp) {
+  timeToText (timestamp: string | number) {
     if (typeof timestamp === 'string') return timestamp
     const date = new Date(timestamp * 1000)
     return formatDate(date)
   },
-  concatTags (tags) {
+  concatTags (tags: string[]) {
     return escapeHtml(tags.join(', '))
   },
-  schedTypeToDot (type) {
+  schedTypeToDot (type: SchedType): string {
     if (type === SchedType.NotScheduled) return ''
-    type = {
+    const typeString = {
       [SchedType.New]: 'new',
       [SchedType.Learn]: 'lrn',
       [SchedType.Review]: 'rev'
     }[type]
-    return `<span class='${type}Dot'>●</span>`
+    return `<span class='${typeString}Dot'>●</span>`
   }
 }
