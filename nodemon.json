@@ -1,0 +1,10 @@
+{
+  "execMap": {
+    "py": "python3"
+  },
+  "watch": [
+    "backend/"
+  ],
+  "ignore": ["backend/testdata/*"],
+  "delay": "500"
+}
