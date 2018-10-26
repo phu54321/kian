@@ -21,47 +21,42 @@ b-container.pt-4
         card-editor(v-model='card', @save='save')
 </template>
 
-<script>
+<script lang='ts'>
 
 import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
-
 import { getCard, updateCard } from '@/api'
+import { Prop, Vue, Component } from 'vue-property-decorator'
+import { EditorCard } from '@/components/editor/types'
+import KianVue from '@/utils/vueTsHelper'
 
-export default {
-  props: {
-    cardId: Number
-  },
-  components: {
-    CardEditor
-  },
-  data () {
-    return {
-      card: {
-        deck: '',
-        model: '',
-        tags: [],
-        fields: [],
-        fieldFormats: []
-      }
-    }
-  },
-  methods: {
-    save () {
-      const card = this.card
-      updateCard(this.cardId, {
-        deck: card.deck,
-        model: card.model,
-        fields: card.fields,
-        tags: card.tags
-      }).then(() => {
-        this.$router.go(-1)
-      }).catch(err => {
-        ErrorDialog.openErrorDialog(null, err.message)
-      })
-    }
-  },
-  async asyncData (props) {
+@Component({
+  components: { CardEditor }
+  })
+export default class extends KianVue {
+  @Prop(Number) cardId!: number
+  card: EditorCard = {
+    id: null,
+    deck: '',
+    model: '',
+    fields: [],
+    fieldFormats: [],
+    tags: []
+  }
+  save () {
+    const card = this.card
+    updateCard(this.cardId, {
+      deck: card.deck,
+      model: card.model,
+      fields: card.fields,
+      tags: card.tags
+    }).then(() => {
+      this.$router.go(-1)
+    }).catch(err => {
+      ErrorDialog.openErrorDialog(null, err.message)
+    })
+  }
+  async asyncData (props: { cardId: number }) {
     const cardId = props.cardId
     const card = await getCard(cardId)
     return {
@@ -73,8 +68,7 @@ export default {
         tags: card.tags
       }
     }
-  },
-  name: 'card-edit'
+  }
 }
 
 </script>
