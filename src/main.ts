@@ -33,8 +33,10 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-new Vue({
-  router: createRouter(),
-  store,
-  render: h => h(App)
-}).$mount('#app')
+Promise.resolve(createRouter()).then(router => {
+  new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount('#app')
+})
