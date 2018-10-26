@@ -39,15 +39,19 @@ b-container.pt-4(fluid)
     browser-view.mt-2(:loading='loading', :cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
 </template>
 
-<script>
+<script lang='ts'>
 import BrowserView from '@/components/browser/BrowserView'
 import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
 import { fuzzyMatch } from '@/utils/utils'
 import { listModel, listDeck, queryCardIds, autocompleteTag } from '@/api'
 import _ from 'lodash'
+import KianVue from '@/utils/vueTsHelper'
+import { Watch, Component } from 'vue-property-decorator'
+import AsyncComputed from '@/utils/asyncComputedDecorator'
+import { debounce } from 'typescript-debounce-decorator'
 
-function parseInitialQuery (query) {
+function parseInitialQuery (query: string) {
   // if query == '', query.split(' ') becomes [''] rather than []
   // so general code won't work
   if (query === '') return []
@@ -64,7 +68,7 @@ function parseInitialQuery (query) {
   return ret
 }
 
-function parseQueryToken (tok) {
+function parseQueryToken (tok: string) {
   const pos = tok.indexOf(':')
   if (pos === -1) return { model: null, body: tok }
   const model = tok.substr(0, pos)
@@ -80,135 +84,126 @@ function parseQueryToken (tok) {
   return { model, body }
 }
 
-function wrapString (tok) {
+function wrapString (tok: string) {
   if (tok.indexOf(' ') === -1 && tok.indexOf(':') === -1) return tok
   else return `"${tok}"`
 }
 
-export default {
-  data () {
-    const initialQuery = this.$route.query.q || ''
-    return {
-      queryString: parseInitialQuery(initialQuery || ''),
-      query: initialQuery,
-      sortBy: 'id',
-      sortOrder: 'desc',
-      updateCardIds: 0,
-      loading: true
-    }
-  },
-  watch: {
-    queryString: _.debounce(function () {
-      this.query = this.queryString.join(' ')
-      this.$router.replace(`/browse?q=${encodeURIComponent(this.query)}`)
-    }, 200)
-  },
-  asyncComputed: {
-    cardIds: {
-      get () {
-        return queryCardIds({
-          query: this.query,
-          sortBy: this.sortBy,
-          sortOrder: this.sortOrder
-        }).then(cardIds => {
-          return cardIds
-        }).catch(_err => {
-          // This can happen on false queries
-          return []
-        })
-      },
-      watch () {
-        return this.updateCardIds
-      },
-      default: null
-    }
-  },
-  methods: {
-    queryValidator,
-    queryRenderer (chunk) {
-      if (chunk.startsWith('-')) {
-        return {
-          variant: 'danger',
-          title: chunk
-        }
-      }
+@Component({
+  components: { BrowserView, SpaceSeperatedInput }
+}) export default class extends KianVue {
+  query = ''
+  queryString: string[] = []
+  sortBy = 'id'
+  sortOrder = 'desc'
+  updateCardIds = 0
+  loading = true
 
-      const { model, body } = parseQueryToken(chunk)
-      if (model === 'tag') {
-        return {
-          variant: (body === 'marked') ? 'danger' : 'info',
-          title: `Tag: ${body}`
-        }
-      }
-      if (model === 'deck') {
-        return {
-          color: '#4caf50',
-          title: `Deck: ${body}`
-        }
-      }
-      if (model === 'note' || model === 'mid') {
-        return {
-          color: '#f3801c',
-          title: `Model: ${body}`
-        }
-      }
-      if (model === 'is') {
-        return {
-          color: '#9c27b0',
-          title: `Is: ${body}`
-        }
-      }
-    },
-    async querySuggestion (chunk) {
-      if (chunk.startsWith('-')) {
-        return (await this.querySuggestion(chunk.slice(1))).map(x => `-${x}`)
-      }
+  created () {
+    this.queryString = parseInitialQuery(this.$route.query.q || '')
+  }
 
-      const { model, body } = parseQueryToken(chunk)
-      if (model === 'tag') {
-        const tagList = await autocompleteTag(chunk.substring(4))
-        return tagList
-          .filter(tag => fuzzyMatch(body, tag))
-          .map(tag => `tag:${tag}`)
-      } else if (model === 'deck') {
-        const deckList = await listDeck()
-        return (
-          deckList.filter(deck => fuzzyMatch(body, deck))
-            .sort()
-            .map(wrapString)
-            .map(deck => `deck:${deck}`)
-        )
-      } else if (model === 'model' || model === 'note') {
-        const modelList = await listModel()
-        return (
-          modelList.filter(model => fuzzyMatch(body, model))
-            .sort()
-            .map(wrapString)
-            .map(model => `note:${model}`)
-        )
-      } else if (model === 'is') {
-        return [
-          'is:due',
-          'is:new',
-          'is:learn',
-          'is:review',
-          'is:suspended',
-          'is:buried'
-        ].filter(c => fuzzyMatch(chunk, c))
-      }
+  @Watch('queryString')
+  @debounce(200)
+  onQueryStringUpdate () {
+    this.query = this.queryString.join(' ')
+    this.$router.replace(`/browse?q=${encodeURIComponent(this.query)}`)
+  }
+
+  @AsyncComputed({
+    default: null,
+    watch () { return this.updateCardIds }
+  }) get cardIds () {
+    return queryCardIds({
+      query: this.query,
+      sortBy: this.sortBy,
+      sortOrder: this.sortBy
+    }).catch(e => {
       return []
+    })
+  }
+
+  queryValidator = queryValidator
+
+  queryRenderer (chunk: string) {
+    if (chunk.startsWith('-')) {
+      return {
+        variant: 'danger',
+        title: chunk
+      }
     }
-  },
-  components: {
-    BrowserView,
-    SpaceSeperatedInput
-  },
-  name: 'browser'
+
+    const { model, body } = parseQueryToken(chunk)
+    if (model === 'tag') {
+      return {
+        variant: (body === 'marked') ? 'danger' : 'info',
+        title: `Tag: ${body}`
+      }
+    }
+    if (model === 'deck') {
+      return {
+        color: '#4caf50',
+        title: `Deck: ${body}`
+      }
+    }
+    if (model === 'note' || model === 'mid') {
+      return {
+        color: '#f3801c',
+        title: `Model: ${body}`
+      }
+    }
+    if (model === 'is') {
+      return {
+        color: '#9c27b0',
+        title: `Is: ${body}`
+      }
+    }
+  }
+
+  async querySuggestion (chunk: string): Promise<string[]> {
+    if (chunk.startsWith('-')) {
+      return (await this.querySuggestion(chunk.slice(1))).map(x => `-${x}`)
+    }
+
+    const { model, body } = parseQueryToken(chunk)
+    if (model === 'tag') {
+      const tagList = await autocompleteTag(chunk.substring(4))
+      return tagList
+        .filter(tag => fuzzyMatch(body, tag))
+        .map(tag => `tag:${tag}`)
+    } else if (model === 'deck') {
+      const deckList = await listDeck()
+      return (
+        deckList.filter(deck => fuzzyMatch(body, deck))
+          .sort()
+          .map(wrapString)
+          .map(deck => `deck:${deck}`)
+      )
+    } else if (model === 'model' || model === 'note') {
+      const modelList = await listModel()
+      return (
+        modelList.filter(model => fuzzyMatch(body, model))
+          .sort()
+          .map(wrapString)
+          .map(model => `note:${model}`)
+      )
+    } else if (model === 'is') {
+      return [
+        'is:due',
+        'is:new',
+        'is:learn',
+        'is:review',
+        'is:suspended',
+        'is:buried'
+      ].filter(c => fuzzyMatch(chunk, c))
+    }
+    return []
+  }
 }
 
-function queryValidator (chunk) {
+function queryValidator (chunk: string) {
   // From anki/find.py
-  let inQuote = false
+  let inQuote: string | boolean = false
   let token = ''
   for (let i = 0; i < chunk.length; i++) {
     const c = chunk[i]

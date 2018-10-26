@@ -20,24 +20,19 @@ b-container.pt-4
     deck-tree-view(:tree='deckDueTree', :indent='0')
 </template>
 
-<script>
+<script lang='ts'>
 import DeckTreeView from '@/components/dashboard/DeckTreeView'
 import { getDueTree } from '@/api'
+import KianVue from '@/utils/vueTsHelper'
+import Component from 'vue-class-component'
 
-export default {
-  async asyncData () {
-    return {
-      deckDueTree: await getDueTree()
-    }
-  },
-  data () {
-    return {
-      deckDueTree: []
-    }
-  },
-  components: {
-    DeckTreeView
-  },
-  name: 'dashboard'
+@Component({
+  components: { DeckTreeView }
+}) export default class extends KianVue {
+  deckDueTree: any = []
+
+  async created () {
+    this.deckDueTree = await getDueTree()
+  }
 }
 </script>

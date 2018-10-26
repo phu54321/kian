@@ -18,7 +18,10 @@ export function mediaUpload (filename: string, datab64: string): Promise<string>
 /**
  * `Check media` function of Anki.
  */
-export function checkMedia () {
+export function checkMedia (): Promise<{
+  missing: string[]
+  unused: string[]
+}> {
   return ankiCall('media_check')
 }
 

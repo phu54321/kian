@@ -55,6 +55,7 @@
     "tslint-config-standard": "^8.0.1",
     "turndown": "^5.0.1",
     "turndown-plugin-gfm": "^1.0.2",
+    "typescript-debounce-decorator": "0.0.17",
     "utf8": "^3.0.0",
     "vue": "^2.5.17",
     "vue-async-computed": "^3.4.1",

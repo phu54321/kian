@@ -37,66 +37,64 @@ b-container.pt-4
     h2 Config
 </template>
 
-<script>
+<script lang='ts'>
 import { getEmptyCards, checkMedia, checkDatabase, deleteCard, mediaDelete } from '@/api'
+import KianVue from '@/utils/vueTsHelper'
+import Component from 'vue-class-component'
+import { Modal } from 'bootstrap-vue'
 
-export default {
-  data () {
-    return {
-      missing: [],
-      unused: []
+@Component({})
+export default class extends KianVue {
+  missing: string[] = []
+  unused: string[] = []
+
+  async removeEmptyCards () {
+    const loader = this.$loading.show()
+    const cardIds = await getEmptyCards()
+    if (cardIds.length) {
+      this.$toasted.show(`${cardIds.length} empty card(s) removed.`)
+      await deleteCard(cardIds)
+    } else {
+      this.$toasted.show('No empty cards.')
     }
-  },
+    loader.hide()
+  }
 
-  methods: {
-    async removeEmptyCards () {
-      const loader = this.$loading.show()
-      const cardIds = await getEmptyCards()
-      if (cardIds.length) {
-        this.$toasted.show(`${cardIds.length} empty card(s) removed.`)
-        await deleteCard(cardIds)
-      } else {
-        this.$toasted.show('No empty cards.')
-      }
+  async checkDatabase () {
+    const loader = this.$loading.show()
+    try {
+      const ret = await checkDatabase()
+      this.$toasted.show(ret, { icon: 'check' })
+    } catch (e) {
+      this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
+    } finally {
       loader.hide()
-    },
+    }
+  }
 
-    async checkDatabase () {
-      const loader = this.$loading.show()
-      try {
-        const ret = await checkDatabase()
-        this.$toasted.show(ret, { icon: 'check' })
-      } catch (e) {
-        this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
-      } finally {
-        loader.hide()
-      }
-    },
+  async checkMedia () {
+    const loader = this.$loading.show()
+    try {
+      const { missing, unused } = await checkMedia()
+      this.missing = missing
+      this.unused = unused
+      ;(this.$refs.checkMediaModal as Modal).show()
+    } catch (e) {
+      this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
+    } finally {
+      loader.hide()
+    }
+  }
 
-    async checkMedia () {
-      const loader = this.$loading.show()
-      try {
-        const { missing, unused } = await checkMedia()
-        this.missing = missing
-        this.unused = unused
-        this.$refs.checkMediaModal.show()
-      } catch (e) {
-        this.$toasted.error(e.message, { icon: 'exclamation-triangle' })
-      } finally {
-        loader.hide()
-      }
-    },
-
-    async removeUnusedMedia () {
-      const { unused } = this
-      if (unused.length) {
-        const deleteFailed = await mediaDelete(unused)
-        const msg = (deleteFailed === 0)
-          ? `${unused.length} unused files removed`
-          : `${unused.length} unused files, ${unused.length - deleteFailed} removed`
-        this.$toasted.show(msg, { icon: 'check' })
-        this.unused = []
-      }
+  async removeUnusedMedia () {
+    const { unused } = this
+    if (unused.length) {
+      const deleteFailed = await mediaDelete(unused)
+      const msg = (deleteFailed === 0)
+        ? `${unused.length} unused files removed`
+        : `${unused.length} unused files, ${unused.length - deleteFailed} removed`
+      this.$toasted.show(msg, { icon: 'check' })
+      this.unused = []
     }
   }
 }

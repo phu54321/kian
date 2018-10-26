@@ -14,23 +14,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { createDecorator } from 'vue-class-component'
+import Vue from 'vue'
 
-export default function AsyncComputed<T> (options: {
+export default function AsyncComputed (options: {
   default?: any,
-  watch?: any
+  watch?: (this: any) => any
 } = {}) {
   const defValue = options.default || null
   const watch = options.watch || null
 
-  return createDecorator((options: any, key: string) => {
-    const oldMethod = options.computed[key]
-    delete options.computed[key]
+  return createDecorator((componentOptions: any, key: string) => {
+    const oldMethod = componentOptions.computed[key].get
+    delete componentOptions.computed[key]
 
-    if (!options.asyncComputed) options.asyncComputed = {}
+    if (!componentOptions.asyncComputed) componentOptions.asyncComputed = {}
     const asyncComputedEntry: any = { get: oldMethod }
     if (defValue) asyncComputedEntry.default = defValue
     if (watch) asyncComputedEntry.watch = watch
 
-    options.asyncComputed[key] = asyncComputedEntry
+    componentOptions.asyncComputed[key] = asyncComputedEntry
   })
 }
