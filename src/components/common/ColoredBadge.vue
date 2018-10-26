@@ -14,17 +14,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-
 b-badge(
     :variant='renderedItem.variant',
     :style='{ "background-color": renderedItem.color }')
     | {{renderedItem.title}}
     slot
-
 </template>
 
 <script>
-
 export default {
   props: {
     renderer: {
@@ -45,5 +42,4 @@ export default {
   },
   name: 'colored-badge'
 }
-
 </script>

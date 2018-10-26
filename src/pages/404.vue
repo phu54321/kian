@@ -17,5 +17,4 @@
 div
     h1.mb-4 404 Not found
     p So sad...
-
 </template>

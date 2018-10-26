@@ -66,11 +66,9 @@ div.app-main
 
     footer.app-footer
         cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
-
 </template>
 
 <script>
-
 import ErrorDialog from './components/ErrorDialog'
 import HotkeyMap from './components/HotkeyMap'
 import MiniPaintModal from './components/minipaint/MiniPaintModal'
@@ -106,7 +104,6 @@ export default {
     toolbarList: () => MainToolbar
   }
 }
-
 </script>
 
 <style scoped>

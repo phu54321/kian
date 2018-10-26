@@ -33,11 +33,9 @@
                             | &nbsp;+&nbsp;
                             span.revCount {{deck.lrnCount + deck.revCount}}
             deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
-
 </template>
 
 <script>
-
 import { collapseDeck } from '@/api'
 
 export default {

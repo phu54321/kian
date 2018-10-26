@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-
 b-form(@submit='onSave')
     span.invisible(@click='onSave', v-hotkey="['CTRL+ENTER', 'ctrl+s']", title='Save note')
     table.note-zone
@@ -53,7 +52,6 @@ b-form(@submit='onSave')
 </template>
 
 <script>
-
 import ListSelector from '../common/ListSelector'
 import Summernote from './Summernote/Summernote'
 import TuiSummernote from './TuiSummernote'
@@ -152,7 +150,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang='scss' scoped>

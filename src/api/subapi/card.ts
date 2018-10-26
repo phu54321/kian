@@ -1,10 +1,22 @@
 import ankiCall from '../ankiCall'
 import { addDeck, hasDeck } from './deck'
 import { pleuralize, unpleuralize } from '@/utils/pleuralize'
+import { FieldFormat } from './model'
 
 interface NoteDef {
   deck: string
   model: string
+  fields: string[]
+  tags: string[]
+}
+
+export interface Card {
+  id: number
+  noteId: number
+
+  deck: string
+  model: string
+  fieldFormats: FieldFormat[]
   fields: string[]
   tags: string[]
 }

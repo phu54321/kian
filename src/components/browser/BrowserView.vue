@@ -114,11 +114,9 @@ div.browser-view
         .editor-spacer(v-if='showEditor', :style='{height: (browserEditorHeight - 50) + "px"}')
 
     browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
-
 </template>
 
 <script>
-
 import _ from 'lodash'
 import $ from 'jquery'
 
@@ -137,7 +135,7 @@ import {
 function isDescendant (parent, child) {
   if (!child) return false
 
-  var node = child.parentNode
+  let node = child.parentNode
   while (node) {
     if (node === parent) {
       return true
@@ -445,7 +443,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

@@ -42,11 +42,9 @@ b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='o
         b-progress.mt-2(:value='100', :max='100', animated)
         ul.list-group(ref='messageContainer')
             li.list-group-item(v-for='message in syncMessages') {{message}}
-
 </template>
 
 <script>
-
 import ErrorDialog from './ErrorDialog'
 import { issueSync } from '@/api'
 
@@ -130,7 +128,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

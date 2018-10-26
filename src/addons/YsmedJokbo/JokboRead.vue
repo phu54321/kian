@@ -40,11 +40,9 @@ div
                 canvas.downscale(ref='aImgCanvas')
 
     browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
-
 </template>
 
 <script>
-
 import Jimp from 'jimp/es'
 import { parseQAPair } from './qaPairParser'
 import ListSelector from '@/components//common/ListSelector'
@@ -197,7 +195,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang='scss'>

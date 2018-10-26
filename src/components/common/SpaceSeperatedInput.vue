@@ -28,11 +28,9 @@ autocomplete-box(:suggestions='autocompleteList', :renderer='renderer', @commit=
             @input='emitItem',
             :placeholder='placeholder',
             @blur='emitItem(true)')
-
 </template>
 
 <script>
-
 import AutocompleteBox from './AutocompleteBox'
 import ColoredBadge from './ColoredBadge'
 import { KEY_MAP } from '@/utils/keycode'
@@ -79,8 +77,9 @@ export default {
   asyncComputed: {
     autocompleteList: {
       async get () {
-        if (this.buildingItem === '') return []
-        else {
+        if (this.buildingItem === '') {
+          return []
+        } else {
           return this.suggestions(this.buildingItem)
         }
       },

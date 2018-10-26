@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-
 .autocomplete-container
     slot
     .autocomplete-box(v-if='hasFocus && suggestions.length > 0')
@@ -26,11 +25,9 @@
         )
             colored-badge(:renderer='renderer', :item='item')
             span.origVal {{item}}
-
 </template>
 
 <script>
-
 import $ from 'jquery'
 import ColoredBadge from './ColoredBadge'
 
@@ -109,7 +106,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

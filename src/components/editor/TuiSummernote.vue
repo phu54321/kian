@@ -10,11 +10,9 @@ div(v-else)
             b-btn(@click='$refs.markdownConvertModal.hide()') Cancel
     summernote(@input='v => $emit("input", v)', v-bind='$props')
     b-btn.mt-2.float-right(v-hotkey=['ctrl+shift+m'], variant='secondary', size='sm', @click='openMarkdownDialog') Convert to markdown
-
 </template>
 
 <script>
-
 import TuiEditor from './TuiEditor/TuiEditor'
 import Summernote from './Summernote/Summernote'
 import encodeMarkdown from './TuiEditor/renderer/markdownRenderer'
@@ -43,5 +41,4 @@ export default {
     }
   }
 }
-
 </script>

@@ -35,11 +35,9 @@ b-container.pt-4
                 b-btn(variant='secondary', size='sm', @click='$refs.checkMediaModal.hide()') Cancel
 
     h2 Config
-
 </template>
 
 <script>
-
 import { getEmptyCards, checkMedia, checkDatabase, deleteCard, mediaDelete } from '@/api'
 
 export default {
@@ -102,7 +100,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

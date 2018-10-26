@@ -28,7 +28,25 @@ export async function addDeck (deckName: string) {
   return true
 }
 
-export async function getDeckInfo (deckName: string) {
+export interface DeckStat {
+  mature: number
+  young: number
+  total: number
+}
+
+export interface DeckDue {
+  newCount: number
+  lrnCount: number
+  revCount: number
+}
+export function getDeckDueZero (): DeckDue {
+  return { newCount: 0, lrnCount: 0, revCount: 0 }
+}
+
+export async function getDeckInfo (deckName: string): Promise<{
+  stat: DeckStat,
+  due: DeckDue
+}> {
   return ankiCall('deck_info', {
     deckName
   })

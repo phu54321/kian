@@ -38,11 +38,9 @@ div
 
     b-modal(id='browserRemoveCards', title='Delete cards', lazy, ok-variant='danger', @ok='deleteCards')
         | Really delete?
-
 </template>
 
 <script>
-
 import ListSelector from '../common/ListSelector'
 import TagEditor from '../common/TagEditor'
 import { formatDate } from '@/utils/utils'
@@ -129,5 +127,4 @@ export default {
     }
   }
 }
-
 </script>

@@ -31,7 +31,6 @@ div
 </template>
 
 <script>
-
 import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey'
 import KeyImage from './common/KeyImage'
 import _ from 'lodash'
@@ -116,7 +115,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

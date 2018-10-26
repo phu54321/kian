@@ -1,7 +1,17 @@
 import ankiCall from '../ankiCall'
+import { DeckDue } from './deck'
 
-export function getReviewerNextCard (deckName: string) {
-  return ankiCall('reviewer_next_card', { deckName })
+interface ReviewEntryInfo {
+  cardId: number
+  noteId: number
+  front: string
+  back: string
+  ansButtonCount: number
+  remaining: DeckDue
+}
+
+export function getReviewerNextEntry (deckName: string): Promise<ReviewEntryInfo | null> {
+  return ankiCall('reviewer_next_entry', { deckName })
 }
 
 export function reviewerShuffle () {

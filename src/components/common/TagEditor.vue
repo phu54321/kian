@@ -21,11 +21,9 @@ space-seperated-input(
     placeholder='Add new tags...',
     :suggestions='fetchTags'
     :renderer='tagRenderer')
-
 </template>
 
 <script>
-
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
 import { autocompleteTag } from '@/api'
 

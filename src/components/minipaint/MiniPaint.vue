@@ -14,16 +14,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-
 iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
-
 </template>
 
 <script>
-
 import mime from 'mime-types'
 import { sleep } from '@/utils/promiseUtil'
 import { uploadImageFromBase64 } from '@/utils/uploadHelper'
+import ErrorDialogVue from '@/components/ErrorDialog.vue'
 
 function eventPassThrough (e) {
   const newEvent = new e.constructor(e.type, e)
@@ -140,12 +138,13 @@ export default {
       const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1]
       uploadImageFromBase64(this.value, b64).then(newImageUrl => {
         this.$emit('input', newImageUrl)
+      }).catch(e => {
+        ErrorDialogVue.openErrorDialog('Image editing error', 'Couldn\'t uploaded modified image')
       })
     }
   },
   name: 'mini-paint'
 }
-
 </script>
 
 <style scoped lang='scss'>

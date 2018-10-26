@@ -15,57 +15,54 @@
 
 <template lang="pug">
 b-container.pt-4
-    h2 Deck {{deckName}}
+  h2 Deck {{deckName}}
 
-    table.mb-3
-        tr
-            th New
-            td.newCount {{due.newCount}}
-        tr
-            th Learning
-            td.lrnCount {{due.lrnCount}}
-        tr
-            th Review
-            td.revCount {{due.revCount}}
-        tr
-            th Mature
-            td.text-secondary {{stat.mature}}
-        tr
-            th Young
-            td.text-secondary {{stat.young}}
+  table.mb-3
+    tr
+      th New
+      td.newCount {{due.newCount}}
+    tr
+      th Learning
+      td.lrnCount {{due.lrnCount}}
+    tr
+      th Review
+      td.revCount {{due.revCount}}
+    tr
+      th Mature
+      td.text-secondary {{stat.mature}}
+    tr
+      th Young
+      td.text-secondary {{stat.young}}
 
-        tr
-            th Total
-            td.text-secondary {{stat.total}}
+    tr
+      th Total
+      td.text-secondary {{stat.total}}
 
-    b-button(size='sm', v-hotkey="['space', 'enter']", title='Start studying' variant='outline-primary', :to='`/study/` + encodeURIComponent(deckName)') Study now
-
+  b-button(size='sm', v-hotkey="['space', 'enter']", title='Start studying' variant='outline-primary', :to='`/study/` + encodeURIComponent(deckName)') Study now
 </template>
 
-<script>
+<script lang='ts'>
+import { getDeckInfo, DeckStat, DeckDue } from '@/api'
+import { Prop, Component, Vue } from 'vue-property-decorator'
 
-import { getDeckInfo } from '@/api'
-
-export default {
-  props: ['deckName'],
-  async asyncData (props) {
-    return getDeckInfo(props.deckName)
-  },
-  data () {
-    return {
-      stat: {},
-      due: {}
-    }
-  },
-  name: 'deck-view'
+@Component
+export default class extends Vue {
+  @Prop(String) deckName!: string
+  stat = {} as DeckStat
+  due = {} as DeckDue
+  async created () {
+    const { stat, due } = await getDeckInfo(this.deckName)
+    this.stat = stat
+    this.due = due
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 
 table {
-    th {
-        padding-right: 1em;
-    }
+  th {
+      padding-right: 1em;
+  }
 }
 </style>

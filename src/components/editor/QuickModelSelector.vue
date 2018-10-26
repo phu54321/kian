@@ -29,11 +29,9 @@ div
         pack-name='Quick model select',
         :title='model',
         @click='changeModel(model)')
-
 </template>
 
 <script>
-
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
 import { fuzzyMatch } from '@/utils/utils'
 import { listModel } from '@/api'

@@ -22,7 +22,6 @@ b-container.pt-4
 </template>
 
 <script lang='ts'>
-
 import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
 import { getCard, updateCard } from '@/api'
@@ -33,8 +32,7 @@ import AsyncComputed from '@/utils/asyncComputedDecorator'
 
 @Component({
   components: { CardEditor }
-  })
-export default class extends KianVue {
+}) export default class extends KianVue {
   @Prop(Number) cardId!: number
   card: EditorCard = {
     id: null,
@@ -71,5 +69,4 @@ export default class extends KianVue {
     }
   }
 }
-
 </script>

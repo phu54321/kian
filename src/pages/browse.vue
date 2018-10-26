@@ -40,7 +40,6 @@ b-container.pt-4(fluid)
 </template>
 
 <script>
-
 import BrowserView from '@/components/browser/BrowserView'
 import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
@@ -240,11 +239,9 @@ function queryValidator (chunk) {
   }
   return !inQuote
 }
-
 </script>
 
 <style lang="scss" scoped>
-
 .queryBox {
     position: sticky;
     padding: .1px 0;
@@ -256,5 +253,4 @@ function queryValidator (chunk) {
         padding-left: .4em;
     }
 }
-
 </style>

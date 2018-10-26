@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang='pug'>
-
 autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
     .dropdown-input
         input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
@@ -116,7 +115,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang='scss' scoped>

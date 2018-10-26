@@ -21,11 +21,9 @@ b-container.pt-4
 
     h3.mt-5 Recent 50 additions
     browser-view.history(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
-
 </template>
 
 <script lang='ts'>
-
 import BrowserView from '@/components/browser/BrowserView'
 import CardEditor from '@/components/editor/CardEditor'
 import ErrorDialogVue from '@/components/ErrorDialog.vue'
@@ -41,10 +39,10 @@ const historyNum = 50
 
 @Component({
   components: {
-  CardEditor,
-  BrowserView
+    CardEditor,
+    BrowserView
   }
-  }) export default class extends KianVue {
+}) export default class extends KianVue {
   card: EditorCard = {
     id: null,
     deck: '',
@@ -126,5 +124,4 @@ const historyNum = 50
     }
   }
 }
-
 </script>

@@ -23,7 +23,6 @@
 </template>
 
 <script>
-
 const isMac = navigator.appVersion.indexOf('Mac') > -1
 export const specialCharTable = {
   CTRL: isMac ? '⌘' : '⌃',
@@ -81,7 +80,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang='scss'>

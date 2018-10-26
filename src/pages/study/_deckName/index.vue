@@ -28,9 +28,9 @@ b-container.study-main
             | )
         .float-right
             .remaining.mr-3
-                span.newCount.ml-2 {{remaining.new}}
-                span.lrnCount.ml-2 {{remaining.lrn}}
-                span.revCount.ml-2 {{remaining.rev}}
+                span.newCount.ml-2 {{remaining.newCount}}
+                span.lrnCount.ml-2 {{remaining.lrnCount}}
+                span.revCount.ml-2 {{remaining.revCount}}
 
             span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
                 icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
@@ -40,15 +40,15 @@ b-container.study-main
         b-progress.mt-1(:value='currentProgress', :max='1', height='6px')
 
     .study-body(v-if='!card')
-    .study-body.mb-2.mt-2(v-else-if='!flipped')
+    .study-body.mb-2.mt-2(v-else-if='!reviewEntry.flipped')
             html-iframe(:html="card.front")
     .study-body.mb-2.mt-2(v-else)
             html-iframe(:html="card.back")
 
     .study-footer
         p.text-center
-            template(v-if='!flipped')
-                b-button(v-hotkey="['SPACE']", @click="flipped = !flipped", variant="outline-primary") Show Answer
+            template(v-if='!reviewEntry.flipped')
+                b-button(v-hotkey="['SPACE']", @click="reviewEntry.flipped = !reviewEntry.flipped", variant="outline-primary") Show Answer
 
             template(v-else)
                 b-button.mr-2(
@@ -58,19 +58,42 @@ b-container.study-main
                     @click='answerCard(index + 1)',
                     size='sm',
                     :variant='`outline-${answerButtonColor(button)}`') {{button}}
-
 </template>
 
-<script>
-
+<script lang='ts'>
 import ErrorDialog from '@/components/ErrorDialog.vue'
 import HtmlIframe from '@/components/HtmlIframe'
 import { formatTime } from '@/utils/utils'
-import ExponentialSmoother from './exponentialSmoother'
-import { getReviewerNextCard, reviewerShuffle, reviewerAnswerCard, reviewerUndo } from '@/api'
+import ExponentialSmoother from '@/utils/exponentialSmoother'
+import {
+  getReviewerNextEntry,
+  reviewerShuffle,
+  reviewerAnswerCard,
+  reviewerUndo,
+  getDeckDueZero,
+  DeckDue,
+  SchedType
+} from '@/api'
+import KianVue from '@/utils/vueTsHelper'
+import { Prop, Component } from 'vue-property-decorator'
+import { EditorCard } from '@/components/editor/types'
 
-async function getNextCard (deckName) {
-  const card = await getReviewerNextCard(deckName)
+interface ReviewEntry {
+  remaining: DeckDue
+  card: {
+    id: number
+    noteId: number
+    front: string
+    back: string
+  }
+  ansButtonCount: number
+  flipped: boolean
+}
+
+async function getNextCard (deckName: string): Promise<ReviewEntry | null> {
+  const card = await getReviewerNextEntry(deckName)
+  if (!card) return null
+
   return {
     remaining: card.remaining,
     card: {
@@ -84,119 +107,111 @@ async function getNextCard (deckName) {
   }
 }
 
-function remainingToProgress ({ new: newCnt, lrn, rev }) {
-  return newCnt * 2 + lrn + rev
+function remainingToProgress ({ newCount, lrnCount, revCount }: DeckDue) {
+  return newCount * 2 + lrnCount + revCount
 }
 
-export default {
-  props: ['deckName'],
-  async asyncData (props) {
-    const deckName = props.deckName
-    const initialData = await getNextCard(deckName)
-    return {
-      ...initialData,
-      initialRemaining: Object.assign({}, initialData.remaining)
-    }
-  },
-  data () {
-    return {
-      card: null,
-      flipped: false,
-      ansButtonCount: 0,
-      note: null,
-      remaining: {
-        new: 0,
-        lrn: 0,
-        rev: 0
-      },
-      initialRemaining: null,
-      startTime: (new Date()).getTime() / 1000,
-      currentTime: null,
-      currentTimeUpdater: null,
-      progressTracker: new ExponentialSmoother()
-    }
-  },
-  mounted () {
-    this.currentTime = (new Date()).getTime() / 1000
+@Component({
+  components: { HtmlIframe }
+})
+export default class extends KianVue {
+  @Prop(String) deckName!: string
+
+  reviewEntry = {} as ReviewEntry
+  initialRemaining: DeckDue = getDeckDueZero()
+  startTime = (new Date()).getTime() / 1000
+  currentTime = this.startTime
+  currentTimeUpdater = -1
+  progressTracker = new ExponentialSmoother()
+
+  created () {
     this.currentTimeUpdater = window.setInterval(() => {
       this.currentTime = (new Date()).getTime() / 1000
     }, 1000)
-  },
-  beforeDestroy () {
-    window.clearInterval(this.currentTimeUpdater)
-    reviewerShuffle()
-  },
-  components: { HtmlIframe },
-  methods: {
-    loadCard () {
-      getReviewerNextCard(this.deckName).then(card => {
-        this.card = {
-          id: card.cardId,
-          front: card.front,
-          back: card.back
-        }
-        this.ansButtonCount = 2
-        this.flipped = false
-      })
-    },
-    openEditor () {
-      this.$router.push(`/card/${this.card.id}`)
-    },
-    answerCard (ease) {
-      reviewerAnswerCard(this.card.id, ease).then(() => {
-        this.progressTracker.update(this.currentProgress)
-        return getNextCard(this.deckName)
-      }).then(card => {
-        Object.assign(this.$data, card)
-        this.remaining = this.remaining
-      }).catch(err => {
-        ErrorDialog.openErrorDialog(err.message)
-      })
-    },
-    undoReview () {
-      reviewerUndo().then((ret) => {
-        if (ret) {
-          this.$toasted.info('Review undone.', { icon: 'undo' })
-          this.loadCard()
-        } else {
-          this.$toasted.error('Undo not available.', { icon: 'ban' })
-        }
-      })
-    },
+  }
 
-    answerButtonColor (type) {
-      return {
-        Again: 'danger',
-        Hard: 'secondary',
-        Good: 'success',
-        Easy: 'primary'
-      }[type]
-    },
-    formatTime
-  },
-  computed: {
-    elapsedTime () {
-      return this.currentTime - this.startTime
-    },
-    remainingTime () {
-      return (1 - this.currentProgress) / this.progressTracker.slope
-    },
-    currentProgress () {
-      if (!this.initialRemaining) return 0
-      const total = remainingToProgress(this.initialRemaining)
-      const current = remainingToProgress(this.remaining)
-      return 1 - (current / total)
-    },
-    answerButtons () {
-      return {
-        2: ['Again', 'Good'],
-        3: ['Again', 'Good', 'Easy'],
-        4: ['Again', 'Hard', 'Good', 'Easy']
-      }[this.ansButtonCount]
+  async asyncData (props: any) {
+    const deckName = props.deckName
+    const reviewEntry = await getNextCard(deckName)
+    if (!reviewEntry) throw new Error('No cards to review')
+
+    return {
+      reviewEntry,
+      initialRemaining: Object.assign({}, reviewEntry.remaining || getDeckDueZero())
     }
   }
-}
 
+  async beforeDestroy () {
+    window.clearInterval(this.currentTimeUpdater)
+    await reviewerShuffle()
+  }
+
+  async loadCard () {
+    const nextEntry = await getNextCard(this.deckName)
+    if (!nextEntry) throw new Error('No more cards')
+    this.reviewEntry = nextEntry
+  }
+
+  openEditor () {
+    this.$router.push(`/card/${this.reviewEntry.card.id}`)
+  }
+
+  async answerCard (ease: number) {
+    await reviewerAnswerCard(this.reviewEntry.card.id, ease)
+    this.progressTracker.update(this.currentProgress)
+    return this.loadCard()
+  }
+
+  async undoReview () {
+    if (await reviewerUndo()) {
+      this.$toasted.info('Review undone.', { icon: 'undo' })
+      await this.loadCard()
+    } else {
+      this.$toasted.error('Undo not available.', { icon: 'ban' })
+    }
+  }
+
+  answerButtonColor (type: string) {
+    switch (type) {
+      case 'Again': return 'danger'
+      case 'Hard': return 'secondary'
+      case 'Good': return 'success'
+      case 'Easy': return 'primary'
+      default:
+        throw new Error('Unexpected easiness')
+    }
+  }
+
+  formatTime = formatTime
+
+  get card () {
+    return this.reviewEntry.card
+  }
+
+  get remaining () {
+    return this.reviewEntry.remaining
+  }
+
+  get elapsedTime () {
+    return this.currentTime - this.startTime
+  }
+  get remainingTime () {
+    return (1 - this.currentProgress) / this.progressTracker.slope
+  }
+  get currentProgress () {
+    const total = remainingToProgress(this.initialRemaining)
+    const current = remainingToProgress(this.remaining)
+    return 1 - (current / total)
+  }
+  get answerButtons () {
+    const table: {[key: number]: string[]} = {
+      2: ['Again', 'Good'],
+      3: ['Again', 'Good', 'Easy'],
+      4: ['Again', 'Hard', 'Good', 'Easy']
+    }
+    return table[this.reviewEntry.ansButtonCount]
+  }
+}
 </script>
 
 <style scoped lang='scss'>

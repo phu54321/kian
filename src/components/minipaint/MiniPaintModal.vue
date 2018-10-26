@@ -1,13 +1,10 @@
 <template lang='pug'>
-
 b-modal(v-model='modalShow', size='lg', title='Image edit', hide-footer, @hidden='onHide')
     .mini-paint-container
         mini-paint(ref='miniPaint', :value='editingUrl', @input='onImageEdit')
-
 </template>
 
 <script>
-
 import Vue from 'vue'
 
 import MiniPaint from './MiniPaint'
@@ -66,7 +63,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>
