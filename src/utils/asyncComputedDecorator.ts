@@ -16,8 +16,8 @@
 import { createDecorator } from 'vue-class-component'
 
 export default function AsyncComputed<T> (options: {
-default?: any,
-watch?: any
+  default?: any,
+  watch?: any
 } = {}) {
   const defValue = options.default || null
   const watch = options.watch || null

@@ -2,7 +2,7 @@ import ObjectHash from 'object-hash'
 import { LRUMap } from 'lru_map'
 
 export default function LRUCached<T> (capacity: number) {
-  return function (target: (... args: any[]) => T): ((... args: any[]) => T) {
+  return function (target: (...args: any[]) => T): ((...args: any[]) => T) {
     const cache = new LRUMap<any, T>(capacity)
 
     const callable = function (this: any): T {

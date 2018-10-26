@@ -227,8 +227,9 @@ function queryValidator (chunk) {
         token = ''
       }
     } else if (c === '(' || c === ')') {
-      if (inQuote) token += c
-      else {
+      if (inQuote) {
+        token += c
+      } else {
         if (c === ')' && token) {
           token = ''
         }
