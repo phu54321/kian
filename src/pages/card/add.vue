@@ -24,106 +24,107 @@ b-container.pt-4
 
 </template>
 
-<script>
-
-import { mapGetters, mapActions } from 'vuex'
+<script lang='ts'>
 
 import BrowserView from '@/components/browser/BrowserView'
 import CardEditor from '@/components/editor/CardEditor'
 import ErrorDialogVue from '@/components/ErrorDialog.vue'
-
 import { addNote, queryCardIds } from '@/api'
+
+import { EditorCard } from '@/components/editor/types'
+import { Getter, Action } from 'vuex-class'
+import { Component, Watch } from 'vue-property-decorator'
+import KianVue from '@/utils/vueTsHelper'
+import AsyncComputed from '@/utils/asyncComputedDecorator'
 
 const historyNum = 50
 
-export default {
+@Component({
   components: {
-    CardEditor,
-    BrowserView
-  },
-  data () {
-    return {
-      card: {
-        deck: '',
-        model: '',
-        fieldFormats: [],
-        fields: [],
-        tags: []
-      },
-      addedCardIds: [],
-      updateCardIds: 0
-    }
-  },
+  CardEditor,
+  BrowserView
+  }
+  }) export default class extends KianVue {
+  card: EditorCard = {
+    id: null,
+    deck: '',
+    model: '',
+    fieldFormats: [],
+    fields: [],
+    tags: []
+  }
+  updateCardIds = 0
+  addedCardIds: number[] = []
+
+  @Getter userConfig: any
+
   async asyncData () {
-    const createdCards = await queryCardIds({
+    const createdCardIds = await queryCardIds({
       query: '',
       sortBy: 'createdAt'
     })
     return {
-      addedCardIds: createdCards.slice(0, historyNum)
+      addedCardIds: createdCardIds.slice(0, historyNum)
     }
-  },
+  }
+
   async mounted () {
     const userConfig = this.userConfig
     this.card.deck = userConfig.currentDeck
     this.card.model = userConfig.currentModel
-  },
-  watch: {
-    async updateCardIds () {
-      const createdCards = await queryCardIds({
-        query: '',
-        sortBy: 'createdAt'
+  }
+
+  @Watch('updateCardIds')
+  async onCardIdUpdate () {
+    const createdCardIds = await queryCardIds({
+      query: '',
+      sortBy: 'createdAt'
+    })
+    this.addedCardIds = createdCardIds.slice(0, historyNum)
+  }
+
+  @Action setCurrentModel: any
+  @Action setCurrentDeck: any
+
+  @Watch('cardModel')
+  onCardModelUpdate (model: string) {
+    this.setCurrentModel(model)
+  }
+  @Watch('cardDeck')
+  onCardDeckUpdate (deck: string) {
+    this.setCurrentDeck(deck)
+  }
+
+  get cardModel () { return this.card.model }
+  get cardDeck () { return this.card.deck }
+
+  async save () {
+    try {
+      const card = this.card
+      await addNote({
+        deck: card.deck,
+        model: card.model,
+        fields: card.fields,
+        tags: card.tags
       })
-      this.addedCardIds = createdCards.slice(0, historyNum)
-    },
-    cardModel (model) {
-      this.setCurrentModel(model)
-    },
-    cardDeck (deck) {
-      this.setCurrentDeck(deck)
+
+      // Clean non-sticky forms
+      card.fieldFormats.forEach((fFormat, index) => {
+        if (!fFormat.sticky) {
+          card.fields.splice(index, 1, '')
+        }
+      })
+
+      // Add to history logs
+      this.updateCardIds++
+
+      this.$toasted.show('Note added', {
+        icon: 'plus-square'
+      })
+    } catch (e) {
+      ErrorDialogVue.openErrorDialog('Error on adding notes', e.message)
     }
-  },
-  computed: {
-    ...mapGetters([
-      'userConfig'
-    ]),
-    cardModel () { return this.card.model },
-    cardDeck () { return this.card.deck }
-  },
-  methods: {
-    ...mapActions([
-      'setCurrentDeck',
-      'setCurrentModel'
-    ]),
-    async save () {
-      try {
-        const card = this.card
-        await addNote({
-          deck: card.deck,
-          model: card.model,
-          fields: card.fields,
-          tags: card.tags
-        })
-
-        // Clean non-sticky forms
-        card.fieldFormats.forEach((fFormat, index) => {
-          if (!fFormat.sticky) {
-            card.fields.splice(index, 1, '')
-          }
-        })
-
-        // Add to history logs
-        this.updateCardIds++
-
-        this.$toasted.show('Note added', {
-          icon: 'plus-square'
-        })
-      } catch (e) {
-        ErrorDialogVue.openErrorDialog('Error on adding notes', e.message)
-      }
-    }
-  },
-  name: 'note-add'
+  }
 }
 
 </script>

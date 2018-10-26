@@ -16,17 +16,12 @@ interface ICardBrowserInfo {
   suspended: boolean
 }
 
-export async function queryCardIds (param?: {
+export async function queryCardIds (param: {
 query: string,
-sortBy: string,
-sortOrder: string
-}) {
-  const { query, sortBy, sortOrder }: {
-  query ?: string,
-  sortBy ?: string,
-  sortOrder ?: string
-  } = param || {}
-
+sortBy?: string,
+sortOrder?: string
+} = { query: '' }) {
+  const { query, sortBy, sortOrder } = param
   return ankiCall('browser_query', {
     query: query || '',
     sortBy: sortBy || 'createdAt',
