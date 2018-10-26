@@ -49,7 +49,6 @@ function propEnableRouteEntry (route: RouteConfig) {
         typeCastedParams[k] = newParam
       }
     }
-    console.log(route.params, props, typeCastedParams)
     return typeCastedParams
   }
   return Object.assign({ props: propsHandler }, route)
