@@ -124,8 +124,8 @@ export default {
     })
 
     this.cm.$vm = this
-    this.cm.on('focus', function () { this.focused = true })
-    this.cm.on('blur', function () { this.focused = false })
+    this.cm.on('focus', () => { this.focused = true })
+    this.cm.on('blur', () => { this.focused = false })
 
     // Image paste support. Code from tui.editor
     this.cm.on('paste', (cm, evData) => {
