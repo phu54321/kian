@@ -40,7 +40,6 @@ function propEnableRouteEntry (route: RouteConfig) {
         if (propType) typeCastedParams[k] = propType(typeCastedParams[k])
       })
     }
-    console.log(route.params, props, typeCastedParams)
     return typeCastedParams
   }
   return Object.assign({ props: propsHandler }, route)
