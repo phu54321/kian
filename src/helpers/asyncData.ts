@@ -14,16 +14,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import ErrorDialog from '@/components/ErrorDialog'
-import Vue, { VueConstructor } from 'vue'
+import Vue from 'vue'
+import Component from 'vue-class-component'
 
 // Note: vue-router has to be registered **before** importing asyncData,
 // because vue-router's route guards merge options should be used before
 // asyncData registers its global mixins.
 import VueRouter, { Route } from 'vue-router'
-import { Component } from 'vue-router/types/router'
+import * as RouterTypes from 'vue-router/types/router'
+type RouterComponent = RouterTypes.Component
+
 Vue.use(VueRouter)
 
-function componentFromRoute (route: Route): Component {
+function componentFromRoute (route: Route): RouterComponent {
   const routeMatches = route.matched
   const lastRoute = routeMatches[routeMatches.length - 1]
   return lastRoute.components.default
@@ -59,16 +62,11 @@ const baseThis = Object.freeze({
   // Add additional props here
 })
 
-declare module 'vue/types/options' {
-  // 3. Vue에 보강할 내용을 선언하세요.
-  interface ComponentOptions<V extends Vue> {
-    asyncData?: (x: any) => void
-  }
-}
-
 Vue.mixin(Vue.extend({
   props: ['$asyncDataTrap'],
-  created () {
+  // I'm tired of fixing typing errors.
+  // TODO: Replace this 'any' with something meaningful
+  created (this: any) {
     const asyncData = this.$options.asyncData
     if (!asyncData) return
 
@@ -112,3 +110,5 @@ Vue.mixin(Vue.extend({
     }
   }
 }))
+
+Component.registerHooks(['asyncData'])

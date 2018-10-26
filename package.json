@@ -53,7 +53,7 @@
     "vue-cookie-law": "^1.8.0",
     "vue-loading-overlay": "^3.0.1",
     "vue-localstorage": "^0.6.2",
-    "vue-property-decorator": "^7.0.0",
+    "vue-property-decorator": "^7.2.0",
     "vue-router": "^3.0.1",
     "vue-router-layout": "^0.1.2",
     "vue-toasted": "^1.1.25",

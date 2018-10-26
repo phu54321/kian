@@ -5,8 +5,8 @@ import { pleuralize, unpleuralize } from '@/utils/pleuralize'
 interface NoteDef {
   deck: string
   model: string
-  fields: string
-  tags: string
+  fields: string[]
+  tags: string[]
 }
 
 export enum SchedType {
