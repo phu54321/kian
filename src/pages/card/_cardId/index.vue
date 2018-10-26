@@ -26,9 +26,10 @@ b-container.pt-4
 import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
 import { getCard, updateCard } from '@/api'
-import { Prop, Vue, Component } from 'vue-property-decorator'
+import { Prop, Vue, Component, Watch } from 'vue-property-decorator'
 import { EditorCard } from '@/components/editor/types'
 import KianVue from '@/utils/vueTsHelper'
+import AsyncComputed from '@/utils/asyncComputedDecorator'
 
 @Component({
   components: { CardEditor }
