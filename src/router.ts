@@ -29,16 +29,27 @@ const RouterLayout = createRouterLayout(layout => {
 /** Type-cast route.parameter based on component's property definition. */
 function propEnableRouteEntry (route: RouteConfig) {
   const propsHandler = (route: Route) => {
-    const component: any = route.matched[route.matched.length - 1].components.default
-    const props = component.props
+    const lastRouteEntry = route.matched[route.matched.length - 1]
+    const component = lastRouteEntry.components.default
+    // Component may be dynamic imports, which then would make `component.props` invalid.
+    // We'll check that case later. Just assume `props` exists on component for now.
+    const props = (component as any).props
     const typeCastedParams = Object.assign({}, route.params)
-    if (props) {
+    if (props) { // Component is a real ComponentOptions
       Object.keys(props).forEach(k => {
         if (typeCastedParams[k] === undefined) return
         const propType = props[k].type
         if (propType) typeCastedParams[k] = propType(typeCastedParams[k])
       })
+    } else { // Maybe dynamic imports?
+      for (const k of Object.keys(typeCastedParams)) {
+        const oldParam = typeCastedParams[k]
+        let newParam: any
+        if (/-?\d+/.test(oldParam)) newParam = Number(oldParam)
+        typeCastedParams[k] = newParam
+      }
     }
+    console.log(route.params, props, typeCastedParams)
     return typeCastedParams
   }
   return Object.assign({ props: propsHandler }, route)
