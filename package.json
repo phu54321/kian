@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "npm-run-all --parallel serve:*",
+    "serve:frontend": "vue-cli-service serve",
+    "serve:backend": "nodemon --watch backend -e py,pyx backend/server.py",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
@@ -41,6 +43,8 @@
     "markdown-it": "^8.4.2",
     "markdown-it-katex": "^2.0.3",
     "markdown-it-underline": "^1.0.1",
+    "nodemon": "^1.18.5",
+    "npm-run-all": "^4.1.3",
     "socket.io-client": "^2.1.1",
     "textversionjs": "^1.1.3",
     "turndown": "^5.0.1",
@@ -81,5 +85,15 @@
     "vue-cli-plugin-auto-routing": "^0.2.1",
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-template-compiler": "^2.5.17"
+  },
+  "nodemonConfig": {
+    "execMap": {
+      "py": "python3"
+    },
+    "watch": [
+      "backend/"
+    ],
+    "delay": "500"
   }
+
 }
