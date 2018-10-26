@@ -31,23 +31,14 @@ function propEnableRouteEntry (route: RouteConfig) {
   const propsHandler = (route: Route) => {
     const lastRouteEntry = route.matched[route.matched.length - 1]
     const component = lastRouteEntry.components.default
-    // Component may be dynamic imports, which then would make `component.props` invalid.
-    // We'll check that case later. Just assume `props` exists on component for now.
     const props = (component as any).props
     const typeCastedParams = Object.assign({}, route.params)
-    if (props) { // Component is a real ComponentOptions
+    if (props) {
       Object.keys(props).forEach(k => {
         if (typeCastedParams[k] === undefined) return
         const propType = props[k].type
         if (propType) typeCastedParams[k] = propType(typeCastedParams[k])
       })
-    } else { // Maybe dynamic imports?
-      for (const k of Object.keys(typeCastedParams)) {
-        const oldParam = typeCastedParams[k]
-        let newParam: any
-        if (/-?\d+/.test(oldParam)) newParam = Number(oldParam)
-        typeCastedParams[k] = newParam
-      }
     }
     console.log(route.params, props, typeCastedParams)
     return typeCastedParams
@@ -74,11 +65,26 @@ export function MainRouterAdd (path: string, component: Component) {
  * `MainRouterAdd`, and router should be created after all addons have added
  * their routes.
  */
-export function createRouter () {
+export async function createRouter () {
   propEnabledRoutes.push({
     path: '*',
     redirect: '/404'
   })
+
+  // Because `propEnableRouteEntry` don't yet support dynamic imports, we
+  // should resolve all dynamic imports before moving on. This is not an ideal
+  // solution. An ideal one is to make component not care about prop's type at
+  // all, and does type conversion on component-side. However this requires a
+  // major change to each components, which I think can only be done
+  // after we convert everything to typescript
+  // TODO: Don't resolve dynamic import!
+  const dynamicRouteResolvedRoutes = await Promise.all(propEnabledRoutes.map(async (entry) => {
+    const newEntry = Object.assign({}, entry)
+    if (typeof entry.component === 'function') {
+      newEntry.component = await entry.component
+    }
+    return newEntry
+  }))
 
   // vue-cli-auto-routing returns nested router. Respect that.
   const router = new Router({
@@ -86,7 +92,7 @@ export function createRouter () {
       {
         path: '/',
         component: RouterLayout,
-        children: propEnabledRoutes
+        children: dynamicRouteResolvedRoutes
       }
     ]
   })
