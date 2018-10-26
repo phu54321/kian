@@ -19,3 +19,14 @@ div
     p Not in use now...
 
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+@Component
+export default class extends Vue {
+  save () {
+    this.$router.go(-1)
+  }
+}
+</script>
