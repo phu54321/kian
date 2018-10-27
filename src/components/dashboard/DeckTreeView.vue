@@ -14,44 +14,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-    div
-        div(v-for='deck in tree', :key='deck.fullname')
-            b-link(:to='"/deck/" + encodeURIComponent(deck.fullname)', router-tag='div')
-                // Indent
-                div.deck-row(:style='{"margin-left": (2 * indent) + "em"}')
-                    // Deck name
-                    span.pl-2.pr-2.mr-2(@click.stop='toggleDeckCollapse(deck)')
-                        template(v-if='deck.subDecks.length')
-                            icon(v-if='deck.collapsed', name='regular/plus-square', scale=0.7)
-                            icon(v-else, name='regular/minus-square', scale=0.7)
-                        icon.hidden(v-else, name='plus-square', scale=0.7)
-                    span {{deck.name}}
+  div
+    div(v-for='deck in tree', :key='deck.fullname')
+      b-link(:to='"/deck/" + encodeURIComponent(deck.fullname)', router-tag='div')
+        // Indent
+        div.deck-row(:style='{"margin-left": (2 * indent) + "em"}')
+          // Deck name
+          span.pl-2.pr-2.mr-2(@click.stop='toggleDeckCollapse(deck)')
+            template(v-if='deck.subDecks.length')
+              icon(v-if='deck.collapsed', name='regular/plus-square', scale=0.7)
+              icon(v-else, name='regular/minus-square', scale=0.7)
+            icon.hidden(v-else, name='plus-square', scale=0.7)
+          span {{deck.name}}
 
-                    // Deck due
-                    div.float-right
-                            span.newCount {{deck.newCount}}
-                            | &nbsp;+&nbsp;
-                            span.revCount {{deck.lrnCount + deck.revCount}}
-            deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
+          // Deck due
+          div.float-right
+              span.newCount {{deck.newCount}}
+              | &nbsp;+&nbsp;
+              span.revCount {{deck.lrnCount + deck.revCount}}
+      deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
 </template>
 
-<script>
-import { collapseDeck } from '@/api'
+<script lang='ts'>
+import { collapseDeck, DeckDueTree, DeckDueTreeLeaf } from '@/api'
+import KianVue from '@/utils/vueTsHelper'
+import Component from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 
-export default {
-  props: ['tree', 'indent'],
-  methods: {
-    toggleDeckCollapse (deck) {
-      const newCollapsed = !deck.collapsed
-      collapseDeck(
-        deck.fullname,
-        !deck.collapsed
-      ).then(() => {
-        deck.collapsed = newCollapsed
-      })
-    }
-  },
+@Component({
   name: 'deck-tree-view'
+}) export default class extends KianVue {
+  @Prop() tree!: DeckDueTree
+  @Prop(Number) indent!: number
+
+  async toggleDeckCollapse (deck: DeckDueTreeLeaf) {
+    const newCollapsed = !deck.collapsed
+    collapseDeck(
+      deck.fullname,
+      !deck.collapsed
+    ).then(() => {
+      deck.collapsed = newCollapsed
+    })
+  }
 }
 </script>
 

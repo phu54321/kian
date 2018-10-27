@@ -8,6 +8,18 @@ export function checkDatabase () {
   return ankiCall('col_check')
 }
 
-export function getDueTree () {
+export interface DeckDueTreeLeaf {
+  name: string
+  fullname: string
+  newCount: number
+  lrnCount: number
+  revCount: number
+  subDecks: DeckDueTree
+  collapsed: boolean
+}
+
+export type DeckDueTree = DeckDueTreeLeaf[]
+
+export function getDueTree (): Promise<DeckDueTree> {
   return ankiCall('dashboard_deck_tree')
 }
