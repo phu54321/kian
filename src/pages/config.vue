@@ -39,7 +39,6 @@ b-container.pt-4
 </template>
 
 <script>
-
 import { getEmptyCards, checkMedia, checkDatabase, deleteCard, mediaDelete } from '@/api'
 
 export default {
@@ -102,7 +101,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

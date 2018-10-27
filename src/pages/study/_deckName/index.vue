@@ -62,7 +62,6 @@ b-container.study-main
 </template>
 
 <script>
-
 import ErrorDialog from '@/components/ErrorDialog.vue'
 import HtmlIframe from '@/components/HtmlIframe'
 import { formatTime } from '@/utils/utils'
@@ -196,7 +195,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang='scss'>

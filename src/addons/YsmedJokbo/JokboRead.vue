@@ -50,6 +50,7 @@ import ListSelector from '@/components//common/ListSelector'
 import { uploadImageFromBase64 } from '@/utils/uploadHelper'
 import BrowserView from '@/components/browser/BrowserView'
 import { listDeck, queryCardIds, addNote } from '@/api'
+import Vue from 'vue'
 
 const URLObj = window.URL
 const PDFJS = (window as any).pdfjsLib
@@ -67,26 +68,28 @@ interface QAPair {
   page: number
 }
 
-export default {
-  mounted () {
-    const scriptEl = document.createElement('script')
-    scriptEl.setAttribute('src', '/pdfjs/build/pdf.js')
-    ;(this.$refs.scriptHolder as HTMLDivElement).appendChild(scriptEl)
-  },
+export default Vue.extend({
   data () {
     return {
       qaPairList: [] as QAPair[],
       message: 'Select a file.',
       deck: 'Default',
-      addedCardIds: [],
+      addedCardIds: [] as number[],
       updateCardIds: 0
     }
   },
+
   async asyncData () {
     const createdCards = await queryCardIds()
     return {
       addedCardIds: createdCards.slice(0, 20)
     }
+  },
+
+  mounted () {
+    const scriptEl = document.createElement('script')
+    scriptEl.setAttribute('src', '/pdfjs/build/pdf.js')
+    ;(this.$refs.scriptHolder as HTMLDivElement).appendChild(scriptEl)
   },
 
   computed: {
@@ -197,11 +200,12 @@ export default {
       })
       this.updateCardIds++
     },
+
     async dismissQAPair () {
       this.qaPairList.splice(0, 1)
     }
   }
-}
+})
 </script>
 
 <style scoped lang='scss'>

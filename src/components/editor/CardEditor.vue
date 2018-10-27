@@ -53,7 +53,6 @@ b-form(@submit='onSave')
 </template>
 
 <script>
-
 import ListSelector from '../common/ListSelector'
 import Summernote from './Summernote/Summernote'
 import TuiSummernote from './TuiSummernote'
@@ -152,7 +151,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang='scss' scoped>

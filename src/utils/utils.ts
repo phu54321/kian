@@ -35,8 +35,8 @@ export function focusNextElement () {
   if (index + 1 < focusable.length) focusable[index + 1].focus()
 }
 
-export function formatDate (date: Date) {
-  if (date === null) return ''
+export function formatDate (date: Date | null | undefined) {
+  if (!date) return ''
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const day = date.getDate()

@@ -20,7 +20,6 @@ div
 </template>
 
 <script>
-
 import $ from 'jquery'
 
 import './cloze'
@@ -95,7 +94,6 @@ export default {
     $(this.$refs.noteDiv).summernote('destroy')
   }
 }
-
 </script>
 
 <style lang='scss'>

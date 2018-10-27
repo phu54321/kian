@@ -37,7 +37,6 @@
 </template>
 
 <script>
-
 import { collapseDeck } from '@/api'
 
 export default {

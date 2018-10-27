@@ -14,7 +14,6 @@ div(v-else)
 </template>
 
 <script>
-
 import TuiEditor from './TuiEditor/TuiEditor'
 import Summernote from './Summernote/Summernote'
 import encodeMarkdown from './TuiEditor/renderer/markdownRenderer'
@@ -43,5 +42,4 @@ export default {
     }
   }
 }
-
 </script>

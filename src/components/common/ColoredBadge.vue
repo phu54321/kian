@@ -24,7 +24,6 @@ b-badge(
 </template>
 
 <script>
-
 export default {
   props: {
     renderer: {
@@ -45,5 +44,4 @@ export default {
   },
   name: 'colored-badge'
 }
-
 </script>

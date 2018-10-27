@@ -25,7 +25,6 @@ b-container.pt-4
 </template>
 
 <script>
-
 import { mapGetters, mapActions } from 'vuex'
 
 import BrowserView from '@/components/browser/BrowserView'
@@ -125,5 +124,4 @@ export default {
   },
   name: 'note-add'
 }
-
 </script>

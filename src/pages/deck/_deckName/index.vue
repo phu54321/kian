@@ -43,7 +43,6 @@ b-container.pt-4
 </template>
 
 <script>
-
 import { getDeckInfo } from '@/api'
 
 export default {

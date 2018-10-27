@@ -33,7 +33,7 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-Promise.resolve(createRouter()).then(router => {
+createRouter().then(router => {
   new Vue({
     router,
     store,

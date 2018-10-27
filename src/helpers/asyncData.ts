@@ -62,7 +62,7 @@ const baseThis = Object.freeze({
   // Add additional props here
 })
 
-Vue.mixin(Vue.extend({
+const asyncDataMixin = Vue.extend({
   props: ['$asyncDataTrap'],
   // I'm tired of fixing typing errors.
   // TODO: Replace this 'any' with something meaningful
@@ -109,6 +109,8 @@ Vue.mixin(Vue.extend({
       next(false)
     }
   }
-}))
+})
+
+Vue.mixin(asyncDataMixin)
 
 Component.registerHooks(['asyncData'])

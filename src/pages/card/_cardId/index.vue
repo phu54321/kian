@@ -22,7 +22,6 @@ b-container.pt-4
 </template>
 
 <script>
-
 import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
 
@@ -76,5 +75,4 @@ export default {
   },
   name: 'card-edit'
 }
-
 </script>

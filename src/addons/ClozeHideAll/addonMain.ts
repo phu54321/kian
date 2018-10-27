@@ -95,8 +95,8 @@ export default {
     })
 
     addHook('edit_card_save', (card: {
-    model: string,
-    fields: string[]
+      model: string,
+      fields: string[]
     }) => {
       const { model, fields } = card
       if (model === modelName) {

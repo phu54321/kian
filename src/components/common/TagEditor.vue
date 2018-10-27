@@ -25,7 +25,6 @@ space-seperated-input(
 </template>
 
 <script>
-
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
 import { autocompleteTag } from '@/api'
 

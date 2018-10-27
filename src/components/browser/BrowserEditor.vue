@@ -24,7 +24,6 @@ card-editor(
 </template>
 
 <script>
-
 import CardEditor from '../editor/CardEditor'
 import ErrorDialog from '../ErrorDialog'
 import { getCard, updateCard } from '@/api'
@@ -85,5 +84,4 @@ export default {
     this.$emit('updateView')
   }
 }
-
 </script>

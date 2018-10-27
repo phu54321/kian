@@ -6,5 +6,6 @@ pdfjs/
 *.manifest
 *.min.js
 *.ts
+*.vue
 
 -.eslintrc.js

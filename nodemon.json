@@ -5,6 +5,6 @@
   "watch": [
     "backend/"
   ],
-  "ignore": ["backend/testdata/*"],
+  "ignore": ["backend/testdata/"],
   "delay": "500"
 }

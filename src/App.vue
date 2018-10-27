@@ -70,7 +70,6 @@ div.app-main
 </template>
 
 <script>
-
 import ErrorDialog from './components/ErrorDialog'
 import HotkeyMap from './components/HotkeyMap'
 import MiniPaintModal from './components/minipaint/MiniPaintModal'
@@ -106,7 +105,6 @@ export default {
     toolbarList: () => MainToolbar
   }
 }
-
 </script>
 
 <style scoped>

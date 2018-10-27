@@ -40,7 +40,6 @@ b-container.pt-4(fluid)
 </template>
 
 <script>
-
 import BrowserView from '@/components/browser/BrowserView'
 import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
@@ -227,8 +226,9 @@ function queryValidator (chunk) {
         token = ''
       }
     } else if (c === '(' || c === ')') {
-      if (inQuote) token += c
-      else {
+      if (inQuote) {
+        token += c
+      } else {
         if (c === ')' && token) {
           token = ''
         }
@@ -239,7 +239,6 @@ function queryValidator (chunk) {
   }
   return !inQuote
 }
-
 </script>
 
 <style lang="scss" scoped>

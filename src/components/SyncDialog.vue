@@ -46,7 +46,6 @@ b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='o
 </template>
 
 <script>
-
 import ErrorDialog from './ErrorDialog'
 import { issueSync } from '@/api'
 
@@ -130,7 +129,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

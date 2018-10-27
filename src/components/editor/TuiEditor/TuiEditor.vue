@@ -29,7 +29,6 @@
 </template>
 
 <script>
-
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/edit/trailingspace'
@@ -242,7 +241,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang='scss'>

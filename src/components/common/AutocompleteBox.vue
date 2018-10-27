@@ -30,7 +30,6 @@
 </template>
 
 <script>
-
 import $ from 'jquery'
 import ColoredBadge from './ColoredBadge'
 
@@ -109,7 +108,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

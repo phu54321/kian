@@ -17,6 +17,6 @@ import Vue from 'vue'
 
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
-    asyncData: (props: Record<string, any>) => Record<string, any>
+    asyncData?: (props: Record<string, any>) => Record<string, any>
   }
 }

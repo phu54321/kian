@@ -33,7 +33,6 @@ div
 </template>
 
 <script>
-
 import SpaceSeperatedInput from '../common/SpaceSeperatedInput'
 import { fuzzyMatch } from '@/utils/utils'
 import { listModel } from '@/api'

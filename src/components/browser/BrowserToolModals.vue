@@ -42,7 +42,6 @@ div
 </template>
 
 <script>
-
 import ListSelector from '../common/ListSelector'
 import TagEditor from '../common/TagEditor'
 import { formatDate } from '@/utils/utils'
@@ -129,5 +128,4 @@ export default {
     }
   }
 }
-
 </script>

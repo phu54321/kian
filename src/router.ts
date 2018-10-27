@@ -35,7 +35,6 @@ function propEnableRouteEntry (route: RouteConfig) {
     const typeCastedParams = Object.assign({}, route.params)
     if (props) {
       Object.keys(props).forEach(k => {
-        if (typeCastedParams[k] === undefined) return
         const propType = props[k].type
         if (propType) typeCastedParams[k] = propType(typeCastedParams[k])
       })
@@ -80,6 +79,7 @@ export async function createRouter () {
   const dynamicRouteResolvedRoutes = await Promise.all(propEnabledRoutes.map(async (entry) => {
     const newEntry = Object.assign({}, entry)
     if (typeof entry.component === 'function') {
+      // tslint:disable-next-line
       newEntry.component = await entry.component
     }
     return newEntry

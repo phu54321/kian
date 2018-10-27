@@ -7,7 +7,6 @@ b-modal(v-model='modalShow', size='lg', title='Image edit', hide-footer, @hidden
 </template>
 
 <script>
-
 import Vue from 'vue'
 
 import MiniPaint from './MiniPaint'
@@ -66,7 +65,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>

@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
 const template = `
 <!doctype html>
 <html>
@@ -41,7 +40,6 @@ body {
 </style>
 
 <script>
-
 function eventPassThrough(e) {
     const newEvent = new e.constructor(e.type, e);
     parent.document.body.dispatchEvent(newEvent);
@@ -89,7 +87,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang=scss>

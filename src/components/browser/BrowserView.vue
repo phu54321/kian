@@ -118,7 +118,6 @@ div.browser-view
 </template>
 
 <script>
-
 import _ from 'lodash'
 import $ from 'jquery'
 
@@ -137,7 +136,7 @@ import {
 function isDescendant (parent, child) {
   if (!child) return false
 
-  var node = child.parentNode
+  let node = child.parentNode
   while (node) {
     if (node === parent) {
       return true
@@ -445,7 +444,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
