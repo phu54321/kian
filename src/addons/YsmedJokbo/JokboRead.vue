@@ -27,9 +27,9 @@ div
     input.mt-2(type="file", @change="onFileChange")
     b-alert.mt-2(show)
         | {{message}}
-        span.ml-2(v-if='qaPair.length') ({{qaPair.length}} question found)
+        span.ml-2(v-if='qaPairList.length') ({{qaPairList.length}} question found)
 
-    div(v-show='qaPair.length')
+    div(v-show='qaPairList.length')
         b-row.imgRow
             .toolbar
                 b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
@@ -43,39 +43,39 @@ div
 
 </template>
 
-<script>
-
-import Jimp from 'jimp/es'
+<script lang='ts'>
+import Jimp from 'jimp'
 import { parseQAPair } from './qaPairParser'
 import ListSelector from '@/components//common/ListSelector'
 import { uploadImageFromBase64 } from '@/utils/uploadHelper'
 import BrowserView from '@/components/browser/BrowserView'
 import { listDeck, queryCardIds, addNote } from '@/api'
 
-const URLObj = window.URL || window.webkitURL
+const URLObj = window.URL
+const PDFJS = (window as any).pdfjsLib
 
-function imageDataFromJimp (img) {
+function imageDataFromJimp (img: Jimp) {
   return new ImageData(
     new Uint8ClampedArray(img.bitmap.data),
     img.bitmap.width, img.bitmap.height
   )
 }
 
+interface QAPair {
+  qImgData: ImageData
+  aImgData: ImageData
+  page: number
+}
+
 export default {
-  created () {
-    document.addEventListener('paste', this.handlePaste)
-  },
-  destroyed () {
-    document.removeEventListener('paste', this.handlePaste)
-  },
   mounted () {
     const scriptEl = document.createElement('script')
     scriptEl.setAttribute('src', '/pdfjs/build/pdf.js')
-    this.$refs.scriptHolder.appendChild(scriptEl)
+    ;(this.$refs.scriptHolder as HTMLDivElement).appendChild(scriptEl)
   },
   data () {
     return {
-      qaPair: [],
+      qaPairList: [] as QAPair[],
       message: 'Select a file.',
       deck: 'Default',
       addedCardIds: [],
@@ -90,8 +90,8 @@ export default {
   },
 
   computed: {
-    qaFirst () {
-      return this.qaPair[0]
+    qaFirst (): QAPair {
+      return this.qaPairList[0]
     },
     listDeck: () => listDeck
   },
@@ -103,17 +103,19 @@ export default {
       })
       this.addedCardIds = createdCards.slice(0, 20)
     },
-    qaFirst (v) {
-      const [q, a] = v
+    qaFirst (v: QAPair) {
+      const { qImgData: q, aImgData: a } = v
 
-      const { qImgCanvas, aImgCanvas } = this.$refs
+      const qImgCanvas = this.$refs.qImgCanvas as HTMLCanvasElement
+      const aImgCanvas = this.$refs.aImgCanvas as HTMLCanvasElement
+
       qImgCanvas.width = q.width
       qImgCanvas.height = q.height
-      qImgCanvas.getContext('2d').putImageData(q, 0, 0)
+      qImgCanvas.getContext('2d')!.putImageData(q, 0, 0)
 
       aImgCanvas.width = a.width
       aImgCanvas.height = a.height
-      aImgCanvas.getContext('2d').putImageData(a, 0, 0)
+      aImgCanvas.getContext('2d')!.putImageData(a, 0, 0)
     }
   },
   components: {
@@ -121,20 +123,21 @@ export default {
     BrowserView
   },
   methods: {
-    onFileChange (e) {
-      const files = e.target.files || e.dataTransfer.files
+    onFileChange (e: any) {
+      const files = (e.target.files || e.dataTransfer.files) as FileList
       if (!files.length) return
       this.handlePdf(files[0])
     },
-    async handlePdf (pdfFile) {
+
+    async handlePdf (pdfFile: File) {
       this.message = `Processing ${pdfFile.name}...`
       const source = URLObj.createObjectURL(pdfFile)
-      const pdf = await window.pdfjsLib.getDocument({ url: source })
+      const pdf = await PDFJS.getDocument({ url: source })
 
       try {
         const startTime = new Date().getTime()
         const canvas = document.createElement('canvas')
-        const context = canvas.getContext('2d')
+        const context = canvas.getContext('2d')!
 
         const pageNum = pdf.numPages
         for (let pageIndex = 1; pageIndex <= pageNum; pageIndex++) {
@@ -159,22 +162,24 @@ export default {
       }
     },
 
-    handleImage (imageData, page) {
+    handleImage (imageData: ImageData, page: number) {
       const qaPair = parseQAPair(new Jimp(imageData))
       qaPair.forEach(([q, a]) => {
         const qImgData = imageDataFromJimp(q)
         const aImgData = imageDataFromJimp(a)
-        this.qaPair.push([qImgData, aImgData, page])
+        this.qaPairList.push({ qImgData, aImgData, page })
       })
     },
 
     async acceptQAPair () {
-      const { qImgCanvas, aImgCanvas } = this.$refs
+      const qImgCanvas = this.$refs.qImgCanvas as HTMLCanvasElement
+      const aImgCanvas = this.$refs.aImgCanvas as HTMLCanvasElement
+
       const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1]
       const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1]
-      const page = this.qaFirst[2]
+      const { page } = this.qaFirst
 
-      this.qaPair.splice(0, 1)
+      this.qaPairList.splice(0, 1)
 
       const [qUrl, aUrl] = await Promise.all([
         uploadImageFromBase64('image.jpg', q),
@@ -193,11 +198,10 @@ export default {
       this.updateCardIds++
     },
     async dismissQAPair () {
-      this.qaPair.splice(0, 1)
+      this.qaPairList.splice(0, 1)
     }
   }
 }
-
 </script>
 
 <style scoped lang='scss'>

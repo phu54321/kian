@@ -13,8 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    asyncData: (props: {[key:string]: any}) => void
+import Vue from 'vue'
+
+declare module 'vue/types/options' {
+  interface ComponentOptions<V extends Vue> {
+    asyncData: (props: Record<string, any>) => Record<string, any>
   }
 }
