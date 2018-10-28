@@ -56,7 +56,7 @@ export default {
       }).then(() => {
         this.$router.go(-1)
       }).catch(err => {
-        ErrorDialog.openErrorDialog(null, err.message)
+        this.$errorDialog(null, err.message)
       })
     }
   },

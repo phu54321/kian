@@ -123,7 +123,7 @@ export default {
           window.onbeforeunload = undefined
           this.$router.go()
         }).catch(err => {
-          ErrorDialog.openErrorDialog('Sync failed', err.message)
+          this.$errorDialog('Sync failed', err.message)
           this.show = false
         })
     }

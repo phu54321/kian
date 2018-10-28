@@ -16,5 +16,6 @@
     "licenser.author": "Hyun Woo Park",
     "licenser.projectName": "Kian",
     "standard.enable": false,
-    "eslint.enable": false
+    "eslint.enable": false,
+    "tslint.typeCheck": true,
   }

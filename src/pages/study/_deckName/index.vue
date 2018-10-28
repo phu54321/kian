@@ -149,7 +149,7 @@ export default {
         Object.assign(this.$data, card)
         this.remaining = this.remaining
       }).catch(err => {
-        ErrorDialog.openErrorDialog(err.message)
+        this.$errorDialog(err.message)
       })
     },
     undoReview () {

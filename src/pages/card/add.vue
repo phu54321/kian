@@ -118,7 +118,7 @@ export default {
           icon: 'plus-square'
         })
       } catch (e) {
-        ErrorDialogVue.openErrorDialog('Error on adding notes', e.message)
+        this.$errorDialog('Error on adding notes', e.message)
       }
     }
   },

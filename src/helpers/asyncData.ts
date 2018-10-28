@@ -14,22 +14,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import ErrorDialog from '@/components/ErrorDialog'
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import Vue, { Component, AsyncComponent, ComponentOptions } from 'vue'
 
 // Note: vue-router has to be registered **before** importing asyncData,
 // because vue-router's route guards merge options should be used before
 // asyncData registers its global mixins.
 import VueRouter, { Route } from 'vue-router'
-import * as RouterTypes from 'vue-router/types/router'
-type RouterComponent = RouterTypes.Component
 
 Vue.use(VueRouter)
 
-function componentFromRoute (route: Route): RouterComponent {
+function componentFromRoute (route: Route) {
   const routeMatches = route.matched
   const lastRoute = routeMatches[routeMatches.length - 1]
   return lastRoute.components.default
+}
+
+function instanceFromRoute (route: Route) {
+  const routeMatches = route.matched
+  const lastRoute = routeMatches[routeMatches.length - 1]
+  return lastRoute.instances.default
 }
 
 function translateParamsToProps (to: Route) {
@@ -78,8 +81,10 @@ const asyncDataMixin = Vue.extend({
       Object.assign(this.$data, d)
     })
   },
+
   async beforeRouteEnter (to, from, next) {
     const component = (componentFromRoute(to) as any)
+    const componentName = component.name || '<unnamed>'
     if (!component.asyncData) return next()
 
     const toProps = translateParamsToProps(to)
@@ -90,12 +95,14 @@ const asyncDataMixin = Vue.extend({
         Object.assign(vm.$data, data)
       })
     } catch (e) {
-      ErrorDialog.openErrorDialog(null, e.message)
+      this.$errorDialog(`Error loading component ${componentName}`, e.message)
       next(false)
     }
   },
+
   async beforeRouteUpdate (to, from, next) {
     const component = (componentFromRoute(to) as any)
+    const componentName = component.name || '<unnamed>'
     if (!component.asyncData) return next()
 
     const toProps = translateParamsToProps(to)
@@ -105,12 +112,10 @@ const asyncDataMixin = Vue.extend({
       Object.assign(this.$data, data)
       next()
     } catch (e) {
-      ErrorDialog.openErrorDialog(null, e.message)
+      this.$errorDialog(`Error loading component ${componentName}`, e.message)
       next(false)
     }
   }
 })
 
 Vue.mixin(asyncDataMixin)
-
-Component.registerHooks(['asyncData'])
