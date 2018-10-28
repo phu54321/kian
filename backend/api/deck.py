@@ -38,9 +38,11 @@ def dashboardDeckTree(msg):
                 result.append({
                     'name': name,
                     'fullname': prefix + name,
-                    'newCount': new,
-                    'lrnCount': lrn,
-                    'revCount': rev,
+                    'due': {
+                      'newCount': new,
+                      'lrnCount': lrn,
+                      'revCount': rev
+                    },
                     'subDecks': traverseDueTree(subTree, prefix + name + '::'),
                     'collapsed': deck['collapsed']
                 })

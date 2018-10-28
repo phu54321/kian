@@ -17,11 +17,11 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js,vue}": [
+      "*.{js}": [
         "eslint --fix",
         "git add"
       ],
-      "*.ts": [
+      "*.{ts, vue}": [
         "tslint --fix",
         "git add"
       ]

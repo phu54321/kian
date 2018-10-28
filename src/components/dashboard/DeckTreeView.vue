@@ -29,20 +29,24 @@
 
                     // Deck due
                     div.float-right
-                            span.newCount {{deck.newCount}}
+                            span.newCount {{deck.due.newCount}}
                             | &nbsp;+&nbsp;
-                            span.revCount {{deck.lrnCount + deck.revCount}}
+                            span.revCount {{deck.due.lrnCount + deck.due.revCount}}
             deck-tree-view(v-if='!deck.collapsed', :tree='deck.subDecks', :indent='indent + 1')
 
 </template>
 
-<script>
-import { collapseDeck } from '@/api'
+<script lang='ts'>
+import { collapseDeck, DeckTree, DeckTreeLeaf } from '@/api'
+import Vue from 'vue'
 
-export default {
-  props: ['tree', 'indent'],
+export default Vue.extend({
+  props: {
+    tree: Object,
+    indent: Number
+  },
   methods: {
-    toggleDeckCollapse (deck) {
+    toggleDeckCollapse (deck: DeckTreeLeaf) {
       const newCollapsed = !deck.collapsed
       collapseDeck(
         deck.fullname,
@@ -55,7 +59,7 @@ export default {
     }
   },
   name: 'deck-tree-view'
-}
+})
 </script>
 
 <style scoped lang='scss'>
