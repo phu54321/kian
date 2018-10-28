@@ -49,6 +49,8 @@ export default {
         !deck.collapsed
       ).then(() => {
         deck.collapsed = newCollapsed
+      }).catch(e => {
+        this.$errorDialog('Deck could not be collapsed', e.message)
       })
     }
   },

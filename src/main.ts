@@ -39,4 +39,7 @@ createRouter().then(router => {
     store,
     render: h => h(App)
   }).$mount('#app')
+}).catch(e => {
+  alert('Unexpected error: Router initialization failed')
+  console.error(e)
 })

@@ -139,6 +139,8 @@ export default {
       const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1]
       uploadImageFromBase64(this.value, b64).then(newImageUrl => {
         this.$emit('input', newImageUrl)
+      }).catch(e => {
+        this.$errorDialog('Failed to upload edited image', e.message)
       })
     }
   },

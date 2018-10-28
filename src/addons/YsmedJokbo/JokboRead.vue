@@ -126,10 +126,10 @@ export default Vue.extend({
     BrowserView
   },
   methods: {
-    onFileChange (e: any) {
+    async onFileChange (e: any) {
       const files = (e.target.files || e.dataTransfer.files) as FileList
       if (!files.length) return
-      this.handlePdf(files[0])
+      await this.handlePdf(files[0])
     },
 
     async handlePdf (pdfFile: File) {

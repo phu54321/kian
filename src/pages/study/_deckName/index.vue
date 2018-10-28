@@ -67,7 +67,7 @@ import HtmlIframe from '@/components/HtmlIframe'
 import { formatTime } from '@/utils/utils'
 import ExponentialSmoother from './exponentialSmoother'
 import { getReviewerNextEntry, reviewerShuffle, reviewerAnswerCard, reviewerUndo, ReviewCardInfo, DeckDue, DeckDueZero } from '@/api'
-import Vue from 'vue';
+import Vue from 'vue'
 
 async function getNextEntry (deckName: string) {
   const entry = await getReviewerNextEntry(deckName)
@@ -95,7 +95,7 @@ export default Vue.extend({
   data () {
     const currentTime = (new Date()).getTime() / 1000
     return {
-      card: null! as ReviewCardInfo,  // Late initialized
+      card: null! as ReviewCardInfo | null,  // Late initialized
       flipped: false,
       ansButtonCount: 0,
       remaining: DeckDueZero(),
@@ -115,6 +115,7 @@ export default Vue.extend({
   beforeDestroy () {
     window.clearInterval(this.currentTimeUpdater)
     reviewerShuffle()
+      .catch(e => this.$errorDialog('Error', 'Review shuffle failed'))
   },
   components: { HtmlIframe },
   methods: {
@@ -123,12 +124,17 @@ export default Vue.extend({
         this.card = entry.card
         this.ansButtonCount = 2
         this.flipped = false
+      }).catch(() => {
+        // No more card left.
+        this.card = null
       })
     },
     openEditor () {
+      if (!this.card) return
       this.$router.push(`/card/${this.card.id}`)
     },
     answerCard (ease: number) {
+      if (!this.card) return
       reviewerAnswerCard(this.card.id, ease).then(() => {
         this.progressTracker.update(this.currentProgress)
         return getNextEntry(this.deckName)
@@ -147,6 +153,8 @@ export default Vue.extend({
         } else {
           this.$toasted.error('Undo not available.', { icon: 'ban' })
         }
+      }).catch(e => {
+        this.$errorDialog('Undo failed', e.message)
       })
     },
 
