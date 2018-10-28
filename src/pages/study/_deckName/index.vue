@@ -28,9 +28,9 @@ b-container.study-main
             | )
         .float-right
             .remaining.mr-3
-                span.newCount.ml-2 {{remaining.new}}
-                span.lrnCount.ml-2 {{remaining.lrn}}
-                span.revCount.ml-2 {{remaining.rev}}
+                span.newCount.ml-2 {{remaining.newCount}}
+                span.lrnCount.ml-2 {{remaining.lrnCount}}
+                span.revCount.ml-2 {{remaining.revCount}}
 
             span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
                 icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
@@ -83,8 +83,8 @@ async function getNextCard (deckName) {
   }
 }
 
-function remainingToProgress ({ new: newCnt, lrn, rev }) {
-  return newCnt * 2 + lrn + rev
+function remainingToProgress ({ newCount, lrnCount, revCount }) {
+  return newCount * 2 + lrnCount + revCount
 }
 
 export default {
@@ -104,9 +104,9 @@ export default {
       ansButtonCount: 0,
       note: null,
       remaining: {
-        new: 0,
-        lrn: 0,
-        rev: 0
+        newCount: 0,
+        lrnCount: 0,
+        revCount: 0
       },
       initialRemaining: null,
       startTime: (new Date()).getTime() / 1000,
