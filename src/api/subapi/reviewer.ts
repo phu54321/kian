@@ -1,7 +1,23 @@
 import ankiCall from '../ankiCall'
+import { DeckDue } from './deck'
 
-export function getReviewerNextCard (deckName: string) {
-  return ankiCall('reviewer_next_card', { deckName })
+export interface ReviewCardInfo {
+  id: number
+  noteId: number
+  front: string
+  back: string
+}
+
+export interface ReviewerSessionEntry {
+  card: ReviewCardInfo
+  ansButtonCount: number[]
+  remaining: DeckDue
+}
+
+export async function getReviewerNextEntry (deckName: string): Promise<ReviewerSessionEntry> {
+  const entry = await ankiCall('reviewer_next_card', { deckName })
+  if (entry) return entry
+  else throw new Error('No more review left')
 }
 
 export function reviewerShuffle () {

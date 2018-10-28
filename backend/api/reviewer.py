@@ -48,10 +48,12 @@ def reviewerNextCard(msg):
         cardDict[card.id] = card
 
         return emit.emitResult({
-            'cardId': card.id,
-            'noteId': card.nid,
-            'front': card.q(),
-            'back': card.a(),
+            'card': {
+                'id': card.id,
+                'noteId': card.nid,
+                'front': card.q(),
+                'back': card.a()
+            },
             'ansButtonCount': answerButtonCount,
             'remaining': {
                 'newCount': remaining[0],

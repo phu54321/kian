@@ -61,57 +61,48 @@ b-container.study-main
 
 </template>
 
-<script>
+<script lang='ts'>
 import ErrorDialog from '@/components/ErrorDialog.vue'
 import HtmlIframe from '@/components/HtmlIframe'
 import { formatTime } from '@/utils/utils'
 import ExponentialSmoother from './exponentialSmoother'
-import { getReviewerNextCard, reviewerShuffle, reviewerAnswerCard, reviewerUndo } from '@/api'
+import { getReviewerNextEntry, reviewerShuffle, reviewerAnswerCard, reviewerUndo, ReviewCardInfo, DeckDue, DeckDueZero } from '@/api'
+import Vue from 'vue';
 
-async function getNextCard (deckName) {
-  const card = await getReviewerNextCard(deckName)
+async function getNextEntry (deckName: string) {
+  const entry = await getReviewerNextEntry(deckName)
   return {
-    remaining: card.remaining,
-    card: {
-      id: card.cardId,
-      noteId: card.noteId,
-      front: card.front,
-      back: card.back
-    },
-    ansButtonCount: card.ansButtonCount,
+    ...entry,
     flipped: false
   }
 }
 
-function remainingToProgress ({ newCount, lrnCount, revCount }) {
+function remainingToProgress ({ newCount, lrnCount, revCount }: DeckDue) {
   return newCount * 2 + lrnCount + revCount
 }
 
-export default {
+export default Vue.extend({
   props: ['deckName'],
-  async asyncData (props) {
-    const deckName = props.deckName
-    const initialData = await getNextCard(deckName)
+  async asyncData (props: Record<string, any>) {
+    const deckName = props.deckName as string
+    const initialEntry = await getReviewerNextEntry(deckName)
     return {
-      ...initialData,
-      initialRemaining: Object.assign({}, initialData.remaining)
+      ...initialEntry,
+      flipped: false,
+      initialRemaining: Object.assign({}, initialEntry.remaining)
     }
   },
   data () {
+    const currentTime = (new Date()).getTime() / 1000
     return {
-      card: null,
+      card: null! as ReviewCardInfo,  // Late initialized
       flipped: false,
       ansButtonCount: 0,
-      note: null,
-      remaining: {
-        newCount: 0,
-        lrnCount: 0,
-        revCount: 0
-      },
-      initialRemaining: null,
-      startTime: (new Date()).getTime() / 1000,
-      currentTime: null,
-      currentTimeUpdater: null,
+      remaining: DeckDueZero(),
+      initialRemaining: null as DeckDue | null,
+      startTime: currentTime,
+      currentTime: currentTime,
+      currentTimeUpdater: -1,
       progressTracker: new ExponentialSmoother()
     }
   },
@@ -128,12 +119,8 @@ export default {
   components: { HtmlIframe },
   methods: {
     loadCard () {
-      getReviewerNextCard(this.deckName).then(card => {
-        this.card = {
-          id: card.cardId,
-          front: card.front,
-          back: card.back
-        }
+      getReviewerNextEntry(this.deckName).then(entry => {
+        this.card = entry.card
         this.ansButtonCount = 2
         this.flipped = false
       })
@@ -141,15 +128,15 @@ export default {
     openEditor () {
       this.$router.push(`/card/${this.card.id}`)
     },
-    answerCard (ease) {
+    answerCard (ease: number) {
       reviewerAnswerCard(this.card.id, ease).then(() => {
         this.progressTracker.update(this.currentProgress)
-        return getNextCard(this.deckName)
+        return getNextEntry(this.deckName)
       }).then(card => {
         Object.assign(this.$data, card)
         this.remaining = this.remaining
       }).catch(err => {
-        this.$errorDialog(err.message)
+        this.$errorDialog('Review not recorded', err.message)
       })
     },
     undoReview () {
@@ -163,38 +150,40 @@ export default {
       })
     },
 
-    answerButtonColor (type) {
-      return {
+    answerButtonColor (type: string) {
+      const table: Record<string, string> = {
         Again: 'danger',
         Hard: 'secondary',
         Good: 'success',
         Easy: 'primary'
-      }[type]
+      }
+      return table[type]
     },
     formatTime
   },
   computed: {
-    elapsedTime () {
+    elapsedTime (): number {
       return this.currentTime - this.startTime
     },
-    remainingTime () {
+    remainingTime (): number {
       return (1 - this.currentProgress) / this.progressTracker.slope
     },
-    currentProgress () {
+    currentProgress (): number {
       if (!this.initialRemaining) return 0
       const total = remainingToProgress(this.initialRemaining)
       const current = remainingToProgress(this.remaining)
       return 1 - (current / total)
     },
-    answerButtons () {
-      return {
+    answerButtons (): string[] {
+      const table: Record<string, string[]> = {
         2: ['Again', 'Good'],
         3: ['Again', 'Good', 'Easy'],
         4: ['Again', 'Hard', 'Good', 'Easy']
-      }[this.ansButtonCount]
+      }
+      return table[this.ansButtonCount]
     }
   }
-}
+})
 </script>
 
 <style scoped lang='scss'>

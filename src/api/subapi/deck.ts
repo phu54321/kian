@@ -2,6 +2,15 @@ import ankiCall from '../ankiCall'
 
 let deckListCache: string[] = []
 
+export interface DeckDue {
+  newCount: number
+  lrnCount: number
+  revCount: number
+}
+export function DeckDueZero (): DeckDue {
+  return { newCount: 0, lrnCount: 0, revCount: 0 }
+}
+
 export async function listDeck (): Promise<string[]> {
   if (!deckListCache.length) {
     deckListCache = await ankiCall('deck_list')
