@@ -23,65 +23,68 @@ card-editor(
 )
 </template>
 
-<script>
+<script lang='ts'>
 import CardEditor from '../editor/CardEditor'
-import ErrorDialog from '../ErrorDialog'
 import { getCard, updateCard } from '@/api'
+import { Prop, Watch, Component, Vue } from 'vue-property-decorator'
+import { EditorCard } from '@/components/editor/types'
 
-export default {
-  props: ['cardId'],
+@Component({
   components: {
-    CardEditor,
-    ErrorDialog
-  },
-  data () {
-    return {
-      card: {
-        id: null,
-        deck: '',
-        model: '',
-        fieldFormats: [],
-        fields: [],
-        tags: []
-      }
-    }
-  },
-  async asyncData (props) {
+    CardEditor
+  }
+})
+export default class extends Vue {
+  @Prop(Number) cardId!: number
+
+  card: EditorCard = {
+    id: null,
+    deck: '',
+    model: '',
+    fieldFormats: [],
+    fields: [],
+    tags: []
+  }
+
+  async asyncData (props: Record<string, any>) {
     return {
       card: await getCard(props.cardId)
     }
-  },
-  watch: {
-    async cardId (value) {
-      await this.onNoteEdit(true)
-      this.$emit('updateView')
-      this.card = await getCard(value)
-    }
-  },
-  methods: {
-    async onNoteEdit (silent) {
-      try {
-        const card = this.card
-        await updateCard(card.id, {
-          deck: card.deck,
-          model: card.model,
-          fields: card.fields,
-          tags: card.tags
-        })
-        if (silent) return
+  }
 
-        this.$toasted.show('Edit saved', {
-          icon: 'save'
-        })
-        this.$emit('updateCardIds')
-      } catch (err) {
-        this.$errorDialog(null, err.message)
-      }
-    }
-  },
-  beforeDestroy () {
-    this.onNoteEdit(true)
+  @Watch('cardId')
+  async function (value: number) {
+    await this.onNoteEdit(true)
     this.$emit('updateView')
+    this.card = await getCard(value)
+  }
+
+  async onNoteEdit (silent: boolean) {
+    try {
+      const card = this.card
+      await updateCard(card.id!, {
+        deck: card.deck,
+        model: card.model,
+        fields: card.fields,
+        tags: card.tags
+      })
+      if (silent) return
+
+      this.$toasted.show('Edit saved', {
+        icon: 'save'
+      })
+      this.$emit('updateCardIds')
+    } catch (err) {
+      this.$errorDialog('Card edit failed', err.message)
+    }
+  }
+
+  beforeDestroy () {
+    this.$emit('updateView')
+    this.onNoteEdit(true)
+      .catch(e => {
+        this.$errorDialog('Edit failed', e.message)
+      })
   }
 }
 </script>

@@ -41,7 +41,7 @@ div
 
 </template>
 
-<script>
+<script lang='ts'>
 import ListSelector from '../common/ListSelector'
 import TagEditor from '../common/TagEditor'
 import { formatDate } from '@/utils/utils'
@@ -59,73 +59,76 @@ import {
   cardSchedReset,
   cardSchedReschedule
 } from '@/api'
+import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
 
-export default {
-  props: ['selected'],
+@Component({
   components: {
     ListSelector,
     TagEditor
-  },
-  data () {
-    return {
-      deck: '',
-      model: '',
-      tags: [],
-      due: null,
-      changeDueShow: false
+  }
+})
+export default class extends Vue {
+  @Prop(Array) selected!: number[]
+  deck = ''
+  model = ''
+  tags: string[] = []
+  due = new Date()
+  changeDueShow = false
+
+  get listModel () {
+    return listModel()
+  }
+  get listDeck () {
+    return listDeck()
+  }
+
+  @Watch(`changeDueShow`)
+  onChangeDueShow (v: boolean) {
+    if (v) {
+      const today = new Date()
+      this.due = today
     }
-  },
-  computed: {
-    listModel: () => listModel,
-    listDeck: () => listDeck
-  },
-  watch: {
-    changeDueShow (v) {
-      if (v) {
-        const today = new Date()
-        this.due = today
-      }
-    }
-  },
-  methods: {
-    formatDate,
-    async changeDeck () {
-      await updateCardDeck(this.selected, this.deck)
-      this.deck = ''
-      this.$emit('updateView')
-    },
-    async changeModel () {
-      await updateCardModel(this.selected, this.model)
-      this.model = ''
-      this.$emit('updateCardIds')
-    },
-    async addTags () {
-      await addCardTag(this.selected, this.tags)
-      this.tags = []
-      this.$emit('updateView')
-    },
-    async removeTags () {
-      await deleteCardTag(this.selected, this.tags)
-      this.tags = []
-      this.$emit('updateView')
-    },
-    async resetSched () {
-      await cardSchedReset(this.selected)
-      this.$emit('updateView')
-    },
-    async changeDue () {
-      const dueTimestamp = (this.due.getTime() / 1000) | 0
-      await cardSchedReschedule(this.selected, {
-        min: dueTimestamp,
-        max: dueTimestamp
-      })
-      this.due = null
-      this.$emit('updateView')
-    },
-    async deleteCards () {
-      await deleteCard(this.selected)
-      this.$emit('updateCardIds')
-    }
+  }
+
+  formatDate (date: Date) {
+    return formatDate(date)
+  }
+
+  async changeDeck () {
+    await updateCardDeck(this.selected, this.deck)
+    this.deck = ''
+    this.$emit('updateView')
+  }
+  async changeModel () {
+    await updateCardModel(this.selected, this.model)
+    this.model = ''
+    this.$emit('updateCardIds')
+  }
+  async addTags () {
+    await addCardTag(this.selected, this.tags)
+    this.tags = []
+    this.$emit('updateView')
+  }
+  async removeTags () {
+    await deleteCardTag(this.selected, this.tags)
+    this.tags = []
+    this.$emit('updateView')
+  }
+  async resetSched () {
+    await cardSchedReset(this.selected)
+    this.$emit('updateView')
+  }
+  async changeDue () {
+    const dueTimestamp = (this.due.getTime() / 1000) | 0
+    await cardSchedReschedule(this.selected, {
+      min: dueTimestamp,
+      max: dueTimestamp
+    })
+    this.$emit('updateView')
+  }
+  async deleteCards () {
+    await deleteCard(this.selected)
+    this.$emit('updateCardIds')
   }
 }
 </script>

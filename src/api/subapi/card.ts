@@ -75,5 +75,5 @@ export async function toggleCardMarked (cardIds: number[] | number) {
 
 export async function toggleCardSuspended (cardIds: number[] | number) {
   cardIds = pleuralize(cardIds)[0]
-  return ankiCall('card_toggle_suspendeded_batch', { cardIds })
+  return ankiCall('card_toggle_suspended_batch', { cardIds })
 }
