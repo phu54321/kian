@@ -19,7 +19,7 @@ export interface EditorCard {
   id: number | null
   deck: string
   model: string
-  fieldFormats: FieldFormat[],
-  fields: string[],
+  fieldFormats: FieldFormat[]
+  fields: string[]
   tags: string[]
 }

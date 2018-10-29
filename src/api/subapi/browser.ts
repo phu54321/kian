@@ -19,7 +19,7 @@ interface ICardBrowserInfo {
 export async function queryCardIds (param: {
   query: string,
   sortBy?: string,
-  sortOrder?: string
+  sortOrder?: 'asc' | 'desc'
 } = { query: '' }) {
   const { query, sortBy, sortOrder } = param
 

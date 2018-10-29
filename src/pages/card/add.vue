@@ -24,7 +24,7 @@ b-container.pt-4
 
 </template>
 
-<script>
+<script lang='ts'>
 import { mapGetters, mapActions } from 'vuex'
 
 import BrowserView from '@/components/browser/BrowserView'
@@ -32,96 +32,82 @@ import CardEditor from '@/components/editor/CardEditor'
 import ErrorDialogVue from '@/components/ErrorDialog.vue'
 
 import { addNote, queryCardIds } from '@/api'
+import { EditorCard } from '@/components/editor/types'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Getter, Action } from 'vuex-class'
 
 const historyNum = 50
 
-export default {
+@Component({
   components: {
     CardEditor,
     BrowserView
-  },
-  data () {
-    return {
-      card: {
-        deck: '',
-        model: '',
-        fieldFormats: [],
-        fields: [],
-        tags: []
-      },
-      addedCardIds: [],
-      updateCardIds: 0
-    }
-  },
-  async asyncData () {
+  }
+})
+export default class extends Vue {
+  card: EditorCard = {
+    id: null,
+    deck: '',
+    model: '',
+    fieldFormats: [],
+    fields: [],
+    tags: []
+  }
+  addedCardIds: number[] = []
+  updateCardIds = 0
+
+  async created () {
+    const createdCards = await queryCardIds({ query: '', sortBy: 'createdAt', sortOrder: 'desc' })
+    this.addedCardIds = createdCards.slice(0, historyNum)
+  }
+
+  async mounted () {
+    const userConfig = this.getUserConfig
+    this.card.deck = userConfig.currentDeck
+    this.card.model = userConfig.currentModel
+  }
+
+  @Getter('userConfig') getUserConfig: any
+  get cardModel () { return this.card.model }
+  get cardDeck () { return this.card.deck }
+
+  @Watch('updateCardIds') async onUpdateCardIds () {
     const createdCards = await queryCardIds({
       query: '',
       sortBy: 'createdAt'
     })
-    return {
-      addedCardIds: createdCards.slice(0, historyNum)
-    }
-  },
-  async mounted () {
-    const userConfig = this.userConfig
-    this.card.deck = userConfig.currentDeck
-    this.card.model = userConfig.currentModel
-  },
-  watch: {
-    async updateCardIds () {
-      const createdCards = await queryCardIds({
-        query: '',
-        sortBy: 'createdAt'
+    this.addedCardIds = createdCards.slice(0, historyNum)
+  }
+
+  @Action('setCurrentDeck') setCurrentDeck: any
+  @Action('setCurrentModel') setCurrentModel: any
+
+  async save () {
+    try {
+      const card = this.card
+      await addNote({
+        deck: card.deck,
+        model: card.model,
+        fields: card.fields,
+        tags: card.tags
       })
-      this.addedCardIds = createdCards.slice(0, historyNum)
-    },
-    cardModel (model) {
-      this.setCurrentModel(model)
-    },
-    cardDeck (deck) {
-      this.setCurrentDeck(deck)
+
+      // Clean non-sticky forms
+      card.fieldFormats.forEach((fFormat, index) => {
+        if (!fFormat.sticky) {
+          card.fields.splice(index, 1, '')
+        }
+      })
+
+      // Add to history logs
+      this.updateCardIds++
+
+      this.$toasted.show('Note added', {
+        icon: 'plus-square'
+      })
+    } catch (e) {
+      this.$errorDialog('Error on adding notes', e.message)
     }
-  },
-  computed: {
-    ...mapGetters([
-      'userConfig'
-    ]),
-    cardModel () { return this.card.model },
-    cardDeck () { return this.card.deck }
-  },
-  methods: {
-    ...mapActions([
-      'setCurrentDeck',
-      'setCurrentModel'
-    ]),
-    async save () {
-      try {
-        const card = this.card
-        await addNote({
-          deck: card.deck,
-          model: card.model,
-          fields: card.fields,
-          tags: card.tags
-        })
-
-        // Clean non-sticky forms
-        card.fieldFormats.forEach((fFormat, index) => {
-          if (!fFormat.sticky) {
-            card.fields.splice(index, 1, '')
-          }
-        })
-
-        // Add to history logs
-        this.updateCardIds++
-
-        this.$toasted.show('Note added', {
-          icon: 'plus-square'
-        })
-      } catch (e) {
-        this.$errorDialog('Error on adding notes', e.message)
-      }
-    }
-  },
-  name: 'note-add'
+  }
 }
 </script>
