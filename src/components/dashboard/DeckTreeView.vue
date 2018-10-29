@@ -42,7 +42,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    tree: Object,
+    tree: Array,
     indent: Number
   },
   methods: {
