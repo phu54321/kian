@@ -21,13 +21,14 @@ b-container.pt-4
         card-editor(v-model='card', @save='save')
 </template>
 
-<script>
+<script lang='ts'>
 import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
 
 import { getCard, updateCard } from '@/api'
+import Vue from 'vue'
 
-export default {
+export default Vue.extend({
   props: {
     cardId: Number
   },
@@ -56,7 +57,7 @@ export default {
       }).then(() => {
         this.$router.go(-1)
       }).catch(err => {
-        this.$errorDialog(null, err.message)
+        this.$errorDialog("Couldn't update card", err.message)
       })
     }
   },
@@ -74,5 +75,5 @@ export default {
     }
   },
   name: 'card-edit'
-}
+})
 </script>

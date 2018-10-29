@@ -42,22 +42,22 @@ b-container.pt-4
 
 </template>
 
-<script>
+<script lang='ts'>
 import { getDeckInfo } from '@/api'
+import Vue from 'vue'
 
-export default {
+export default Vue.extend({
   props: ['deckName'],
-  async asyncData (props) {
-    return getDeckInfo(props.deckName)
-  },
   data () {
     return {
       stat: {},
       due: {}
     }
   },
-  name: 'deck-view'
-}
+  async asyncData (props) {
+    return getDeckInfo(props.deckName)
+  }
+})
 </script>
 
 <style lang="scss" scoped>
