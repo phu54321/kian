@@ -126,7 +126,7 @@ def cardUpdateDeckBatch(msg):
         'cardIds': list,
     })
     with Col() as col:
-        newDeckId = col.decks.byName(msg['deck'])
+        newDeckId = col.decks.byName(msg['deck'])['id']
 
         for cardId in msg['cardIds']:
             card = col.getCard(cardId)

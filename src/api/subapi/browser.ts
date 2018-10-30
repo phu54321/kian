@@ -25,7 +25,6 @@ export async function queryCardIds (param: {
   sortOrder?: CardSortOrder
 } = { query: '' }) {
   const { query, sortBy, sortOrder } = param
-  console.log(query, sortBy, sortOrder)
   return ankiCall('browser_query', {
     query: query || '',
     sortBy: sortBy || 'createdAt',

@@ -15,31 +15,42 @@
 
 <template lang="pug">
 div
-    h1.mb-4 JokboReader
+  h1.mb-4 JokboReader
 
-    div(ref='scriptHolder')
+  div(ref='scriptHolder')
 
-    list-selector(
-        taggable,
-        v-model='deck',
-        :optionsFunc='listDeck')
+  list-selector(
+    taggable,
+    v-model='deck',
+    :optionsFunc='listDeck')
+  
+  b-row
+    b-col
+      input.mt-2(type="file", @change="onFileChange")
+    b-col.pt-1
+      b.mr-2 Page range
+      input.inp-range(v-model.number='minPage')
+      | ~
+      input.inp-range(v-model.number='maxPage')
+      b-btn.float-right(size='sm', variant='primary', @click='scanPDF') Scan
 
-    input.mt-2(type="file", @change="onFileChange")
-    b-alert.mt-2(show)
-        | {{message}}
-        span.ml-2(v-if='qaPairList.length') ({{qaPairList.length}} question found)
+  b-alert.mt-2(show)
+    | {{message}}
+    span.ml-2(v-if='qaPairList.length') ({{qaPairList.length}} question found)
 
-    div(v-show='qaPairList.length')
-        b-row.imgRow
-            .toolbar
-                b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
-                b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
-            b-col
-                canvas.downscale(ref='qImgCanvas')
-            b-col
-                canvas.downscale(ref='aImgCanvas')
+  div(v-show='qaPairList.length')
+    .toolbar
+      b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
+      b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
+      | Current page: {{currentPage}}
+    b-progress.mt-1(height='5px', :value='currentPage - minPage', :max='maxPage - minPage')
+    b-row.imgRow
+      b-col
+        canvas.downscale(ref='qImgCanvas')
+      b-col
+        canvas.downscale(ref='aImgCanvas')
 
-    browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
+  browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
 </template>
 
 <script lang='ts'>
@@ -78,6 +89,11 @@ export default class extends Vue {
   deck = 'Default'
   addedCardIds: number[] = []
   updateCardIds = 0
+
+  minPage = 1
+  maxPage = 1
+  currentPage = 0
+  pdf: any = null
 
   mounted () {
     const scriptEl = document.createElement('script')
@@ -121,18 +137,23 @@ export default class extends Vue {
     aImgCanvas.getContext('2d')!.putImageData(aImgData, 0, 0)
   }
 
-  onFileChange (e: Event) {
+  async onFileChange (e: Event) {
     const inputEl = e.target as HTMLInputElement
     const files = inputEl.files!
     if (!files.length) return
-    this.handlePdf(files[0])
-  }
 
-  async handlePdf (pdfFile: File) {
-    this.message = `Processing ${pdfFile.name}...`
+    const pdfFile = files[0]
     const source = URLObj.createObjectURL(pdfFile)
     const PDFJS = (window as any).pdfjsLib
-    const pdf = await PDFJS.getDocument({ url: source })
+
+    this.pdf = await PDFJS.getDocument({ url: source })
+    this.minPage = 1
+    this.maxPage = this.pdf.numPages
+  }
+
+  async scanPDF () {
+    const pdf = this.pdf
+    if (!pdf) return this.$toasted.error('Select pdf')
 
     try {
       const startTime = new Date().getTime()
@@ -140,7 +161,8 @@ export default class extends Vue {
       const context = canvas.getContext('2d')!
 
       const pageNum = pdf.numPages
-      for (let pageIndex = 1; pageIndex <= pageNum; pageIndex++) {
+      for (let pageIndex = this.minPage; pageIndex <= this.maxPage; pageIndex++) {
+        this.currentPage = pageIndex
         const page = await pdf.getPage(pageIndex)
         const scale = 1.5
         const viewport = page.getViewport(scale)
@@ -212,16 +234,13 @@ export default class extends Vue {
     padding: .3em;
     position: relative;
 
-    .toolbar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-    }
-
     .downscale {
         max-width: 95%;
     }
+}
+
+.inp-range {
+  width: 5em;
 }
 
 </style>
