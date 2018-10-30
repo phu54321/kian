@@ -46,8 +46,7 @@ import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 import { fuzzyMatch } from '@/utils/utils'
 import { listModel, listDeck, queryCardIds, autocompleteTag } from '@/api'
 import _ from 'lodash'
-import KianVue from '@/utils/vueTsHelper'
-import { Watch, Component } from 'vue-property-decorator'
+import { Watch, Component, Vue } from 'vue-property-decorator'
 import AsyncComputed from '@/utils/asyncComputedDecorator'
 import { debounce } from 'typescript-debounce-decorator'
 
@@ -91,7 +90,7 @@ function wrapString (tok: string) {
 
 @Component({
   components: { BrowserView, SpaceSeperatedInput }
-}) export default class extends KianVue {
+}) export default class extends Vue {
   query = ''
   queryString: string[] = []
   sortBy = 'id'

@@ -23,12 +23,12 @@ b-container.pt-4
 <script lang='ts'>
 import DeckTreeView from '@/components/dashboard/DeckTreeView'
 import { getDueTree, DeckDueTree } from '@/api'
-import KianVue from '@/utils/vueTsHelper'
 import Component from 'vue-class-component'
+import Vue from 'vue'
 
 @Component({
   components: { DeckTreeView }
-}) export default class extends KianVue {
+}) export default class extends Vue {
   deckDueTree: DeckDueTree = []
 
   async created () {

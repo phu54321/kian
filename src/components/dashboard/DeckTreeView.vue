@@ -37,13 +37,12 @@
 
 <script lang='ts'>
 import { collapseDeck, DeckDueTree, DeckDueTreeLeaf } from '@/api'
-import KianVue from '@/utils/vueTsHelper'
 import Component from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Prop, Vue } from 'vue-property-decorator'
 
 @Component({
   name: 'deck-tree-view'
-}) export default class extends KianVue {
+}) export default class extends Vue {
   @Prop() tree!: DeckDueTree
   @Prop(Number) indent!: number
 

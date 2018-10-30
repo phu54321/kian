@@ -31,8 +31,7 @@ import { addNote, queryCardIds } from '@/api'
 
 import { EditorCard } from '@/components/editor/types'
 import { Getter, Action } from 'vuex-class'
-import { Component, Watch } from 'vue-property-decorator'
-import KianVue from '@/utils/vueTsHelper'
+import { Component, Watch, Vue } from 'vue-property-decorator'
 import AsyncComputed from '@/utils/asyncComputedDecorator'
 
 const historyNum = 50
@@ -42,7 +41,7 @@ const historyNum = 50
     CardEditor,
     BrowserView
   }
-}) export default class extends KianVue {
+}) export default class extends Vue {
   card: EditorCard = {
     id: null,
     deck: '',

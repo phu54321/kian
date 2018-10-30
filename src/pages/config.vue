@@ -39,12 +39,12 @@ b-container.pt-4
 
 <script lang='ts'>
 import { getEmptyCards, checkMedia, checkDatabase, deleteCard, mediaDelete } from '@/api'
-import KianVue from '@/utils/vueTsHelper'
 import Component from 'vue-class-component'
 import { Modal } from 'bootstrap-vue'
+import Vue from 'vue'
 
 @Component({})
-export default class extends KianVue {
+export default class extends Vue {
   missing: string[] = []
   unused: string[] = []
 

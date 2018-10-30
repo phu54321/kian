@@ -112,3 +112,8 @@ Vue.mixin(Vue.extend({
 }))
 
 Component.registerHooks(['asyncData'])
+declare module 'vue/types/options' {
+  interface ComponentOptions<V extends Vue> {
+    asyncData?: (props: Record<string, any>) => Record<string, any>
+  }
+}

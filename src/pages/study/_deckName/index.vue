@@ -74,8 +74,7 @@ import {
   DeckDue,
   SchedType
 } from '@/api'
-import KianVue from '@/utils/vueTsHelper'
-import { Prop, Component } from 'vue-property-decorator'
+import { Prop, Component, Vue } from 'vue-property-decorator'
 import { EditorCard } from '@/components/editor/types'
 
 interface ReviewEntry {
@@ -113,8 +112,7 @@ function remainingToProgress ({ newCount, lrnCount, revCount }: DeckDue) {
 
 @Component({
   components: { HtmlIframe }
-})
-export default class extends KianVue {
+}) export default class extends Vue {
   @Prop(String) deckName!: string
 
   reviewEntry = {} as ReviewEntry
