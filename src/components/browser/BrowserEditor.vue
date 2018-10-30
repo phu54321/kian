@@ -75,7 +75,7 @@ export default {
         })
         this.$emit('updateCardIds')
       } catch (err) {
-        ErrorDialog.openErrorDialog(null, err.message)
+        this.$errorDialog(null, err.message)
       }
     }
   },

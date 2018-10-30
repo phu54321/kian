@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import ErrorDialog from '@/components/ErrorDialog'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 
@@ -62,7 +61,7 @@ const baseThis = Object.freeze({
   // Add additional props here
 })
 
-Vue.mixin(Vue.extend({
+const asyncMixin = Vue.extend({
   props: ['$asyncDataTrap'],
   // I'm tired of fixing typing errors.
   // TODO: Replace this 'any' with something meaningful
@@ -90,7 +89,7 @@ Vue.mixin(Vue.extend({
         Object.assign(vm.$data, data)
       })
     } catch (e) {
-      ErrorDialog.openErrorDialog(null, e.message)
+      this.$errorDialog('Loading error', e.message)
       next(false)
     }
   },
@@ -105,11 +104,13 @@ Vue.mixin(Vue.extend({
       Object.assign(this.$data, data)
       next()
     } catch (e) {
-      ErrorDialog.openErrorDialog(null, e.message)
+      this.$errorDialog('Loading error', e.message)
       next(false)
     }
   }
-}))
+})
+
+Vue.mixin(asyncMixin)
 
 Component.registerHooks(['asyncData'])
 declare module 'vue/types/options' {

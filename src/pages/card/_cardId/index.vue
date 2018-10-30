@@ -51,7 +51,7 @@ import AsyncComputed from '@/utils/asyncComputedDecorator'
     }).then(() => {
       this.$router.go(-1)
     }).catch(err => {
-      ErrorDialog.openErrorDialog(null, err.message)
+      this.$errorDialog('Card edit failed', err.message)
     })
   }
   async asyncData (props: { cardId: number }) {

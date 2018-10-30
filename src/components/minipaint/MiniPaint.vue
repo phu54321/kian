@@ -21,7 +21,6 @@ iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
 import mime from 'mime-types'
 import { sleep } from '@/utils/promiseUtil'
 import { uploadImageFromBase64 } from '@/utils/uploadHelper'
-import ErrorDialogVue from '@/components/ErrorDialog.vue'
 
 function eventPassThrough (e) {
   const newEvent = new e.constructor(e.type, e)
@@ -139,7 +138,7 @@ export default {
       uploadImageFromBase64(this.value, b64).then(newImageUrl => {
         this.$emit('input', newImageUrl)
       }).catch(e => {
-        ErrorDialogVue.openErrorDialog('Image editing error', 'Couldn\'t uploaded modified image')
+        this.$errorDialog('Image editing error', 'Couldn\'t uploaded modified image')
       })
     }
   },

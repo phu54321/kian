@@ -26,7 +26,6 @@ b-container.pt-4
 <script lang='ts'>
 import BrowserView from '@/components/browser/BrowserView'
 import CardEditor from '@/components/editor/CardEditor'
-import ErrorDialogVue from '@/components/ErrorDialog.vue'
 import { addNote, queryCardIds } from '@/api'
 
 import { EditorCard } from '@/components/editor/types'
@@ -119,7 +118,7 @@ const historyNum = 50
         icon: 'plus-square'
       })
     } catch (e) {
-      ErrorDialogVue.openErrorDialog('Error on adding notes', e.message)
+      this.$errorDialog('Error on adding notes', e.message)
     }
   }
 }

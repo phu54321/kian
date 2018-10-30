@@ -152,7 +152,7 @@ export default {
             this.cm.setSelections(oldSelections)
             this.cm.replaceSelection(`![](${fname})`)
           }).catch(err => {
-            ErrorDialog.openErrorDialog('Image upload failed', err.message)
+            this.$errorDialog('Image upload failed', err.message)
           })
         }
       }

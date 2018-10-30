@@ -21,17 +21,33 @@
             b-button(v-hotkey=['enter'], variant='outline-danger', @click='modalShow = false') Close
 </template>
 
-<script>
+<script lang='ts'>
 import Vue from 'vue'
 const eventHub = new Vue()
 
-export default {
-  openErrorDialog (title, msg) {
-    eventHub.$emit('errormsg', {
-      title,
-      msg,
-      retFocus: document.activeElement
-    })
+interface ErrorDialogInfo {
+  title: string
+  msg: string
+  retFocus: Element | null
+}
+
+Vue.prototype.$errorDialog = function (title: string, msg: string) {
+  const info: ErrorDialogInfo = {
+    title,
+    msg,
+    retFocus: document.activeElement
+  }
+  eventHub.$emit('errormsg', info)
+}
+
+export default Vue.extend({
+  data () {
+    return {
+      modalShow: false,
+      title: 'Hello from Modal!',
+      msg: 'asdf\nasdf\nasdf',
+      retFocus: null as (Element | null)
+    }
   },
   created () {
     eventHub.$on('errormsg', this.openErrorMessage)
@@ -40,22 +56,14 @@ export default {
     eventHub.$off('errormsg')
   },
   methods: {
-    openErrorMessage (data) {
+    openErrorMessage (data: ErrorDialogInfo) {
       this.title = data.title
       this.msg = data.msg
       this.retFocus = data.retFocus
       this.modalShow = true
     }
-  },
-  data () {
-    return {
-      modalShow: false,
-      title: 'Hello from Modal!',
-      msg: 'asdf\nasdf\nasdf',
-      retFocus: null
-    }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

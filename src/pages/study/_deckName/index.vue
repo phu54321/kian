@@ -61,7 +61,6 @@ b-container.study-main
 </template>
 
 <script lang='ts'>
-import ErrorDialog from '@/components/ErrorDialog.vue'
 import HtmlIframe from '@/components/HtmlIframe'
 import { formatTime } from '@/utils/utils'
 import ExponentialSmoother from '@/utils/exponentialSmoother'
