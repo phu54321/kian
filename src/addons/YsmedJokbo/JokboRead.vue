@@ -175,15 +175,15 @@ export default class extends Vue {
     const qImgCanvas = this.$refs.qImgCanvas as HTMLCanvasElement
     const aImgCanvas = this.$refs.aImgCanvas as HTMLCanvasElement
 
-    const q = qImgCanvas.toDataURL('image/jpeg').split('base64,')[1]
-    const a = aImgCanvas.toDataURL('image/jpeg').split('base64,')[1]
+    const q = qImgCanvas.toDataURL('image/png').split('base64,')[1]
+    const a = aImgCanvas.toDataURL('image/png').split('base64,')[1]
     const { page } = this.qaFirst
 
     this.qaPairList.splice(0, 1)
 
     const [qUrl, aUrl] = await Promise.all([
-      uploadImageFromBase64('image.jpg', q),
-      uploadImageFromBase64('image.jpg', a)
+      uploadImageFromBase64('image.png', q),
+      uploadImageFromBase64('image.png', a)
     ])
 
     await addNote({

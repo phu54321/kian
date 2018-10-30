@@ -16,12 +16,16 @@ interface ICardBrowserInfo {
   suspended: boolean
 }
 
+export type CardSortBy = 'id' | 'deck' | 'noteId' | 'model' | 'preview' | 'createdAt' | 'updatedAt' | 'due'
+export type CardSortOrder = 'asc' | 'desc'
+
 export async function queryCardIds (param: {
   query: string,
-  sortBy?: string,
-  sortOrder?: string
+  sortBy?: CardSortBy,
+  sortOrder?: CardSortOrder
 } = { query: '' }) {
   const { query, sortBy, sortOrder } = param
+  console.log(query, sortBy, sortOrder)
   return ankiCall('browser_query', {
     query: query || '',
     sortBy: sortBy || 'createdAt',

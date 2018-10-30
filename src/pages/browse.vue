@@ -44,7 +44,7 @@ import BrowserView from '@/components/browser/BrowserView'
 import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
 import { fuzzyMatch } from '@/utils/utils'
-import { listModel, listDeck, queryCardIds, autocompleteTag } from '@/api'
+import { listModel, listDeck, queryCardIds, autocompleteTag, CardSortBy, CardSortOrder } from '@/api'
 import _ from 'lodash'
 import { Watch, Component, Vue } from 'vue-property-decorator'
 import AsyncComputed from '@/utils/asyncComputedDecorator'
@@ -93,8 +93,8 @@ function wrapString (tok: string) {
 }) export default class extends Vue {
   query = ''
   queryString: string[] = []
-  sortBy = 'id'
-  sortOrder = 'desc'
+  sortBy: CardSortBy = 'createdAt'
+  sortOrder: CardSortOrder = 'desc'
   updateCardIds = 0
   loading = true
 
@@ -116,7 +116,7 @@ function wrapString (tok: string) {
     return queryCardIds({
       query: this.query,
       sortBy: this.sortBy,
-      sortOrder: this.sortBy
+      sortOrder: this.sortOrder
     }).catch(e => {
       return []
     })
