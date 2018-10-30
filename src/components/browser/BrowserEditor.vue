@@ -15,11 +15,11 @@
 
 <template lang="pug">
 card-editor(
-    v-if='card',
-    v-model='card',
-    deck-fixed,
-    model-fixed,
-    @save='onNoteEdit(false)'
+  v-if='card',
+  v-model='card',
+  deck-fixed,
+  model-fixed,
+  @save='onNoteEdit(false)'
 )
 </template>
 

@@ -15,40 +15,40 @@
 
 <template lang='pug'>
 b-form(@submit='onSave')
-    span.invisible(@click='onSave', v-hotkey="['CTRL+ENTER', 'ctrl+s']", title='Save note')
-    table.note-zone
-        tr
-            th Deck
-            td
-                list-selector(
-                    taggable,
-                    v-hotkey="['ctrl+d']",
-                    title='Change deck'
-                    v-model='internalValue.deck',
-                    :disabled='deckFixed',
-                    :optionsFunc='listDeck')
+  span.invisible(@click='onSave', v-hotkey="['CTRL+ENTER', 'ctrl+s']", title='Save note')
+  table.note-zone
+    tr
+      th Deck
+      td
+        list-selector(
+          taggable,
+          v-hotkey="['ctrl+d']",
+          title='Change deck'
+          v-model='internalValue.deck',
+          :disabled='deckFixed',
+          :optionsFunc='listDeck')
 
-        tr
-            th Model
-            td
-                list-selector(
-                    :disabled='modelFixed',
-                    v-hotkey="['ctrl+m']",
-                    title='Change model',
-                    v-model='internalValue.model',
-                    :optionsFunc='listModel')
-                quick-model-selector.mt-2(v-model='internalValue.model')
+    tr
+      th Model
+      td
+        list-selector(
+          :disabled='modelFixed',
+          v-hotkey="['ctrl+m']",
+          title='Change model',
+          v-model='internalValue.model',
+          :optionsFunc='listModel')
+        quick-model-selector.mt-2(v-model='internalValue.model')
 
-        template(v-for='(fFormat, index) in internalValue.fieldFormats', v-if='!fFormat.hidden')
-            tr
-                td.editor-row(colspan='2')
-                    .mb-2.font-weight-bold {{fFormat.name}}
-                    tui-summernote.editor-field(v-model='internalValue.fields[index]', :model-data='modelData', :card='internalValue')
+    template(v-for='(fFormat, index) in internalValue.fieldFormats', v-if='!fFormat.hidden')
+      tr
+        td.editor-row(colspan='2')
+          .mb-2.font-weight-bold {{fFormat.name}}
+          tui-summernote.editor-field(v-model='internalValue.fields[index]', :model-data='modelData', :card='internalValue')
 
-        tr
-            th Tags
-            td
-                tag-editor(v-model='internalValue.tags')
+    tr
+      th Tags
+      td
+        tag-editor(v-model='internalValue.tags')
 </template>
 
 <script>

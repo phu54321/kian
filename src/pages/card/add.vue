@@ -14,13 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-b-container.pt-4
-    h1 Add Note
+div
+  h1 Add Note
 
-    card-editor(v-model='card', @save='save')
+  card-editor(v-model='card', @save='save')
 
-    h3.mt-5 Recent 50 additions
-    browser-view.history(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
+  h3.mt-5 Recent 50 additions
+  browser-view.history(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
 </template>
 
 <script lang='ts'>

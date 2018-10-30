@@ -15,10 +15,11 @@
 
 <template lang='pug'>
 b-badge(
-    :variant='renderedItem.variant',
-    :style='{ "background-color": renderedItem.color }')
-    | {{renderedItem.title}}
-    slot
+  :variant='renderedItem.variant',
+  :style='{ "background-color": renderedItem.color }'
+)
+  | {{renderedItem.title}}
+  slot
 </template>
 
 <script>

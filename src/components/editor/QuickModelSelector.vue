@@ -15,20 +15,20 @@
 
 <template lang='pug'>
 div
-    space-seperated-input(
-        :value='modelList',
-        @input='onInput',
-        placeholder='Quick model selector...',
-        :renderer='(v) => ({ title: v, variant: "info" })',
-        :validator='modelValidator',
-        :suggestions='modelSuggestions')
+  space-seperated-input(
+    :value='modelList',
+    @input='onInput',
+    placeholder='Quick model selector...',
+    :renderer='(v) => ({ title: v, variant: "info" })',
+    :validator='modelValidator',
+    :suggestions='modelSuggestions')
 
-    span(
-        v-for='(model, index) in modelList',
-        v-hotkey='`ctrl+${index + 1}`',
-        pack-name='Quick model select',
-        :title='model',
-        @click='changeModel(model)')
+  span(
+    v-for='(model, index) in modelList',
+    v-hotkey='`ctrl+${index + 1}`',
+    pack-name='Quick model select',
+    :title='model',
+    @click='changeModel(model)')
 </template>
 
 <script>

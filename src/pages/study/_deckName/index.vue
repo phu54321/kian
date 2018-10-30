@@ -15,49 +15,49 @@
 
 <template lang="pug">
 
-b-container.study-main
-    input(type='hidden', v-if='card', :value='card.id')
-    span(v-hotkey=['ctrl+z'], @click='undoReview', title='Undo review')
-    .mt-4
-    .study-header
-        span Deck: {{deckName}}
-        span.text-secondary.ml-3 (
-            | Elapsed {{formatTime(elapsedTime)}},
-            | Remaining {{formatTime(remainingTime)}},
-            | Total {{formatTime(elapsedTime + remainingTime)}}
-            | )
-        .float-right
-            .remaining.mr-3
-                span.newCount.ml-2 {{remaining.newCount}}
-                span.lrnCount.ml-2 {{remaining.lrnCount}}
-                span.revCount.ml-2 {{remaining.revCount}}
+div.study-main
+  input(type='hidden', v-if='card', :value='card.id')
+  span(v-hotkey=['ctrl+z'], @click='undoReview', title='Undo review')
+  .mt-4
+  .study-header
+    span Deck: {{deckName}}
+    span.text-secondary.ml-3 (
+      | Elapsed {{formatTime(elapsedTime)}},
+      | Remaining {{formatTime(remainingTime)}},
+      | Total {{formatTime(elapsedTime + remainingTime)}}
+      | )
+    .float-right
+      .remaining.mr-3
+        span.newCount.ml-2 {{remaining.newCount}}
+        span.lrnCount.ml-2 {{remaining.lrnCount}}
+        span.revCount.ml-2 {{remaining.revCount}}
 
-            span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
-                icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
-            span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
-                icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
+      span(v-hotkey="['ESC']", title='Skip this card', @click="loadCard()")
+        icon.mr-2(v-b-tooltip.hover, title='Change card (C)', name="sync")
+      span(v-hotkey="['e']", title='Edit this card', @click="openEditor()")
+        icon(v-b-tooltip.hover, title='Edit current (E)', name='edit')
 
-        b-progress.mt-1(:value='currentProgress', :max='1', height='6px')
+    b-progress.mt-1(:value='currentProgress', :max='1', height='6px')
 
-    .study-body(v-if='!card')
-    .study-body.mb-2.mt-2(v-else-if='!reviewEntry.flipped')
-            html-iframe(:html="card.front")
-    .study-body.mb-2.mt-2(v-else)
-            html-iframe(:html="card.back")
+  .study-body(v-if='!card')
+  .study-body.mb-2.mt-2(v-else-if='!reviewEntry.flipped')
+      html-iframe(:html="card.front")
+  .study-body.mb-2.mt-2(v-else)
+      html-iframe(:html="card.back")
 
-    .study-footer
-        p.text-center
-            template(v-if='!reviewEntry.flipped')
-                b-button(v-hotkey="['SPACE']", @click="reviewEntry.flipped = !reviewEntry.flipped", variant="outline-primary") Show Answer
+  .study-footer
+    p.text-center
+      template(v-if='!reviewEntry.flipped')
+        b-button(v-hotkey="['SPACE']", @click="reviewEntry.flipped = !reviewEntry.flipped", variant="outline-primary") Show Answer
 
-            template(v-else)
-                b-button.mr-2(
-                    v-for='(button, index) in answerButtons',
-                    :key='button'
-                    v-hotkey='(button === "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
-                    @click='answerCard(index + 1)',
-                    size='sm',
-                    :variant='`outline-${answerButtonColor(button)}`') {{button}}
+      template(v-else)
+        b-button.mr-2(
+          v-for='(button, index) in answerButtons',
+          :key='button'
+          v-hotkey='(button === "Good") ? ["SPACE", (index + 1).toString()] : [(index + 1).toString()]',
+          @click='answerCard(index + 1)',
+          size='sm',
+          :variant='`outline-${answerButtonColor(button)}`') {{button}}
 </template>
 
 <script lang='ts'>

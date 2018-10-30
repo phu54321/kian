@@ -15,33 +15,33 @@
 
 <template lang="pug">
 b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='onShow',
-    hide-header-close, no-close-on-esc, no-close-on-backdrop, :hide-footer='!isLoginForm')
-    template(v-if='isLoginForm')
-        b-form-group(label='Email')
-            b-form-input(v-model='email', type='email')
+  hide-header-close, no-close-on-esc, no-close-on-backdrop, :hide-footer='!isLoginForm')
+  template(v-if='isLoginForm')
+    b-form-group(label='Email')
+      b-form-input(v-model='email', type='email')
 
-        b-form-group(label='Password')
-            b-form-input(v-model='password', type='password')
+    b-form-group(label='Password')
+      b-form-input(v-model='password', type='password')
 
-        template(slot='modal-footer')
-            b-btn(variant='primary', @click='startSync', v-hotkey='"enter"') Login
-            b-btn(variant='outline-secondary', @click='show = false', v-hotkey='"esc"', pack-name='Sync dialog') Cancel
+    template(slot='modal-footer')
+      b-btn(variant='primary', @click='startSync', v-hotkey='"enter"') Login
+      b-btn(variant='outline-secondary', @click='show = false', v-hotkey='"esc"', pack-name='Sync dialog') Cancel
 
-    template(v-else-if='fullSyncAsked')
-        p Should issue full sync.
-        b-btn(variant='outline-danger', @click='fullSyncOption("upload")') Upload
-        b-btn.ml-1(variant='outline-danger', @click='fullSyncOption("download")') Download
-        b-btn.ml-1(variant='outline-secondary', @click='fullSyncOption("cancel")', v-hotkey='"esc"', pack-name='Sync dialog') Cancel
+  template(v-else-if='fullSyncAsked')
+    p Should issue full sync.
+    b-btn(variant='outline-danger', @click='fullSyncOption("upload")') Upload
+    b-btn.ml-1(variant='outline-danger', @click='fullSyncOption("download")') Download
+    b-btn.ml-1(variant='outline-secondary', @click='fullSyncOption("cancel")', v-hotkey='"esc"', pack-name='Sync dialog') Cancel
 
-    template(v-else)
-        template(slot='modal-header')
-            h4 Sync to AnkiWeb
-            .float-right
-                b-badge(variant='primary') Sent: {{formatBytes(sentBytes)}}
-                b-badge.ml-2(variant='success') Recv: {{formatBytes(recvBytes)}}
-        b-progress.mt-2(:value='100', :max='100', animated)
-        ul.list-group(ref='messageContainer')
-            li.list-group-item(v-for='message in syncMessages') {{message}}
+  template(v-else)
+    template(slot='modal-header')
+      h4 Sync to AnkiWeb
+      .float-right
+        b-badge(variant='primary') Sent: {{formatBytes(sentBytes)}}
+        b-badge.ml-2(variant='success') Recv: {{formatBytes(recvBytes)}}
+    b-progress.mt-2(:value='100', :max='100', animated)
+    ul.list-group(ref='messageContainer')
+      li.list-group-item(v-for='message in syncMessages') {{message}}
 </template>
 
 <script>

@@ -15,16 +15,16 @@
 
 <template lang='pug'>
 .autocomplete-container
-    slot
-    .autocomplete-box(v-if='hasFocus && suggestions.length > 0')
-        .autocomplete-entry(
-            v-for='(item, index) in suggestions',
-            :key='item',
-            :class='{ selected: index === selected }',
-            @mousedown='applyAutocomplete(index)',
-        )
-            colored-badge(:renderer='renderer', :item='item')
-            span.origVal {{item}}
+  slot
+  .autocomplete-box(v-if='hasFocus && suggestions.length > 0')
+    .autocomplete-entry(
+      v-for='(item, index) in suggestions',
+      :key='item',
+      :class='{ selected: index === selected }',
+      @mousedown='applyAutocomplete(index)',
+    )
+      colored-badge(:renderer='renderer', :item='item')
+      span.origVal {{item}}
 </template>
 
 <script>

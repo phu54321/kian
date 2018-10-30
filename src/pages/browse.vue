@@ -14,29 +14,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-b-container.pt-4(fluid)
-    h1.mb-4 Browser
+div
+  h1.mb-4 Browser
 
-    .queryBox(@submit.prevent='query = queryString.join(" ")')
-        b-input-group
-            space-seperated-input.sep-input.form-control(
-                v-model='queryString',
-                placeholder='Put some query in...'
-                :validator='queryValidator',
-                :suggestions='querySuggestion',
-                :renderer='queryRenderer')
+  .queryBox(@submit.prevent='query = queryString.join(" ")')
+    b-input-group
+      space-seperated-input.sep-input.form-control(
+        v-model='queryString',
+        placeholder='Put some query in...'
+        :validator='queryValidator',
+        :suggestions='querySuggestion',
+        :renderer='queryRenderer')
 
-            b-input-group-append
-                b-btn(variant='primary', type='submit')
-                    icon(name='search')
-                b-btn(variant='info', v-b-modal.browserHelp, title='Help', v-b-tooltip.hover)
-                    icon(name='question')
-                b-btn(variant='secondary', title='Refresh browser', v-b-tooltip.hover, @click='updateCardIds++')
-                    icon(name='sync')
-        b-modal(id='browserHelp', title='Browser help')
-            | TODO: Add help here
+      b-input-group-append
+        b-btn(variant='primary', type='submit')
+          icon(name='search')
+        b-btn(variant='info', v-b-modal.browserHelp, title='Help', v-b-tooltip.hover)
+          icon(name='question')
+        b-btn(variant='secondary', title='Refresh browser', v-b-tooltip.hover, @click='updateCardIds++')
+          icon(name='sync')
+    b-modal(id='browserHelp', title='Browser help')
+      | TODO: Add help here
 
-    browser-view.mt-2(:loading='loading', :cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
+  browser-view.mt-2(:loading='loading', :cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
 </template>
 
 <script lang='ts'>
@@ -89,7 +89,8 @@ function wrapString (tok: string) {
 }
 
 @Component({
-  components: { BrowserView, SpaceSeperatedInput }
+  components: { BrowserView, SpaceSeperatedInput },
+  layout: 'fluid'
 }) export default class extends Vue {
   query = ''
   queryString: string[] = []

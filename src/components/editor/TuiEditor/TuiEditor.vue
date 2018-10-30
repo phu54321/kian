@@ -16,15 +16,15 @@
 <template lang="pug">
 
 .tui-editor-container(:class='{focused: focused}')
-    // hotkey trap
-    hotkey-pack(:depth='2', :pack='codeMirrorKeymap', pack-name='CodeMirror shortcuts')
-    hotkey-pack(:depth='2', :pack='textStylingKeymap', pack-name='Text styling shortcuts')
-    hotkey-pack(:depth='2', :pack='generalKeymap', pack-name='Text styling shortcuts')
+  // hotkey trap
+  hotkey-pack(:depth='2', :pack='codeMirrorKeymap', pack-name='CodeMirror shortcuts')
+  hotkey-pack(:depth='2', :pack='textStylingKeymap', pack-name='Text styling shortcuts')
+  hotkey-pack(:depth='2', :pack='generalKeymap', pack-name='Text styling shortcuts')
 
-    .codemirror-editor(ref='mdEdit')
-    .preview(ref='preview')
-        .preview-body
-            .userContent.markdown-body(v-html='strippedHtml')
+  .codemirror-editor(ref='mdEdit')
+  .preview(ref='preview')
+    .preview-body
+      .userContent.markdown-body(v-html='strippedHtml')
 </template>
 
 <script>

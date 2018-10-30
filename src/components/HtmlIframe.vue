@@ -15,12 +15,12 @@
 
 <template lang="pug">
 .iframe-container
-    iframe(
-        :style='{display: (currentIframe == 1) ? "block" : "none"}',
-        ref='iframe1', :srcdoc='html1', @load='onLoad(1)')
-    iframe(
-        :style='{display: (currentIframe == 2) ? "block" : "none"}',
-        ref='iframe2', :srcdoc='html2', @load='onLoad(2)')
+  iframe(
+    :style='{display: (currentIframe == 1) ? "block" : "none"}',
+    ref='iframe1', :srcdoc='html1', @load='onLoad(1)')
+  iframe(
+    :style='{display: (currentIframe == 2) ? "block" : "none"}',
+    ref='iframe2', :srcdoc='html2', @load='onLoad(2)')
 </template>
 
 <script>

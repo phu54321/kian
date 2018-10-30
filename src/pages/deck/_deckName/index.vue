@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-b-container.pt-4
+div
   h2 Deck {{deckName}}
 
   table.mb-3

@@ -15,12 +15,12 @@
 
 <template lang='pug'>
 space-seperated-input(
-    :focus='focus',
-    :value='value',
-    @input='v => $emit("input", v)'
-    placeholder='Add new tags...',
-    :suggestions='fetchTags'
-    :renderer='tagRenderer')
+  :focus='focus',
+  :value='value',
+  @input='v => $emit("input", v)'
+  placeholder='Add new tags...',
+  :suggestions='fetchTags'
+  :renderer='tagRenderer')
 </template>
 
 <script>

@@ -14,12 +14,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-    span.kimg
-        span.modifier
-            span(v-if='hasCtrl', :title='isMac ? "Command" : "Ctrl"') ⌘
-            span(v-if='hasAlt', :title='isMac ? "Option" : "Alt"') ⌥
-            span(v-if='hasShift', :title='"Shift"') ⇧
-        .mainKey(:title='renderMainKey === this.rendered[1] ? undefined : this.rendered[1]') {{renderMainKey}}
+span.kimg
+  span.modifier
+    span(v-if='hasCtrl', :title='isMac ? "Command" : "Ctrl"') ⌘
+    span(v-if='hasAlt', :title='isMac ? "Option" : "Alt"') ⌥
+    span(v-if='hasShift', :title='"Shift"') ⇧
+  .mainKey(:title='renderMainKey === this.rendered[1] ? undefined : this.rendered[1]') {{renderMainKey}}
 </template>
 
 <script>

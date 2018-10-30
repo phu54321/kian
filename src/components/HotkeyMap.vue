@@ -15,19 +15,19 @@
 
 <template lang="pug">
 div
-    b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer, no-close-on-esc, :return-focus='lastActiveElement')
-        span(slot='modal-title') Kian Cheatsheet
-        template(v-for='(pack, index) in items')
-            hr(v-if='index > 0')
-            h5(v-if='pack[0]') {{pack[0]}}
-            ul.d-none.d-lg-block
-                li(v-for='item in pack[1]')
-                    key-image.kimg(:keys='item[0]')
-                    .key-desc {{item[1]}}
-            ul.d-lg-none
-                li(v-for='item in pack[1]')
-                    key-image.kimg(:keys='item[0]')
-                    .key-desc {{item[1]}}
+  b-modal(id='cheatsheet', v-model='show', size='lg', hide-footer, no-close-on-esc, :return-focus='lastActiveElement')
+    span(slot='modal-title') Kian Cheatsheet
+    template(v-for='(pack, index) in items')
+      hr(v-if='index > 0')
+      h5(v-if='pack[0]') {{pack[0]}}
+      ul.d-none.d-lg-block
+        li(v-for='item in pack[1]')
+          key-image.kimg(:keys='item[0]')
+          .key-desc {{item[1]}}
+      ul.d-lg-none
+        li(v-for='item in pack[1]')
+          key-image.kimg(:keys='item[0]')
+          .key-desc {{item[1]}}
 </template>
 
 <script>

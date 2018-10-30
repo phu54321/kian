@@ -14,27 +14,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-b-container.pt-4
-    .float-right
-        b-btn-group
-            b-btn(variant='outline-primary', size='sm', @click='removeEmptyCards') Remove empty cards
-            b-btn(variant='outline-primary', size='sm', @click='checkDatabase') Check database
-            b-btn(variant='outline-primary', size='sm', @click='checkMedia') Check media
+div
+  .float-right
+    b-btn-group
+      b-btn(variant='outline-primary', size='sm', @click='removeEmptyCards') Remove empty cards
+      b-btn(variant='outline-primary', size='sm', @click='checkDatabase') Check database
+      b-btn(variant='outline-primary', size='sm', @click='checkMedia') Check media
 
-        b-modal(ref='checkMediaModal', lazy, title='Check media')
-            h5 Missing items ({{missing.length}} items)
-            ul.file-list
-                li(v-for='item in missing') {{item}}
+    b-modal(ref='checkMediaModal', lazy, title='Check media')
+      h5 Missing items ({{missing.length}} items)
+      ul.file-list
+        li(v-for='item in missing') {{item}}
 
-            h5 Unused items ({{unused.length}} items)
-            ul.file-list
-                li(v-for='item in unused') {{item}}
+      h5 Unused items ({{unused.length}} items)
+      ul.file-list
+        li(v-for='item in unused') {{item}}
 
-            template(slot='modal-footer')
-                b-btn(variant='primary', size='sm', @click='removeUnusedMedia') Remove unused media
-                b-btn(variant='secondary', size='sm', @click='$refs.checkMediaModal.hide()') Cancel
+      template(slot='modal-footer')
+        b-btn(variant='primary', size='sm', @click='removeUnusedMedia') Remove unused media
+        b-btn(variant='secondary', size='sm', @click='$refs.checkMediaModal.hide()') Cancel
 
-    h2 Config
+  h2 Config
 </template>
 
 <script lang='ts'>

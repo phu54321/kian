@@ -14,11 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-    b-modal(v-model='modalShow', lazy, size='lg', :title='title', :return-focus='retFocus')
-        template(v-if='msg')
-            pre.mt-3 {{msg}}
-        div(slot='modal-footer')
-            b-button(v-hotkey=['enter'], variant='outline-danger', @click='modalShow = false') Close
+  b-modal(v-model='modalShow', lazy, size='lg', :title='title', :return-focus='retFocus')
+    template(v-if='msg')
+      pre.mt-3 {{msg}}
+    div(slot='modal-footer')
+      b-button(v-hotkey=['enter'], variant='outline-danger', @click='modalShow = false') Close
 </template>
 
 <script lang='ts'>

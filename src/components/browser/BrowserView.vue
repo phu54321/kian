@@ -16,104 +16,104 @@
 <template lang="pug">
 
 div.browser-view
-    table.table.table-sm(ref='mainTable')
-        thead(slot='before-content')
-            tr
-                th(v-for='field in fields', :key='field.key')
-                    div.browser-head(@click='issueSortBy(field.key)')
-                        | {{ field.label }}
-                        .float-right(v-if='enableSort && field.sortable')
-                            span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "asc" }') ↑
-                            span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "desc" }') ↓
+  table.table.table-sm(ref='mainTable')
+    thead(slot='before-content')
+      tr
+        th(v-for='field in fields', :key='field.key')
+          div.browser-head(@click='issueSortBy(field.key)')
+            | {{ field.label }}
+            .float-right(v-if='enableSort && field.sortable')
+              span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "asc" }') ↑
+              span.browser-sort(:class='{ enabled: sortBy === field.key && sortOrder === "desc" }') ↓
 
-        tbody
-            template(v-for='command in displayCommands')
-                template(v-if='command.type === "card"')
-                    tr.item-row(:class='computeRowClass(command)',
-                        :key='command.index'
-                        @click.exact.prevent='selectCardIndexOnly(command.index)'
-                        @click.shift.exact.prevent='onSelectSequential(command.index)'
-                        @click.ctrl.exact.prevent='onSelectAdd(command.index)'
-                        @click.meta.exact.prevent='onSelectAdd(command.index)'
-                    )
-                        td(v-for='field in fields', :class='field.class')
-                            span(v-html='getFormatter(field.formatter)(command.card[field.key])')
+    tbody
+      template(v-for='command in displayCommands')
+        template(v-if='command.type === "card"')
+          tr.item-row(:class='computeRowClass(command)',
+            :key='command.index'
+            @click.exact.prevent='selectCardIndexOnly(command.index)'
+            @click.shift.exact.prevent='onSelectSequential(command.index)'
+            @click.ctrl.exact.prevent='onSelectAdd(command.index)'
+            @click.meta.exact.prevent='onSelectAdd(command.index)'
+          )
+            td(v-for='field in fields', :class='field.class')
+              span(v-html='getFormatter(field.formatter)(command.card[field.key])')
 
-                template(v-else-if='command.type === "space"')
-                    tr.spacer-row(:key='command.index')
-                        td(:colspan='fields.length', :style='{height: 30 * command.length + "px"}')
+        template(v-else-if='command.type === "space"')
+          tr.spacer-row(:key='command.index')
+            td(:colspan='fields.length', :style='{height: 30 * command.length + "px"}')
 
-                template(v-else-if='command.type === "noCards"')
-                    tr
-                        td.no-card(:colspan='fields.length')
-                            h4
-                                i.fas.fa-globe-asia
-                                | &nbsp;Oops, no cards :(
-                            p Try different query instead.
+        template(v-else-if='command.type === "noCards"')
+          tr
+            td.no-card(:colspan='fields.length')
+              h4
+                i.fas.fa-globe-asia
+                | &nbsp;Oops, no cards :(
+              p Try different query instead.
 
-                template(v-else-if='command.type === "loading"')
-                    tr
-                        td.no-card(:colspan='fields.length')
-                            h4
-                                i.fas.fa-hourglass-half
-                                | &nbsp;Loading...
+        template(v-else-if='command.type === "loading"')
+          tr
+            td.no-card(:colspan='fields.length')
+              h4
+                i.fas.fa-hourglass-half
+                | &nbsp;Loading...
 
-    .editor-spacer(
-        v-if='showEditor',
-        :style='{height: browserEditorHeight + "px"}'
+  .editor-spacer(
+    v-if='showEditor',
+    :style='{height: browserEditorHeight + "px"}'
+  )
+  .editor-row(
+    v-if='showEditor',
+    :style='{height: browserEditorHeight + "px"}',
+    :class='{fullscreen: editorFullscreen}'
+  )
+    .drag-handle(
+      @mousedown='onDragStart',
+      @dblclick='toggleEditorFullscreen',
+      @click='editorFullscreen && toggleEditorFullscreen()',
+      title='Double click to toggle fullscreen'
     )
-    .editor-row(
-        v-if='showEditor',
-        :style='{height: browserEditorHeight + "px"}',
-        :class='{fullscreen: editorFullscreen}'
-    )
-        .drag-handle(
-            @mousedown='onDragStart',
-            @dblclick='toggleEditorFullscreen',
-            @click='editorFullscreen && toggleEditorFullscreen()',
-            title='Double click to toggle fullscreen'
-        )
-        .editor-div
-            browser-editor(
-                :cardId='selectedCardId',
-                @updateCardIds='updateCardIds',
-                @updateView='updateView++',
-            )
+    .editor-div
+      browser-editor(
+        :cardId='selectedCardId',
+        @updateCardIds='updateCardIds',
+        @updateView='updateView++',
+      )
 
-    .browser-tools
-        .tools-container(:class='{enabled: selectedCardList.length > 0}')
-            b-button-group.mr-2
-                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', @click='showBrowserTool("browserChangeDeck")')
-                    icon.mr-1(name='sync')
-                    | D
-                b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change model', @click='showBrowserTool("browserChangeModel")')
-                    icon.mr-1(name='sync')
-                    | M
-                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Add tags', @click='showBrowserTool("browserAddTags")')
-                    icon.mr-1(name='plus')
-                    | T
-                b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', @click='showBrowserTool("browserRemoveTags")')
-                    icon.mr-1(name='minus')
-                    | T
+  .browser-tools
+    .tools-container(:class='{enabled: selectedCardList.length > 0}')
+      b-button-group.mr-2
+        b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change deck', @click='showBrowserTool("browserChangeDeck")')
+          icon.mr-1(name='sync')
+          | D
+        b-button(size='sm', variant='info', v-b-tooltip.hover, title='Change model', @click='showBrowserTool("browserChangeModel")')
+          icon.mr-1(name='sync')
+          | M
+        b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Add tags', @click='showBrowserTool("browserAddTags")')
+          icon.mr-1(name='plus')
+          | T
+        b-button(size='sm', variant='secondary', v-b-tooltip.hover, title='Remove tags', @click='showBrowserTool("browserRemoveTags")')
+          icon.mr-1(name='minus')
+          | T
 
-            b-button-group.mr-2
-                b-button(size='sm', variant='danger', v-hotkey=['ctrl+k'], v-b-tooltip.hover, title='Mark', @click='markCards')
-                    icon(name='star')
-                b-button(size='sm', variant='warning', v-hotkey=['ctrl+j'], v-b-tooltip.hover, title='Suspend', @click='suspendCards')
-                    icon.text-white(name='pause')
+      b-button-group.mr-2
+        b-button(size='sm', variant='danger', v-hotkey=['ctrl+k'], v-b-tooltip.hover, title='Mark', @click='markCards')
+          icon(name='star')
+        b-button(size='sm', variant='warning', v-hotkey=['ctrl+j'], v-b-tooltip.hover, title='Suspend', @click='suspendCards')
+          icon.text-white(name='pause')
 
-            b-button-group.mr-2
-                b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', @click='showBrowserTool("browserResetSched")')
-                    icon(name='calendar-alt')
-                b-button(size='sm', variant='primary', v-b-tooltip.hover, title='Change card due', @click='showBrowserTool("browserChangeDue")')
-                    icon.mr-1(name='sync')
-                    icon(name='calendar-alt')
+      b-button-group.mr-2
+        b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Reset scheduling', @click='showBrowserTool("browserResetSched")')
+          icon(name='calendar-alt')
+        b-button(size='sm', variant='primary', v-b-tooltip.hover, title='Change card due', @click='showBrowserTool("browserChangeDue")')
+          icon.mr-1(name='sync')
+          icon(name='calendar-alt')
 
-            b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', @click='showBrowserTool("browserRemoveCards")')
-                icon(name='regular/trash-alt')
-        .editor-spacer(v-if='showEditor', :style='{height: (browserEditorHeight - 50) + "px"}')
+      b-button(size='sm', variant='danger', v-b-tooltip.hover, title='Remove card', @click='showBrowserTool("browserRemoveCards")')
+        icon(name='regular/trash-alt')
+    .editor-spacer(v-if='showEditor', :style='{height: (browserEditorHeight - 50) + "px"}')
 
-    browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
+  browser-tool-modals(:selected='selectedCardList', @updateView='updateView++', @updateCardIds='updateCardIds')
 </template>
 
 <script>

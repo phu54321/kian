@@ -14,11 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <template lang="pug">
-b-container.pt-4
-    b-form(@submit='save')
-        h2 Edit card
+div
+  b-form(@submit='save')
+    h2 Edit card
 
-        card-editor(v-model='card', @save='save')
+    card-editor(v-model='card', @save='save')
 </template>
 
 <script lang='ts'>

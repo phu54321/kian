@@ -15,12 +15,12 @@
 
 <template lang='pug'>
 autocomplete-box(:suggestions='autocompleteList', @commit='onAutocomplete')
-    .dropdown-input
-        input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
-            :placeholder='placeholder',
-            @keydown='onKeyDown', @input='onInput', @keyup='onInput',
-            @focus='onFocus(true)', @blur='onFocus(false)')
-        .dropdown-indicator(:class='{enabled: focused}') ▼
+  .dropdown-input
+    input.form-control(ref='inputBox', :value='internalValue', :disabled='disabled',
+      :placeholder='placeholder',
+      @keydown='onKeyDown', @input='onInput', @keyup='onInput',
+      @focus='onFocus(true)', @blur='onFocus(false)')
+    .dropdown-indicator(:class='{enabled: focused}') ▼
 </template>
 
 <script>
