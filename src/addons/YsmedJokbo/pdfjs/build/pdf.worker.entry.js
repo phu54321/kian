@@ -1,4 +1,4 @@
-/* Copyright 2017 Mozilla Foundation
+/* Copyright 2016 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
 
-var pdfjs = require('./build/pdf.js');
-var PdfjsWorker = require('worker-loader!./build/pdf.worker.js');
-
-if (typeof window !== 'undefined' && 'Worker' in window) {
-  pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
-}
-
-module.exports = pdfjs;
+(typeof window !== 'undefined' ? window : {}).pdfjsWorker =
+  require('./pdf.worker.js');
