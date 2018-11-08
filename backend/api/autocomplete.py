@@ -14,10 +14,10 @@ from utils.fast_fuzzymatch import (
 from utils.ngram_extractor import ngramExtract
 
 import time
+import re
 
-wordSet = None
+wordSet = set()
 wsdict = {}
-
 
 def updateWordset(col):
     """ Initialize wordSet from preexisting collections """
@@ -26,10 +26,11 @@ def updateWordset(col):
 
     startTime = time.time()
 
-    for (fld,) in col.db.execute("select flds from notes"):
+    for (fld,) in col.db.execute("select flds from notes order by id desc"):
         try:
             wordSet.update(wsdict[fld])
         except KeyError:
+            fld = re.sub(r'< *script.*?>(.|\n)*?< */ *script *>', '', fld)
             words = ngramExtract(fld)
             words = set(words)
             wsdict[fld] = words

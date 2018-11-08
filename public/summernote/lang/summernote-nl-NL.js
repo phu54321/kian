@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'nl-NL': {
       font: {
@@ -151,5 +151,5 @@
         select: 'Selecteer Speciale Tekens'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

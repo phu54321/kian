@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'tr-TR': {
       font: {
@@ -151,5 +151,5 @@
         select: 'Özel Karakterleri seçin'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

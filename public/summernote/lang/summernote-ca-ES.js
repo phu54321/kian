@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'ca-ES': {
       font: {
@@ -151,5 +151,5 @@
         select: 'Selecciona caràcters especials'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

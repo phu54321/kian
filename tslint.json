@@ -1,22 +1,6 @@
 {
-    "extends": "tslint:latest",
-    "rules": {
-        "no-unnecessary-type-assertion": true,
-        "no-bitwise": false,
-        "space-before-function-paren": true,
-        "quotemark": [
-            true,
-            "single",
-            "avoid-template",
-            "avoid-escape"
-        ],
-        "curly": [true, "ignore-same-line"],
-        "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
-        "one-variable-per-declaration": false,
-        "no-implicit-dependencies": false,
-        "no-submodule-imports": false,
-        "ordered-imports": false,
-        "object-literal-sort-keys": false,
-        "triple-equals": true
-    }
+  "extends": "tslint-config-standard",
+  "rules": {
+    "no-floating-promises": false
+  }
 }

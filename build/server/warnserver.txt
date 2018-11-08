@@ -1,0 +1,48 @@
+missing module named 'multiprocessing.forking' - imported by c:\python36\lib\site-packages\PyInstaller\loader\rthooks\pyi_rth_multiprocessing.py
+missing module named resource - imported by posix, C:\gitclones\kian\backend\server.py
+missing module named posix - imported by os, C:\gitclones\kian\backend\server.py
+missing module named _posixsubprocess - imported by subprocess, multiprocessing.util, C:\gitclones\kian\backend\server.py
+missing module named 'six.moves.urllib' - imported by 'six.moves.urllib', C:\gitclones\kian\backend\server.py
+missing module named kombu - imported by socketio.kombu_manager, C:\gitclones\kian\backend\server.py
+missing module named eventlet - imported by socketio.kombu_manager, C:\gitclones\kian\backend\server.py
+missing module named gevent - imported by socketio.kombu_manager, C:\gitclones\kian\backend\server.py
+missing module named redis - imported by socketio.redis_manager, C:\gitclones\kian\backend\server.py
+missing module named 'eventlet.patcher' - imported by socketio.redis_manager, C:\gitclones\kian\backend\server.py
+missing module named 'gevent.monkey' - imported by socketio.redis_manager, C:\gitclones\kian\backend\server.py
+missing module named 'eventlet.green' - imported by socketio.zmq_manager, C:\gitclones\kian\backend\server.py
+missing module named aioredis - imported by socketio.asyncio_redis_manager, C:\gitclones\kian\backend\server.py
+missing module named fcntl - imported by asyncio.unix_events, C:\gitclones\kian\backend\server.py
+missing module named cchardet - imported by aiohttp.client_reqrep, C:\gitclones\kian\backend\server.py
+missing module named aiodns - imported by aiohttp.resolver, C:\gitclones\kian\backend\server.py
+missing module named gunicorn - imported by aiohttp.worker, C:\gitclones\kian\backend\server.py
+missing module named 'gunicorn.workers' - imported by aiohttp.worker, C:\gitclones\kian\backend\server.py
+missing module named uvloop - imported by aiohttp.worker, C:\gitclones\kian\backend\server.py
+missing module named tokio - imported by aiohttp.worker, C:\gitclones\kian\backend\server.py
+missing module named _scproxy - imported by urllib.request, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.SimpleQueue - imported by multiprocessing, concurrent.futures.process, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.AuthenticationError - imported by multiprocessing, multiprocessing.connection, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.BufferTooShort - imported by multiprocessing, multiprocessing.connection, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.TimeoutError - imported by multiprocessing, multiprocessing.pool, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.get_context - imported by multiprocessing, multiprocessing.pool, multiprocessing.managers, multiprocessing.sharedctypes, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.get_start_method - imported by multiprocessing, multiprocessing.spawn, C:\gitclones\kian\backend\server.py
+missing module named multiprocessing.set_start_method - imported by multiprocessing, multiprocessing.spawn, C:\gitclones\kian\backend\server.py
+missing module named asyncio.DefaultEventLoopPolicy - imported by asyncio, asyncio.events, C:\gitclones\kian\backend\server.py
+missing module named UserDict - imported by attr._compat, C:\gitclones\kian\backend\server.py
+missing module named brotli - imported by aiohttp.http_parser, C:\gitclones\kian\backend\server.py
+missing module named StringIO - imported by six, C:\gitclones\kian\backend\server.py
+missing module named grp - imported by shutil, tarfile, pathlib, C:\gitclones\kian\backend\server.py
+missing module named org - imported by pickle, C:\gitclones\kian\backend\server.py
+missing module named readline - imported by cmd, code, pdb, C:\gitclones\kian\backend\server.py
+excluded module named _frozen_importlib - imported by importlib, importlib.abc, C:\gitclones\kian\backend\server.py
+missing module named _frozen_importlib_external - imported by importlib._bootstrap, importlib, importlib.abc, C:\gitclones\kian\backend\server.py
+missing module named _winreg - imported by platform, C:\gitclones\kian\backend\server.py
+missing module named java - imported by platform, C:\gitclones\kian\backend\server.py
+missing module named 'java.lang' - imported by platform, C:\gitclones\kian\backend\server.py, xml.sax._exceptions
+missing module named vms_lib - imported by platform, C:\gitclones\kian\backend\server.py
+missing module named termios - imported by tty, getpass, C:\gitclones\kian\backend\server.py
+missing module named _dummy_threading - imported by dummy_threading, C:\gitclones\kian\backend\server.py
+missing module named pwd - imported by posixpath, shutil, tarfile, http.server, webbrowser, netrc, pathlib, getpass, C:\gitclones\kian\backend\server.py
+missing module named 'org.python' - imported by copy, C:\gitclones\kian\backend\server.py, xml.sax
+runtime module named six.moves - imported by engineio.server, engineio.asyncio_server, C:\gitclones\kian\backend\server.py
+missing module named tornado - imported by engineio.async_tornado, C:\gitclones\kian\backend\server.py
+missing module named 'tornado.websocket' - imported by engineio.async_tornado, C:\gitclones\kian\backend\server.py

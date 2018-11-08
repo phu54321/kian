@@ -4,3 +4,9 @@ public/
 *.css
 pdfjs/
 *.manifest
+dist/frontned/**/*.js
+*.min.js
+*.ts
+*.vue
+
+-.eslintrc.js

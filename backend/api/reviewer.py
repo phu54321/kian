@@ -20,7 +20,7 @@ def reviewerReset(msg):
 
 
 @registerApi
-def reviewerNextCard(msg):
+def reviewerNextEntry(msg):
     """Fetch next scheduled card"""
 
     global prevDeckName
@@ -54,9 +54,9 @@ def reviewerNextCard(msg):
             'back': card.a(),
             'ansButtonCount': answerButtonCount,
             'remaining': {
-                'new': remaining[0],
-                'lrn': remaining[1],
-                'rev': remaining[2],
+                'newCount': remaining[0],
+                'lrnCount': remaining[1],
+                'revCount': remaining[2],
             }
         })
 

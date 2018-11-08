@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'fi-FI': {
       font: {
@@ -149,5 +149,5 @@
         select: 'Valitse erikoismerkit'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

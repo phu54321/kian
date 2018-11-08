@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'de-DE': {
       font: {
@@ -152,5 +152,5 @@
         select: 'Zeichen auswählen'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

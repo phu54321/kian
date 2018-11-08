@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'ko-KR': {
       font: {
@@ -152,5 +152,5 @@
         select: '특수문자를 선택하세요'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

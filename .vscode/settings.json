@@ -1,14 +1,22 @@
 {
     "cSpell.words": [
+        "affero",
         "anki",
         "codemirror",
+        "hyun",
         "kian",
         "nprogress",
+        "pleuralize",
         "sched",
+        "subapi",
         "summernote",
+        "unpleuralize",
         "vuetify"
     ],
     "licenser.license": "AGPLv3",
     "licenser.author": "Hyun Woo Park",
-    "licenser.projectName": "Kian"
-}
+    "licenser.projectName": "Kian",
+    "standard.enable": false,
+    "eslint.enable": false,
+    "tslint.typeCheck": true,
+  }

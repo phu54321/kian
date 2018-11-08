@@ -103,8 +103,6 @@ def browserGetBatch(msg):
                 'createdAt': card.id // 1000,
                 'updatedAt': card.mod,
                 'due': due,
-                'type': card.type,
-                'queue': card.queue,
                 'schedType': schedType,
                 'suspended': card.queue == -1,
             })

@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'uz-UZ': {
       font: {
@@ -108,5 +108,5 @@
         redo: 'Қайтариш'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

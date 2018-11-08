@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'el-GR': {
       font: {
@@ -151,5 +151,5 @@
         select: 'Επιλέξτε ειδικούς χαρακτήρες'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'ro-RO': {
       font: {
@@ -151,5 +151,5 @@
         select: 'Alege caractere speciale'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

@@ -1,6 +1,6 @@
 // Starsoft Mongolia LLC Temuujin Ariunbold
 
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'mn-MN': {
       font: {
@@ -153,5 +153,5 @@
         select: 'Тусгай тэмдэгт сонгох'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

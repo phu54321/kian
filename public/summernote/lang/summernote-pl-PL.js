@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'pl-PL': {
       font: {
@@ -151,5 +151,5 @@
         select: 'Wybierz Znak specjalny'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)

@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
   $.extend($.summernote.lang, {
     'zh-CN': {
       font: {
@@ -151,5 +151,5 @@
         select: '选取特殊字符'
       }
     }
-  });
-})(jQuery);
+  })
+})(jQuery)
