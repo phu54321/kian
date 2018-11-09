@@ -28,5 +28,13 @@ module.exports = {
       app.use(express.static('backend/testdata/collection.media', { maxAge: '30d' }))
       addonStaticServe(app)
     }
+  },
+  pluginOptions: {
+    karma: {
+      karmaConfig: {
+        colors: true,
+        browsers: ['ChromeHeadless']
+      }
+    }
   }
 }

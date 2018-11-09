@@ -4,15 +4,16 @@
   "private": true,
   "scripts": {
     "serve": "npm-run-all --parallel serve:*",
-    "serve:frontend": "vue-cli-service serve",
-    "serve:backend": "nodemon --watch backend -e py,pyx backend/server.py",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "serve:backend": "nodemon --watch backend -e py,pyx backend/server.py",
+    "serve:frontend": "vue-cli-service serve",
+    "test:watch": "vue-cli-service test:unit --watch",
+    "test": "vue-cli-service test:unit"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && npm run test"
     }
   },
   "lint-staged": {
@@ -86,12 +87,14 @@
     "chai": "^4.1.2",
     "husky": "^1.1.2",
     "lint-staged": "^7.3.0",
+    "mocha": "^5.0.5",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "typescript": "^3.0.0",
     "vue-auto-routing": "^0.3.0",
     "vue-cli-plugin-auto-routing": "^0.2.1",
     "vue-cli-plugin-pug": "^1.0.7",
+    "vue-cli-plugin-unit-karma": "^0.5.0",
     "vue-template-compiler": "^2.5.17"
   },
   "nodemonConfig": {
@@ -101,7 +104,9 @@
     "watch": [
       "backend/"
     ],
-    "ignore": ["backend/testdata"],
+    "ignore": [
+      "backend/testdata"
+    ],
     "delay": "500"
   }
 }

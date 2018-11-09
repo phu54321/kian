@@ -15,6 +15,26 @@
 
 <template lang="pug">
 div
-    h1.mb-4 Testbed
-    p Not in use now...
+  h1.mb-4 Testbed
+  p Not in use now...
+
+  paint(v-model='url')
 </template>
+
+<script lang='ts'>
+import PaintVue from '@/components/Paint.vue'
+import Vue from 'vue'
+
+const testImageUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAH0AAABkCAIAAAAkO6ghAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAExSURBVHhe7dyhrQJREEDRhRLwKEJCA5Txf3c0AuUQFJ4WFvMkjsAFco7Z0TfjdvIW8zxPvN1yfHkv3Ru6N3Rv6N7QvaF7Q/eG7g3dG7o3dG/o3tC9oXtD94buDd0bujd0b+jeeOqe4Lbejum3rK7nMb2MfW/o3tC9oXtD94buDd0bujd0b+je0L2he0P3hu4N3Ru6N3Rv6N7QveH/6gP7w25MT7j8n8b0iH1v6N7QvaF7Q/eG7g3dG7o3dG/o3tC9oXtD94buDd0bujd0b+je0L2he0P3hu6Nr3x3f3P8G9MHc8fxiXRv6N7QvaF7Q/eG7g3dG7o3dG/o3tC9oXtD94buDd0bujd0b+je0L2he0P3hu4N3Ru6N77yXuwH2PeG7g3dG7o3dG/o3tC9oXthmu5vXxm1ZjqlmgAAAABJRU5ErkJggg=='
+
+export default Vue.extend({
+  components: {
+    Paint: PaintVue
+  },
+  data () {
+    return {
+      url: testImageUrl
+    }
+  }
+})
+</script>

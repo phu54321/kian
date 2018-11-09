@@ -19,4 +19,5 @@
     "standard.enable": false,
     "eslint.enable": false,
     "tslint.typeCheck": true,
+    "editor.tabSize": 2,
   }
