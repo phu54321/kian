@@ -2,5 +2,10 @@
   "extends": "tslint-config-standard",
   "rules": {
     "no-floating-promises": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**"
+    ]
   }
 }
