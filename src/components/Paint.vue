@@ -1,6 +1,9 @@
 <template lang="pug">
-div
-  canvas(ref='mainCanvas', width.once=100, height.once=100)
+.paint-main
+  .toolbar
+    | Zoom
+  .canvas-container
+    canvas(ref='mainCanvas', width.once=100, height.once=100)
 
 </template>
 
@@ -31,3 +34,37 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+
+.paint-main {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+
+  width: 100%;
+  height: 400px;
+
+  .toolbar {
+    padding: .2em;
+  }
+
+  .canvas-container {
+    background: #eee;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+
+    canvas {
+      display: block;
+      margin: auto;
+    }
+  }
+
+}
+
+</style>
+
