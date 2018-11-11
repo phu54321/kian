@@ -31,7 +31,7 @@ div
 </template>
 
 <script>
-import { getHotkeyMap } from '../utils/hotkey/VueSimpleHotkey'
+import { getHotkeyMap } from 'vue-simple-hotkey'
 import KeyImage from './common/KeyImage'
 import _ from 'lodash'
 
