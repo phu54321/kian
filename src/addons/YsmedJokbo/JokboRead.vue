@@ -23,7 +23,7 @@ div
     taggable,
     v-model='deck',
     :optionsFunc='listDeck')
-  
+
   b-row
     b-col
       input.mt-2(type="file", @change="onFileChange")
@@ -39,10 +39,11 @@ div
     span.ml-2(v-if='qaPairList.length') ({{qaPairList.length}} question found)
 
   div(v-show='qaPairList.length')
-    .toolbar
+    .toolbar(v-if='qaPairList.length')
       b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
       b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
-      | Current page: {{currentPage}}
+      b-btn.mr-1(size='sm', variant='info', @click='splitQAPair' v-if='qSeperator.length === aSeperator.length && qSeperator.length > 0') Split
+      | Current page: {{qaFirst.page}}
     b-progress.mt-1(height='5px', :value='currentPage - minPage', :max='maxPage - minPage')
     b-row.imgRow
       b-col
@@ -125,6 +126,13 @@ export default class extends Vue {
     const scriptEl = document.createElement('script')
     scriptEl.setAttribute('src', '/pdfjs/build/pdf.js')
     ;(this.$refs.scriptHolder as HTMLDivElement).appendChild(scriptEl)
+  }
+
+  beforeDestory () {
+    if (this.pdf) {
+      this.pdf.destroy()
+      this.pdf = null
+    }
   }
 
   async asyncData () {
@@ -249,6 +257,10 @@ export default class extends Vue {
     const source = URLObj.createObjectURL(pdfFile)
     const PDFJS = (window as any).pdfjsLib
 
+    if (this.pdf) {
+      this.pdf.destroy()
+      this.pdf = null
+    }
     this.pdf = await PDFJS.getDocument({ url: source })
     this.minPage = 1
     this.maxPage = this.pdf.numPages
@@ -258,33 +270,29 @@ export default class extends Vue {
     const pdf = this.pdf
     if (!pdf) return this.$toasted.error('Select pdf')
 
-    try {
-      const startTime = new Date().getTime()
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')!
+    const startTime = new Date().getTime()
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')!
 
-      const pageNum = pdf.numPages
-      for (let pageIndex = this.minPage; pageIndex <= this.maxPage; pageIndex++) {
-        this.currentPage = pageIndex
-        const page = await pdf.getPage(pageIndex)
-        const scale = 1.5
-        const viewport = page.getViewport(scale)
+    const pageNum = pdf.numPages
+    for (let pageIndex = this.minPage; pageIndex <= this.maxPage; pageIndex++) {
+      this.currentPage = pageIndex
+      const page = await pdf.getPage(pageIndex)
+      const scale = 1.5
+      const viewport = page.getViewport(scale)
 
-        canvas.height = viewport.height
-        canvas.width = viewport.width
+      canvas.height = viewport.height
+      canvas.width = viewport.width
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        })
-        this.message = `Processing page ${pageIndex}/${pageNum}`
-        this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex)
-      }
-      this.message = 'Waiting for page extraction...'
-      this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `
-    } finally {
-      pdf.destroy()
+      await page.render({
+        canvasContext: context,
+        viewport: viewport
+      })
+      this.message = `Processing page ${pageIndex}/${pageNum}`
+      this.handleImage(context.getImageData(0, 0, canvas.width, canvas.height), pageIndex)
     }
+    this.message = 'Waiting for page extraction...'
+    this.message = `Done! (elapsed ${((new Date().getTime() - startTime) / 1000).toFixed(2)}s) `
   }
 
   handleImage (imageData: ImageData, page: number) {
