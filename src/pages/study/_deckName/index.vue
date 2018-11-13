@@ -76,14 +76,16 @@ import {
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { EditorCard } from '@/components/editor/types'
 
+interface ReviewEntryCard {
+  id: number
+  noteId: number
+  front: string
+  back: string
+}
+
 interface ReviewEntry {
   remaining: DeckDue
-  card: {
-    id: number
-    noteId: number
-    front: string
-    back: string
-  }
+  card: ReviewEntryCard
   ansButtonCount: number
   flipped: boolean
 }
@@ -114,7 +116,17 @@ function remainingToProgress ({ newCount, lrnCount, revCount }: DeckDue) {
 }) export default class extends Vue {
   @Prop(String) deckName!: string
 
-  reviewEntry = {} as ReviewEntry
+  reviewEntry: ReviewEntry = {
+    remaining: getDeckDueZero(),
+    card: {
+      id: 0,
+      noteId: 0,
+      front: '',
+      back: ''
+    },
+    ansButtonCount: 0,
+    flipped: false
+  }
   initialRemaining: DeckDue = getDeckDueZero()
   startTime = (new Date()).getTime() / 1000
   currentTime = this.startTime
