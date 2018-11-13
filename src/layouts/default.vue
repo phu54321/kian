@@ -1,9 +1,7 @@
 <template>
-  <b-container class='pt-4 app-body'>
+<div class='app-body'>
+  <b-container class='pt-4'>
     <router-view/>
   </b-container>
+</div>
 </template>
-
-<style>
-
-</style>
