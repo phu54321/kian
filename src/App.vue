@@ -61,8 +61,7 @@ div.app-main
                             icon(name='cog')
                             span.d-sm-none.ml-2 Configuration
 
-    .app-body
-        router-view
+    router-view
 
     footer.app-footer
         cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
