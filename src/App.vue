@@ -15,56 +15,56 @@
 
 <template lang='pug'>
 div.app-main
-    error-dialog
-    sync-dialog
-    hotkey-map
-    mini-paint-modal
+  error-dialog
+  sync-dialog
+  hotkey-map
+  mini-paint-modal
 
-    header.app-header
-        b-navbar(toggleable='sm', variant='dark', type='dark')
-            b-container
-                b-navbar-brand(href='#', to='/')
-                    img.mr-1.logo(src='logo.svg')
-                    | kian
+  header.app-header
+    b-navbar(toggleable='sm', variant='dark', type='dark')
+      b-container
+        b-navbar-brand(href='#', to='/')
+          img.mr-1.logo(src='logo.svg')
+          | kian
 
-                b-navbar-toggle(target="nav_collapse")
+        b-navbar-toggle(target="nav_collapse")
 
-                b-collapse(is-nav, id="nav_collapse")
-                    b-navbar-nav.ml-auto
-                        // Plugin-customizable toolbar
-                        b-nav-item(v-for='item in toolbarList', :key='item.title', :to='item.to', v-b-tooltip.hover, :title='item.title')
-                            icon(:name='item.icon')
-                            span.d-sm-none.ml-2 {{item.title}}
-                        b-nav-text.ml-3(v-if='toolbarList')
+        b-collapse(is-nav, id="nav_collapse")
+          b-navbar-nav.ml-auto
+            // Plugin-customizable toolbar
+            b-nav-item(v-for='item in toolbarList', :key='item.title', :to='item.to', v-b-tooltip.hover, :title='item.title')
+              icon(:name='item.icon')
+              span.d-sm-none.ml-2 {{item.title}}
+            b-nav-text.ml-3(v-if='toolbarList')
 
-                        // Default Kian toolbar
-                        b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet (Ctrl/Cmd)')
-                            icon(name='regular/keyboard', scale='1.3')
-                            span.d-sm-none.ml-2 Show cheatsheet
-                        b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
-                            icon(name='sync')
-                            span.d-sm-none.ml-2 Sync now
-                        b-nav-text.ml-3
+            // Default Kian toolbar
+            b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet (Ctrl/Cmd)')
+              icon(name='regular/keyboard', scale='1.3')
+              span.d-sm-none.ml-2 Show cheatsheet
+            b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
+              icon(name='sync')
+              span.d-sm-none.ml-2 Sync now
+            b-nav-text.ml-3
 
-                        b-nav-item(v-hotkey='"A"', pack-name='Menu', to='/card/add', v-b-tooltip.hover, title='Add card')
-                            icon(name='plus')
-                            span.d-sm-none.ml-2 Add cards
-                        b-nav-item(v-hotkey='"B"', pack-name='Menu', to='/browse', v-b-tooltip.hover, title='Browse')
-                            icon(name='search')
-                            span.d-sm-none.ml-2 Browse cards
-                        b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
-                            icon(name='chart-bar')
-                            span.d-sm-none.ml-2 Statistics
-                        b-nav-text.ml-3
+            b-nav-item(v-hotkey='"A"', pack-name='Menu', to='/card/add', v-b-tooltip.hover, title='Add card')
+              icon(name='plus')
+              span.d-sm-none.ml-2 Add cards
+            b-nav-item(v-hotkey='"B"', pack-name='Menu', to='/browse', v-b-tooltip.hover, title='Browse')
+              icon(name='search')
+              span.d-sm-none.ml-2 Browse cards
+            b-nav-item(to='/stats', v-b-tooltip.hover, title='Statistics')
+              icon(name='chart-bar')
+              span.d-sm-none.ml-2 Statistics
+            b-nav-text.ml-3
 
-                        b-nav-item(to='/config', v-b-tooltip.hover, title='Config')
-                            icon(name='cog')
-                            span.d-sm-none.ml-2 Configuration
+            b-nav-item(to='/config', v-b-tooltip.hover, title='Config')
+              icon(name='cog')
+              span.d-sm-none.ml-2 Configuration
 
-    router-view
+  router-view
 
-    footer.app-footer
-        cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
+  footer.app-footer
+    cookie-law(theme="base", message='Kian uses localStorage to store various preferences and serve you the best experience on our website.')
 </template>
 
 <script>
