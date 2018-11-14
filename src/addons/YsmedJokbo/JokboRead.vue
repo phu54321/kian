@@ -40,9 +40,10 @@ div
 
   div(v-show='qaPairList.length')
     .toolbar(v-if='qaPairList.length')
-      b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
-      b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
-      b-btn.mr-1(size='sm', variant='info', @click='splitQAPair' v-if='qSeperator.length === aSeperator.length && qSeperator.length > 0') Split
+      template(v-if='qSeperator.length === 0 && aSeperator.length === 0')
+        b-btn.mr-1(size='sm', variant='primary', @click='acceptQAPair', v-hotkey='"left"') Accept
+        b-btn.mr-1(size='sm', variant='danger', @click='dismissQAPair', v-hotkey='"right"') Dismiss
+      b-btn.mr-1(size='sm', variant='info', @click='splitQAPair' v-hotkey='"space"' v-if='qSeperator.length === aSeperator.length && qSeperator.length > 0') Split
       | Current page: {{qaFirst.page}}
     b-progress.mt-1(height='5px', :value='currentPage - minPage', :max='maxPage - minPage')
     b-row.imgRow
@@ -155,8 +156,10 @@ export default class extends Vue {
   }
 
   @Watch('qaFirst')
-  onQAFirstUpdate (v?: QAPair) {
+  onQAFirstUpdate (v?: QAPair, oldv?: QAPair) {
     if (!v) return
+    else if(v === oldv) return
+
     const { qImgData, aImgData } = v
 
     const qImgCanvas = this.$refs.qImgCanvas as HTMLCanvasElement
