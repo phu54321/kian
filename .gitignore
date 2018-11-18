@@ -133,3 +133,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+# Server output
+server.out
