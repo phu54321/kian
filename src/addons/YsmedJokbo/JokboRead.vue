@@ -158,7 +158,7 @@ export default class extends Vue {
   @Watch('qaFirst')
   onQAFirstUpdate (v?: QAPair, oldv?: QAPair) {
     if (!v) return
-    else if(v === oldv) return
+    else if (v === oldv) return
 
     const { qImgData, aImgData } = v
 
