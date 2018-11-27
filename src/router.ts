@@ -68,7 +68,6 @@ export async function createRouter () {
     path: '*',
     redirect: '/404'
   })
-
   // Because `propEnableRouteEntry` don't yet support dynamic imports, we
   // should resolve all dynamic imports before moving on. This is not an ideal
   // solution. An ideal one is to make component not care about prop's type at
