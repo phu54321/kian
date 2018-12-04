@@ -11,10 +11,10 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 import Vue from 'vue'
-import Router, { RouteConfig, Route } from 'vue-router'
+import Router, { Route, RouteConfig } from 'vue-router'
 
 import routes from 'vue-auto-routing'
 import { Component } from 'vue-router/types/router'
@@ -85,7 +85,7 @@ export async function createRouter () {
   }))
 
   // vue-cli-auto-routing returns nested router. Respect that.
-  const router = new Router({
+  return new Router({
     routes: [
       {
         path: '/',
@@ -94,6 +94,4 @@ export async function createRouter () {
       }
     ]
   })
-
-  return router
 }

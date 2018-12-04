@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 span.kimg
@@ -19,7 +19,7 @@ span.kimg
     span(v-if='hasCtrl', :title='isMac ? "Command" : "Ctrl"') ⌘
     span(v-if='hasAlt', :title='isMac ? "Option" : "Alt"') ⌥
     span(v-if='hasShift', :title='"Shift"') ⇧
-  .mainKey(:title='renderMainKey === this.rendered[1] ? undefined : this.rendered[1]') {{renderMainKey}}
+  .mainKey(:title='renderMainKey === rendered.key ? undefined : rendered.key') {{renderMainKey}}
 </template>
 
 <script>
@@ -50,11 +50,11 @@ export default {
   props: ['keys'],
   computed: {
     isMac () { return isMac },
-    hasCtrl () { return this.rendered[0].hasCtrl },
-    hasAlt () { return this.rendered[0].hasAlt },
-    hasShift () { return this.rendered[0].hasShift },
+    hasCtrl () { return this.rendered.modifier.ctrl },
+    hasAlt () { return this.rendered.modifier.alt },
+    hasShift () { return this.rendered.modifier.shift },
     renderMainKey () {
-      const mainKey = this.rendered[1]
+      const mainKey = this.rendered.key
       return (specialCharTable[mainKey.toUpperCase()] || firstLetterUpper(mainKey))
     },
     rendered () {
@@ -71,12 +71,12 @@ export default {
       const hasCtrl = hasSpecialKey('CTRL')
       const hasAlt = hasSpecialKey('ALT')
       const hasShift = hasSpecialKey('SHIFT')
-      if (splitKey.length >= 2) return [{}, this.keys] // Not renderable
+      if (splitKey.length >= 2) return { modifier: {}, key: this.keys } // Not renderable
       const mainKey = splitKey.length === 1 ? splitKey[0] : ''
-      return [
-        { hasCtrl, hasAlt, hasShift },
-        firstLetterUpper(mainKey)
-      ]
+      return {
+        modifier: { ctrl: hasCtrl, alt: hasAlt, shift: hasShift },
+        key: firstLetterUpper(mainKey)
+      }
     }
   }
 }

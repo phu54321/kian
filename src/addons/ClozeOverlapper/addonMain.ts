@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 import { addHook } from '@/utils/hookBase'
 
@@ -59,7 +59,7 @@ export default {
             let hasMatchingField = false
 
             fields[i] = mainField.replace(
-              /\{\{c(\d+)::(.+?)(::(.+?))?\}\}/g,
+              /{{c(\d+)::(.+?)(::(.+?))?}}/g,
               (...matches) => {
                 const clozeIdx = matches[1] | 0
                 if (clozeIdx === thisFieldIndex) {
@@ -74,7 +74,7 @@ export default {
         }
 
         fields[0] = fields[0].replace(
-          /\{\{c(\d+)::(.+?)\}\}/g,
+          /{{c(\d+)::(.+?)}}/g,
           (...matches) => `[[oc${matches[1]}::${matches[2]}]]`
         )
 

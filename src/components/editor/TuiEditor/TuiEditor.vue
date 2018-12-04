@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 
@@ -52,7 +52,6 @@ import './addons/table'
 import wautocompleter from './addons/wautocomplete'
 import { KEY_MAP } from '@/utils/keycode'
 
-import ErrorDialog from '@/components/ErrorDialog'
 import MiniPaintModal from '@/components/minipaint/MiniPaintModal'
 import encodeMarkdown, { replaceImageByIndex } from './renderer/markdownRenderer'
 import decodeMarkdown from './decompiler/markdownDecompiler'
@@ -259,7 +258,7 @@ export default {
         border-left: 3px solid #81d4fa;
         transition:
             .2s linear background-color,
-            .2s linear border,
+            .2s linear border;
     }
 
     &.focused {

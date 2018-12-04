@@ -1,5 +1,5 @@
 import ankiCall from '../ankiCall'
-import { SchedType } from './card'
+import { SchedType } from '@/api'
 
 interface ICardBrowserInfo {
   id: number
@@ -23,7 +23,7 @@ export async function queryCardIds (param: {
   query: string,
   sortBy?: CardSortBy,
   sortOrder?: CardSortOrder
-} = { query: '' }) {
+} = { query: '' }): Promise<number[]> {
   const { query, sortBy, sortOrder } = param
   return ankiCall('browser_query', {
     query: query || '',

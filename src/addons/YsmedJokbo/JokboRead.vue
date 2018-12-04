@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 div
@@ -57,7 +57,7 @@ div
           canvas.downscale.overlay(ref='aSeperatorCanvas', @click='toggleSeperatorA')
           canvas.downscale(ref='aImgCanvas')
 
-  browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds++')
+  browser-view(:cardIds='addedCardIds', @updateCardIds='updateCardIds += 1')
 </template>
 
 <script lang='ts'>
@@ -257,7 +257,7 @@ export default class extends Vue {
     if (!files.length) return
 
     const pdfFile = files[0]
-    const source = URLObj.createObjectURL(pdfFile)
+    const source = (URLObj as any).createObjectURL(pdfFile)
     const PDFJS = (window as any).pdfjsLib
 
     if (this.pdf) {
@@ -274,7 +274,7 @@ export default class extends Vue {
     if (!pdf) return this.$toasted.error('Select pdf')
 
     const startTime = new Date().getTime()
-    const canvas = document.createElement('canvas')
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
     const context = canvas.getContext('2d')!
 
     const pageNum = pdf.numPages

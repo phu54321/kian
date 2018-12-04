@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='onShow',
@@ -45,7 +45,6 @@ b-modal(v-model='show', lazy, id='syncModal', title='Sync to AnkiWeb', @shown='o
 </template>
 
 <script>
-import ErrorDialog from './ErrorDialog'
 import { issueSync } from '@/api'
 
 export default {

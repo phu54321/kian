@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang='pug'>
 iframe(ref='iframe', src='/minipaint/index.html', width='100%', height='100%')
@@ -137,7 +137,7 @@ export default {
       const b64 = tempCanvas.toDataURL(mime.lookup(this.value)).split('base64,')[1]
       uploadImageFromBase64(this.value, b64).then(newImageUrl => {
         this.$emit('input', newImageUrl)
-      }).catch(e => {
+      }).catch(() => {
         this.$errorDialog('Image editing error', 'Couldn\'t uploaded modified image')
       })
     }

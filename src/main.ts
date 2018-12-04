@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 import Vue from 'vue'
 
@@ -40,5 +40,6 @@ createRouter().then(router => {
     render: h => h(App)
   }).$mount('#app')
 }).catch(e => {
+  console.log(e) // eslint-disable-line
   alert('App loading failed!')
 })

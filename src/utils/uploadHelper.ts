@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 import { mediaUpload } from '@/api'
 
@@ -105,7 +105,7 @@ export function getRandomFilename (filename: string) {
   }
 }
 
-export async function uploadImageFromBase64 (filename: string, datab64: string) {
+export function uploadImageFromBase64 (filename: string, datab64: string) {
   filename = getRandomFilename(filename)
   return mediaUpload(filename, datab64)
 }

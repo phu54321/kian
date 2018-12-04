@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 function fragFromHtml (html) {
   const tmpDiv = document.createElement('div')
@@ -31,9 +31,7 @@ export function copySelectedHtml () {
 
   const span = document.createElement('span')
   span.appendChild(content)
-  const oldHtml = span.innerHTML
-
-  return oldHtml
+  return span.innerHTML
 }
 
 export function pasteHtmlToSelection (newHtml) {

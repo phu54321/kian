@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 div
@@ -31,12 +31,12 @@ div
           icon(name='search')
         b-btn(variant='info', v-b-modal.browserHelp, title='Help', v-b-tooltip.hover)
           icon(name='question')
-        b-btn(variant='secondary', title='Refresh browser', v-b-tooltip.hover, @click='updateCardIds++')
+        b-btn(variant='secondary', title='Refresh browser', v-b-tooltip.hover, @click='updateCardIds += 1')
           icon(name='sync')
     b-modal(id='browserHelp', title='Browser help')
       | TODO: Add help here
 
-  browser-view.mt-2(:loading='loading', :cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds++')
+  browser-view.mt-2(:loading='loading', :cardIds='cardIds', enableSort, :sortBy.sync='sortBy', :sortOrder.sync='sortOrder', @updateCardIds='updateCardIds += 1')
 </template>
 
 <script lang='ts'>
@@ -45,7 +45,6 @@ import SpaceSeperatedInput from '@/components/common/SpaceSeperatedInput'
 
 import { fuzzyMatch } from '@/utils/utils'
 import { listModel, listDeck, queryCardIds, autocompleteTag, CardSortBy, CardSortOrder } from '@/api'
-import _ from 'lodash'
 import { Watch, Component, Vue } from 'vue-property-decorator'
 import AsyncComputed from '@/utils/asyncComputedDecorator'
 import { debounce } from 'typescript-debounce-decorator'
@@ -100,7 +99,8 @@ function wrapString (tok: string) {
   loading = true
 
   created () {
-    this.queryString = parseInitialQuery(this.$route.query.q || '')
+    const q = this.$route.query['q'] as string
+    this.queryString = parseInitialQuery(q || '')
   }
 
   @Watch('queryString')
@@ -118,7 +118,7 @@ function wrapString (tok: string) {
       query: this.query,
       sortBy: this.sortBy,
       sortOrder: this.sortOrder
-    }).catch(e => {
+    }).catch(() => {
       return []
     })
   }

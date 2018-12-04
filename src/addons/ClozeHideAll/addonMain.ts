@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 import { addHook } from '@/utils//hookBase'
 import { tokHtml } from '@/utils/tokHtml'
@@ -21,8 +21,8 @@ const modelName = 'Cloze (Hide all)'
 function stripClozeHelper (html: string) {
   return (html
     .replace(/<\/?(cz_hide|cloze2|cloze2_w)>/g, '')
-    .replace(/<(cloze2_w|cloze2) class=("|')cz-\d+("|')>/g, '')
-    .replace(/<script( class=("|')cz-\\d+("|'))?>_czha\(\d+\)<\/script>/g, '')
+    .replace(/<(cloze2_w|cloze2) class=["']cz-\d+["']>/g, '')
+    .replace(/<script( class=["']cz-\\d+["'])?>_czha\(\d+\)<\/script>/g, '')
   )
 }
 
@@ -42,7 +42,7 @@ function wrapClozeTag (s: string, clozeId: number) {
         if (
           chunks[i - 2][0] === 'tstart' &&
                     chunks[i - 1][0] === 'data' &&
-                    chunks[i - 0][0] === 'tend'
+                    chunks[i][0] === 'tend'
         ) {
           newChunks.push([
             'data',
@@ -70,15 +70,15 @@ function wrapClozeTag (s: string, clozeId: number) {
 
 function makeClozeCompatiable (html: string) {
   html = html.replace(
-    /\{\{c(\d+)::([^!]([^:}]|:[^:}])*?)\}\}/g,
+    /{{c(\d+)::([^!]([^:}]|:[^:}])*?)}}/g,
     (...match) => `{{c${match[1]}::${wrapClozeTag(match[2], match[1] | 0)}}}`
   )
   html = html.replace(
-    /\{\{c(\d+)::([^!]([^:}]|:[^:}])*?)::(([^:}]|:[^:}])*?)\}\}/g,
+    /{{c(\d+)::([^!]([^:}]|:[^:}])*?)::(([^:}]|:[^:}])*?)}}/g,
     (...match) => `{{c${match[1]}::${wrapClozeTag(match[2], match[1] | 0)}::${match[4]}}}`
   )
   html = html.replace(
-    /\{\{c(\d+)::!/g,
+    /{{c(\d+)::!/g,
     (...match) => `{{c${match[1]}::<cz_hide>!</cz_hide>`
   )
   return html

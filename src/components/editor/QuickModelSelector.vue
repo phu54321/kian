@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang='pug'>
 div
@@ -24,7 +24,7 @@ div
     :suggestions='modelSuggestions')
 
   span(
-    v-for='(model, index) in modelList',
+    v-for='model in modelList',
     v-hotkey='`ctrl+${index + 1}`',
     pack-name='Quick model select',
     :title='model',

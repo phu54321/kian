@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 div
@@ -22,12 +22,10 @@ div
 </template>
 
 <script lang='ts'>
-import ErrorDialog from '@/components/ErrorDialog'
 import CardEditor from '@/components/editor/CardEditor'
 import { getCard, updateCard } from '@/api'
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { EditorCard } from '@/components/editor/types'
-import AsyncComputed from '@/utils/asyncComputedDecorator'
 
 @Component({
   components: { CardEditor }

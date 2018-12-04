@@ -11,15 +11,15 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 .iframe-container
   iframe(
-    :style='{display: (currentIframe == 1) ? "block" : "none"}',
+    :style='{display: (currentIframe === 1) ? "block" : "none"}',
     ref='iframe1', :srcdoc='html1', @load='onLoad(1)')
   iframe(
-    :style='{display: (currentIframe == 2) ? "block" : "none"}',
+    :style='{display: (currentIframe === 2) ? "block" : "none"}',
     ref='iframe2', :srcdoc='html2', @load='onLoad(2)')
 </template>
 
@@ -49,10 +49,11 @@ window.addEventListener('keydown', eventPassThrough);
 
 </scr` + `ipt>
 <head>
+<title>Iframe</title>
+</head>
 <body>
 {{content}}
 </body>
-</head>
 </html>
 `
 

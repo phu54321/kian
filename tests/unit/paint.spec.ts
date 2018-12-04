@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 import { expect } from 'chai'
 import { shallowMount } from '@vue/test-utils'
@@ -21,8 +21,7 @@ import testImageUrl from './testdata/paint.test.png'
 
 function getCanvasPixel (ctx: CanvasRenderingContext2D, x: number, y: number) {
   const p = ctx.getImageData(x, y, 1, 1).data
-  const hex = '#' + ('000000' + rgbToHex(p[0], p[1], p[2])).slice(-6)
-  return hex
+  return '#' + ('000000' + rgbToHex(p[0], p[1], p[2])).slice(-6)
 }
 
 function rgbToHex (r: number, g: number, b: number) {

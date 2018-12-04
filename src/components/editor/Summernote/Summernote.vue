@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 div
@@ -41,7 +41,7 @@ const summernoteHotkeys = [
   ]],
 
   ['Summernote - html level editing', [
-    ['Ctrl+Shift+D', 'Create table from selection'],
+    ['Ctrl+Shift+D', 'Make table from selection'],
     ['CTRL+0', 'Convert to normal paragraph'],
     ['CTRL+1~6', 'Convert to headings (h1~h6)'],
     ['CTRL+]', 'Indent text'],

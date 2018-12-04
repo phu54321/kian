@@ -11,7 +11,7 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see "http://www.gnu.org/licenses/".
 
 <template lang="pug">
 
@@ -70,11 +70,9 @@ import {
   reviewerAnswerCard,
   reviewerUndo,
   getDeckDueZero,
-  DeckDue,
-  SchedType
+  DeckDue
 } from '@/api'
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { EditorCard } from '@/components/editor/types'
 
 interface ReviewEntryCard {
   id: number
