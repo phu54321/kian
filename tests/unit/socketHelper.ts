@@ -15,7 +15,6 @@
 
 import Vue from 'vue'
 import { KianMainSocket } from '@/api/mainSocket'
-import { setMainSocket } from '@/api/ankiCall'
 
 interface MockMessage {
   event: string
@@ -89,5 +88,3 @@ export class SocketIOMock implements KianMainSocket {
     })
   }
 }
-
-setMainSocket(new SocketIOMock())

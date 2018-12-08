@@ -13,12 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see "http://www.gnu.org/licenses/".
 
-export interface KianSocketMessage {
-  syncKey: string
-  [key: string]: any
-}
-
 export interface KianMainSocket {
   emit (event: string, args: object): void
-  on (event: string, callback: (response: KianSocketMessage) => any): void
+  on (event: string, callback: (response: any) => any): void
 }

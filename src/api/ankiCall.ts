@@ -15,53 +15,58 @@
 
 import { KianMainSocket } from '@/api/mainSocket'
 
-let socket: KianMainSocket
+let mainSocket: KianMainSocket
 
 /**
  * Set main socket. You can mock ankiCall by registering mock socket with this.
  * @param newSocket Socket to use.
  */
 export function setMainSocket (newSocket: KianMainSocket) {
-  socket = newSocket
-  socket.on('msg', (response: IResponse) => {
-    const { syncKey } = response
-    const callback = callbackTable.get(syncKey)
-    if (!callback) return
-
-    const { resolve, reject } = callback
-    callbackTable.delete(syncKey)
-
-    if (response.error) return reject(new Error(response.error.toString()))
-    return resolve(response.result)
-  })
+  mainSocket = newSocket
+  mainSocket.on('msg', Messagehandler)
 }
 
 const syncKeyHeader = Math.random().toString()
 let lastSyncKey = 0
 
-function createSyncKey () {
+/**
+ * Create unique message key
+ */
+function createMessageKey () {
   return `syncKey_${syncKeyHeader}_${lastSyncKey++}`
 }
 
-const callbackTable = new Map()
+const callbackPromiseTable = new Map()
+
+export default function ankiCall (apiType: string, data?: any) {
+  if (!mainSocket) {
+    throw new Error('Socket not yet initialized')
+  }
+
+  return new Promise<any>((resolve, reject) => {
+    const messageKey = createMessageKey()
+    callbackPromiseTable.set(messageKey, { resolve, reject })
+    mainSocket.emit('msg', {
+      apiType,
+      syncKey: messageKey,
+      ...data
+    })
+  })
+}
 
 interface IResponse {
   syncKey: string
   [key: string]: any
 }
 
-export default function ankiCall (apiType: string, data?: any) {
-  if (!socket) {
-    throw new Error('Socket not yet initialized')
-  }
+function Messagehandler (response: IResponse) {
+  const { syncKey } = response
+  const callback = callbackPromiseTable.get(syncKey)
+  if (!callback) return
 
-  return new Promise<any>((resolve, reject) => {
-    const syncKey = createSyncKey()
-    callbackTable.set(syncKey, { resolve, reject })
-    socket.emit('msg', {
-      apiType,
-      syncKey,
-      ...data
-    })
-  })
+  const { resolve, reject } = callback
+  callbackPromiseTable.delete(syncKey)
+
+  if (response.error) return reject(new Error(response.error.toString()))
+  return resolve(response.result)
 }
