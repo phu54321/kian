@@ -13,58 +13,32 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see "http://www.gnu.org/licenses/".
 
-import { SocketIOMock } from '../socketHelper'
+import { createMockSocketPair } from './socketMock'
 import { expect } from 'chai'
 
 describe('Mock socket test', () => {
-  it('should resolve emit well', async () => {
-    const sock = new SocketIOMock()
-    sock.emit('test', { msg: 'test message' })
-    const msg = sock.popSendMessage()
-    expect(msg).to.deep.eq({
-      event: 'test',
-      args: {
-        msg: 'test message'
-      }
-    })
-  })
-
-  it('should resolve emit in queue order', async () => {
-    const sock = new SocketIOMock()
-    sock.emit('test', { msg: 'test message' })
-    sock.emit('test2', { msg: 'test message2' })
-
-    expect(sock.popSendMessage()).to.deep.eq({
-      event: 'test',
-      args: {
-        msg: 'test message'
-      }
-    })
-
-    expect(sock.popSendMessage()).to.deep.eq({
-      event: 'test2',
-      args: {
-        msg: 'test message2'
-      }
-    })
-    expect(sock.popSendMessage()).to.eq(undefined)
-  })
-
-  it('should accept event handlers', (done) => {
-    const sock = new SocketIOMock()
-    let firstHandlerCalled = false
-    sock.on('msg', (args) => {
-      expect(args).to.equal('test message')
-      // tslint:disable-next-line:no-unused-expression
-      expect(firstHandlerCalled).to.be.false
-      firstHandlerCalled = true
-    })
-    sock.on('msg', (args) => {
-      expect(args).to.equal('test message')
-      // tslint:disable-next-line:no-unused-expression
-      expect(firstHandlerCalled).to.be.true
+  it('should resolve emit well', (done) => {
+    const { server, client } = createMockSocketPair()
+    server.on('test', (args) => {
+      expect(args.msg).to.eq('test message')
       done()
     })
-    sock.addRecv('msg', 'test message')
+    client.emit('test', { msg: 'test message' })
+  })
+
+  it('should resolve emit in queue order', (done) => {
+    const { server, client } = createMockSocketPair()
+    let state = 0
+    server.on('test', (args) => {
+      if (state === 0) {
+        expect(args.msg).to.eq('test message 1')
+      } else if (state === 1) {
+        expect(args.msg).to.eq('test message 2')
+        done()
+      }
+      state++
+    })
+    client.emit('test', { msg: 'test message 1' })
+    client.emit('test', { msg: 'test message 2' })
   })
 })

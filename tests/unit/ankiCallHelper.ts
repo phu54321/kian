@@ -13,23 +13,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see "http://www.gnu.org/licenses/".
 
-import ankiCall from '@/api/ankiCall'
-import { assert } from 'chai'
-import { mockAnkiCall } from '../ankiCallHelper'
+import { setMainSocket } from '@/api/ankiCall'
+import { createMockSocketPair } from './socket/socketMock'
 
-describe('ankiCall', async () => {
-  it('should work', async () => {
-    mockAnkiCall(((apiType, msg) => {
-      assert.equal(apiType, 'test api')
-      assert.equal(msg.testdata, 'test message')
-      return {
-        data: msg.testdata,
-        test: 'ok'
-      }
-    }))
-    const ret = await ankiCall('test api', {
-      testdata: 'test message'
-    })
-    assert.deepEqual(ret, { data: 'test message', test: 'ok' })
+export function mockAnkiCall (mock: (apiType: string, msg: any) => any) {
+  const { client, server } = createMockSocketPair()
+  setMainSocket(client)
+
+  server.on('msg', (args) => {
+    const { syncKey, apiType } = args
+    try {
+      const result = mock(apiType, args)
+      server.emit('msg', {
+        syncKey,
+        result
+      })
+    } catch (error) {
+      server.emit('msg', {
+        syncKey,
+        error
+      })
+    }
   })
-})
+}

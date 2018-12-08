@@ -21,14 +21,19 @@ interface MockMessage {
   args?: any
 }
 
-type CallbackProcessor = (msg: any) => void
+type RecvHandler = (msg: any) => void
+type EmitCallback = (event: string, args: any) => void
 
-export class SocketIOMock implements KianMainSocket {
-  sendMsgQueue: MockMessage[] = []
-  recvMsgQueue: MockMessage[] = []
-  isRecvProcessingQueued = false
+class SocketIOMock implements KianMainSocket {
+  private readonly emitCallback: EmitCallback
 
-  callbackMap = new Map<string, CallbackProcessor[]>()
+  constructor (emitCallback: EmitCallback) {
+    this.emitCallback = emitCallback
+  }
+
+  private recvMsgQueue: MockMessage[] = []
+  private isRecvProcessingQueued = false
+  private recvCallbackMap = new Map<string, RecvHandler[]>()
 
   // Socket.io emulation
   /**
@@ -36,8 +41,8 @@ export class SocketIOMock implements KianMainSocket {
    * @param event
    * @param args
    */
-  emit (event: string, args?: any) {
-    this.sendMsgQueue.push({ event, args })
+  emit (event: string, args: any) {
+    this.emitCallback(event, args)
   }
 
   /**
@@ -46,19 +51,11 @@ export class SocketIOMock implements KianMainSocket {
    * @param callback
    */
   on (event: string, callback: (msg: any) => void) {
-    if (!this.callbackMap.has(event)) {
-      this.callbackMap.set(event, [callback])
+    if (!this.recvCallbackMap.has(event)) {
+      this.recvCallbackMap.set(event, [callback])
     } else {
-      this.callbackMap.get(event)!!.push(callback)
+      this.recvCallbackMap.get(event)!!.push(callback)
     }
-  }
-
-  /**
-   * Pop message sent by client with `emit`
-   */
-  popSendMessage (): MockMessage | undefined {
-    if (this.sendMsgQueue.length === 0) return
-    return this.sendMsgQueue.splice(0, 1)[0]
   }
 
   /**
@@ -81,10 +78,24 @@ export class SocketIOMock implements KianMainSocket {
     }
 
     const { event, args } = msg
-    const callbacks = this.callbackMap.get(event)
+    const callbacks = this.recvCallbackMap.get(event)
     if (!callbacks) return
     callbacks.forEach((cb) => {
       cb(args)
     })
   }
+}
+
+export function createMockSocketPair () {
+  let client = new SocketIOMock(onClientEmit)
+  let server = new SocketIOMock(onServerEmit)
+
+  function onClientEmit (event: string, args: any) {
+    server.addRecv(event, args)
+  }
+
+  function onServerEmit (event: string, args: any) {
+    client.addRecv(event, args)
+  }
+  return { client, server }
 }
