@@ -30,8 +30,12 @@ import './helpers/addons/install'
 import App from './App.vue'
 import { createRouter } from './router'
 import store from './store'
+import io from 'socket.io-client'
+import { setMainSocket } from '@/api/ankiCall'
 
 Vue.config.productionTip = false
+
+setMainSocket(io('http://localhost:28735/'))
 
 createRouter().then(router => {
   new Vue({

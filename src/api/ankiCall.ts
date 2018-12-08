@@ -13,10 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see "http://www.gnu.org/licenses/".
 
-import io from 'socket.io-client'
+import { KianMainSocket } from '@/api/mainSocket'
 
-const apiRoot = 'http://localhost:28735/'
-const socket = io(apiRoot)
+let socket: KianMainSocket
+
+/**
+ * Set main socket. You can mock ankiCall by registering mock socket with this.
+ * @param newSocket Socket to use.
+ */
+export function setMainSocket (newSocket: KianMainSocket) {
+  socket = newSocket
+  socket.on('msg', (response: IResponse) => {
+    const { syncKey } = response
+    const callback = callbackTable.get(syncKey)
+    if (!callback) return
+
+    const { resolve, reject } = callback
+    callbackTable.delete(syncKey)
+
+    if (response.error) return reject(new Error(response.error.toString()))
+    return resolve(response.result)
+  })
+}
 
 const syncKeyHeader = Math.random().toString()
 let lastSyncKey = 0
@@ -32,19 +50,11 @@ interface IResponse {
   [key: string]: any
 }
 
-socket.on('msg', (response: IResponse) => {
-  const { syncKey } = response
-  const callback = callbackTable.get(syncKey)
-  if (!callback) return
-
-  const { resolve, reject } = callback
-  callbackTable.delete(syncKey)
-
-  if (response.error) return reject(new Error(response.error.toString()))
-  return resolve(response.result)
-})
-
 export default function ankiCall (apiType: string, data?: any) {
+  if (!socket) {
+    throw new Error('Socket not yet initialized')
+  }
+
   return new Promise<any>((resolve, reject) => {
     const syncKey = createSyncKey()
     callbackTable.set(syncKey, { resolve, reject })
