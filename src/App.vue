@@ -38,7 +38,7 @@ div.app-main
             b-nav-text.ml-3(v-if='toolbarList')
 
             // Default Kian toolbar
-            b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet (Ctrl/Cmd)')
+            b-nav-item(v-b-modal.cheatsheet, v-b-tooltip.hover, title='Show cheatsheet (Alt/Option)')
               icon(name='regular/keyboard', scale='1.3')
               span.d-sm-none.ml-2 Show cheatsheet
             b-nav-item(v-b-tooltip.hover, title='Sync now', v-b-modal.syncModal)
