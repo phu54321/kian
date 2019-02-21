@@ -24,7 +24,7 @@ div
     :suggestions='modelSuggestions')
 
   span(
-    v-for='model in modelList',
+    v-for='(model, index) in modelList',
     v-hotkey='`ctrl+${index + 1}`',
     pack-name='Quick model select',
     :title='model',
